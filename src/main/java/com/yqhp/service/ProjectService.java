@@ -99,7 +99,7 @@ public class ProjectService extends BaseService {
      * @return
      */
     public Response list(Project project, PageRequest pageRequest) {
-        if(pageRequest.getPageNum() != null && pageRequest.getPageSize() != null) {
+        if (pageRequest.getPageNum() != null && pageRequest.getPageSize() != null) {
             //分页
             PageHelper.startPage(pageRequest.getPageNum(), pageRequest.getPageSize());
         }

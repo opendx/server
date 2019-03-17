@@ -94,27 +94,12 @@ public class GlobalVarService extends BaseService {
      * @return
      */
     public Response list(GlobalVar globalVar, PageRequest pageRequest) {
-        //分页排序
-        PageHelper.startPage(pageRequest.getPageNum(), pageRequest.getPageSize(), "v.create_time desc");
+        if (pageRequest.getPageSize() != null && pageRequest.getPageNum() != null) {
+            //分页
+            PageHelper.startPage(pageRequest.getPageNum(), pageRequest.getPageSize());
+        }
         List<GlobalVarVo> globalVarVos = globalVarDao.selectByGlobalVar(globalVar);
         return Response.success(Page.convert(new PageInfo(globalVarVos)));
     }
 
-    /**
-     * 根据项目id查出全局变量
-     *
-     * @param projectId
-     * @return
-     */
-    public Response findByProjectId(Integer projectId) {
-        if (projectId == null) {
-            return Response.fail("项目id不能为空");
-        }
-        //根据id查询全局变量
-        GlobalVarExample globalVarExample = new GlobalVarExample();
-        globalVarExample.createCriteria().andProjectIdEqualTo(projectId);
-        globalVarExample.setOrderByClause("create_time desc");
-        List<GlobalVar> globalVars = globalVarMapper.selectByExample(globalVarExample);
-        return Response.success(globalVars);
-    }
 }

@@ -61,13 +61,4 @@ public class GlobalVarController {
         return globalVarService.list(globalVar,pageRequest);
     }
 
-    /**
-     * 根据projectId查出全局变量
-     * @param projectId
-     * @return
-     */
-    @GetMapping("/all/{projectId}")
-    public Response findByProjectId(@PathVariable Integer projectId){
-        return globalVarService.findByProjectId(projectId);
-    }
 }
