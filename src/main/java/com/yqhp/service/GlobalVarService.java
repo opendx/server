@@ -9,7 +9,7 @@ import com.yqhp.mbg.po.GlobalVarExample;
 import com.yqhp.model.PageRequest;
 import com.yqhp.model.Response;
 import com.yqhp.model.vo.GlobalVarVo;
-import com.yqhp.model.vo.PageVo;
+import com.yqhp.model.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
@@ -97,7 +97,7 @@ public class GlobalVarService extends BaseService {
         //分页排序
         PageHelper.startPage(pageRequest.getPageNum(), pageRequest.getPageSize(), "v.create_time desc");
         List<GlobalVarVo> globalVarVos = globalVarDao.selectByGlobalVar(globalVar);
-        return Response.success(PageVo.convert(new PageInfo(globalVarVos)));
+        return Response.success(Page.convert(new PageInfo(globalVarVos)));
     }
 
     /**

@@ -7,7 +7,7 @@ import com.yqhp.mbg.mapper.ProjectMapper;
 import com.yqhp.mbg.po.Project;
 import com.yqhp.model.PageRequest;
 import com.yqhp.model.Response;
-import com.yqhp.model.vo.PageVo;
+import com.yqhp.model.Page;
 import com.yqhp.model.vo.ProjectVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -102,7 +102,7 @@ public class ProjectService extends BaseService {
         //分页排序
         PageHelper.startPage(pageRequest.getPageNum(), pageRequest.getPageSize(), "p.create_time desc");
         List<ProjectVo> projectVos = projectDao.selectByProject(project);
-        return Response.success(PageVo.convert(new PageInfo(projectVos)));
+        return Response.success(Page.convert(new PageInfo(projectVos)));
     }
 
 
