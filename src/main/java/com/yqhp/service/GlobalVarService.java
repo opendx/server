@@ -5,7 +5,6 @@ import com.github.pagehelper.PageInfo;
 import com.yqhp.dao.GlobalVarDao;
 import com.yqhp.mbg.mapper.GlobalVarMapper;
 import com.yqhp.mbg.po.GlobalVar;
-import com.yqhp.mbg.po.GlobalVarExample;
 import com.yqhp.model.PageRequest;
 import com.yqhp.model.Response;
 import com.yqhp.model.vo.GlobalVarVo;
@@ -94,12 +93,16 @@ public class GlobalVarService extends BaseService {
      * @return
      */
     public Response list(GlobalVar globalVar, PageRequest pageRequest) {
-        if (pageRequest.getPageSize() != null && pageRequest.getPageNum() != null) {
+        boolean needPaging = pageRequest.needPaging();
+        if(needPaging) {
             //分页
             PageHelper.startPage(pageRequest.getPageNum(), pageRequest.getPageSize());
         }
         List<GlobalVarVo> globalVarVos = globalVarDao.selectByGlobalVar(globalVar);
-        return Response.success(Page.convert(new PageInfo(globalVarVos)));
+        if(needPaging) {
+            return Response.success(Page.convert(new PageInfo(globalVarVos)));
+        }
+        return Response.success(globalVarVos);
     }
 
 }

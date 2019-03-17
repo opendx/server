@@ -99,12 +99,16 @@ public class ProjectService extends BaseService {
      * @return
      */
     public Response list(Project project, PageRequest pageRequest) {
-        if (pageRequest.getPageNum() != null && pageRequest.getPageSize() != null) {
+        boolean needPaging = pageRequest.needPaging();
+        if (needPaging) {
             //分页
             PageHelper.startPage(pageRequest.getPageNum(), pageRequest.getPageSize());
         }
         List<ProjectVo> projectVos = projectDao.selectByProject(project);
-        return Response.success(Page.convert(new PageInfo(projectVos)));
+        if (needPaging) {
+            return Response.success(Page.convert(new PageInfo(projectVos)));
+        }
+        return Response.success(projectVos);
     }
 
 }
