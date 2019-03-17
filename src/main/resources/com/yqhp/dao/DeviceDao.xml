@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yqhp.dao.DeviceDao">
+
+    <resultMap id="Device" type="com.yqhp.mbg.po.Device" extends="com.yqhp.mbg.mapper.DeviceMapper.BaseResultMap"/>
+
+    <select id="selectByDevice" resultMap="Device">
+        select * from device
+        <where>
+            <if test="id != null and id != ''">
+                and id = #{id}
+            </if>
+            <if test="name != null and name != ''">
+                and name = #{name}
+            </if>
+            <if test="ip != null and ip != ''">
+                and ip = #{ip}
+            </if>
+            <if test="agentIp != null and agentIp != ''">
+                and agent_ip = #{agentIp}
+            </if>
+            <if test="agentPort != null">
+                and agent_port = #{agentPort}
+            </if>
+            <if test="systemVersion != null and systemVersion != ''">
+                and system_version = #{systemVersion}
+            </if>
+            <if test="apiLevel != null and apiLevel != ''">
+                and api_level = #{apiLevel}
+            </if>
+            <if test="cpuAbi != null and cpuAbi != ''">
+                and cpu_abi = #{cpuAbi}
+            </if>
+            <if test="cpuInfo != null and cpuInfo != ''">
+                and cpu_info = #{cpuInfo}
+            </if>
+            <if test="memSize != null and memSize != ''">
+                and mem_size = #{memSize}
+            </if>
+            <if test="resolution != null and resolution != ''">
+                and resolution = #{resolution}
+            </if>
+            <if test="imgUrl != null and imgUrl != ''">
+                and img_url = #{imgUrl}
+            </if>
+            <if test="type != null">
+                and type = #{type}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="stfStatus != null">
+                and stf_status = #{stfStatus}
+            </if>
+            <if test="macacaStatus != null">
+                and macaca_status = #{macacaStatus}
+            </if>
+            <if test="lastOnlineTime != null">
+                and last_online_time = #{lastOnlineTime}
+            </if>
+            <if test="lastOfflineTime != null">
+                and last_offline_time = #{lastOfflineTime}
+            </if>
+            <if test="username != null and username != ''">
+                and username = #{username}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+        </where>
+        order by last_online_time desc , last_offline_time desc , create_time desc
+    </select>
+</mapper>
