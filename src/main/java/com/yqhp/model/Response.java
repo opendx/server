@@ -1,4 +1,4 @@
-package com.yqhp.model.vo;
+package com.yqhp.model;
 
 import lombok.Data;
 

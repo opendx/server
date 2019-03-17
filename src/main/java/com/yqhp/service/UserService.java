@@ -3,7 +3,7 @@ package com.yqhp.service;
 import com.yqhp.mbg.mapper.UserMapper;
 import com.yqhp.mbg.po.User;
 import com.yqhp.mbg.po.UserExample;
-import com.yqhp.model.vo.Response;
+import com.yqhp.model.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
