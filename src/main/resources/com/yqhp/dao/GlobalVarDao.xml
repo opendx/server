@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yqhp.dao.GlobalVarDao">
+    <resultMap id="GlobalVarVo" type="com.yqhp.model.vo.GlobalVarVo"
+               extends="com.yqhp.mbg.mapper.GlobalVarMapper.BaseResultMap"/>
+
+    <select id="selectByGlobalVar" resultMap="GlobalVarVo">
+        select v.*,u.nick_name AS creatorNickName from global_var v left join user u on v.creator_uid = u.id
+        <where>
+            <if test = "id != null">
+                and v.id = #{id}
+            </if>
+            <if test="name != null and name != ''">
+                and v.name = #{name}
+            </if>
+            <if test="value != null and value != ''">
+                and v.value = #{value}
+            </if>
+            <if test="description != null and description != ''">
+                and v.description = #{description}
+            </if>
+            <if test="projectId != null">
+                and v.project_id = #{projectId}
+            </if>
+            <if test="creatorUid != null">
+                and v.creator_uid = #{creatorUid}
+            </if>
+            <if test="createTime != null">
+                and v.create_time = #{createTime}
+            </if>
+        </where>
+    </select>
+</mapper>
