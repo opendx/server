@@ -99,11 +99,12 @@ public class ProjectService extends BaseService {
      * @return
      */
     public Response list(Project project, PageRequest pageRequest) {
-        //分页排序
-        PageHelper.startPage(pageRequest.getPageNum(), pageRequest.getPageSize(), "p.create_time desc");
+        if(pageRequest.getPageNum() != null && pageRequest.getPageSize() != null) {
+            //分页
+            PageHelper.startPage(pageRequest.getPageNum(), pageRequest.getPageSize());
+        }
         List<ProjectVo> projectVos = projectDao.selectByProject(project);
         return Response.success(Page.convert(new PageInfo(projectVos)));
     }
-
 
 }
