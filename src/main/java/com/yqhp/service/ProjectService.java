@@ -2,16 +2,16 @@ package com.yqhp.service;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.yqhp.dao.ProjectDao;
 import com.yqhp.mbg.mapper.ProjectMapper;
 import com.yqhp.mbg.po.Project;
-import com.yqhp.mbg.po.ProjectExample;
 import com.yqhp.model.PageRequest;
 import com.yqhp.model.Response;
 import com.yqhp.model.vo.PageVo;
+import com.yqhp.model.vo.ProjectVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.util.Date;
 import java.util.List;
@@ -24,6 +24,8 @@ public class ProjectService extends BaseService {
 
     @Autowired
     private ProjectMapper projectMapper;
+    @Autowired
+    private ProjectDao projectDao;
 
     /**
      * 新增项目
@@ -98,18 +100,9 @@ public class ProjectService extends BaseService {
      */
     public Response list(Project project, PageRequest pageRequest) {
         //分页排序
-        PageHelper.startPage(pageRequest.getPageNum(), pageRequest.getPageSize(), "create_time desc");
-        //动态where
-        ProjectExample projectExample = new ProjectExample();
-        ProjectExample.Criteria criteria = projectExample.createCriteria();
-        if (!StringUtils.isEmpty(project.getName())) {
-            criteria.andNameEqualTo(project.getName());
-        }
-        if (project.getType() != null) {
-            criteria.andTypeEqualTo(project.getType());
-        }
-        List<Project> projects = projectMapper.selectByExample(projectExample);
-        return Response.success(PageVo.convert(new PageInfo(projects)));
+        PageHelper.startPage(pageRequest.getPageNum(), pageRequest.getPageSize(), "p.create_time desc");
+        List<ProjectVo> projectVos = projectDao.selectByProject(project);
+        return Response.success(PageVo.convert(new PageInfo(projectVos)));
     }
 
 

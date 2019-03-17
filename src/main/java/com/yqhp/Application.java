@@ -9,7 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * Created by jiangyitao.
  */
 @EnableAdminServer
-@MapperScan({"com.yqhp.mbg.mapper"})
+@MapperScan({"com.yqhp.mbg.mapper","com.yqhp.dao"})
 @SpringBootApplication
 public class Application {
     public static void main(String[] args){
