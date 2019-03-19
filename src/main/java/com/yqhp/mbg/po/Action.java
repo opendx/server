@@ -4,11 +4,38 @@ import com.yqhp.model.action.LocalVar;
 import com.yqhp.model.action.Param;
 import com.yqhp.model.action.Step;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
 public class Action implements Serializable {
+
+    /**
+     * 基础action
+     */
+    public static final Integer TYPE_BASE = 1;
+    /**
+     * 自定义action
+     */
+    public static final Integer TYPE_CUSTOM = 2;
+    /**
+     * 测试用例action
+     */
+    public static final Integer TYPE_TESTCASE = 3;
+    /**
+     * 测试计划前置action
+     */
+    public static final Integer TYPE_TEST_PLAN_BEFORE = 4;
+
+    /**
+     * 有返回值
+     */
+    public static final Integer HAS_RETURN_VALUE = 1;
+
     /**
      * 主键id
      *
@@ -21,6 +48,7 @@ public class Action implements Serializable {
      *
      * @mbg.generated
      */
+    @NotBlank(message = "actionName不能为空")
     private String name;
 
     /**
@@ -49,6 +77,7 @@ public class Action implements Serializable {
      *
      * @mbg.generated
      */
+    @NotNull(message = "actionType不能为空")
     private Integer type;
 
     /**
@@ -126,6 +155,7 @@ public class Action implements Serializable {
      *
      * @mbg.generated
      */
+    @Valid
     private java.util.List<com.yqhp.model.action.Param> params;
 
     /**
@@ -133,6 +163,7 @@ public class Action implements Serializable {
      *
      * @mbg.generated
      */
+    @Valid
     private java.util.List<com.yqhp.model.action.LocalVar> localVars;
 
     /**
@@ -140,6 +171,8 @@ public class Action implements Serializable {
      *
      * @mbg.generated
      */
+    @Valid
+    @NotEmpty(message = "步骤不能为空")
     private java.util.List<com.yqhp.model.action.Step> steps;
 
     private static final long serialVersionUID = 1L;
