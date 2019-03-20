@@ -3,6 +3,7 @@ package com.yqhp.controller;
 import com.yqhp.mbg.po.Action;
 import com.yqhp.model.PageRequest;
 import com.yqhp.model.Response;
+import com.yqhp.model.vo.DebuggableAction;
 import com.yqhp.service.ActionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -75,6 +76,17 @@ public class ActionController {
     @GetMapping("/selectable/{projectId}")
     public Response findSelectableActions(@PathVariable Integer projectId) {
         return actionService.findSelectableActions(projectId);
+    }
+
+    /**
+     * 调试action
+     *
+     * @param debuggableAction
+     * @return
+     */
+    @PostMapping("/debug")
+    public Response debug(@Valid @RequestBody DebuggableAction debuggableAction) {
+        return actionService.debug(debuggableAction);
     }
 
 }

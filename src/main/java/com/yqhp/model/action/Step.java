@@ -1,5 +1,7 @@
 package com.yqhp.model.action;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.yqhp.mbg.po.Action;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
@@ -17,6 +19,9 @@ public class Step {
      */
     @NotNull(message = "步骤的actionId不能为空")
     private Integer actionId;
+
+    @JsonIgnore
+    private Action action;
     /**
      * 步骤名
      */

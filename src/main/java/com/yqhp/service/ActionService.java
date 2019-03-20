@@ -11,16 +11,19 @@ import com.yqhp.mbg.po.Project;
 import com.yqhp.model.Page;
 import com.yqhp.model.PageRequest;
 import com.yqhp.model.Response;
+import com.yqhp.model.action.Step;
 import com.yqhp.model.vo.ActionVo;
+import com.yqhp.model.vo.DebuggableAction;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.validation.Valid;
-import java.util.Date;
-import java.util.List;
+import javax.validation.constraints.NotNull;
+import java.util.*;
 
 /**
  * Created by jiangyitao.
@@ -94,7 +97,7 @@ public class ActionService extends BaseService {
      * @param action
      * @return
      */
-    public Response update(@Valid Action action) {
+    public Response update(Action action) {
         if (action.getId() == null) {
             return Response.fail("actionId不能为空");
         }
@@ -178,5 +181,38 @@ public class ActionService extends BaseService {
         actionExample.setOrderByClause("create_time desc");
 
         return Response.success(actionMapper.selectByExampleWithBLOBs(actionExample));
+    }
+
+    /**
+     * 调试action
+     *
+     * @param debuggableAction
+     * @return
+     */
+    public Response debug(DebuggableAction debuggableAction) {
+        Action action = debuggableAction.getAction();
+        DebuggableAction.DebugInfo debugInfo = debuggableAction.getDebugInfo();
+
+        //这次调试涉及的所有actionId
+        Set<Integer> actionIds = new HashSet<>();
+        List<Step> steps = action.getSteps();
+
+
+        return Response.success("执行成功");
+    }
+
+
+    //todo
+    public Action buildActionTree(Integer actionId) {
+        Action action = actionMapper.selectByPrimaryKey(actionId);
+        List<Step> steps = action.getSteps();
+        if (!CollectionUtils.isEmpty(steps)) {
+            steps.forEach(step -> {
+                Action stepAction = actionMapper.selectByPrimaryKey(step.getActionId());
+                step.setAction(stepAction);
+                buildActionTree(stepAction.getId());
+            });
+        }
+
     }
 }

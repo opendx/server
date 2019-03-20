@@ -17,44 +17,32 @@ public class Response {
     private String msg;
     private Object data;
 
-    public static Response success(Object data) {
+    private static Response buildResponse(Integer status, String msg, Object data) {
         Response response = new Response();
-        response.setMsg("success");
-        response.setStatus(SUCCESS);
+        response.setStatus(status);
+        response.setMsg(msg);
         response.setData(data);
         return response;
+    }
+
+    public static Response success(Object data) {
+        return buildResponse(SUCCESS, "success", data);
     }
 
     public static Response success(String msg) {
-        Response response = new Response();
-        response.setMsg(msg);
-        response.setStatus(SUCCESS);
-        response.setData(null);
-        return response;
+        return buildResponse(SUCCESS, msg, null);
     }
 
     public static Response success(String msg, Object data) {
-        Response response = new Response();
-        response.setMsg(msg);
-        response.setStatus(SUCCESS);
-        response.setData(data);
-        return response;
+        return buildResponse(SUCCESS, msg, data);
     }
 
     public static Response fail(String msg) {
-        Response response = new Response();
-        response.setMsg(msg);
-        response.setStatus(FAIL);
-        response.setData(null);
-        return response;
+        return buildResponse(FAIL, msg, null);
     }
 
     public static Response error(String msg) {
-        Response response = new Response();
-        response.setMsg(msg);
-        response.setStatus(ERROR);
-        response.setData(null);
-        return response;
+        return buildResponse(ERROR, msg, null);
     }
 
 }
