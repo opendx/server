@@ -14,7 +14,9 @@ import java.util.List;
 /**
  * Created by jiangyitao.
  */
-public class ListTypeHandler extends BaseTypeHandler<List> {
+public abstract class ListTypeHandler extends BaseTypeHandler<List> {
+
+    public abstract Class getTypeClass();
 
     @Override
     public void setNonNullParameter(PreparedStatement preparedStatement, int i, List list, JdbcType jdbcType) throws SQLException {
@@ -23,16 +25,16 @@ public class ListTypeHandler extends BaseTypeHandler<List> {
 
     @Override
     public List getNullableResult(ResultSet resultSet, String s) throws SQLException {
-        return JSONObject.parseArray(resultSet.getString(s));
+        return JSONObject.parseArray(resultSet.getString(s), getTypeClass());
     }
 
     @Override
     public List getNullableResult(ResultSet resultSet, int i) throws SQLException {
-        return JSONObject.parseArray(resultSet.getString(i));
+        return JSONObject.parseArray(resultSet.getString(i), getTypeClass());
     }
 
     @Override
     public List getNullableResult(CallableStatement callableStatement, int i) throws SQLException {
-        return JSONObject.parseArray(callableStatement.getString(i));
+        return JSONObject.parseArray(callableStatement.getString(i), getTypeClass());
     }
 }
