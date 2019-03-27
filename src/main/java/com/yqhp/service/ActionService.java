@@ -4,16 +4,18 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.yqhp.dao.ActionDao;
 import com.yqhp.mbg.mapper.ActionMapper;
+import com.yqhp.mbg.mapper.GlobalVarMapper;
 import com.yqhp.mbg.mapper.ProjectMapper;
-import com.yqhp.mbg.po.Action;
-import com.yqhp.mbg.po.ActionExample;
-import com.yqhp.mbg.po.Project;
+import com.yqhp.mbg.po.*;
 import com.yqhp.model.Page;
 import com.yqhp.model.PageRequest;
 import com.yqhp.model.Response;
 import com.yqhp.model.action.Step;
 import com.yqhp.model.vo.ActionVo;
 import com.yqhp.model.vo.DebuggableAction;
+import com.yqhp.testngcode.ActionTreeBuilder;
+import com.yqhp.testngcode.TestNGCodeConverter;
+import com.yqhp.utils.UUIDUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -38,6 +40,8 @@ public class ActionService extends BaseService {
     private ActionDao actionDao;
     @Autowired
     private ProjectMapper projectMapper;
+    @Autowired
+    private GlobalVarMapper globalVarMapper;
 
     /**
      * 添加action
@@ -193,26 +197,43 @@ public class ActionService extends BaseService {
         Action action = debuggableAction.getAction();
         DebuggableAction.DebugInfo debugInfo = debuggableAction.getDebugInfo();
 
-        //这次调试涉及的所有actionId
-        Set<Integer> actionIds = new HashSet<>();
-        List<Step> steps = action.getSteps();
+        //没保存过的action设置个默认的actionId
+        if (action.getId() == null) {
+            action.setId(0);
+        }
 
+        //构建action树
+        new ActionTreeBuilder(actionMapper).build(Arrays.asList(action));
+
+        String testClassName = "DebugClass_" + UUIDUtil.getUUID();
+
+        //该项目下的全局变量
+        GlobalVarExample globalVarExample = new GlobalVarExample();
+        globalVarExample.createCriteria().andProjectIdEqualTo(action.getProjectId());
+        List<GlobalVar> globalVars = globalVarMapper.selectByExample(globalVarExample);
+
+        String testNGCode;
+        try {
+            testNGCode = new TestNGCodeConverter()
+                    .setActionTree(action)
+                    .setTestClassName(testClassName)
+                    .setBasePackagePath("/codetemplate")
+                    .setFtlFileName("testngCode.ftl")
+                    .setIsBeforeSuite(false)
+                    .setProjectType(projectMapper.selectByPrimaryKey(action.getProjectId()).getType())
+                    .setDeviceId(debugInfo.getDeviceId())
+                    .setPort(debugInfo.getPort())
+                    .setGlobalVars(globalVars)
+                    .convert();
+            if (StringUtils.isEmpty(testNGCode)) {
+                return Response.fail("转换testng代码失败");
+            }
+        } catch (Exception e) {
+            log.error("转换testng代码出错", e);
+            return Response.fail("转换testng代码出错：" + e.getMessage());
+        }
 
         return Response.success("执行成功");
     }
 
-
-    //todo
-    public Action buildActionTree(Integer actionId) {
-        Action action = actionMapper.selectByPrimaryKey(actionId);
-        List<Step> steps = action.getSteps();
-        if (!CollectionUtils.isEmpty(steps)) {
-            steps.forEach(step -> {
-                Action stepAction = actionMapper.selectByPrimaryKey(step.getActionId());
-                step.setAction(stepAction);
-                buildActionTree(stepAction.getId());
-            });
-        }
-
-    }
 }
