@@ -14,9 +14,9 @@ import javax.validation.Valid;
 /**
  * Created by jiangyitao.
  * mbg生成action table配置
- * <columnOverride column="steps" typeHandler="com.yqhp.typehandler.ListTypeHandler" javaType="java.util.List&lt;com.yqhp.model.action.Step&gt;" jdbcType="LONGVARCHAR"/>
- * <columnOverride column="params" typeHandler="com.yqhp.typehandler.ListTypeHandler" javaType="java.util.List&lt;com.yqhp.model.action.Param&gt;" jdbcType="LONGVARCHAR"/>
- * <columnOverride column="local_vars" typeHandler="com.yqhp.typehandler.ListTypeHandler" javaType="java.util.List&lt;com.yqhp.model.action.LocalVar&gt;" jdbcType="LONGVARCHAR"/>
+ * <columnOverride column="steps" typeHandler="com.yqhp.typehandler.StepTypeHandler" javaType="java.util.List&lt;com.yqhp.model.action.Step&gt;" jdbcType="LONGVARCHAR"/>
+ * <columnOverride column="params" typeHandler="com.yqhp.typehandler.ParamTypeHandler" javaType="java.util.List&lt;com.yqhp.model.action.Param&gt;" jdbcType="LONGVARCHAR"/>
+ * <columnOverride column="local_vars" typeHandler="com.yqhp.typehandler.LocalVarTypeHandler" javaType="java.util.List&lt;com.yqhp.model.action.LocalVar&gt;" jdbcType="LONGVARCHAR"/>
  */
 @RestController
 @RequestMapping("/action")

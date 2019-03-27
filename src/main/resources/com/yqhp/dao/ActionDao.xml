@@ -7,9 +7,9 @@
     </resultMap>
 
     <select id="selectByAction" resultMap="ActionVo">
-        select a.*,u1.nickname creatorNickName,u2.nickname updatorNickName from action a
-        LEFT JOIN user u1 on a.creatorUid = u1.id
-        LEFT JOIN user u2 on a.updatorUid = u2.id
+        select a.*,u1.nick_name creatorNickName,u2.nick_name updatorNickName from action a
+        LEFT JOIN user u1 on a.creator_uid = u1.id
+        LEFT JOIN user u2 on a.updator_uid = u2.id
         <where>
             <if test="id != null">
                 and a.id = #{id}
@@ -69,6 +69,6 @@
                 and a.steps = #{steps,typeHandler=com.yqhp.typehandler.ListTypeHandler}
             </if>
         </where>
-        order by a.createTime desc
+        order by a.create_time desc
     </select>
 </mapper>
