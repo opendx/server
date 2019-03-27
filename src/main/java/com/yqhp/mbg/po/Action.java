@@ -37,6 +37,11 @@ public class Action implements Serializable {
     public static final Integer HAS_RETURN_VALUE = 1;
 
     /**
+     * 是否需要在代码模板里传client/driver
+     */
+    public static final Integer NEED_DRIVER = 1;
+
+    /**
      * 主键id
      *
      * @mbg.generated
