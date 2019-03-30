@@ -34,10 +34,12 @@ public class UserService {
      * @return
      */
     public Response loginOrRegister(User user) {
-        UserExample userExample = new UserExample();
         user.setPassword(DigestUtils.md5DigestAsHex(user.getPassword().getBytes()));
+
+        UserExample userExample = new UserExample();
         userExample.createCriteria().andUsernameEqualTo(user.getUsername()).andPasswordEqualTo(user.getPassword());
         List<User> users = userMapper.selectByExample(userExample);
+
         if (CollectionUtils.isEmpty(users)) {
             //注册
             if (StringUtils.isEmpty(user.getNickName())) {
