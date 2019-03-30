@@ -2,6 +2,7 @@ package com.yqhp.service;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.yqhp.agent.AgentApi;
 import com.yqhp.dao.ActionDao;
 import com.yqhp.mbg.mapper.ActionMapper;
 import com.yqhp.mbg.mapper.GlobalVarMapper;
@@ -42,6 +43,8 @@ public class ActionService extends BaseService {
     private ProjectMapper projectMapper;
     @Autowired
     private GlobalVarMapper globalVarMapper;
+    @Autowired
+    private AgentApi agentApi;
 
     /**
      * 添加action
@@ -233,7 +236,12 @@ public class ActionService extends BaseService {
             return Response.fail("转换testng代码出错：" + e.getMessage());
         }
 
-        return Response.success("执行成功");
+        //发送到agent执行
+        Response response = agentApi.debugAction(debugInfo.getAgentIp(), debugInfo.getAgentPort(), testClassName, testNGCode);
+        if (!response.isSuccess()) {
+            return Response.fail(response.getMsg());
+        }
+        return Response.success(response.getMsg());
     }
 
 }

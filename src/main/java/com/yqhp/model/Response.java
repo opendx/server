@@ -25,6 +25,10 @@ public class Response {
         return response;
     }
 
+    public boolean isSuccess() {
+        return status == SUCCESS ? true : false;
+    }
+
     public static Response success(Object data) {
         return buildResponse(SUCCESS, "success", data);
     }
