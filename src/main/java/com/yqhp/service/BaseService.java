@@ -21,8 +21,7 @@ public class BaseService {
      * @throws Exception
      */
     protected Integer getUid() {
-        return 1;
-//        String token = httpServletRequest.getHeader("token");
-//        return Integer.parseInt(TokenUtil.parse(token));
+        String token = httpServletRequest.getHeader("token");
+        return Integer.parseInt(TokenUtil.parse(token));
     }
 }

@@ -62,7 +62,6 @@ public class UserService {
         UserVo userVo = new UserVo();
         BeanUtils.copyProperties(user, userVo);
         userVo.setToken(TokenUtil.create(user.getId() + ""));
-        ;
 
         return Response.success("登录成功", userVo);
     }
