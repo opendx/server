@@ -233,11 +233,11 @@ public class ActionService extends BaseService {
         }
 
         //发送到agent执行
-        Response response = agentApi.debugAction(debugInfo.getAgentIp(), debugInfo.getAgentPort(), testClassName, testNGCode);
-        if (!response.isSuccess()) {
-            return Response.fail(response.getMsg());
+        Response agentResponse = agentApi.debugAction(debugInfo.getAgentIp(), debugInfo.getAgentPort(), testClassName, testNGCode);
+        if (!agentResponse.isSuccess()) {
+            return Response.fail(agentResponse.getMsg());
         }
-        return Response.success(response.getMsg());
+        return Response.success(agentResponse.getMsg());
     }
 
 }
