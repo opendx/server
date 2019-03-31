@@ -11,6 +11,7 @@ import com.yqhp.model.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -71,4 +72,26 @@ public class DeviceService extends BaseService {
         return Response.success(devices);
     }
 
+    /**
+     * 开始控制手机
+     *
+     * @param deviceId
+     * @return
+     */
+    public Response start(String deviceId) {
+        if (StringUtils.isEmpty(deviceId)) {
+            return Response.fail("设备id不能为空");
+        }
+
+        Device device = deviceMapper.selectByPrimaryKey(deviceId);
+        if (device == null) {
+            return Response.fail("手机不存在");
+        }
+
+        if (device.getStatus() != Device.IDLE_STATUS) {
+            return Response.fail("手机未闲置");
+        }
+
+        return Response.success("ok");
+    }
 }

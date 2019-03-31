@@ -65,4 +65,14 @@ public class DeviceController {
         return deviceService.list(device, pageRequest);
     }
 
+    /**
+     * 开始控制手机
+     *
+     * @param deviceId
+     * @return
+     */
+    @GetMapping("/start/{deviceId}")
+    public Response start(@PathVariable String deviceId) {
+        return deviceService.start(deviceId);
+    }
 }
