@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.yqhp.dao.PageDao">
 
-    <resultMap id="PageVo" type="com.yqhp.model.vo.PageVo" extends="com.yqhp.mbg.mapper.PageMapper.BaseResultMap"/>
+    <resultMap id="PageVo" type="com.yqhp.model.vo.PageVo" extends="com.yqhp.mbg.mapper.PageMapper.ResultMapWithBLOBs"/>
 
     <select id="selectByPage" resultMap="PageVo">
         select p.*,u.nick_name AS creatorNickName from page p left join user u on p.creator_uid = u.id

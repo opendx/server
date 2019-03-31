@@ -204,14 +204,14 @@ public class ActionService extends BaseService {
         //构建action树
         new ActionTreeBuilder(actionMapper).build(Arrays.asList(action));
 
-        String testClassName = "DebugClass_" + UUIDUtil.getUUID();
-
         //该项目下的全局变量
         GlobalVarExample globalVarExample = new GlobalVarExample();
         globalVarExample.createCriteria().andProjectIdEqualTo(action.getProjectId());
         List<GlobalVar> globalVars = globalVarMapper.selectByExample(globalVarExample);
 
+        String testClassName = "DebugClass_" + UUIDUtil.getUUID();
         String testNGCode;
+
         try {
             testNGCode = new TestNGCodeConverter()
                     .setActionTree(action)
