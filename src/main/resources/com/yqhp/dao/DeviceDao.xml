@@ -68,6 +68,6 @@
                 and create_time = #{createTime}
             </if>
         </where>
-        order by last_online_time desc , last_offline_time desc , create_time desc
+        order by create_time desc
     </select>
 </mapper>

@@ -1,5 +1,6 @@
 package com.yqhp.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 /**
@@ -25,6 +26,7 @@ public class Response {
         return response;
     }
 
+    @JsonIgnore
     public boolean isSuccess() {
         return status == SUCCESS ? true : false;
     }
