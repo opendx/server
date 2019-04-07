@@ -1,8 +1,10 @@
 package com.yqhp.mbg.po;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.yqhp.model.action.LocalVar;
 import com.yqhp.model.action.Param;
 import com.yqhp.model.action.Step;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -132,6 +134,8 @@ public class Action implements Serializable {
      *
      * @mbg.generated
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
     /**
@@ -146,6 +150,8 @@ public class Action implements Serializable {
      *
      * @mbg.generated
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
 
     /**

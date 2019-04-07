@@ -18,7 +18,7 @@ public class ${testClassName} {
     <#-- 全局变量 变量名格式为g_xxx -->
     <#if globalVars?? && (globalVars?size>0)>
         <#list globalVars as globalVar>
-            <#lt>    public static final String g_${globalVar.globalVarName} = "${globalVar.globalVarValue}";
+            <#lt>    public static final String g_${globalVar.name} = "${globalVar.value}";
         </#list>
     </#if>
 

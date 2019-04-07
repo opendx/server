@@ -232,6 +232,7 @@ public class ActionService extends BaseService {
             return Response.fail("转换testng代码出错：" + e.getMessage());
         }
 
+        log.info("code : \n{}",testNGCode);
         //发送到agent执行
         Response agentResponse = agentApi.debugAction(debugInfo.getAgentIp(), debugInfo.getAgentPort(), testClassName, testNGCode);
         if (!agentResponse.isSuccess()) {

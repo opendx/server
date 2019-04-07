@@ -29,7 +29,7 @@ public class AgentApi {
     public Response debugAction(String agentIp, int agentPort, String testClassName, String code) {
         JSONObject requestBody = new JSONObject();
         requestBody.put("testClassName", testClassName);
-        requestBody.put("code", code);
+        requestBody.put("testNGCode", code);
         return restTemplate.postForObject(PROTOCOL_PREFIX + agentIp + ":" + agentPort + "/debug/debugAction", requestBody, Response.class);
     }
 }

@@ -13,12 +13,12 @@ import java.util.*;
  */
 public class ActionTreeBuilder {
 
-    private ActionMapper actionMapper;
+    private final ActionMapper actionMapper;
 
     /**
      * actionId : action
      */
-    private Map<Integer, Action> cachedActions = new HashMap<>();
+    private final Map<Integer, Action> cachedActions = new HashMap<>();
 
     public ActionTreeBuilder(ActionMapper actionMapper) {
         this.actionMapper = actionMapper;
