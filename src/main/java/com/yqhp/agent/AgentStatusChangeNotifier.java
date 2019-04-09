@@ -50,7 +50,8 @@ public class AgentStatusChangeNotifier extends AbstractStatusChangeNotifier {
                     DeviceExample deviceExample = new DeviceExample();
                     deviceExample.createCriteria().andAgentIpEqualTo(agentIp);
 
-                    deviceMapper.updateByExampleSelective(device, deviceExample);
+                    int updateRow = deviceMapper.updateByExampleSelective(device, deviceExample);
+                    log.info("agent({})下的{}个设备已成功离线",agentIp,updateRow);
                 }
             }
         });
