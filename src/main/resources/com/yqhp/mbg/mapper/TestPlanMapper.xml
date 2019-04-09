@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yqhp.mbg.mapper.TestPlanMapper">
+  <resultMap id="BaseResultMap" type="com.yqhp.mbg.po.TestPlan">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="project_id" jdbcType="INTEGER" property="projectId" />
+    <result column="creator_uid" jdbcType="INTEGER" property="creatorUid" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.yqhp.mbg.po.TestPlan">
+    <result column="befores" jdbcType="LONGVARCHAR" property="befores" typeHandler="com.yqhp.typehandler.BeforeTypeHandler" />
+    <result column="test_suites" jdbcType="LONGVARCHAR" property="testSuites" typeHandler="com.yqhp.typehandler.IntegerTypeHandler" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, name, description, project_id, creator_uid, create_time
+  </sql>
+  <sql id="Blob_Column_List">
+    befores, test_suites
+  </sql>
+  <select id="selectByExampleWithBLOBs" parameterType="com.yqhp.mbg.po.TestPlanExample" resultMap="ResultMapWithBLOBs">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from test_plan
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" parameterType="com.yqhp.mbg.po.TestPlanExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from test_plan
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from test_plan
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from test_plan
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.yqhp.mbg.po.TestPlanExample">
+    delete from test_plan
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.yqhp.mbg.po.TestPlan">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into test_plan (name, description, project_id, 
+      creator_uid, create_time, befores, 
+      test_suites
+      )
+    values (#{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{projectId,jdbcType=INTEGER}, 
+      #{creatorUid,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{befores,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.BeforeTypeHandler}, 
+      #{testSuites,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.IntegerTypeHandler}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.yqhp.mbg.po.TestPlan">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into test_plan
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        name,
+      </if>
+      <if test="description != null">
+        description,
+      </if>
+      <if test="projectId != null">
+        project_id,
+      </if>
+      <if test="creatorUid != null">
+        creator_uid,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="befores != null">
+        befores,
+      </if>
+      <if test="testSuites != null">
+        test_suites,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null">
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="projectId != null">
+        #{projectId,jdbcType=INTEGER},
+      </if>
+      <if test="creatorUid != null">
+        #{creatorUid,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="befores != null">
+        #{befores,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.BeforeTypeHandler},
+      </if>
+      <if test="testSuites != null">
+        #{testSuites,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.IntegerTypeHandler},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.yqhp.mbg.po.TestPlanExample" resultType="java.lang.Long">
+    select count(*) from test_plan
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update test_plan
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.name != null">
+        name = #{record.name,jdbcType=VARCHAR},
+      </if>
+      <if test="record.description != null">
+        description = #{record.description,jdbcType=VARCHAR},
+      </if>
+      <if test="record.projectId != null">
+        project_id = #{record.projectId,jdbcType=INTEGER},
+      </if>
+      <if test="record.creatorUid != null">
+        creator_uid = #{record.creatorUid,jdbcType=INTEGER},
+      </if>
+      <if test="record.createTime != null">
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.befores != null">
+        befores = #{record.befores,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.BeforeTypeHandler},
+      </if>
+      <if test="record.testSuites != null">
+        test_suites = #{record.testSuites,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.IntegerTypeHandler},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map">
+    update test_plan
+    set id = #{record.id,jdbcType=INTEGER},
+      name = #{record.name,jdbcType=VARCHAR},
+      description = #{record.description,jdbcType=VARCHAR},
+      project_id = #{record.projectId,jdbcType=INTEGER},
+      creator_uid = #{record.creatorUid,jdbcType=INTEGER},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      befores = #{record.befores,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.BeforeTypeHandler},
+      test_suites = #{record.testSuites,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.IntegerTypeHandler}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update test_plan
+    set id = #{record.id,jdbcType=INTEGER},
+      name = #{record.name,jdbcType=VARCHAR},
+      description = #{record.description,jdbcType=VARCHAR},
+      project_id = #{record.projectId,jdbcType=INTEGER},
+      creator_uid = #{record.creatorUid,jdbcType=INTEGER},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.yqhp.mbg.po.TestPlan">
+    update test_plan
+    <set>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null">
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="projectId != null">
+        project_id = #{projectId,jdbcType=INTEGER},
+      </if>
+      <if test="creatorUid != null">
+        creator_uid = #{creatorUid,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="befores != null">
+        befores = #{befores,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.BeforeTypeHandler},
+      </if>
+      <if test="testSuites != null">
+        test_suites = #{testSuites,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.IntegerTypeHandler},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.yqhp.mbg.po.TestPlan">
+    update test_plan
+    set name = #{name,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
+      project_id = #{projectId,jdbcType=INTEGER},
+      creator_uid = #{creatorUid,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      befores = #{befores,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.BeforeTypeHandler},
+      test_suites = #{testSuites,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.IntegerTypeHandler}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.yqhp.mbg.po.TestPlan">
+    update test_plan
+    set name = #{name,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
+      project_id = #{projectId,jdbcType=INTEGER},
+      creator_uid = #{creatorUid,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
