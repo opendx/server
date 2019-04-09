@@ -1,13 +1,20 @@
 package com.yqhp.service;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.yqhp.dao.TestSuiteDao;
 import com.yqhp.mbg.mapper.TestSuiteMapper;
 import com.yqhp.mbg.po.TestSuite;
+import com.yqhp.model.Page;
+import com.yqhp.model.PageRequest;
 import com.yqhp.model.Response;
+import com.yqhp.model.vo.TestSuiteVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by jiangyitao.
@@ -17,6 +24,8 @@ public class TestSuiteService extends BaseService {
 
     @Autowired
     private TestSuiteMapper testSuiteMapper;
+    @Autowired
+    private TestSuiteDao testSuiteDao;
 
     public Response add(TestSuite testSuite) {
 
@@ -63,5 +72,19 @@ public class TestSuiteService extends BaseService {
         }
 
         return Response.success("更新测试集成功");
+    }
+
+    public Response list(TestSuite testSuite, PageRequest pageRequest) {
+        boolean needPaging = pageRequest.needPaging();
+
+        if(needPaging) {
+            //分页
+            PageHelper.startPage(pageRequest.getPageNum(),pageRequest.getPageSize());
+        }
+        List<TestSuiteVo> testSuiteVos = testSuiteDao.selectByTestSuite(testSuite);
+        if(needPaging) {
+            return Response.success(Page.convert(new PageInfo(testSuiteVos)));
+        }
+        return Response.success(testSuiteVos);
     }
 }

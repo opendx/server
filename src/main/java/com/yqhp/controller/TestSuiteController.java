@@ -1,6 +1,7 @@
 package com.yqhp.controller;
 
 import com.yqhp.mbg.po.TestSuite;
+import com.yqhp.model.PageRequest;
 import com.yqhp.model.Response;
 import com.yqhp.service.TestSuiteService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +51,17 @@ public class TestSuiteController {
     @PostMapping("/update")
     public Response update(@Valid @RequestBody TestSuite testSuite) {
         return testSuiteService.update(testSuite);
+    }
+
+
+    /**
+     * 查询测试集列表
+     *
+     * @return
+     */
+    @PostMapping("/list")
+    public Response list(TestSuite testSuite, PageRequest pageRequest) {
+        return testSuiteService.list(testSuite, pageRequest);
     }
 
 

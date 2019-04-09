@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yqhp.dao.TestSuiteDao">
+    <resultMap id="TestSuiteVo" type="com.yqhp.model.vo.TestSuiteVo"
+               extends="com.yqhp.mbg.mapper.TestSuiteMapper.ResultMapWithBLOBs"/>
+    <select id="selectByTestSuite" resultMap="TestSuiteVo">
+        select s.*,u.nick_name AS creatorNickName from test_suite s left join user u on s.creator_uid = u.id
+        <where>
+            <if test="id != null">
+                and s.id = #{id}
+            </if>
+            <if test="name != null and name != ''">
+                and s.name = #{name}
+            </if>
+            <if test="description != null and description != ''">
+                and s.description = #{description}
+            </if>
+            <if test="projectId != null">
+                and s.project_id = #{projectId}
+            </if>
+            <if test="creatorUid != null">
+                and s.creator_uid = #{creatorUid}
+            </if>
+            <if test="createTime != null">
+                and s.create_time = #{createTime}
+            </if>
+        </where>
+        order by s.create_time desc
+    </select>
+</mapper>
