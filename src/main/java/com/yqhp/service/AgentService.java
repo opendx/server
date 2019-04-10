@@ -1,12 +1,17 @@
 package com.yqhp.service;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.yqhp.agent.AgentApi;
 import com.yqhp.mbg.mapper.DeviceMapper;
+import com.yqhp.mbg.po.Device;
+import com.yqhp.mbg.po.DeviceExample;
 import com.yqhp.model.Response;
 import com.yqhp.model.vo.AgentVo;
 import de.codecentric.boot.admin.server.domain.entities.Instance;
 import de.codecentric.boot.admin.server.domain.values.StatusInfo;
 import de.codecentric.boot.admin.server.services.InstanceRegistry;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +22,7 @@ import java.util.stream.Collectors;
  * Created by jiangyitao.
  */
 @Service
+@Slf4j
 public class AgentService {
     @Autowired
     private InstanceRegistry instanceRegistry;
@@ -43,7 +49,22 @@ public class AgentService {
                     agentVo.setAgentIp(agentIp);
                     agentVo.setAgentPort(agentPort);
 
-                    //todo
+                    //在线的设备
+                    DeviceExample deviceExample = new DeviceExample();
+                    deviceExample.createCriteria().andAgentIpEqualTo(agentIp).andStatusNotEqualTo(Device.OFFLINE_STATUS);
+                    List<Device> onlineDevices = deviceMapper.selectByExample(deviceExample);
+                    agentVo.setDevices(onlineDevices);
+
+                    try {
+                        Response response = agentApi.getSeleniumDrivers(agentIp, agentPort);
+                        if(response.isSuccess()) {
+                            List<AgentVo.Driver> drivers = JSON.parseArray(JSONArray.toJSONString(response.getData()), AgentVo.Driver.class);
+                            agentVo.setDrivers(drivers);
+                        }
+                    } catch (Exception e) {
+                        log.error("获取selenium drivers出错",e);
+                    }
+
                     return agentVo;
                 }).collect(Collectors.toList());
 
