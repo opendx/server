@@ -59,7 +59,7 @@ public class TestPlan implements Serializable {
     private Date createTime;
 
     /**
-     * 前置条件
+     * 前置条件(beforeSuite -> type = 1 , beforeMethod -> type = 2)
      *
      * @mbg.generated
      */
