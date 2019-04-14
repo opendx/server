@@ -20,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.*;
@@ -239,6 +240,17 @@ public class ActionService extends BaseService {
             return Response.fail(agentResponse.getMsg());
         }
         return Response.success(agentResponse.getMsg());
+    }
+
+    public List<Action> findByIds(List<Integer> actionIds) {
+        if(CollectionUtils.isEmpty(actionIds)) {
+            return new ArrayList<>();
+        }
+
+        ActionExample actionExample = new ActionExample();
+        actionExample.createCriteria().andIdIn(actionIds);
+
+        return actionMapper.selectByExampleWithBLOBs(actionExample);
     }
 
 }

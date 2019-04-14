@@ -4,7 +4,11 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.yqhp.dao.TestPlanDao;
 import com.yqhp.mbg.mapper.TestPlanMapper;
+import com.yqhp.mbg.mapper.TestSuiteMapper;
+import com.yqhp.mbg.po.Action;
 import com.yqhp.mbg.po.TestPlan;
+import com.yqhp.mbg.po.TestSuite;
+import com.yqhp.mbg.po.TestSuiteExample;
 import com.yqhp.model.Page;
 import com.yqhp.model.PageRequest;
 import com.yqhp.model.Response;
@@ -15,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by jiangyitao.
@@ -26,6 +31,10 @@ public class TestPlanService extends BaseService {
     private TestPlanMapper testPlanMapper;
     @Autowired
     private TestPlanDao testPlanDao;
+    @Autowired
+    private TestSuiteMapper testSuiteMapper;
+    @Autowired
+    private ActionService actionService;
 
     public Response add(TestPlan testPlan) {
         testPlan.setCreateTime(new Date());
@@ -88,5 +97,17 @@ public class TestPlanService extends BaseService {
         } else {
             return Response.success(testPlanVos);
         }
+    }
+
+    /**
+     * 获取测试计划包含的测试用例
+     * @return actionId
+     */
+    public List<Action> getTestcasesByTestPlan(TestPlan testPlan) {
+        TestSuiteExample testSuiteExample = new TestSuiteExample();
+        testSuiteExample.createCriteria().andIdIn(testPlan.getTestSuites());
+        List<TestSuite> testSuites = testSuiteMapper.selectByExampleWithBLOBs(testSuiteExample);
+        List<Integer> testcaseIds = testSuites.stream().flatMap(testSuite -> testSuite.getTestcases().stream()).collect(Collectors.toList());
+        return actionService.findByIds(testcaseIds);
     }
 }

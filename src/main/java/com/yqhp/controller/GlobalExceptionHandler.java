@@ -1,5 +1,6 @@
 package com.yqhp.controller;
 
+import com.yqhp.exception.BusinessException;
 import com.yqhp.model.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindException;
@@ -28,6 +29,17 @@ public class GlobalExceptionHandler {
     public Response handleException(Exception e) {
         log.error("未处理的异常", e);
         return Response.error(e.getMessage());
+    }
+
+    /**
+     * BusinessException
+     * @param e
+     * @return
+     */
+    @ResponseBody
+    @ExceptionHandler(BusinessException.class)
+    public Response handleBusinessException(BusinessException e){
+        return Response.fail(e.getMessage());
     }
 
     /**
