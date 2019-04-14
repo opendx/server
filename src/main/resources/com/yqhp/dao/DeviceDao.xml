@@ -13,9 +13,6 @@
             <if test="name != null and name != ''">
                 and name = #{name}
             </if>
-            <if test="ip != null and ip != ''">
-                and ip = #{ip}
-            </if>
             <if test="agentIp != null and agentIp != ''">
                 and agent_ip = #{agentIp}
             </if>
@@ -24,12 +21,6 @@
             </if>
             <if test="systemVersion != null and systemVersion != ''">
                 and system_version = #{systemVersion}
-            </if>
-            <if test="apiLevel != null and apiLevel != ''">
-                and api_level = #{apiLevel}
-            </if>
-            <if test="cpuAbi != null and cpuAbi != ''">
-                and cpu_abi = #{cpuAbi}
             </if>
             <if test="cpuInfo != null and cpuInfo != ''">
                 and cpu_info = #{cpuInfo}
