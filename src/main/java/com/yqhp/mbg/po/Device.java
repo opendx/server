@@ -32,13 +32,6 @@ public class Device implements Serializable {
     private String name;
 
     /**
-     * 设备ip
-     *
-     * @mbg.generated
-     */
-    private String ip;
-
-    /**
      * 设备所在的agent的ip
      *
      * @mbg.generated
@@ -58,20 +51,6 @@ public class Device implements Serializable {
      * @mbg.generated
      */
     private String systemVersion;
-
-    /**
-     * 设备api版本
-     *
-     * @mbg.generated
-     */
-    private String apiLevel;
-
-    /**
-     * 设备cpu架构
-     *
-     * @mbg.generated
-     */
-    private String cpuAbi;
 
     /**
      * cpu信息
@@ -177,14 +156,6 @@ public class Device implements Serializable {
         this.name = name;
     }
 
-    public String getIp() {
-        return ip;
-    }
-
-    public void setIp(String ip) {
-        this.ip = ip;
-    }
-
     public String getAgentIp() {
         return agentIp;
     }
@@ -207,22 +178,6 @@ public class Device implements Serializable {
 
     public void setSystemVersion(String systemVersion) {
         this.systemVersion = systemVersion;
-    }
-
-    public String getApiLevel() {
-        return apiLevel;
-    }
-
-    public void setApiLevel(String apiLevel) {
-        this.apiLevel = apiLevel;
-    }
-
-    public String getCpuAbi() {
-        return cpuAbi;
-    }
-
-    public void setCpuAbi(String cpuAbi) {
-        this.cpuAbi = cpuAbi;
     }
 
     public String getCpuInfo() {
@@ -329,12 +284,9 @@ public class Device implements Serializable {
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
         sb.append(", name=").append(name);
-        sb.append(", ip=").append(ip);
         sb.append(", agentIp=").append(agentIp);
         sb.append(", agentPort=").append(agentPort);
         sb.append(", systemVersion=").append(systemVersion);
-        sb.append(", apiLevel=").append(apiLevel);
-        sb.append(", cpuAbi=").append(cpuAbi);
         sb.append(", cpuInfo=").append(cpuInfo);
         sb.append(", memSize=").append(memSize);
         sb.append(", resolution=").append(resolution);

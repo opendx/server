@@ -2,9 +2,7 @@ package com.yqhp.mbg.mapper;
 
 import com.yqhp.mbg.po.Device;
 import com.yqhp.mbg.po.DeviceExample;
-
 import java.util.List;
-
 import org.apache.ibatis.annotations.Param;
 
 public interface DeviceMapper {
