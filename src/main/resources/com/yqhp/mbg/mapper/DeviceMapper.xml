@@ -114,28 +114,25 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.yqhp.mbg.po.Device">
-    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.String">
-      SELECT LAST_INSERT_ID()
-    </selectKey>
-    insert into device (name, agent_ip, agent_port, 
-      system_version, cpu_info, mem_size, 
-      resolution, img_url, type, 
-      status, stf_status, macaca_status, 
-      last_online_time, last_offline_time, username, 
-      create_time)
-    values (#{name,jdbcType=VARCHAR}, #{agentIp,jdbcType=VARCHAR}, #{agentPort,jdbcType=INTEGER}, 
-      #{systemVersion,jdbcType=VARCHAR}, #{cpuInfo,jdbcType=VARCHAR}, #{memSize,jdbcType=VARCHAR}, 
-      #{resolution,jdbcType=VARCHAR}, #{imgUrl,jdbcType=VARCHAR}, #{type,jdbcType=TINYINT}, 
-      #{status,jdbcType=TINYINT}, #{stfStatus,jdbcType=TINYINT}, #{macacaStatus,jdbcType=TINYINT}, 
-      #{lastOnlineTime,jdbcType=TIMESTAMP}, #{lastOfflineTime,jdbcType=TIMESTAMP}, #{username,jdbcType=VARCHAR}, 
-      #{createTime,jdbcType=TIMESTAMP})
+    insert into device (id, name, agent_ip, 
+      agent_port, system_version, cpu_info, 
+      mem_size, resolution, img_url, 
+      type, status, stf_status, 
+      macaca_status, last_online_time, last_offline_time, 
+      username, create_time)
+    values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{agentIp,jdbcType=VARCHAR}, 
+      #{agentPort,jdbcType=INTEGER}, #{systemVersion,jdbcType=VARCHAR}, #{cpuInfo,jdbcType=VARCHAR}, 
+      #{memSize,jdbcType=VARCHAR}, #{resolution,jdbcType=VARCHAR}, #{imgUrl,jdbcType=VARCHAR}, 
+      #{type,jdbcType=TINYINT}, #{status,jdbcType=TINYINT}, #{stfStatus,jdbcType=TINYINT}, 
+      #{macacaStatus,jdbcType=TINYINT}, #{lastOnlineTime,jdbcType=TIMESTAMP}, #{lastOfflineTime,jdbcType=TIMESTAMP}, 
+      #{username,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.yqhp.mbg.po.Device">
-    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.String">
-      SELECT LAST_INSERT_ID()
-    </selectKey>
     insert into device
     <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
       <if test="name != null">
         name,
       </if>
@@ -186,6 +183,9 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
       <if test="name != null">
         #{name,jdbcType=VARCHAR},
       </if>
