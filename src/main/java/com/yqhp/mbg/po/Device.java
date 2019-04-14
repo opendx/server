@@ -13,8 +13,8 @@ public class Device implements Serializable {
     public static final Integer IOS_TYPE = 2;
 
     public static final Integer OFFLINE_STATUS = 0;
-    public static final Integer IDLE_STATUS = 1;
-    public static final Integer USING_STATUS = 2;
+    public static final Integer USING_STATUS = 1;
+    public static final Integer IDLE_STATUS = 2;
 
     /**
      * 设备id
