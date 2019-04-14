@@ -59,6 +59,6 @@
                 and create_time = #{createTime}
             </if>
         </where>
-        order by create_time desc
+        order by status desc
     </select>
 </mapper>
