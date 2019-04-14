@@ -585,73 +585,123 @@ public class DeviceExample {
             return (Criteria) this;
         }
 
-        public Criteria andResolutionIsNull() {
-            addCriterion("resolution is null");
+        public Criteria andScreenWidthIsNull() {
+            addCriterion("screen_width is null");
             return (Criteria) this;
         }
 
-        public Criteria andResolutionIsNotNull() {
-            addCriterion("resolution is not null");
+        public Criteria andScreenWidthIsNotNull() {
+            addCriterion("screen_width is not null");
             return (Criteria) this;
         }
 
-        public Criteria andResolutionEqualTo(String value) {
-            addCriterion("resolution =", value, "resolution");
+        public Criteria andScreenWidthEqualTo(Integer value) {
+            addCriterion("screen_width =", value, "screenWidth");
             return (Criteria) this;
         }
 
-        public Criteria andResolutionNotEqualTo(String value) {
-            addCriterion("resolution <>", value, "resolution");
+        public Criteria andScreenWidthNotEqualTo(Integer value) {
+            addCriterion("screen_width <>", value, "screenWidth");
             return (Criteria) this;
         }
 
-        public Criteria andResolutionGreaterThan(String value) {
-            addCriterion("resolution >", value, "resolution");
+        public Criteria andScreenWidthGreaterThan(Integer value) {
+            addCriterion("screen_width >", value, "screenWidth");
             return (Criteria) this;
         }
 
-        public Criteria andResolutionGreaterThanOrEqualTo(String value) {
-            addCriterion("resolution >=", value, "resolution");
+        public Criteria andScreenWidthGreaterThanOrEqualTo(Integer value) {
+            addCriterion("screen_width >=", value, "screenWidth");
             return (Criteria) this;
         }
 
-        public Criteria andResolutionLessThan(String value) {
-            addCriterion("resolution <", value, "resolution");
+        public Criteria andScreenWidthLessThan(Integer value) {
+            addCriterion("screen_width <", value, "screenWidth");
             return (Criteria) this;
         }
 
-        public Criteria andResolutionLessThanOrEqualTo(String value) {
-            addCriterion("resolution <=", value, "resolution");
+        public Criteria andScreenWidthLessThanOrEqualTo(Integer value) {
+            addCriterion("screen_width <=", value, "screenWidth");
             return (Criteria) this;
         }
 
-        public Criteria andResolutionLike(String value) {
-            addCriterion("resolution like", value, "resolution");
+        public Criteria andScreenWidthIn(List<Integer> values) {
+            addCriterion("screen_width in", values, "screenWidth");
             return (Criteria) this;
         }
 
-        public Criteria andResolutionNotLike(String value) {
-            addCriterion("resolution not like", value, "resolution");
+        public Criteria andScreenWidthNotIn(List<Integer> values) {
+            addCriterion("screen_width not in", values, "screenWidth");
             return (Criteria) this;
         }
 
-        public Criteria andResolutionIn(List<String> values) {
-            addCriterion("resolution in", values, "resolution");
+        public Criteria andScreenWidthBetween(Integer value1, Integer value2) {
+            addCriterion("screen_width between", value1, value2, "screenWidth");
             return (Criteria) this;
         }
 
-        public Criteria andResolutionNotIn(List<String> values) {
-            addCriterion("resolution not in", values, "resolution");
+        public Criteria andScreenWidthNotBetween(Integer value1, Integer value2) {
+            addCriterion("screen_width not between", value1, value2, "screenWidth");
             return (Criteria) this;
         }
 
-        public Criteria andResolutionBetween(String value1, String value2) {
-            addCriterion("resolution between", value1, value2, "resolution");
+        public Criteria andScreenHeightIsNull() {
+            addCriterion("screen_height is null");
             return (Criteria) this;
         }
 
-        public Criteria andResolutionNotBetween(String value1, String value2) {
-            addCriterion("resolution not between", value1, value2, "resolution");
+        public Criteria andScreenHeightIsNotNull() {
+            addCriterion("screen_height is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andScreenHeightEqualTo(Integer value) {
+            addCriterion("screen_height =", value, "screenHeight");
+            return (Criteria) this;
+        }
+
+        public Criteria andScreenHeightNotEqualTo(Integer value) {
+            addCriterion("screen_height <>", value, "screenHeight");
+            return (Criteria) this;
+        }
+
+        public Criteria andScreenHeightGreaterThan(Integer value) {
+            addCriterion("screen_height >", value, "screenHeight");
+            return (Criteria) this;
+        }
+
+        public Criteria andScreenHeightGreaterThanOrEqualTo(Integer value) {
+            addCriterion("screen_height >=", value, "screenHeight");
+            return (Criteria) this;
+        }
+
+        public Criteria andScreenHeightLessThan(Integer value) {
+            addCriterion("screen_height <", value, "screenHeight");
+            return (Criteria) this;
+        }
+
+        public Criteria andScreenHeightLessThanOrEqualTo(Integer value) {
+            addCriterion("screen_height <=", value, "screenHeight");
+            return (Criteria) this;
+        }
+
+        public Criteria andScreenHeightIn(List<Integer> values) {
+            addCriterion("screen_height in", values, "screenHeight");
+            return (Criteria) this;
+        }
+
+        public Criteria andScreenHeightNotIn(List<Integer> values) {
+            addCriterion("screen_height not in", values, "screenHeight");
+            return (Criteria) this;
+        }
+
+        public Criteria andScreenHeightBetween(Integer value1, Integer value2) {
+            addCriterion("screen_height between", value1, value2, "screenHeight");
+            return (Criteria) this;
+        }
+
+        public Criteria andScreenHeightNotBetween(Integer value1, Integer value2) {
+            addCriterion("screen_height not between", value1, value2, "screenHeight");
             return (Criteria) this;
         }
 

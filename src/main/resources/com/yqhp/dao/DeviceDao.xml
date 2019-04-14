@@ -28,8 +28,11 @@
             <if test="memSize != null and memSize != ''">
                 and mem_size = #{memSize}
             </if>
-            <if test="resolution != null and resolution != ''">
-                and resolution = #{resolution}
+            <if test="screenWidth != null">
+                and screen_width = #{screenWidth}
+            </if>
+            <if test="screenHeight != null">
+                and screen_height = #{screenHeight}
             </if>
             <if test="imgUrl != null and imgUrl != ''">
                 and img_url = #{imgUrl}

@@ -9,7 +9,8 @@
     <result column="system_version" jdbcType="VARCHAR" property="systemVersion" />
     <result column="cpu_info" jdbcType="VARCHAR" property="cpuInfo" />
     <result column="mem_size" jdbcType="VARCHAR" property="memSize" />
-    <result column="resolution" jdbcType="VARCHAR" property="resolution" />
+    <result column="screen_width" jdbcType="INTEGER" property="screenWidth" />
+    <result column="screen_height" jdbcType="INTEGER" property="screenHeight" />
     <result column="img_url" jdbcType="VARCHAR" property="imgUrl" />
     <result column="type" jdbcType="TINYINT" property="type" />
     <result column="status" jdbcType="TINYINT" property="status" />
@@ -79,9 +80,9 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, name, agent_ip, agent_port, system_version, cpu_info, mem_size, resolution, img_url, 
-    type, status, stf_status, macaca_status, last_online_time, last_offline_time, username, 
-    create_time
+    id, name, agent_ip, agent_port, system_version, cpu_info, mem_size, screen_width, 
+    screen_height, img_url, type, status, stf_status, macaca_status, last_online_time, 
+    last_offline_time, username, create_time
   </sql>
   <select id="selectByExample" parameterType="com.yqhp.mbg.po.DeviceExample" resultMap="BaseResultMap">
     select
@@ -116,16 +117,18 @@
   <insert id="insert" parameterType="com.yqhp.mbg.po.Device">
     insert into device (id, name, agent_ip, 
       agent_port, system_version, cpu_info, 
-      mem_size, resolution, img_url, 
-      type, status, stf_status, 
-      macaca_status, last_online_time, last_offline_time, 
-      username, create_time)
+      mem_size, screen_width, screen_height, 
+      img_url, type, status, 
+      stf_status, macaca_status, last_online_time, 
+      last_offline_time, username, create_time
+      )
     values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{agentIp,jdbcType=VARCHAR}, 
       #{agentPort,jdbcType=INTEGER}, #{systemVersion,jdbcType=VARCHAR}, #{cpuInfo,jdbcType=VARCHAR}, 
-      #{memSize,jdbcType=VARCHAR}, #{resolution,jdbcType=VARCHAR}, #{imgUrl,jdbcType=VARCHAR}, 
-      #{type,jdbcType=TINYINT}, #{status,jdbcType=TINYINT}, #{stfStatus,jdbcType=TINYINT}, 
-      #{macacaStatus,jdbcType=TINYINT}, #{lastOnlineTime,jdbcType=TIMESTAMP}, #{lastOfflineTime,jdbcType=TIMESTAMP}, 
-      #{username,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP})
+      #{memSize,jdbcType=VARCHAR}, #{screenWidth,jdbcType=INTEGER}, #{screenHeight,jdbcType=INTEGER}, 
+      #{imgUrl,jdbcType=VARCHAR}, #{type,jdbcType=TINYINT}, #{status,jdbcType=TINYINT}, 
+      #{stfStatus,jdbcType=TINYINT}, #{macacaStatus,jdbcType=TINYINT}, #{lastOnlineTime,jdbcType=TIMESTAMP}, 
+      #{lastOfflineTime,jdbcType=TIMESTAMP}, #{username,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.yqhp.mbg.po.Device">
     insert into device
@@ -151,8 +154,11 @@
       <if test="memSize != null">
         mem_size,
       </if>
-      <if test="resolution != null">
-        resolution,
+      <if test="screenWidth != null">
+        screen_width,
+      </if>
+      <if test="screenHeight != null">
+        screen_height,
       </if>
       <if test="imgUrl != null">
         img_url,
@@ -204,8 +210,11 @@
       <if test="memSize != null">
         #{memSize,jdbcType=VARCHAR},
       </if>
-      <if test="resolution != null">
-        #{resolution,jdbcType=VARCHAR},
+      <if test="screenWidth != null">
+        #{screenWidth,jdbcType=INTEGER},
+      </if>
+      <if test="screenHeight != null">
+        #{screenHeight,jdbcType=INTEGER},
       </if>
       <if test="imgUrl != null">
         #{imgUrl,jdbcType=VARCHAR},
@@ -266,8 +275,11 @@
       <if test="record.memSize != null">
         mem_size = #{record.memSize,jdbcType=VARCHAR},
       </if>
-      <if test="record.resolution != null">
-        resolution = #{record.resolution,jdbcType=VARCHAR},
+      <if test="record.screenWidth != null">
+        screen_width = #{record.screenWidth,jdbcType=INTEGER},
+      </if>
+      <if test="record.screenHeight != null">
+        screen_height = #{record.screenHeight,jdbcType=INTEGER},
       </if>
       <if test="record.imgUrl != null">
         img_url = #{record.imgUrl,jdbcType=VARCHAR},
@@ -310,7 +322,8 @@
       system_version = #{record.systemVersion,jdbcType=VARCHAR},
       cpu_info = #{record.cpuInfo,jdbcType=VARCHAR},
       mem_size = #{record.memSize,jdbcType=VARCHAR},
-      resolution = #{record.resolution,jdbcType=VARCHAR},
+      screen_width = #{record.screenWidth,jdbcType=INTEGER},
+      screen_height = #{record.screenHeight,jdbcType=INTEGER},
       img_url = #{record.imgUrl,jdbcType=VARCHAR},
       type = #{record.type,jdbcType=TINYINT},
       status = #{record.status,jdbcType=TINYINT},
@@ -345,8 +358,11 @@
       <if test="memSize != null">
         mem_size = #{memSize,jdbcType=VARCHAR},
       </if>
-      <if test="resolution != null">
-        resolution = #{resolution,jdbcType=VARCHAR},
+      <if test="screenWidth != null">
+        screen_width = #{screenWidth,jdbcType=INTEGER},
+      </if>
+      <if test="screenHeight != null">
+        screen_height = #{screenHeight,jdbcType=INTEGER},
       </if>
       <if test="imgUrl != null">
         img_url = #{imgUrl,jdbcType=VARCHAR},
@@ -386,7 +402,8 @@
       system_version = #{systemVersion,jdbcType=VARCHAR},
       cpu_info = #{cpuInfo,jdbcType=VARCHAR},
       mem_size = #{memSize,jdbcType=VARCHAR},
-      resolution = #{resolution,jdbcType=VARCHAR},
+      screen_width = #{screenWidth,jdbcType=INTEGER},
+      screen_height = #{screenHeight,jdbcType=INTEGER},
       img_url = #{imgUrl,jdbcType=VARCHAR},
       type = #{type,jdbcType=TINYINT},
       status = #{status,jdbcType=TINYINT},

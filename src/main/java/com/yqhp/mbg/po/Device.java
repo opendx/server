@@ -67,11 +67,18 @@ public class Device implements Serializable {
     private String memSize;
 
     /**
-     * 分辨率
+     * 屏幕宽（像素）
      *
      * @mbg.generated
      */
-    private String resolution;
+    private Integer screenWidth;
+
+    /**
+     * 屏幕高（像素）
+     *
+     * @mbg.generated
+     */
+    private Integer screenHeight;
 
     /**
      * 图片地址，用于在前端展示
@@ -196,12 +203,20 @@ public class Device implements Serializable {
         this.memSize = memSize;
     }
 
-    public String getResolution() {
-        return resolution;
+    public Integer getScreenWidth() {
+        return screenWidth;
     }
 
-    public void setResolution(String resolution) {
-        this.resolution = resolution;
+    public void setScreenWidth(Integer screenWidth) {
+        this.screenWidth = screenWidth;
+    }
+
+    public Integer getScreenHeight() {
+        return screenHeight;
+    }
+
+    public void setScreenHeight(Integer screenHeight) {
+        this.screenHeight = screenHeight;
     }
 
     public String getImgUrl() {
@@ -289,7 +304,8 @@ public class Device implements Serializable {
         sb.append(", systemVersion=").append(systemVersion);
         sb.append(", cpuInfo=").append(cpuInfo);
         sb.append(", memSize=").append(memSize);
-        sb.append(", resolution=").append(resolution);
+        sb.append(", screenWidth=").append(screenWidth);
+        sb.append(", screenHeight=").append(screenHeight);
         sb.append(", imgUrl=").append(imgUrl);
         sb.append(", type=").append(type);
         sb.append(", status=").append(status);
