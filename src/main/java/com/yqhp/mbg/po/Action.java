@@ -80,7 +80,7 @@ public class Action implements Serializable {
     private Integer pageId;
 
     /**
-     * 类型：1.基础的action 2.用户自定义的action 3.测试用例 2.测试计划的前置action
+     * 类型：1.基础的action 2.用户自定义的action 3.测试用例 4.测试计划的前置action
      *
      * @mbg.generated
      */
@@ -88,7 +88,7 @@ public class Action implements Serializable {
     private Integer type;
 
     /**
-     * 基础action专用：1.android 2.ios 3.web
+     * 1.android 2.ios 3.web
      *
      * @mbg.generated
      */
