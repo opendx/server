@@ -222,16 +222,15 @@ public class ActionService extends BaseService {
         JSONObject requestBody = new JSONObject();
         requestBody.put("action", action);
         requestBody.put("globalVars", globalVars);
-        requestBody.put("projectType", projectMapper.selectByPrimaryKey(action.getProjectId()).getType());
         requestBody.put("deviceId", debugInfo.getDeviceId());
         requestBody.put("port", debugInfo.getPort());
 
         //发送到agent执行
         Response agentResponse = agentApi.debugAction(debugInfo.getAgentIp(), debugInfo.getAgentPort(), requestBody);
-        if (!agentResponse.isSuccess()) {
-            return Response.fail(agentResponse.getMsg());
-        } else {
+        if (agentResponse.isSuccess()) {
             return Response.success(agentResponse.getMsg());
+        } else {
+            return Response.fail(agentResponse.getMsg());
         }
     }
 

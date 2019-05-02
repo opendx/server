@@ -1,6 +1,6 @@
 package com.yqhp.model.action;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.yqhp.mbg.po.Action;
 import lombok.Data;
 
@@ -20,7 +20,7 @@ public class Step {
     @NotNull(message = "步骤的actionId不能为空")
     private Integer actionId;
 
-    @JsonIgnore
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Action action;
     /**
      * 步骤名
