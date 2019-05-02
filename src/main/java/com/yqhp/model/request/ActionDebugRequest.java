@@ -1,4 +1,4 @@
-package com.yqhp.model.vo;
+package com.yqhp.model.request;
 
 import com.yqhp.mbg.po.Action;
 import lombok.Data;
@@ -9,10 +9,9 @@ import javax.validation.constraints.NotNull;
 
 /**
  * Created by jiangyitao.
- * 可调试的Action
  */
 @Data
-public class DebuggableAction {
+public class ActionDebugRequest {
 
     @NotNull(message = "action不能为空")
     private Action action;

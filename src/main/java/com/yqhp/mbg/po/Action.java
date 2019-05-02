@@ -37,6 +37,10 @@ public class Action implements Serializable {
      * 有返回值
      */
     public static final Integer HAS_RETURN_VALUE = 1;
+    /**
+     * 无返回值
+     */
+    public static final Integer NO_RETURN_VALUE = 0;
 
     /**
      * 是否需要在代码模板里传client/driver
@@ -70,6 +74,7 @@ public class Action implements Serializable {
      *
      * @mbg.generated
      */
+    @NotNull(message = "项目id不能为空")
     private Integer projectId;
 
     /**
@@ -92,6 +97,7 @@ public class Action implements Serializable {
      *
      * @mbg.generated
      */
+    @NotNull(message = "项目类型不能为空")
     private Integer projectType;
 
     /**

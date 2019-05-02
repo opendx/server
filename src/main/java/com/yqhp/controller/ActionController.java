@@ -3,7 +3,7 @@ package com.yqhp.controller;
 import com.yqhp.mbg.po.Action;
 import com.yqhp.model.PageRequest;
 import com.yqhp.model.Response;
-import com.yqhp.model.vo.DebuggableAction;
+import com.yqhp.model.request.ActionDebugRequest;
 import com.yqhp.service.ActionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -81,12 +81,12 @@ public class ActionController {
     /**
      * 调试action
      *
-     * @param debuggableAction
+     * @param actionDebugRequest
      * @return
      */
     @PostMapping("/debug")
-    public Response debug(@Valid @RequestBody DebuggableAction debuggableAction) {
-        return actionService.debug(debuggableAction);
+    public Response debug(@Valid @RequestBody ActionDebugRequest actionDebugRequest) {
+        return actionService.debug(actionDebugRequest);
     }
 
 }

@@ -1,5 +1,6 @@
 package com.yqhp.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.yqhp.agent.AgentApi;
@@ -12,10 +13,7 @@ import com.yqhp.model.Page;
 import com.yqhp.model.PageRequest;
 import com.yqhp.model.Response;
 import com.yqhp.model.vo.ActionVo;
-import com.yqhp.model.vo.DebuggableAction;
-import com.yqhp.testngcode.ActionTreeBuilder;
-import com.yqhp.testngcode.TestNGCodeConverter;
-import com.yqhp.utils.UUIDUtil;
+import com.yqhp.model.request.ActionDebugRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -24,6 +22,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by jiangyitao.
@@ -61,8 +60,9 @@ public class ActionService extends BaseService {
         action.setCreateTime(new Date());
 
         if (!StringUtils.isEmpty(action.getReturnValue())) {
-            // 有返回值
             action.setHasReturnValue(Action.HAS_RETURN_VALUE);
+        } else {
+            action.setHasReturnValue(Action.NO_RETURN_VALUE);
         }
 
         try {
@@ -87,7 +87,14 @@ public class ActionService extends BaseService {
         if (actionId == null) {
             return Response.fail("actionId不能为空");
         }
-        //todo 查询这个action是否被其他step引用。如果有其他step引用，提示不能删除
+
+        List<Action> actions = actionDao.selectByStepActionId(actionId);
+        if (!CollectionUtils.isEmpty(actions)) {
+            //正在使用该action的actionNames
+            String usingActionNames = actions.stream().map(Action::getName).collect(Collectors.joining("、"));
+            return Response.fail(usingActionNames + "正在使用此action，无法删除");
+        }
+
         int deleteRow = actionMapper.deleteByPrimaryKey(actionId);
         if (deleteRow != 1) {
             return Response.fail("删除失败，请稍后重试");
@@ -113,7 +120,9 @@ public class ActionService extends BaseService {
         if (!StringUtils.isEmpty(action.getReturnValue())) {
             action.setHasReturnValue(Action.HAS_RETURN_VALUE);
         } else {
-            action.setHasReturnValue(null);
+            action.setHasReturnValue(Action.NO_RETURN_VALUE);
+            //如果returnValue是null，无法保存，重新设置为""
+            action.setReturnValue("");
         }
 
         //由于action的参数，可能被其他步骤使用，类似于方法的参数改动，其他调用该方法的地方都要改动
@@ -190,12 +199,12 @@ public class ActionService extends BaseService {
     /**
      * 调试action
      *
-     * @param debuggableAction
+     * @param actionDebugRequest
      * @return
      */
-    public Response debug(DebuggableAction debuggableAction) {
-        Action action = debuggableAction.getAction();
-        DebuggableAction.DebugInfo debugInfo = debuggableAction.getDebugInfo();
+    public Response debug(ActionDebugRequest actionDebugRequest) {
+        Action action = actionDebugRequest.getAction();
+        ActionDebugRequest.DebugInfo debugInfo = actionDebugRequest.getDebugInfo();
 
         //没保存过的action设置个默认的actionId
         if (action.getId() == null) {
@@ -210,40 +219,24 @@ public class ActionService extends BaseService {
         globalVarExample.createCriteria().andProjectIdEqualTo(action.getProjectId());
         List<GlobalVar> globalVars = globalVarMapper.selectByExample(globalVarExample);
 
-        String testClassName = "DebugClass_" + UUIDUtil.getUUID();
-        String testNGCode;
+        JSONObject requestBody = new JSONObject();
+        requestBody.put("action", action);
+        requestBody.put("globalVars", globalVars);
+        requestBody.put("projectType", projectMapper.selectByPrimaryKey(action.getProjectId()).getType());
+        requestBody.put("deviceId", debugInfo.getDeviceId());
+        requestBody.put("port", debugInfo.getPort());
 
-        try {
-            testNGCode = new TestNGCodeConverter()
-                    .setActionTree(action)
-                    .setTestClassName(testClassName)
-                    .setBasePackagePath("/codetemplate")
-                    .setFtlFileName("testngCode.ftl")
-                    .setIsBeforeSuite(false)
-                    .setProjectType(projectMapper.selectByPrimaryKey(action.getProjectId()).getType())
-                    .setDeviceId(debugInfo.getDeviceId())
-                    .setPort(debugInfo.getPort())
-                    .setGlobalVars(globalVars)
-                    .convert();
-            if (StringUtils.isEmpty(testNGCode)) {
-                return Response.fail("转换testng代码失败");
-            }
-        } catch (Exception e) {
-            log.error("转换testng代码出错", e);
-            return Response.fail("转换testng代码出错：" + e.getMessage());
-        }
-
-        log.info("code : \n{}",testNGCode);
         //发送到agent执行
-        Response agentResponse = agentApi.debugAction(debugInfo.getAgentIp(), debugInfo.getAgentPort(), testClassName, testNGCode);
+        Response agentResponse = agentApi.debugAction(debugInfo.getAgentIp(), debugInfo.getAgentPort(), requestBody);
         if (!agentResponse.isSuccess()) {
             return Response.fail(agentResponse.getMsg());
+        } else {
+            return Response.success(agentResponse.getMsg());
         }
-        return Response.success(agentResponse.getMsg());
     }
 
     public List<Action> findByIds(List<Integer> actionIds) {
-        if(CollectionUtils.isEmpty(actionIds)) {
+        if (CollectionUtils.isEmpty(actionIds)) {
             return new ArrayList<>();
         }
 

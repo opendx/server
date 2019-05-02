@@ -5,6 +5,7 @@
     <resultMap id="ActionVo" type="com.yqhp.model.vo.ActionVo"
                extends="com.yqhp.mbg.mapper.ActionMapper.ResultMapWithBLOBs">
     </resultMap>
+    <resultMap id="ResultMapWithBLOBs" type="com.yqhp.mbg.po.Action" extends="com.yqhp.mbg.mapper.ActionMapper.ResultMapWithBLOBs"/>
 
     <select id="selectByAction" resultMap="ActionVo">
         select a.*,u1.nick_name creatorNickName,u2.nick_name updatorNickName from action a
@@ -70,5 +71,9 @@
             </if>
         </where>
         order by a.create_time desc
+    </select>
+
+    <select id="selectByStepActionId" resultMap="ResultMapWithBLOBs">
+        select * from action where JSON_CONTAINS(steps->'$[*].actionId', '${stepActionId}', '$')
     </select>
 </mapper>

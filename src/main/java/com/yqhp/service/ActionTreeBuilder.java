@@ -1,4 +1,4 @@
-package com.yqhp.testngcode;
+package com.yqhp.service;
 
 import com.yqhp.mbg.mapper.ActionMapper;
 import com.yqhp.mbg.po.Action;
