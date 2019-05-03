@@ -75,4 +75,14 @@ public class DeviceController {
     public Response start(@PathVariable String deviceId) {
         return deviceService.start(deviceId);
     }
+
+    /**
+     * 获取在线的设备
+     * @param type
+     * @return
+     */
+    @GetMapping("/online/{type}")
+    public Response getOnlineDevices(@PathVariable Integer type) {
+        return deviceService.getOnlineDevices(type);
+    }
 }

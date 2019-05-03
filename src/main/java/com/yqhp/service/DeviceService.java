@@ -5,6 +5,7 @@ import com.github.pagehelper.PageInfo;
 import com.yqhp.dao.DeviceDao;
 import com.yqhp.mbg.mapper.DeviceMapper;
 import com.yqhp.mbg.po.Device;
+import com.yqhp.mbg.po.DeviceExample;
 import com.yqhp.model.Page;
 import com.yqhp.model.PageRequest;
 import com.yqhp.model.Response;
@@ -93,5 +94,16 @@ public class DeviceService extends BaseService {
         }
 
         return Response.success("ok");
+    }
+
+    public Response getOnlineDevices(Integer type) {
+        DeviceExample deviceExample = new DeviceExample();
+        DeviceExample.Criteria criteria = deviceExample.createCriteria();
+        criteria.andStatusNotEqualTo(Device.OFFLINE_STATUS);
+        if(type != null) {
+            criteria.andTypeEqualTo(type);
+        }
+
+        return Response.success(deviceMapper.selectByExample(deviceExample));
     }
 }

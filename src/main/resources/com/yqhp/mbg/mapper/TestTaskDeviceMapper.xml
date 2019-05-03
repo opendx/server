@@ -10,6 +10,7 @@
     <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.yqhp.mbg.po.TestTaskDevice">
+    <result column="testcases" jdbcType="LONGVARCHAR" property="testcases" typeHandler="com.yqhp.typehandler.ActionTypeHandler" />
     <result column="code" jdbcType="LONGVARCHAR" property="code" />
   </resultMap>
   <sql id="Example_Where_Clause">
@@ -74,7 +75,7 @@
     id, test_task_id, device_id, status, start_time, end_time
   </sql>
   <sql id="Blob_Column_List">
-    code
+    testcases, code
   </sql>
   <select id="selectByExampleWithBLOBs" parameterType="com.yqhp.mbg.po.TestTaskDeviceExample" resultMap="ResultMapWithBLOBs">
     select
@@ -129,11 +130,11 @@
       SELECT LAST_INSERT_ID()
     </selectKey>
     insert into test_task_device (test_task_id, device_id, status, 
-      start_time, end_time, code
-      )
+      start_time, end_time, testcases, 
+      code)
     values (#{testTaskId,jdbcType=INTEGER}, #{deviceId,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT}, 
-      #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, #{code,jdbcType=LONGVARCHAR}
-      )
+      #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, #{testcases,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.ActionTypeHandler}, 
+      #{code,jdbcType=LONGVARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.yqhp.mbg.po.TestTaskDevice">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
@@ -156,6 +157,9 @@
       <if test="endTime != null">
         end_time,
       </if>
+      <if test="testcases != null">
+        testcases,
+      </if>
       <if test="code != null">
         code,
       </if>
@@ -175,6 +179,9 @@
       </if>
       <if test="endTime != null">
         #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="testcases != null">
+        #{testcases,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.ActionTypeHandler},
       </if>
       <if test="code != null">
         #{code,jdbcType=LONGVARCHAR},
@@ -208,6 +215,9 @@
       <if test="record.endTime != null">
         end_time = #{record.endTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="record.testcases != null">
+        testcases = #{record.testcases,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.ActionTypeHandler},
+      </if>
       <if test="record.code != null">
         code = #{record.code,jdbcType=LONGVARCHAR},
       </if>
@@ -224,6 +234,7 @@
       status = #{record.status,jdbcType=TINYINT},
       start_time = #{record.startTime,jdbcType=TIMESTAMP},
       end_time = #{record.endTime,jdbcType=TIMESTAMP},
+      testcases = #{record.testcases,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.ActionTypeHandler},
       code = #{record.code,jdbcType=LONGVARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -259,6 +270,9 @@
       <if test="endTime != null">
         end_time = #{endTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="testcases != null">
+        testcases = #{testcases,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.ActionTypeHandler},
+      </if>
       <if test="code != null">
         code = #{code,jdbcType=LONGVARCHAR},
       </if>
@@ -272,6 +286,7 @@
       status = #{status,jdbcType=TINYINT},
       start_time = #{startTime,jdbcType=TIMESTAMP},
       end_time = #{endTime,jdbcType=TIMESTAMP},
+      testcases = #{testcases,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.ActionTypeHandler},
       code = #{code,jdbcType=LONGVARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>

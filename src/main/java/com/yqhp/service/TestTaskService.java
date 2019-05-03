@@ -33,9 +33,7 @@ public class TestTaskService extends BaseService {
     @Autowired
     private ActionMapper actionMapper;
     @Autowired
-    private ProjectMapper projectMapper;
-    @Autowired
-    private GlobalVarMapper globalVarMapper;
+    private TestTaskDeviceMapper testTaskDeviceMapper;
 
     /**
      * 提交测试任务
@@ -74,32 +72,19 @@ public class TestTaskService extends BaseService {
         //根据不同用例分发策略，给设备分配用例
         Map<String, List<Action>> deviceTestcases = allocateTestcaseToDevice(commitTestTaskRequest.getDeviceIds(), testcases, testTask.getRunMode());
 
-//        Integer projectType = projectMapper.selectByPrimaryKey(testcases.get(0).getProjectId()).getType();
-//        GlobalVarExample globalVarExample = new GlobalVarExample();
-//        globalVarExample.createCriteria().andProjectIdEqualTo(testcases.get(0).getProjectId());
-//        List<GlobalVar> globalVars = globalVarMapper.selectByExample(globalVarExample);
-//        deviceTestcases.forEach((deviceId,cases) -> {
-//            testcases.stream().map(testcase -> {
-//                String testClassName = "Testcase_" + UUIDUtil.getUUID();
-//                new TestNGCodeConverter()
-//                        .setActionTree(testcase)
-//                        .setTestClassName(testClassName)
-//                        .setBasePackagePath("/codetemplate")
-//                        .setFtlFileName("testngCode.ftl")
-//                        .setIsBeforeSuite(false)
-//                        .setProjectType(projectType)
-//                        .setDeviceId(deviceId)
-//                        .setPort()
-//                        .setGlobalVars(globalVars)
-//                        .setTestTaskId(testTask.getId())
-//                        .set
-//                        .convert();
-//            })
-//        });
+        deviceTestcases.forEach((deviceId, actions) -> {
+            TestTaskDevice testTaskDevice = new TestTaskDevice();
+            testTaskDevice.setTestTaskId(testTask.getId());
+            testTaskDevice.setDeviceId(deviceId);
+            testTaskDevice.setTestcases(actions);
+            testTaskDevice.setStatus(TestTaskDevice.UNSTART_STATUS);
+            int insertRow = testTaskDeviceMapper.insertSelective(testTaskDevice);
+            if(insertRow != 1) {
+                throw new BusinessException( deviceId + "保存测试任务失败");
+            }
+        });
 
-
-
-        return null;
+        return Response.success("提交测试任务成功");
     }
 
     /**

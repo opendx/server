@@ -1,9 +1,19 @@
 package com.yqhp.mbg.po;
 
+import com.yqhp.mbg.po.Action;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 public class TestTaskDevice implements Serializable {
+
+    /** 未开始 */
+    public static final Integer UNSTART_STATUS = 0;
+    /** 运行中 */
+    public static final Integer RUNNING_STATUS = 1;
+    /** 完成 */
+    public static final Integer FINISHED_STATUS = 2;
+
     /**
      * 主键id
      *
@@ -45,6 +55,13 @@ public class TestTaskDevice implements Serializable {
      * @mbg.generated
      */
     private Date endTime;
+
+    /**
+     * 执行的测试用例
+     *
+     * @mbg.generated
+     */
+    private java.util.List<Action> testcases;
 
     /**
      * agent要执行的代码
@@ -103,6 +120,14 @@ public class TestTaskDevice implements Serializable {
         this.endTime = endTime;
     }
 
+    public java.util.List<Action> getTestcases() {
+        return testcases;
+    }
+
+    public void setTestcases(java.util.List<Action> testcases) {
+        this.testcases = testcases;
+    }
+
     public String getCode() {
         return code;
     }
@@ -123,6 +148,7 @@ public class TestTaskDevice implements Serializable {
         sb.append(", status=").append(status);
         sb.append(", startTime=").append(startTime);
         sb.append(", endTime=").append(endTime);
+        sb.append(", testcases=").append(testcases);
         sb.append(", code=").append(code);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");

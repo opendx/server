@@ -3,6 +3,7 @@ package com.yqhp.service;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.yqhp.dao.TestPlanDao;
+import com.yqhp.mbg.mapper.ActionMapper;
 import com.yqhp.mbg.mapper.TestPlanMapper;
 import com.yqhp.mbg.mapper.TestSuiteMapper;
 import com.yqhp.mbg.po.Action;
@@ -12,7 +13,10 @@ import com.yqhp.mbg.po.TestSuiteExample;
 import com.yqhp.model.Page;
 import com.yqhp.model.PageRequest;
 import com.yqhp.model.Response;
+import com.yqhp.model.testplan.Before;
+import com.yqhp.model.vo.TestPlanDetailInfo;
 import com.yqhp.model.vo.TestPlanVo;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
@@ -35,6 +39,8 @@ public class TestPlanService extends BaseService {
     private TestSuiteMapper testSuiteMapper;
     @Autowired
     private ActionService actionService;
+    @Autowired
+    private ActionMapper actionMapper;
 
     public Response add(TestPlan testPlan) {
         testPlan.setCreateTime(new Date());
@@ -109,5 +115,32 @@ public class TestPlanService extends BaseService {
         List<TestSuite> testSuites = testSuiteMapper.selectByExampleWithBLOBs(testSuiteExample);
         List<Integer> testcaseIds = testSuites.stream().flatMap(testSuite -> testSuite.getTestcases().stream()).collect(Collectors.toList());
         return actionService.findByIds(testcaseIds);
+    }
+
+    public Response getDetailInfo(Integer testPlanId) {
+        if(testPlanId == null) {
+            return Response.fail("测试计划不能为空");
+        }
+
+        TestPlan testPlan = testPlanMapper.selectByPrimaryKey(testPlanId);
+        if(testPlan == null) {
+            return Response.fail("测试计划不存在");
+        }
+
+        TestPlanDetailInfo testPlanDetailInfo = new TestPlanDetailInfo();
+        BeanUtils.copyProperties(testPlan,testPlanDetailInfo);
+
+        testPlan.getBefores().forEach(before -> {
+            Action action = actionMapper.selectByPrimaryKey(before.getActionId());
+            if(before.getType() == Before.BEFORE_METHOD_TYPE) {
+                testPlanDetailInfo.setBeforeMethodName(action.getName());
+            }else if(before.getType() == Before.BEFORE_SUITE_TYPE) {
+                testPlanDetailInfo.setBeforeSuiteName(action.getName());
+            }
+        });
+
+        testPlanDetailInfo.setTestcases(getTestcasesByTestPlan(testPlan));
+
+        return Response.success(testPlanDetailInfo);
     }
 }
