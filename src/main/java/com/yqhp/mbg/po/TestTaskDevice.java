@@ -63,13 +63,6 @@ public class TestTaskDevice implements Serializable {
      */
     private java.util.List<Action> testcases;
 
-    /**
-     * agent要执行的代码
-     *
-     * @mbg.generated
-     */
-    private String code;
-
     private static final long serialVersionUID = 1L;
 
     public Integer getId() {
@@ -128,14 +121,6 @@ public class TestTaskDevice implements Serializable {
         this.testcases = testcases;
     }
 
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -149,7 +134,6 @@ public class TestTaskDevice implements Serializable {
         sb.append(", startTime=").append(startTime);
         sb.append(", endTime=").append(endTime);
         sb.append(", testcases=").append(testcases);
-        sb.append(", code=").append(code);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();
