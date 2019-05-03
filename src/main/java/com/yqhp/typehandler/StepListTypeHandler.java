@@ -1,11 +1,11 @@
-package com.yqhp.typehandler.list;
+package com.yqhp.typehandler;
 
 import com.yqhp.model.action.Step;
 
 /**
  * Created by jiangyitao.
  */
-public class StepTypeHandler extends ListTypeHandler {
+public class StepListTypeHandler extends ListTypeHandler {
     @Override
     public Class getTypeClass() {
         return Step.class;

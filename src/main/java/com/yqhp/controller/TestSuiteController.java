@@ -11,7 +11,7 @@ import javax.validation.Valid;
 
 /**
  * Created by jiangyitao.
- * <columnOverride column="testcases" typeHandler="com.yqhp.typehandler.list.IntegerTypeHandler" javaType="java.util.List&lt;Integer&gt;" jdbcType="LONGVARCHAR"/>
+ * <columnOverride column="testcases" typeHandler="com.yqhp.typehandler.IntegerListTypeHandler" javaType="java.util.List&lt;Integer&gt;" jdbcType="LONGVARCHAR"/>
  */
 @RestController
 @RequestMapping("/testSuite")

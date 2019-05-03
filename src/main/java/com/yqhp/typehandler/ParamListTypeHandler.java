@@ -1,11 +1,11 @@
-package com.yqhp.typehandler.list;
+package com.yqhp.typehandler;
 
 import com.yqhp.model.action.Param;
 
 /**
  * Created by jiangyitao.
  */
-public class ParamTypeHandler extends ListTypeHandler {
+public class ParamListTypeHandler extends ListTypeHandler {
     @Override
     public Class getTypeClass() {
         return Param.class;

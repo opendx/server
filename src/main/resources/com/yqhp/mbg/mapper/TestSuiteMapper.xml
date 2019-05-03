@@ -11,7 +11,7 @@
     </resultMap>
     <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.yqhp.mbg.po.TestSuite">
         <result column="testcases" jdbcType="LONGVARCHAR" property="testcases"
-                typeHandler="com.yqhp.typehandler.list.IntegerTypeHandler"/>
+                typeHandler="com.yqhp.typehandler.IntegerListTypeHandler"/>
     </resultMap>
     <sql id="Example_Where_Clause">
         <where>

@@ -1,4 +1,4 @@
-package com.yqhp.typehandler.list;
+package com.yqhp.typehandler;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
