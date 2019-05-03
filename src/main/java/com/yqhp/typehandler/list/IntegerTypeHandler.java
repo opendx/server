@@ -1,4 +1,4 @@
-package com.yqhp.typehandler;
+package com.yqhp.typehandler.list;
 
 /**
  * Created by jiangyitao.

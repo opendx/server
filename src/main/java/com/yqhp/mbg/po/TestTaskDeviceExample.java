@@ -295,6 +295,76 @@ public class TestTaskDeviceExample {
             return (Criteria) this;
         }
 
+        public Criteria andBeforeSuiteIsNull() {
+            addCriterion("before_suite is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andBeforeSuiteIsNotNull() {
+            addCriterion("before_suite is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andBeforeSuiteEqualTo(String value) {
+            addCriterion("before_suite =", value, "beforeSuite");
+            return (Criteria) this;
+        }
+
+        public Criteria andBeforeSuiteNotEqualTo(String value) {
+            addCriterion("before_suite <>", value, "beforeSuite");
+            return (Criteria) this;
+        }
+
+        public Criteria andBeforeSuiteGreaterThan(String value) {
+            addCriterion("before_suite >", value, "beforeSuite");
+            return (Criteria) this;
+        }
+
+        public Criteria andBeforeSuiteGreaterThanOrEqualTo(String value) {
+            addCriterion("before_suite >=", value, "beforeSuite");
+            return (Criteria) this;
+        }
+
+        public Criteria andBeforeSuiteLessThan(String value) {
+            addCriterion("before_suite <", value, "beforeSuite");
+            return (Criteria) this;
+        }
+
+        public Criteria andBeforeSuiteLessThanOrEqualTo(String value) {
+            addCriterion("before_suite <=", value, "beforeSuite");
+            return (Criteria) this;
+        }
+
+        public Criteria andBeforeSuiteLike(String value) {
+            addCriterion("before_suite like", value, "beforeSuite");
+            return (Criteria) this;
+        }
+
+        public Criteria andBeforeSuiteNotLike(String value) {
+            addCriterion("before_suite not like", value, "beforeSuite");
+            return (Criteria) this;
+        }
+
+        public Criteria andBeforeSuiteIn(List<String> values) {
+            addCriterion("before_suite in", values, "beforeSuite");
+            return (Criteria) this;
+        }
+
+        public Criteria andBeforeSuiteNotIn(List<String> values) {
+            addCriterion("before_suite not in", values, "beforeSuite");
+            return (Criteria) this;
+        }
+
+        public Criteria andBeforeSuiteBetween(String value1, String value2) {
+            addCriterion("before_suite between", value1, value2, "beforeSuite");
+            return (Criteria) this;
+        }
+
+        public Criteria andBeforeSuiteNotBetween(String value1, String value2) {
+            addCriterion("before_suite not between", value1, value2, "beforeSuite");
+            return (Criteria) this;
+        }
+
         public Criteria andStatusIsNull() {
             addCriterion("status is null");
             return (Criteria) this;

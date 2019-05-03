@@ -10,8 +10,8 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.yqhp.mbg.po.TestPlan">
-    <result column="befores" jdbcType="LONGVARCHAR" property="befores" typeHandler="com.yqhp.typehandler.BeforeTypeHandler" />
-    <result column="test_suites" jdbcType="LONGVARCHAR" property="testSuites" typeHandler="com.yqhp.typehandler.IntegerTypeHandler" />
+    <result column="befores" jdbcType="LONGVARCHAR" property="befores" typeHandler="com.yqhp.typehandler.list.BeforeTypeHandler" />
+    <result column="test_suites" jdbcType="LONGVARCHAR" property="testSuites" typeHandler="com.yqhp.typehandler.list.IntegerTypeHandler" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>

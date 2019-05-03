@@ -21,10 +21,10 @@
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.yqhp.mbg.po.Action">
     <result column="params" jdbcType="LONGVARCHAR" property="params"
-            typeHandler="com.yqhp.typehandler.ParamTypeHandler"/>
+            typeHandler="com.yqhp.typehandler.list.ParamTypeHandler"/>
     <result column="local_vars" jdbcType="LONGVARCHAR" property="localVars"
-            typeHandler="com.yqhp.typehandler.LocalVarTypeHandler"/>
-    <result column="steps" jdbcType="LONGVARCHAR" property="steps" typeHandler="com.yqhp.typehandler.StepTypeHandler"/>
+            typeHandler="com.yqhp.typehandler.list.LocalVarTypeHandler"/>
+    <result column="steps" jdbcType="LONGVARCHAR" property="steps" typeHandler="com.yqhp.typehandler.list.StepTypeHandler"/>
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>

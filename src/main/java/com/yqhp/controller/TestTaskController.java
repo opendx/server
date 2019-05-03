@@ -1,6 +1,5 @@
 package com.yqhp.controller;
 
-import com.yqhp.mbg.po.TestTask;
 import com.yqhp.model.Response;
 import com.yqhp.model.request.CommitTestTaskRequest;
 import com.yqhp.service.TestTaskService;

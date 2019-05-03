@@ -1,4 +1,4 @@
-package com.yqhp.typehandler;
+package com.yqhp.typehandler.list;
 
 import com.yqhp.model.testplan.Before;
 
