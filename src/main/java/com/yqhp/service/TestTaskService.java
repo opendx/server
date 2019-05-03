@@ -76,6 +76,9 @@ public class TestTaskService extends BaseService {
             TestTaskDevice testTaskDevice = new TestTaskDevice();
             testTaskDevice.setTestTaskId(testTask.getId());
             testTaskDevice.setDeviceId(deviceId);
+            if(beforeSuiteAction != null) {
+                testTaskDevice.setBeforeSuite(beforeSuiteAction);
+            }
             testTaskDevice.setTestcases(actions);
             testTaskDevice.setStatus(TestTaskDevice.UNSTART_STATUS);
             int insertRow = testTaskDeviceMapper.insertSelective(testTaskDevice);

@@ -6,6 +6,14 @@ import java.util.Date;
 import java.util.List;
 
 public class TestTaskDevice implements Serializable {
+
+    /** 未开始 */
+    public static final Integer UNSTART_STATUS = 0;
+    /** 运行中 */
+    public static final Integer RUNNING_STATUS = 1;
+    /** 完成 */
+    public static final Integer FINISHED_STATUS = 2;
+
     /**
      * 主键id
      *
@@ -28,13 +36,6 @@ public class TestTaskDevice implements Serializable {
     private String deviceId;
 
     /**
-     * 执行所有用例前执行的
-     *
-     * @mbg.generated
-     */
-    private String beforeSuite;
-
-    /**
      * 状态： 0:未开始 1:运行中 2:已完成
      *
      * @mbg.generated
@@ -54,6 +55,13 @@ public class TestTaskDevice implements Serializable {
      * @mbg.generated
      */
     private Date endTime;
+
+    /**
+     * 执行所有用例前执行的
+     *
+     * @mbg.generated
+     */
+    private Action beforeSuite;
 
     /**
      * 执行的测试用例
@@ -88,14 +96,6 @@ public class TestTaskDevice implements Serializable {
         this.deviceId = deviceId;
     }
 
-    public String getBeforeSuite() {
-        return beforeSuite;
-    }
-
-    public void setBeforeSuite(String beforeSuite) {
-        this.beforeSuite = beforeSuite;
-    }
-
     public Integer getStatus() {
         return status;
     }
@@ -120,6 +120,14 @@ public class TestTaskDevice implements Serializable {
         this.endTime = endTime;
     }
 
+    public Action getBeforeSuite() {
+        return beforeSuite;
+    }
+
+    public void setBeforeSuite(Action beforeSuite) {
+        this.beforeSuite = beforeSuite;
+    }
+
     public java.util.List<Action> getTestcases() {
         return testcases;
     }
@@ -137,10 +145,10 @@ public class TestTaskDevice implements Serializable {
         sb.append(", id=").append(id);
         sb.append(", testTaskId=").append(testTaskId);
         sb.append(", deviceId=").append(deviceId);
-        sb.append(", beforeSuite=").append(beforeSuite);
         sb.append(", status=").append(status);
         sb.append(", startTime=").append(startTime);
         sb.append(", endTime=").append(endTime);
+        sb.append(", beforeSuite=").append(beforeSuite);
         sb.append(", testcases=").append(testcases);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");

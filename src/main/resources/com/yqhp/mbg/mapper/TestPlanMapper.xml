@@ -134,8 +134,8 @@
       test_suites
       )
     values (#{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{projectId,jdbcType=INTEGER}, 
-      #{creatorUid,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{befores,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.BeforeTypeHandler}, 
-      #{testSuites,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.IntegerTypeHandler}
+      #{creatorUid,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{befores,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.BeforeListTypeHandler}, 
+      #{testSuites,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.IntegerListTypeHandler}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.yqhp.mbg.po.TestPlan">
@@ -183,10 +183,10 @@
         #{createTime,jdbcType=TIMESTAMP},
       </if>
       <if test="befores != null">
-        #{befores,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.BeforeTypeHandler},
+        #{befores,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.BeforeListTypeHandler},
       </if>
       <if test="testSuites != null">
-        #{testSuites,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.IntegerTypeHandler},
+        #{testSuites,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.IntegerListTypeHandler},
       </if>
     </trim>
   </insert>
@@ -218,10 +218,10 @@
         create_time = #{record.createTime,jdbcType=TIMESTAMP},
       </if>
       <if test="record.befores != null">
-        befores = #{record.befores,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.BeforeTypeHandler},
+        befores = #{record.befores,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.BeforeListTypeHandler},
       </if>
       <if test="record.testSuites != null">
-        test_suites = #{record.testSuites,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.IntegerTypeHandler},
+        test_suites = #{record.testSuites,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.IntegerListTypeHandler},
       </if>
     </set>
     <if test="_parameter != null">
@@ -236,8 +236,8 @@
       project_id = #{record.projectId,jdbcType=INTEGER},
       creator_uid = #{record.creatorUid,jdbcType=INTEGER},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
-      befores = #{record.befores,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.BeforeTypeHandler},
-      test_suites = #{record.testSuites,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.IntegerTypeHandler}
+      befores = #{record.befores,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.BeforeListTypeHandler},
+      test_suites = #{record.testSuites,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.IntegerListTypeHandler}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -273,10 +273,10 @@
         create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
       <if test="befores != null">
-        befores = #{befores,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.BeforeTypeHandler},
+        befores = #{befores,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.BeforeListTypeHandler},
       </if>
       <if test="testSuites != null">
-        test_suites = #{testSuites,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.IntegerTypeHandler},
+        test_suites = #{testSuites,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.IntegerListTypeHandler},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
@@ -288,8 +288,8 @@
       project_id = #{projectId,jdbcType=INTEGER},
       creator_uid = #{creatorUid,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
-      befores = #{befores,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.BeforeTypeHandler},
-      test_suites = #{testSuites,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.IntegerTypeHandler}
+      befores = #{befores,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.BeforeListTypeHandler},
+      test_suites = #{testSuites,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.IntegerListTypeHandler}
     where id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.yqhp.mbg.po.TestPlan">

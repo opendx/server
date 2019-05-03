@@ -157,9 +157,9 @@
     #{className,jdbcType=VARCHAR}, #{needDriver,jdbcType=TINYINT}, #{hasReturnValue,jdbcType=TINYINT},
     #{returnValue,jdbcType=VARCHAR}, #{creatorUid,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP},
     #{updatorUid,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}, #{categoryId,jdbcType=INTEGER},
-    #{params,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.ParamTypeHandler},
-    #{localVars,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.LocalVarTypeHandler},
-    #{steps,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.StepTypeHandler})
+    #{params,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.ParamListTypeHandler},
+    #{localVars,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.LocalVarListTypeHandler},
+    #{steps,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.StepListTypeHandler})
   </insert>
   <insert id="insertSelective" parameterType="com.yqhp.mbg.po.Action">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
@@ -269,13 +269,13 @@
         #{categoryId,jdbcType=INTEGER},
       </if>
       <if test="params != null">
-        #{params,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.ParamTypeHandler},
+        #{params,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.ParamListTypeHandler},
       </if>
       <if test="localVars != null">
-        #{localVars,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.LocalVarTypeHandler},
+        #{localVars,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.LocalVarListTypeHandler},
       </if>
       <if test="steps != null">
-        #{steps,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.StepTypeHandler},
+        #{steps,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.StepListTypeHandler},
       </if>
     </trim>
   </insert>
@@ -337,13 +337,13 @@
         category_id = #{record.categoryId,jdbcType=INTEGER},
       </if>
       <if test="record.params != null">
-        params = #{record.params,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.ParamTypeHandler},
+        params = #{record.params,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.ParamListTypeHandler},
       </if>
       <if test="record.localVars != null">
-        local_vars = #{record.localVars,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.LocalVarTypeHandler},
+        local_vars = #{record.localVars,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.LocalVarListTypeHandler},
       </if>
       <if test="record.steps != null">
-        steps = #{record.steps,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.StepTypeHandler},
+        steps = #{record.steps,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.StepListTypeHandler},
       </if>
     </set>
     <if test="_parameter != null">
@@ -368,9 +368,9 @@
     updator_uid = #{record.updatorUid,jdbcType=INTEGER},
     update_time = #{record.updateTime,jdbcType=TIMESTAMP},
     category_id = #{record.categoryId,jdbcType=INTEGER},
-    params = #{record.params,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.ParamTypeHandler},
-    local_vars = #{record.localVars,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.LocalVarTypeHandler},
-    steps = #{record.steps,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.StepTypeHandler}
+    params = #{record.params,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.ParamListTypeHandler},
+    local_vars = #{record.localVars,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.LocalVarListTypeHandler},
+    steps = #{record.steps,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.StepListTypeHandler}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause"/>
     </if>
@@ -446,13 +446,13 @@
         category_id = #{categoryId,jdbcType=INTEGER},
       </if>
       <if test="params != null">
-        params = #{params,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.ParamTypeHandler},
+        params = #{params,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.ParamListTypeHandler},
       </if>
       <if test="localVars != null">
-        local_vars = #{localVars,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.LocalVarTypeHandler},
+        local_vars = #{localVars,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.LocalVarListTypeHandler},
       </if>
       <if test="steps != null">
-        steps = #{steps,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.StepTypeHandler},
+        steps = #{steps,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.StepListTypeHandler},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
@@ -474,9 +474,9 @@
       updator_uid = #{updatorUid,jdbcType=INTEGER},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       category_id = #{categoryId,jdbcType=INTEGER},
-      params = #{params,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.ParamTypeHandler},
-      local_vars = #{localVars,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.LocalVarTypeHandler},
-      steps = #{steps,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.StepTypeHandler}
+      params = #{params,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.ParamListTypeHandler},
+      local_vars = #{localVars,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.LocalVarListTypeHandler},
+      steps = #{steps,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.StepListTypeHandler}
     where id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.yqhp.mbg.po.Action">

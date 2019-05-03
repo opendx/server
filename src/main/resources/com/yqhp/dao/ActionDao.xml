@@ -61,13 +61,13 @@
                 and a.category_id = #{categoryId}
             </if>
             <if test="params != null and params != ''">
-                and a.params = #{params,typeHandler=com.yqhp.typehandler.ListTypeHandler}
+                and a.params = #{params,typeHandler=com.yqhp.typehandler.ParamListTypeHandler}
             </if>
             <if test="localVars != null and localVars != ''">
-                and a.local_vars = #{localVars,typeHandler=com.yqhp.typehandler.ListTypeHandler}
+                and a.local_vars = #{localVars,typeHandler=com.yqhp.typehandler.LocalVarListTypeHandler}
             </if>
             <if test="steps != null and steps != ''">
-                and a.steps = #{steps,typeHandler=com.yqhp.typehandler.ListTypeHandler}
+                and a.steps = #{steps,typeHandler=com.yqhp.typehandler.StepListTypeHandler}
             </if>
         </where>
         order by a.create_time desc

@@ -137,7 +137,7 @@
         )
         values (#{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{projectId,jdbcType=INTEGER},
         #{creatorUid,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP},
-        #{testcases,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.IntegerTypeHandler}
+        #{testcases,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.IntegerListTypeHandler}
         )
     </insert>
     <insert id="insertSelective" parameterType="com.yqhp.mbg.po.TestSuite">
@@ -182,7 +182,7 @@
                 #{createTime,jdbcType=TIMESTAMP},
             </if>
             <if test="testcases != null">
-                #{testcases,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.IntegerTypeHandler},
+                #{testcases,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.IntegerListTypeHandler},
             </if>
         </trim>
     </insert>
@@ -215,7 +215,7 @@
             </if>
             <if test="record.testcases != null">
                 testcases =
-                #{record.testcases,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.IntegerTypeHandler},
+                #{record.testcases,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.IntegerListTypeHandler},
             </if>
         </set>
         <if test="_parameter != null">
@@ -230,7 +230,7 @@
         project_id = #{record.projectId,jdbcType=INTEGER},
         creator_uid = #{record.creatorUid,jdbcType=INTEGER},
         create_time = #{record.createTime,jdbcType=TIMESTAMP},
-        testcases = #{record.testcases,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.IntegerTypeHandler}
+        testcases = #{record.testcases,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.IntegerListTypeHandler}
         <if test="_parameter != null">
             <include refid="Update_By_Example_Where_Clause"/>
         </if>
@@ -266,7 +266,7 @@
                 create_time = #{createTime,jdbcType=TIMESTAMP},
             </if>
             <if test="testcases != null">
-                testcases = #{testcases,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.IntegerTypeHandler},
+                testcases = #{testcases,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.IntegerListTypeHandler},
             </if>
         </set>
         where id = #{id,jdbcType=INTEGER}
@@ -278,7 +278,7 @@
       project_id = #{projectId,jdbcType=INTEGER},
       creator_uid = #{creatorUid,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
-      testcases = #{testcases,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.IntegerTypeHandler}
+      testcases = #{testcases,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.IntegerListTypeHandler}
     where id = #{id,jdbcType=INTEGER}
   </update>
     <update id="updateByPrimaryKey" parameterType="com.yqhp.mbg.po.TestSuite">
