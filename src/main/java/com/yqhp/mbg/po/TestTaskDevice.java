@@ -1,6 +1,9 @@
 package com.yqhp.mbg.po;
 
-import com.yqhp.mbg.po.Action;
+import com.yqhp.model.vo.Testcase;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -26,6 +29,7 @@ public class TestTaskDevice implements Serializable {
      *
      * @mbg.generated
      */
+    @NotNull(message = "测试任务不能为空")
     private Integer testTaskId;
 
     /**
@@ -33,6 +37,7 @@ public class TestTaskDevice implements Serializable {
      *
      * @mbg.generated
      */
+    @NotBlank(message = "设备id不能为空")
     private String deviceId;
 
     /**
@@ -68,7 +73,7 @@ public class TestTaskDevice implements Serializable {
      *
      * @mbg.generated
      */
-    private java.util.List<Action> testcases;
+    private java.util.List<com.yqhp.model.vo.Testcase> testcases;
 
     private static final long serialVersionUID = 1L;
 
@@ -128,11 +133,11 @@ public class TestTaskDevice implements Serializable {
         this.beforeSuite = beforeSuite;
     }
 
-    public java.util.List<Action> getTestcases() {
+    public java.util.List<com.yqhp.model.vo.Testcase> getTestcases() {
         return testcases;
     }
 
-    public void setTestcases(java.util.List<Action> testcases) {
+    public void setTestcases(java.util.List<com.yqhp.model.vo.Testcase> testcases) {
         this.testcases = testcases;
     }
 

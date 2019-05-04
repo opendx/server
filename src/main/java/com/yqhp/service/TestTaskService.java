@@ -7,6 +7,7 @@ import com.yqhp.model.Response;
 import com.yqhp.model.action.Step;
 import com.yqhp.model.request.CommitTestTaskRequest;
 import com.yqhp.model.testplan.Before;
+import com.yqhp.model.vo.Testcase;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -79,7 +80,12 @@ public class TestTaskService extends BaseService {
             if(beforeSuiteAction != null) {
                 testTaskDevice.setBeforeSuite(beforeSuiteAction);
             }
-            testTaskDevice.setTestcases(actions);
+            List<Testcase> cases = actions.stream().map(action -> {
+                Testcase testcase = new Testcase();
+                BeanUtils.copyProperties(action, testcase);
+                return testcase;
+            }).collect(Collectors.toList());
+            testTaskDevice.setTestcases(cases);
             testTaskDevice.setStatus(TestTaskDevice.UNSTART_STATUS);
             int insertRow = testTaskDeviceMapper.insertSelective(testTaskDevice);
             if(insertRow != 1) {

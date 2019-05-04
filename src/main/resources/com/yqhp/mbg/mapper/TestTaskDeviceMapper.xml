@@ -11,7 +11,7 @@
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.yqhp.mbg.po.TestTaskDevice">
     <result column="before_suite" jdbcType="LONGVARCHAR" property="beforeSuite" typeHandler="com.yqhp.typehandler.ActionTypeHandler" />
-    <result column="testcases" jdbcType="LONGVARCHAR" property="testcases" typeHandler="com.yqhp.typehandler.ActionListTypeHandler" />
+    <result column="testcases" jdbcType="LONGVARCHAR" property="testcases" typeHandler="com.yqhp.typehandler.TestcaseListTypeHandler" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -135,7 +135,7 @@
       )
     values (#{testTaskId,jdbcType=INTEGER}, #{deviceId,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT}, 
       #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, #{beforeSuite,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.ActionTypeHandler}, 
-      #{testcases,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.ActionListTypeHandler}
+      #{testcases,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.TestcaseListTypeHandler}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.yqhp.mbg.po.TestTaskDevice">
@@ -186,7 +186,7 @@
         #{beforeSuite,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.ActionTypeHandler},
       </if>
       <if test="testcases != null">
-        #{testcases,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.ActionListTypeHandler},
+        #{testcases,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.TestcaseListTypeHandler},
       </if>
     </trim>
   </insert>
@@ -221,7 +221,7 @@
         before_suite = #{record.beforeSuite,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.ActionTypeHandler},
       </if>
       <if test="record.testcases != null">
-        testcases = #{record.testcases,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.ActionListTypeHandler},
+        testcases = #{record.testcases,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.TestcaseListTypeHandler},
       </if>
     </set>
     <if test="_parameter != null">
@@ -237,7 +237,7 @@
       start_time = #{record.startTime,jdbcType=TIMESTAMP},
       end_time = #{record.endTime,jdbcType=TIMESTAMP},
       before_suite = #{record.beforeSuite,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.ActionTypeHandler},
-      testcases = #{record.testcases,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.ActionListTypeHandler}
+      testcases = #{record.testcases,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.TestcaseListTypeHandler}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -276,7 +276,7 @@
         before_suite = #{beforeSuite,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.ActionTypeHandler},
       </if>
       <if test="testcases != null">
-        testcases = #{testcases,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.ActionListTypeHandler},
+        testcases = #{testcases,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.TestcaseListTypeHandler},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
@@ -289,7 +289,7 @@
       start_time = #{startTime,jdbcType=TIMESTAMP},
       end_time = #{endTime,jdbcType=TIMESTAMP},
       before_suite = #{beforeSuite,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.ActionTypeHandler},
-      testcases = #{testcases,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.ActionListTypeHandler}
+      testcases = #{testcases,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.TestcaseListTypeHandler}
     where id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.yqhp.mbg.po.TestTaskDevice">
