@@ -1,13 +1,7 @@
 package com.yqhp.mbg.po;
 
-import com.yqhp.mbg.po.GlobalVar;
-import com.yqhp.model.vo.Testcase;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
 public class DeviceTestTask implements Serializable {
 
@@ -30,7 +24,6 @@ public class DeviceTestTask implements Serializable {
      *
      * @mbg.generated
      */
-    @NotNull(message = "测试任务不能为空")
     private Integer testTaskId;
 
     /**
@@ -45,7 +38,6 @@ public class DeviceTestTask implements Serializable {
      *
      * @mbg.generated
      */
-    @NotBlank(message = "设备id不能为空")
     private String deviceId;
 
     /**

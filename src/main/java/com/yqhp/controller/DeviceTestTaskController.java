@@ -23,7 +23,7 @@ public class DeviceTestTaskController {
     private DeviceTestTaskService deviceTestTaskService;
 
     @PostMapping("/update")
-    public Response update(@Valid @RequestBody DeviceTestTask deviceTestTask) {
+    public Response update(@RequestBody DeviceTestTask deviceTestTask) {
         return deviceTestTaskService.update(deviceTestTask);
     }
 
