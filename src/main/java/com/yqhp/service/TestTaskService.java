@@ -75,6 +75,7 @@ public class TestTaskService extends BaseService {
         deviceTestcases.forEach((deviceId, actions) -> {
             DeviceTestTask deviceTestTask = new DeviceTestTask();
             deviceTestTask.setTestTaskId(testTask.getId());
+            deviceTestTask.setTestTaskName(testTask.getName());
             deviceTestTask.setDeviceId(deviceId);
             if(beforeSuiteAction != null) {
                 deviceTestTask.setBeforeSuite(beforeSuiteAction);

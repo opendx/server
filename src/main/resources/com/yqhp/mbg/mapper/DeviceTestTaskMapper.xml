@@ -4,6 +4,7 @@
   <resultMap id="BaseResultMap" type="com.yqhp.mbg.po.DeviceTestTask">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="test_task_id" jdbcType="INTEGER" property="testTaskId" />
+    <result column="test_task_name" jdbcType="VARCHAR" property="testTaskName" />
     <result column="device_id" jdbcType="VARCHAR" property="deviceId" />
     <result column="status" jdbcType="TINYINT" property="status" />
     <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
@@ -72,7 +73,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, test_task_id, device_id, status, start_time, end_time
+    id, test_task_id, test_task_name, device_id, status, start_time, end_time
   </sql>
   <sql id="Blob_Column_List">
     before_suite, testcases
@@ -129,12 +130,14 @@
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into device_test_task (test_task_id, device_id, status, 
-      start_time, end_time, before_suite, 
+    insert into device_test_task (test_task_id, test_task_name, device_id, 
+      status, start_time, end_time, 
+      before_suite, 
       testcases
       )
-    values (#{testTaskId,jdbcType=INTEGER}, #{deviceId,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT}, 
-      #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, #{beforeSuite,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.ActionTypeHandler}, 
+    values (#{testTaskId,jdbcType=INTEGER}, #{testTaskName,jdbcType=VARCHAR}, #{deviceId,jdbcType=VARCHAR}, 
+      #{status,jdbcType=TINYINT}, #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, 
+      #{beforeSuite,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.ActionTypeHandler}, 
       #{testcases,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.TestcaseListTypeHandler}
       )
   </insert>
@@ -146,6 +149,9 @@
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="testTaskId != null">
         test_task_id,
+      </if>
+      <if test="testTaskName != null">
+        test_task_name,
       </if>
       <if test="deviceId != null">
         device_id,
@@ -169,6 +175,9 @@
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="testTaskId != null">
         #{testTaskId,jdbcType=INTEGER},
+      </if>
+      <if test="testTaskName != null">
+        #{testTaskName,jdbcType=VARCHAR},
       </if>
       <if test="deviceId != null">
         #{deviceId,jdbcType=VARCHAR},
@@ -205,6 +214,9 @@
       <if test="record.testTaskId != null">
         test_task_id = #{record.testTaskId,jdbcType=INTEGER},
       </if>
+      <if test="record.testTaskName != null">
+        test_task_name = #{record.testTaskName,jdbcType=VARCHAR},
+      </if>
       <if test="record.deviceId != null">
         device_id = #{record.deviceId,jdbcType=VARCHAR},
       </if>
@@ -232,6 +244,7 @@
     update device_test_task
     set id = #{record.id,jdbcType=INTEGER},
       test_task_id = #{record.testTaskId,jdbcType=INTEGER},
+      test_task_name = #{record.testTaskName,jdbcType=VARCHAR},
       device_id = #{record.deviceId,jdbcType=VARCHAR},
       status = #{record.status,jdbcType=TINYINT},
       start_time = #{record.startTime,jdbcType=TIMESTAMP},
@@ -246,6 +259,7 @@
     update device_test_task
     set id = #{record.id,jdbcType=INTEGER},
       test_task_id = #{record.testTaskId,jdbcType=INTEGER},
+      test_task_name = #{record.testTaskName,jdbcType=VARCHAR},
       device_id = #{record.deviceId,jdbcType=VARCHAR},
       status = #{record.status,jdbcType=TINYINT},
       start_time = #{record.startTime,jdbcType=TIMESTAMP},
@@ -259,6 +273,9 @@
     <set>
       <if test="testTaskId != null">
         test_task_id = #{testTaskId,jdbcType=INTEGER},
+      </if>
+      <if test="testTaskName != null">
+        test_task_name = #{testTaskName,jdbcType=VARCHAR},
       </if>
       <if test="deviceId != null">
         device_id = #{deviceId,jdbcType=VARCHAR},
@@ -284,6 +301,7 @@
   <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.yqhp.mbg.po.DeviceTestTask">
     update device_test_task
     set test_task_id = #{testTaskId,jdbcType=INTEGER},
+      test_task_name = #{testTaskName,jdbcType=VARCHAR},
       device_id = #{deviceId,jdbcType=VARCHAR},
       status = #{status,jdbcType=TINYINT},
       start_time = #{startTime,jdbcType=TIMESTAMP},
@@ -295,6 +313,7 @@
   <update id="updateByPrimaryKey" parameterType="com.yqhp.mbg.po.DeviceTestTask">
     update device_test_task
     set test_task_id = #{testTaskId,jdbcType=INTEGER},
+      test_task_name = #{testTaskName,jdbcType=VARCHAR},
       device_id = #{deviceId,jdbcType=VARCHAR},
       status = #{status,jdbcType=TINYINT},
       start_time = #{startTime,jdbcType=TIMESTAMP},

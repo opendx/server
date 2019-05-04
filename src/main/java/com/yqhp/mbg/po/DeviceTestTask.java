@@ -33,6 +33,13 @@ public class DeviceTestTask implements Serializable {
     private Integer testTaskId;
 
     /**
+     * 测试任务名
+     *
+     * @mbg.generated
+     */
+    private String testTaskName;
+
+    /**
      * 设备id
      *
      * @mbg.generated
@@ -93,6 +100,14 @@ public class DeviceTestTask implements Serializable {
         this.testTaskId = testTaskId;
     }
 
+    public String getTestTaskName() {
+        return testTaskName;
+    }
+
+    public void setTestTaskName(String testTaskName) {
+        this.testTaskName = testTaskName;
+    }
+
     public String getDeviceId() {
         return deviceId;
     }
@@ -149,6 +164,7 @@ public class DeviceTestTask implements Serializable {
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
         sb.append(", testTaskId=").append(testTaskId);
+        sb.append(", testTaskName=").append(testTaskName);
         sb.append(", deviceId=").append(deviceId);
         sb.append(", status=").append(status);
         sb.append(", startTime=").append(startTime);
