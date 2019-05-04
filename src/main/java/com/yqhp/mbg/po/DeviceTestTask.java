@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-public class TestTaskDevice implements Serializable {
+public class DeviceTestTask implements Serializable {
 
     /** 未开始 */
     public static final Integer UNSTART_STATUS = 0;

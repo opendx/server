@@ -34,7 +34,7 @@ public class TestTaskService extends BaseService {
     @Autowired
     private ActionMapper actionMapper;
     @Autowired
-    private TestTaskDeviceMapper testTaskDeviceMapper;
+    private DeviceTestTaskMapper deviceTestTaskMapper;
 
     /**
      * 提交测试任务
@@ -67,27 +67,26 @@ public class TestTaskService extends BaseService {
             needBuildActions.add(beforeSuiteAction);
         }
 
-        //build action tree
         new ActionTreeBuilder(actionMapper).build(needBuildActions);
 
         //根据不同用例分发策略，给设备分配用例
         Map<String, List<Action>> deviceTestcases = allocateTestcaseToDevice(commitTestTaskRequest.getDeviceIds(), testcases, testTask.getRunMode());
 
         deviceTestcases.forEach((deviceId, actions) -> {
-            TestTaskDevice testTaskDevice = new TestTaskDevice();
-            testTaskDevice.setTestTaskId(testTask.getId());
-            testTaskDevice.setDeviceId(deviceId);
+            DeviceTestTask deviceTestTask = new DeviceTestTask();
+            deviceTestTask.setTestTaskId(testTask.getId());
+            deviceTestTask.setDeviceId(deviceId);
             if(beforeSuiteAction != null) {
-                testTaskDevice.setBeforeSuite(beforeSuiteAction);
+                deviceTestTask.setBeforeSuite(beforeSuiteAction);
             }
             List<Testcase> cases = actions.stream().map(action -> {
                 Testcase testcase = new Testcase();
                 BeanUtils.copyProperties(action, testcase);
                 return testcase;
             }).collect(Collectors.toList());
-            testTaskDevice.setTestcases(cases);
-            testTaskDevice.setStatus(TestTaskDevice.UNSTART_STATUS);
-            int insertRow = testTaskDeviceMapper.insertSelective(testTaskDevice);
+            deviceTestTask.setTestcases(cases);
+            deviceTestTask.setStatus(DeviceTestTask.UNSTART_STATUS);
+            int insertRow = deviceTestTaskMapper.insertSelective(deviceTestTask);
             if(insertRow != 1) {
                 throw new BusinessException( deviceId + "保存测试任务失败");
             }
