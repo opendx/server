@@ -11,6 +11,7 @@ import javax.validation.Valid;
 
 /**
  * Created by jiangyitao.
+ * <columnOverride column="global_vars" typeHandler="com.yqhp.typehandler.GlobalVarListTypeHandler" javaType="java.util.List&lt;com.yqhp.mbg.po.GlobalVar&gt;" jdbcType="LONGVARCHAR"/>
  * <columnOverride column="before_suite" typeHandler="com.yqhp.typehandler.ActionTypeHandler" javaType="com.yqhp.mbg.po.Action" jdbcType="LONGVARCHAR"/>
  * <columnOverride column="testcases" typeHandler="com.yqhp.typehandler.TestcaseListTypeHandler" javaType="java.util.List&lt;com.yqhp.model.vo.Testcase&gt;" jdbcType="LONGVARCHAR"/>
  */

@@ -1,5 +1,6 @@
 package com.yqhp.mbg.po;
 
+import com.yqhp.mbg.po.GlobalVar;
 import com.yqhp.model.vo.Testcase;
 
 import javax.validation.constraints.NotBlank;
@@ -67,6 +68,13 @@ public class DeviceTestTask implements Serializable {
      * @mbg.generated
      */
     private Date endTime;
+
+    /**
+     * 全局变量
+     *
+     * @mbg.generated
+     */
+    private java.util.List<GlobalVar> globalVars;
 
     /**
      * 执行所有用例前执行的
@@ -140,6 +148,14 @@ public class DeviceTestTask implements Serializable {
         this.endTime = endTime;
     }
 
+    public java.util.List<GlobalVar> getGlobalVars() {
+        return globalVars;
+    }
+
+    public void setGlobalVars(java.util.List<GlobalVar> globalVars) {
+        this.globalVars = globalVars;
+    }
+
     public Action getBeforeSuite() {
         return beforeSuite;
     }
@@ -169,6 +185,7 @@ public class DeviceTestTask implements Serializable {
         sb.append(", status=").append(status);
         sb.append(", startTime=").append(startTime);
         sb.append(", endTime=").append(endTime);
+        sb.append(", globalVars=").append(globalVars);
         sb.append(", beforeSuite=").append(beforeSuite);
         sb.append(", testcases=").append(testcases);
         sb.append(", serialVersionUID=").append(serialVersionUID);

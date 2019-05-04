@@ -35,6 +35,8 @@ public class TestTaskService extends BaseService {
     private ActionMapper actionMapper;
     @Autowired
     private DeviceTestTaskMapper deviceTestTaskMapper;
+    @Autowired
+    private GlobalVarMapper globalVarMapper;
 
     /**
      * 提交测试任务
@@ -69,6 +71,11 @@ public class TestTaskService extends BaseService {
 
         new ActionTreeBuilder(actionMapper).build(needBuildActions);
 
+        //同一项目下的全局变量
+        GlobalVarExample globalVarExample = new GlobalVarExample();
+        globalVarExample.createCriteria().andProjectIdEqualTo(testTask.getProjectId());
+        List<GlobalVar> globalVars = globalVarMapper.selectByExample(globalVarExample);
+
         //根据不同用例分发策略，给设备分配用例
         Map<String, List<Action>> deviceTestcases = allocateTestcaseToDevice(commitTestTaskRequest.getDeviceIds(), testcases, testTask.getRunMode());
 
@@ -77,6 +84,7 @@ public class TestTaskService extends BaseService {
             deviceTestTask.setTestTaskId(testTask.getId());
             deviceTestTask.setTestTaskName(testTask.getName());
             deviceTestTask.setDeviceId(deviceId);
+            deviceTestTask.setGlobalVars(globalVars);
             if(beforeSuiteAction != null) {
                 deviceTestTask.setBeforeSuite(beforeSuiteAction);
             }

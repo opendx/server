@@ -11,6 +11,7 @@
     <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.yqhp.mbg.po.DeviceTestTask">
+    <result column="global_vars" jdbcType="LONGVARCHAR" property="globalVars" typeHandler="com.yqhp.typehandler.GlobalVarListTypeHandler" />
     <result column="before_suite" jdbcType="LONGVARCHAR" property="beforeSuite" typeHandler="com.yqhp.typehandler.ActionTypeHandler" />
     <result column="testcases" jdbcType="LONGVARCHAR" property="testcases" typeHandler="com.yqhp.typehandler.TestcaseListTypeHandler" />
   </resultMap>
@@ -76,7 +77,7 @@
     id, test_task_id, test_task_name, device_id, status, start_time, end_time
   </sql>
   <sql id="Blob_Column_List">
-    before_suite, testcases
+    global_vars, before_suite, testcases
   </sql>
   <select id="selectByExampleWithBLOBs" parameterType="com.yqhp.mbg.po.DeviceTestTaskExample" resultMap="ResultMapWithBLOBs">
     select
@@ -132,11 +133,13 @@
     </selectKey>
     insert into device_test_task (test_task_id, test_task_name, device_id, 
       status, start_time, end_time, 
+      global_vars, 
       before_suite, 
       testcases
       )
     values (#{testTaskId,jdbcType=INTEGER}, #{testTaskName,jdbcType=VARCHAR}, #{deviceId,jdbcType=VARCHAR}, 
       #{status,jdbcType=TINYINT}, #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, 
+      #{globalVars,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.GlobalVarListTypeHandler}, 
       #{beforeSuite,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.ActionTypeHandler}, 
       #{testcases,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.TestcaseListTypeHandler}
       )
@@ -165,6 +168,9 @@
       <if test="endTime != null">
         end_time,
       </if>
+      <if test="globalVars != null">
+        global_vars,
+      </if>
       <if test="beforeSuite != null">
         before_suite,
       </if>
@@ -190,6 +196,9 @@
       </if>
       <if test="endTime != null">
         #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="globalVars != null">
+        #{globalVars,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.GlobalVarListTypeHandler},
       </if>
       <if test="beforeSuite != null">
         #{beforeSuite,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.ActionTypeHandler},
@@ -229,6 +238,9 @@
       <if test="record.endTime != null">
         end_time = #{record.endTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="record.globalVars != null">
+        global_vars = #{record.globalVars,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.GlobalVarListTypeHandler},
+      </if>
       <if test="record.beforeSuite != null">
         before_suite = #{record.beforeSuite,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.ActionTypeHandler},
       </if>
@@ -249,6 +261,7 @@
       status = #{record.status,jdbcType=TINYINT},
       start_time = #{record.startTime,jdbcType=TIMESTAMP},
       end_time = #{record.endTime,jdbcType=TIMESTAMP},
+      global_vars = #{record.globalVars,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.GlobalVarListTypeHandler},
       before_suite = #{record.beforeSuite,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.ActionTypeHandler},
       testcases = #{record.testcases,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.TestcaseListTypeHandler}
     <if test="_parameter != null">
@@ -289,6 +302,9 @@
       <if test="endTime != null">
         end_time = #{endTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="globalVars != null">
+        global_vars = #{globalVars,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.GlobalVarListTypeHandler},
+      </if>
       <if test="beforeSuite != null">
         before_suite = #{beforeSuite,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.ActionTypeHandler},
       </if>
@@ -306,6 +322,7 @@
       status = #{status,jdbcType=TINYINT},
       start_time = #{startTime,jdbcType=TIMESTAMP},
       end_time = #{endTime,jdbcType=TIMESTAMP},
+      global_vars = #{globalVars,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.GlobalVarListTypeHandler},
       before_suite = #{beforeSuite,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.ActionTypeHandler},
       testcases = #{testcases,jdbcType=LONGVARCHAR,typeHandler=com.yqhp.typehandler.TestcaseListTypeHandler}
     where id = #{id,jdbcType=INTEGER}
