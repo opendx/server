@@ -3,6 +3,7 @@ package com.yqhp.controller;
 import com.yqhp.mbg.po.DeviceTestTask;
 import com.yqhp.model.PageRequest;
 import com.yqhp.model.Response;
+import com.yqhp.model.vo.Testcase;
 import com.yqhp.service.DeviceTestTaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +31,17 @@ public class DeviceTestTaskController {
     @PostMapping("/list")
     public Response list(DeviceTestTask testTaskDevice,PageRequest pageRequest) {
         return deviceTestTaskService.list(testTaskDevice,pageRequest);
+    }
+
+    /**
+     * 更新设备的测试用例运行信息
+     * @param deviceTestTaskId
+     * @param testcase
+     * @return
+     */
+    @PostMapping("/updateTestcase/{deviceTestTaskId}")
+    public Response updateTestcase(@PathVariable Integer deviceTestTaskId, @RequestBody Testcase testcase) {
+        return deviceTestTaskService.updateTestcase(deviceTestTaskId,testcase);
     }
 
     /**
