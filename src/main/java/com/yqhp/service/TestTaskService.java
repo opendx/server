@@ -1,12 +1,18 @@
 package com.yqhp.service;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.yqhp.dao.TestTaskDao;
 import com.yqhp.exception.BusinessException;
 import com.yqhp.mbg.mapper.*;
 import com.yqhp.mbg.po.*;
+import com.yqhp.model.Page;
+import com.yqhp.model.PageRequest;
 import com.yqhp.model.Response;
 import com.yqhp.model.action.Step;
 import com.yqhp.model.request.CommitTestTaskRequest;
 import com.yqhp.model.testplan.Before;
+import com.yqhp.model.vo.TestTaskVo;
 import com.yqhp.model.vo.Testcase;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +33,8 @@ public class TestTaskService extends BaseService {
 
     @Autowired
     private TestTaskMapper testTaskMapper;
+    @Autowired
+    private TestTaskDao testTaskDao;
     @Autowired
     private TestPlanService testPlanService;
     @Autowired
@@ -85,7 +93,7 @@ public class TestTaskService extends BaseService {
             deviceTestTask.setTestTaskName(testTask.getName());
             deviceTestTask.setDeviceId(deviceId);
             deviceTestTask.setGlobalVars(globalVars);
-            if(beforeSuiteAction != null) {
+            if (beforeSuiteAction != null) {
                 deviceTestTask.setBeforeSuite(beforeSuiteAction);
             }
             List<Testcase> cases = actions.stream().map(action -> {
@@ -96,8 +104,8 @@ public class TestTaskService extends BaseService {
             deviceTestTask.setTestcases(cases);
             deviceTestTask.setStatus(DeviceTestTask.UNSTART_STATUS);
             int insertRow = deviceTestTaskMapper.insertSelective(deviceTestTask);
-            if(insertRow != 1) {
-                throw new BusinessException( deviceId + "保存测试任务失败");
+            if (insertRow != 1) {
+                throw new BusinessException(deviceId + "保存测试任务失败");
             }
         });
 
@@ -184,4 +192,23 @@ public class TestTaskService extends BaseService {
         return testTask;
     }
 
+    /**
+     * 查询任务列表
+     *
+     * @param testTask
+     * @param pageRequest
+     * @return
+     */
+    public Response list(TestTask testTask, PageRequest pageRequest) {
+        boolean needPaging = pageRequest.needPaging();
+        if (needPaging) {
+            PageHelper.startPage(pageRequest.getPageNum(), pageRequest.getPageSize());
+        }
+        List<TestTaskVo> testTaskVos = testTaskDao.selectByTestTask(testTask);
+        if (needPaging) {
+            return Response.success(Page.convert(new PageInfo(testTaskVos)));
+        } else {
+            return Response.success(testTaskVos);
+        }
+    }
 }

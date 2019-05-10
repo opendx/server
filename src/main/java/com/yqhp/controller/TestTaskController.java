@@ -1,5 +1,7 @@
 package com.yqhp.controller;
 
+import com.yqhp.mbg.po.TestTask;
+import com.yqhp.model.PageRequest;
 import com.yqhp.model.Response;
 import com.yqhp.model.request.CommitTestTaskRequest;
 import com.yqhp.service.TestTaskService;
@@ -29,5 +31,10 @@ public class TestTaskController {
     @PostMapping("/commit")
     public Response commit(@RequestBody @Valid CommitTestTaskRequest commitTestTaskRequest) {
         return testTaskService.commit(commitTestTaskRequest);
+    }
+
+    @PostMapping("/list")
+    public Response list(TestTask testTask, PageRequest pageRequest) {
+        return testTaskService.list(testTask,pageRequest);
     }
 }
