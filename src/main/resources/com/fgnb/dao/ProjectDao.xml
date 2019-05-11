@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fgnb.dao.ProjectDao">
+    <resultMap id="ProjectVo" type="com.fgnb.model.vo.ProjectVo"
+               extends="com.fgnb.mbg.mapper.ProjectMapper.BaseResultMap"/>
+    <select id="selectByProject" resultMap="ProjectVo">
+        select p.*,u.nick_name AS creatorNickName from project p left join user u on p.creator_uid = u.id
+        <where>
+            <if test="id != null">
+                and p.id = #{id}
+            </if>
+            <if test="name != null and name != ''">
+                and p.name = #{name}
+            </if>
+            <if test="description != null and description != ''">
+                and p.description = #{description}
+            </if>
+            <if test="type != null">
+                and p.type = #{type}
+            </if>
+            <if test="creatorUid != null">
+                and p.creator_uid = #{creatorUid}
+            </if>
+            <if test="createTime != null">
+                and p.create_time = #{createTime}
+            </if>
+        </where>
+        order by p.create_time desc
+    </select>
+</mapper>

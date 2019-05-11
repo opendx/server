@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fgnb.dao.ActionDao">
+
+    <resultMap id="ActionVo" type="com.fgnb.model.vo.ActionVo"
+               extends="com.fgnb.mbg.mapper.ActionMapper.ResultMapWithBLOBs">
+    </resultMap>
+    <resultMap id="ResultMapWithBLOBs" type="com.fgnb.mbg.po.Action" extends="com.fgnb.mbg.mapper.ActionMapper.ResultMapWithBLOBs"/>
+
+    <select id="selectByAction" resultMap="ActionVo">
+        select a.*,u1.nick_name creatorNickName,u2.nick_name updatorNickName from action a
+        LEFT JOIN user u1 on a.creator_uid = u1.id
+        LEFT JOIN user u2 on a.updator_uid = u2.id
+        <where>
+            <if test="id != null">
+                and a.id = #{id}
+            </if>
+            <if test="name != null and name != ''">
+                and a.name = #{name}
+            </if>
+            <if test="description != null and description != ''">
+                and a.description = #{description}
+            </if>
+            <if test="projectId != null">
+                and a.project_id = #{projectId}
+            </if>
+            <if test="pageId != null">
+                and a.page_id = #{pageId}
+            </if>
+            <if test="type != null">
+                and a.type = #{type}
+            </if>
+            <if test="projectType != null">
+                and a.project_type = #{projectType}
+            </if>
+            <if test="className != null and className != ''">
+                and a.class_name = #{className}
+            </if>
+            <if test="needDriver != null">
+                and a.need_driver = #{needDriver}
+            </if>
+            <if test="hasReturnValue != null">
+                and a.has_return_value = #{hasReturnValue}
+            </if>
+            <if test="returnValue != null and returnValue != ''">
+                and a.return_value = #{returnValue}
+            </if>
+            <if test="creatorUid != null">
+                and a.creator_uid = #{creatorUid}
+            </if>
+            <if test="createTime != null">
+                and a.create_time = #{createTime}
+            </if>
+            <if test="updatorUid != null">
+                and a.updator_uid = #{updatorUid}
+            </if>
+            <if test="updateTime != null">
+                and a.update_time = #{updateTime}
+            </if>
+            <if test="categoryId != null">
+                and a.category_id = #{categoryId}
+            </if>
+            <if test="params != null and params != ''">
+                and a.params = #{params,typeHandler=com.fgnb.typehandler.ParamListTypeHandler}
+            </if>
+            <if test="localVars != null and localVars != ''">
+                and a.local_vars = #{localVars,typeHandler=com.fgnb.typehandler.LocalVarListTypeHandler}
+            </if>
+            <if test="steps != null and steps != ''">
+                and a.steps = #{steps,typeHandler=com.fgnb.typehandler.StepListTypeHandler}
+            </if>
+        </where>
+        order by a.create_time desc
+    </select>
+
+    <select id="selectByStepActionId" resultMap="ResultMapWithBLOBs">
+        select * from action where JSON_CONTAINS(steps->'$[*].actionId', '${stepActionId}', '$')
+    </select>
+</mapper>
