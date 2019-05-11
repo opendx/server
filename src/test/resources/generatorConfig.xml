@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+    <context id="MySqlContext" targetRuntime="MyBatis3" defaultModelType="flat">
+        <property name="beginningDelimiter" value="`"/>
+        <property name="endingDelimiter" value="`"/>
+        <property name="javaFileEncoding" value="UTF-8"/>
+        <!-- 为模型生成序列化方法-->
+        <plugin type="org.mybatis.generator.plugins.SerializablePlugin"/>
+        <!-- 为生成的Java模型创建一个toString方法 -->
+        <plugin type="org.mybatis.generator.plugins.ToStringPlugin"/>
+        <commentGenerator type="test.CommentGenerator">
+            <!-- 是否去除自动生成的注释 true：是 ： false:否 -->
+            <property name="suppressAllComments" value="true"/>
+            <property name="suppressDate" value="true"/>
+            <property name="addRemarkComments" value="true"/>
+        </commentGenerator>
+
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver"
+                        connectionURL="jdbc:mysql://localhost:3306/fgnb_v1.1"
+                        userId="root"
+                        password="root">
+        </jdbcConnection>
+
+        <javaTypeResolver type="test.MyJavaTypeResolver">
+            <property name="forceBigDecimals" value="false"></property>
+        </javaTypeResolver>
+
+        <javaModelGenerator targetPackage="com.fgnb.mbg.po" targetProject="C:\Users\jyt\Downloads\server\src\main\java"/>
+        <sqlMapGenerator targetPackage="com.fgnb.mbg.mapper" targetProject="C:\Users\jyt\Downloads\server\src\main\resources"/>
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.fgnb.mbg.mapper" targetProject="C:\Users\jyt\Downloads\server\src\main\java"/>
+
+        <table tableName="action">
+            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
+            <columnOverride column="steps" typeHandler="com.fgnb.typehandler.StepListTypeHandler" javaType="java.util.List&lt;com.fgnb.model.action.Step&gt;" jdbcType="LONGVARCHAR"/>
+            <columnOverride column="params" typeHandler="com.fgnb.typehandler.ParamListTypeHandler" javaType="java.util.List&lt;com.fgnb.model.action.Param&gt;" jdbcType="LONGVARCHAR"/>
+            <columnOverride column="local_vars" typeHandler="com.fgnb.typehandler.LocalVarListTypeHandler" javaType="java.util.List&lt;com.fgnb.model.action.LocalVar&gt;" jdbcType="LONGVARCHAR"/>
+        </table>
+        <table tableName="category">
+            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
+        </table>
+        <table tableName="device">
+        </table>
+        <table tableName="device_test_task">
+            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
+            <columnOverride column="global_vars" typeHandler="com.fgnb.typehandler.GlobalVarListTypeHandler" javaType="java.util.List&lt;com.fgnb.mbg.po.GlobalVar&gt;" jdbcType="LONGVARCHAR"/>
+            <columnOverride column="before_suite" typeHandler="com.fgnb.typehandler.ActionTypeHandler" javaType="com.fgnb.mbg.po.Action" jdbcType="LONGVARCHAR"/>
+            <columnOverride column="testcases" typeHandler="com.fgnb.typehandler.TestcaseListTypeHandler" javaType="java.util.List&lt;com.fgnb.model.vo.Testcase&gt;" jdbcType="LONGVARCHAR"/>
+        </table>
+        <table tableName="gloabal_var">
+            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
+        </table>
+        <table tableName="page">
+            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
+        </table>
+        <table tableName="project">
+            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
+        </table>
+        <table tableName="test_plan">
+            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
+            <columnOverride column="test_suites" typeHandler="com.fgnb.typehandler.IntegerListTypeHandler" javaType="java.util.List&lt;Integer&gt;" jdbcType="LONGVARCHAR"/>
+            <columnOverride column="befores" typeHandler="com.fgnb.typehandler.BeforeListTypeHandler" javaType="java.util.List&lt;com.fgnb.model.testplan.Before&gt;" jdbcType="LONGVARCHAR"/>
+        </table>
+        <table tableName="test_suite">
+            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
+            <columnOverride column="testcases" typeHandler="com.fgnb.typehandler.IntegerListTypeHandler" javaType="java.util.List&lt;Integer&gt;" jdbcType="LONGVARCHAR"/>
+        </table>
+        <table tableName="test_task">
+            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
+        </table>
+        <table tableName="user">
+            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
+        </table>
+    </context>
+</generatorConfiguration>

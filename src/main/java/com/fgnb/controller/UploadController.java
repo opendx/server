@@ -12,7 +12,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
+import java.io.IOException;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,10 +26,8 @@ import java.util.Map;
 @Slf4j
 public class UploadController {
 
-    //上传图片存放路径
     @Value("${web.upload-img-path}")
     private String uploadImgPath;
-    //上传视频存放路径
     @Value("${web.upload-video-path}")
     private String uploadVideoPath;
 
@@ -37,9 +37,9 @@ public class UploadController {
             return Response.fail("文件不能为空");
         }
 
+        String newFileName;
         try {
-            String newFileName = UUIDUtil.getUUID() + "." + StringUtils.unqualify(file.getOriginalFilename());
-
+            newFileName = UUIDUtil.getUUID() + "." + StringUtils.unqualify(file.getOriginalFilename());
             if (newFileName.endsWith(".jpg") || newFileName.endsWith(".png")) {
                 //不用绝对路径会报错
                 file.transferTo(new File(new File(uploadImgPath).getAbsolutePath() + File.separator + newFileName));
@@ -48,18 +48,19 @@ public class UploadController {
             } else {
                 return Response.fail("暂不支持该格式文件上传");
             }
-
-            //下载地址
-            String downloadURL = request.getScheme() + "://" + InetAddress.getLocalHost().getHostAddress() + ":" + request.getServerPort() + "/" + newFileName;
-            Map map = new HashMap();
-            map.put("downloadURL", downloadURL);
-
-            return Response.success("上传成功", map);
-        } catch (Exception e) {
-            log.error("上传出错", e);
+        } catch (IOException e) {
+            log.error("transfer err",e);
             return Response.fail(e.getMessage());
         }
 
+        try {
+            String downloadURL = request.getScheme() + "://" + InetAddress.getLocalHost().getHostAddress() + ":" + request.getServerPort() + "/" + newFileName;
+            Map data = new HashMap();
+            data.put("downloadURL", downloadURL);
+            return Response.success("上传成功", data);
+        } catch (UnknownHostException e) {
+            log.error("UnknownHost",e);
+            return Response.fail("获取LocalHost出错");
+        }
     }
-
 }

@@ -11,7 +11,3 @@
 .checkstyle
 .idea
 /upload
-CommentGenerator.java
-Generator.java
-MyJavaTypeResolver.java
-generatorConfig.xml
