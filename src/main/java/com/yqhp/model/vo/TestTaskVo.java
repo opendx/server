@@ -9,4 +9,5 @@ import lombok.Data;
 @Data
 public class TestTaskVo extends TestTask {
     private String creatorNickName;
+    private String testPlanName;
 }

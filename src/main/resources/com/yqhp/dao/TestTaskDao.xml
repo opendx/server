@@ -4,7 +4,9 @@
     <resultMap id="TestTaskVo" type="com.yqhp.model.vo.TestTaskVo"
                extends="com.yqhp.mbg.mapper.TestTaskMapper.BaseResultMap"/>
     <select id="selectByTestTask" resultMap="TestTaskVo">
-        select t.*,u.nick_name AS creatorNickName from test_task t left join user u on t.creator_uid = u.id
+        select t.*,u.nick_name AS creatorNickName,p.name AS testPlanName from test_task t
+        left join user u on t.creator_uid = u.id
+        left join test_plan p on t.test_plan_id = p.id
         <where>
             <if test="id != null">
                 and t.id = #{id}
