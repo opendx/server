@@ -10,10 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 /**
  * Created by jiangyitao.
- * <columnOverride column="global_vars" typeHandler="com.fgnb.typehandler.GlobalVarListTypeHandler" javaType="java.util.List&lt;com.fgnb.mbg.po.GlobalVar&gt;" jdbcType="LONGVARCHAR"/>
- * <columnOverride column="before_suite" typeHandler="com.fgnb.typehandler.ActionTypeHandler" javaType="com.fgnb.mbg.po.Action" jdbcType="LONGVARCHAR"/>
- * <columnOverride column="testcases" typeHandler="com.fgnb.typehandler.TestcaseListTypeHandler" javaType="java.util.List&lt;com.fgnb.model.vo.Testcase&gt;" jdbcType="LONGVARCHAR"/>
- */
+*/
 @RestController
 @RequestMapping("/deviceTestTask")
 public class DeviceTestTaskController {

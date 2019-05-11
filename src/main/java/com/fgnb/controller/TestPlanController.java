@@ -11,8 +11,6 @@ import javax.validation.Valid;
 
 /**
  * Created by jiangyitao.
- * <columnOverride column="test_suites" typeHandler="com.fgnb.typehandler.IntegerListTypeHandler" javaType="java.util.List&lt;Integer&gt;" jdbcType="LONGVARCHAR"/>
- * <columnOverride column="befores" typeHandler="com.fgnb.typehandler.BeforeListTypeHandler" javaType="java.util.List&lt;com.fgnb.model.testplan.Before&gt;" jdbcType="LONGVARCHAR"/>
  */
 @RestController
 @RequestMapping("/testPlan")

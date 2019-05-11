@@ -13,10 +13,6 @@ import javax.validation.Valid;
 
 /**
  * Created by jiangyitao.
- * mbg生成action table配置
- * <columnOverride column="steps" typeHandler="com.fgnb.typehandler.StepListTypeHandler" javaType="java.util.List&lt;com.fgnb.model.action.Step&gt;" jdbcType="LONGVARCHAR"/>
- * <columnOverride column="params" typeHandler="com.fgnb.typehandler.ParamListTypeHandler" javaType="java.util.List&lt;com.fgnb.model.action.Param&gt;" jdbcType="LONGVARCHAR"/>
- * <columnOverride column="local_vars" typeHandler="com.fgnb.typehandler.LocalVarListTypeHandler" javaType="java.util.List&lt;com.fgnb.model.action.LocalVar&gt;" jdbcType="LONGVARCHAR"/>
  */
 @RestController
 @RequestMapping("/action")
