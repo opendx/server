@@ -4,10 +4,7 @@ import com.fgnb.mbg.po.User;
 import com.fgnb.model.Response;
 import com.fgnb.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -29,6 +26,24 @@ public class UserController {
     @PostMapping("/loginOrRegister")
     public Response loginOrRegister(@Valid @RequestBody User user) {
         return userService.loginOrRegister(user);
+    }
+
+    /**
+     * 获取用户信息
+     * @return
+     */
+    @GetMapping("/info")
+    public Response getInfo() {
+        return userService.getInfo();
+    }
+
+    /**
+     * 登出
+     * @return
+     */
+    @PostMapping("/logout")
+    public Response logout() {
+        return userService.logout();
     }
 
 }

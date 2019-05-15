@@ -1,5 +1,6 @@
 package com.fgnb.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.fgnb.mbg.mapper.UserMapper;
 import com.fgnb.mbg.po.User;
 import com.fgnb.mbg.po.UserExample;
@@ -14,6 +15,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.DigestUtils;
 import org.springframework.util.StringUtils;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -22,7 +24,7 @@ import java.util.List;
  * Created by jiangyitao.
  */
 @Service
-public class UserService {
+public class UserService extends BaseService{
 
     @Autowired
     private UserMapper userMapper;
@@ -66,5 +68,21 @@ public class UserService {
         userVo.setToken(TokenUtil.create(user.getId() + ""));
 
         return Response.success("登录成功", userVo);
+    }
+
+    public Response getInfo() {
+        User user = userMapper.selectByPrimaryKey(getUid());
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("name",user.getNickName());
+        jsonObject.put("avatar","");
+        jsonObject.put("introduction","");
+        jsonObject.put("roles", Arrays.asList("admin"));
+
+        return Response.success(jsonObject);
+    }
+
+    public Response logout() {
+        return Response.success("ok");
     }
 }
