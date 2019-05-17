@@ -59,12 +59,6 @@ public class ActionService extends BaseService {
         action.setCreatorUid(getUid());
         action.setCreateTime(new Date());
 
-        if (!StringUtils.isEmpty(action.getReturnValue())) {
-            action.setHasReturnValue(Action.HAS_RETURN_VALUE);
-        } else {
-            action.setHasReturnValue(Action.NO_RETURN_VALUE);
-        }
-
         try {
             int insertRow = actionMapper.insertSelective(action);
             if (insertRow != 1) {
@@ -116,11 +110,7 @@ public class ActionService extends BaseService {
         action.setUpdateTime(new Date());
         action.setUpdatorUid(getUid());
 
-        //是否有返回值
-        if (!StringUtils.isEmpty(action.getReturnValue())) {
-            action.setHasReturnValue(Action.HAS_RETURN_VALUE);
-        } else {
-            action.setHasReturnValue(Action.NO_RETURN_VALUE);
+        if (action.getHasReturnValue() == Action.NO_RETURN_VALUE) {
             //如果returnValue是null，无法保存，重新设置为""
             action.setReturnValue("");
         }

@@ -112,6 +112,7 @@ public class Action implements Serializable {
      *
      * @mbg.generated
      */
+    @NotNull(message = "是否有返回值不能为空")
     private Integer hasReturnValue;
 
     /**
