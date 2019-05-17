@@ -16,9 +16,6 @@ public class PageRequest {
      * @return
      */
     public boolean needPaging() {
-        if (pageNum != null && pageNum > 0 && pageSize != null && pageSize > 0) {
-            return true;
-        }
-        return false;
+        return pageNum != null && pageNum > 0 && pageSize != null && pageSize > 0;
     }
 }
