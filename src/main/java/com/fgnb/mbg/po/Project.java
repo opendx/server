@@ -6,11 +6,6 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class Project implements Serializable {
-
-    public static final Integer ANDROID_TYPE = 1;
-    public static final Integer IOS_TYPE = 2;
-    public static final Integer WEB_TYPE = 3;
-
     /**
      * 项目id
      *
@@ -34,12 +29,12 @@ public class Project implements Serializable {
     private String description;
 
     /**
-     * 项目类型：1.andorid 2.iOS 3.web
+     * 1.andorid 2.iOS
      *
      * @mbg.generated
      */
-    @NotNull(message = "项目类型不能为空")
-    private Integer type;
+    @NotNull(message = "平台不能为空")
+    private Integer platform;
 
     /**
      * 创建人id
@@ -81,12 +76,12 @@ public class Project implements Serializable {
         this.description = description;
     }
 
-    public Integer getType() {
-        return type;
+    public Integer getPlatform() {
+        return platform;
     }
 
-    public void setType(Integer type) {
-        this.type = type;
+    public void setPlatform(Integer platform) {
+        this.platform = platform;
     }
 
     public Integer getCreatorUid() {
@@ -114,7 +109,7 @@ public class Project implements Serializable {
         sb.append(", id=").append(id);
         sb.append(", name=").append(name);
         sb.append(", description=").append(description);
-        sb.append(", type=").append(type);
+        sb.append(", platform=").append(platform);
         sb.append(", creatorUid=").append(creatorUid);
         sb.append(", createTime=").append(createTime);
         sb.append(", serialVersionUID=").append(serialVersionUID);
