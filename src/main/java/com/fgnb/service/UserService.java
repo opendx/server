@@ -5,6 +5,7 @@ import com.fgnb.mbg.mapper.UserMapper;
 import com.fgnb.mbg.po.User;
 import com.fgnb.mbg.po.UserExample;
 import com.fgnb.model.Response;
+import com.fgnb.model.UserCache;
 import com.fgnb.model.vo.UserVo;
 import com.fgnb.utils.TokenUtil;
 import org.springframework.beans.BeanUtils;
@@ -24,7 +25,7 @@ import java.util.List;
  * Created by jiangyitao.
  */
 @Service
-public class UserService extends BaseService{
+public class UserService extends BaseService {
 
     @Autowired
     private UserMapper userMapper;
@@ -38,9 +39,10 @@ public class UserService extends BaseService{
     public Response loginOrRegister(User user) {
         user.setPassword(DigestUtils.md5DigestAsHex(user.getPassword().getBytes()));
 
-        UserExample userExample = new UserExample();
-        userExample.createCriteria().andUsernameEqualTo(user.getUsername()).andPasswordEqualTo(user.getPassword());
-        List<User> users = userMapper.selectByExample(userExample);
+        User query = new User();
+        query.setUsername(user.getUsername());
+        query.setPassword(user.getPassword());
+        List<User> users = selectByUser(query);
 
         if (CollectionUtils.isEmpty(users)) {
             //注册
@@ -67,16 +69,17 @@ public class UserService extends BaseService{
         BeanUtils.copyProperties(user, userVo);
         userVo.setToken(TokenUtil.create(user.getId() + ""));
 
+        UserCache.add(user.getId(), user);
         return Response.success("登录成功", userVo);
     }
 
     public Response getInfo() {
-        User user = userMapper.selectByPrimaryKey(getUid());
+        User user = UserCache.getById(getUid());
 
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("name",user.getNickName());
-        jsonObject.put("avatar","");
-        jsonObject.put("introduction","");
+        jsonObject.put("name", user.getNickName());
+        jsonObject.put("avatar", "");
+        jsonObject.put("introduction", "");
         jsonObject.put("roles", Arrays.asList("admin"));
 
         return Response.success(jsonObject);
@@ -84,5 +87,31 @@ public class UserService extends BaseService{
 
     public Response logout() {
         return Response.success("ok");
+    }
+
+    public List<User> selectAll() {
+        return selectByUser(null);
+    }
+
+    public List<User> selectByUser(User user) {
+        if (user == null) {
+            user = new User();
+        }
+        UserExample userExample = new UserExample();
+        UserExample.Criteria criteria = userExample.createCriteria();
+
+        if (user.getId() != null) {
+            criteria.andIdEqualTo(user.getId());
+        }
+        if (!StringUtils.isEmpty(user.getUsername())) {
+            criteria.andUsernameEqualTo(user.getUsername());
+        }
+        if (!StringUtils.isEmpty(user.getPassword())) {
+            criteria.andPasswordEqualTo(user.getPassword());
+        }
+        if (!StringUtils.isEmpty(user.getNickName())) {
+            criteria.andNickNameEqualTo(user.getNickName());
+        }
+        return userMapper.selectByExample(userExample);
     }
 }
