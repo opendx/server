@@ -24,33 +24,6 @@ public class ProjectController {
     private ProjectService projectService;
 
     /**
-     * 获取项目类型
-     *
-     * @return
-     */
-    @GetMapping("/types")
-    public Response getProjectTypes() {
-        JSONObject android = new JSONObject();
-        android.put("type", Project.ANDROID_TYPE);
-        android.put("name", "Android");
-
-        JSONObject ios = new JSONObject();
-        ios.put("type", Project.IOS_TYPE);
-        ios.put("name", "iOS");
-
-        JSONObject web = new JSONObject();
-        web.put("type", Project.WEB_TYPE);
-        web.put("name", "web");
-
-        JSONArray projectTypes = new JSONArray();
-        projectTypes.add(android);
-        projectTypes.add(ios);
-        projectTypes.add(web);
-
-        return Response.success(projectTypes);
-    }
-
-    /**
      * 新增项目
      *
      * @return
