@@ -138,13 +138,13 @@ public class ActionService extends BaseService {
      * @return
      */
     public Response list(Action action, PageRequest pageRequest) {
-        boolean needPageing = pageRequest.needPaging();
+        boolean needPaging = pageRequest.needPaging();
         //需要分页
-        if (needPageing) {
+        if (needPaging) {
             PageHelper.startPage(pageRequest.getPageNum(), pageRequest.getPageSize());
         }
         List<ActionVo> actionVos = actionDao.selectByAction(action);
-        if (needPageing) {
+        if (needPaging) {
             return Response.success(Page.convert(new PageInfo(actionVos)));
         }
         return Response.success(actionVos);
