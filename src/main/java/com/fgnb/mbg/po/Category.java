@@ -23,7 +23,7 @@ public class Category implements Serializable {
     private String name;
 
     /**
-     * 类型：1.Page 2.TestCase
+     * 类型：1.Page
      *
      * @mbg.generated
      */

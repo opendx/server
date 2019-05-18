@@ -34,7 +34,6 @@ public class Page implements Serializable {
      *
      * @mbg.generated
      */
-    @NotNull(message = "分类不能为空")
     private Integer categoryId;
 
     /**
