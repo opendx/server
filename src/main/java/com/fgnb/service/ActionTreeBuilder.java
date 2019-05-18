@@ -34,13 +34,13 @@ public class ActionTreeBuilder {
             List<Step> steps = action.getSteps();
             if (!CollectionUtils.isEmpty(steps)) {
                 for (Step step : steps) {
-                    Action cachedAction = cachedActions.get(step.getActionId());
-                    if (cachedAction == null) {
-                        cachedAction = actionMapper.selectByPrimaryKey(step.getActionId());
-                        cachedActions.put(cachedAction.getId(), cachedAction);
+                    Action stepAction = cachedActions.get(step.getActionId());
+                    if (stepAction == null) {
+                        stepAction = actionMapper.selectByPrimaryKey(step.getActionId());
+                        cachedActions.put(stepAction.getId(), stepAction);
                     }
-                    step.setAction(cachedAction);
-                    build(Arrays.asList(cachedAction));
+                    step.setAction(stepAction);
+                    build(Arrays.asList(stepAction));
                 }
             }
         }
