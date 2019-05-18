@@ -128,7 +128,7 @@ public class PageService extends BaseService {
         }
 
         pageExample.setOrderByClause("create_time desc");
-        return pageMapper.selectByExample(pageExample);
+        return pageMapper.selectByExampleWithBLOBs(pageExample);
     }
 
 }
