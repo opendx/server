@@ -57,6 +57,7 @@ public class GlobalVarService extends BaseService {
         if (globalVarId == null) {
             return Response.fail("变量id不能为空");
         }
+        // todo 校验全局变量是否被其他action使用，如果被使用则不能直接删除
         int deleteRow = globalVarMapper.deleteByPrimaryKey(globalVarId);
         if (deleteRow != 1) {
             return Response.fail("删除失败,请稍后重试");
@@ -73,7 +74,8 @@ public class GlobalVarService extends BaseService {
         if (globalVar.getId() == null) {
             return Response.fail("全局变量id不能为空");
         }
-
+        // todo 校验name是否被action使用，如果被使用则不能直接修改name
+        // 先在前端限制无法修改name
         try {
             int updateRow = globalVarMapper.updateByPrimaryKeySelective(globalVar);
             if (updateRow != 1) {
