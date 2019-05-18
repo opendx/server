@@ -145,7 +145,7 @@ public class ActionService extends BaseService {
         }
         List<ActionVo> actionVos = actionDao.selectByAction(action);
         if (needPaging) {
-            return Response.success(Page.convert(new PageInfo(actionVos)));
+            return Response.success(Page.convert(actionVos));
         }
         return Response.success(actionVos);
     }

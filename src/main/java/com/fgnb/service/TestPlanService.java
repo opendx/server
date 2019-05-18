@@ -99,7 +99,7 @@ public class TestPlanService extends BaseService {
         List<TestPlanVo> testPlanVos = testPlanDao.selectByTestPlan(testPlan);
 
         if (needPaging) {
-            return Response.success(Page.convert(new PageInfo(testPlanVos)));
+            return Response.success(Page.convert(testPlanVos));
         } else {
             return Response.success(testPlanVos);
         }

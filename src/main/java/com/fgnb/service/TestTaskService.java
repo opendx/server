@@ -206,7 +206,7 @@ public class TestTaskService extends BaseService {
         }
         List<TestTaskVo> testTaskVos = testTaskDao.selectByTestTask(testTask);
         if (needPaging) {
-            return Response.success(Page.convert(new PageInfo(testTaskVos)));
+            return Response.success(Page.convert(testTaskVos));
         } else {
             return Response.success(testTaskVos);
         }

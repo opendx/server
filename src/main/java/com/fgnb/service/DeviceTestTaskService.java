@@ -96,7 +96,7 @@ public class DeviceTestTaskService {
         List<DeviceTestTask> deviceTestTasks = deviceTestTaskMapper.selectByExampleWithBLOBs(deviceTestTaskExample);
 
         if (needPaging) {
-            return Response.success(Page.convert(new PageInfo(deviceTestTasks)));
+            return Response.success(Page.convert(deviceTestTasks));
         } else {
             return Response.success(deviceTestTasks);
         }

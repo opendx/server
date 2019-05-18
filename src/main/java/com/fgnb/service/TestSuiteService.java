@@ -83,7 +83,7 @@ public class TestSuiteService extends BaseService {
         }
         List<TestSuiteVo> testSuiteVos = testSuiteDao.selectByTestSuite(testSuite);
         if(needPaging) {
-            return Response.success(Page.convert(new PageInfo(testSuiteVos)));
+            return Response.success(Page.convert(testSuiteVos));
         }
         return Response.success(testSuiteVos);
     }

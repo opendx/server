@@ -106,7 +106,7 @@ public class ProjectService extends BaseService {
         }
         List<ProjectVo> projectVos = projectDao.selectByProject(project);
         if (needPaging) {
-            return Response.success(Page.convert(new PageInfo(projectVos)));
+            return Response.success(Page.convert(projectVos));
         }
         return Response.success(projectVos);
     }

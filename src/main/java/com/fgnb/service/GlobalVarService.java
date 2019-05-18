@@ -100,7 +100,7 @@ public class GlobalVarService extends BaseService {
         }
         List<GlobalVarVo> globalVarVos = globalVarDao.selectByGlobalVar(globalVar);
         if(needPaging) {
-            return Response.success(Page.convert(new PageInfo(globalVarVos)));
+            return Response.success(Page.convert(globalVarVos));
         }
         return Response.success(globalVarVos);
     }

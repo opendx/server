@@ -68,7 +68,7 @@ public class DeviceService extends BaseService {
 
         List<Device> devices = deviceDao.selectByDevice(device);
         if (needPaging) {
-            return Response.success(Page.convert(new PageInfo(devices)));
+            return Response.success(Page.convert(devices));
         }
         return Response.success(devices);
     }

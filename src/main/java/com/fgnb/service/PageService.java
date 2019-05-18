@@ -99,7 +99,7 @@ public class PageService extends BaseService {
         }
         List<PageVo> pageVos = pageDao.selectByPage(page);
         if (needPaging) {
-            return Response.success(com.fgnb.model.Page.convert(new PageInfo(pageVos)));
+            return Response.success(com.fgnb.model.Page.convert(pageVos));
         }
         return Response.success(pageVos);
     }

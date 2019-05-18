@@ -3,20 +3,25 @@ package com.fgnb.model;
 import com.github.pagehelper.PageInfo;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * Created by jiangyitao.
  */
 @Data
-public class Page {
+public class Page<T> {
     private Long total;
     private Integer pages;
-    private Object data;
+    private List<T> data;
 
-    public static Page convert(PageInfo pageInfo){
-        Page pageVo = new Page();
-        pageVo.setPages(pageInfo.getPages());
-        pageVo.setTotal(pageInfo.getTotal());
-        pageVo.setData(pageInfo.getList());
-        return pageVo;
+    public static <T> Page<T> convert(List<T> data){
+        PageInfo pageInfo = new PageInfo(data);
+
+        Page page = new Page();
+        page.setPages(pageInfo.getPages());
+        page.setTotal(pageInfo.getTotal());
+        page.setData(pageInfo.getList());
+
+        return page;
     }
 }
