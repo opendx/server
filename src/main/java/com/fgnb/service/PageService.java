@@ -1,8 +1,8 @@
 package com.fgnb.service;
 
+import com.fgnb.mbg.po.PageExample;
+import com.fgnb.model.UserCache;
 import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
-import com.fgnb.dao.PageDao;
 import com.fgnb.mbg.mapper.PageMapper;
 import com.fgnb.mbg.po.Page;
 import com.fgnb.model.PageRequest;
@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by jiangyitao.
@@ -23,8 +24,6 @@ public class PageService extends BaseService {
 
     @Autowired
     private PageMapper pageMapper;
-    @Autowired
-    private PageDao pageDao;
 
     /**
      * 添加page
@@ -94,14 +93,42 @@ public class PageService extends BaseService {
     public Response list(Page page, PageRequest pageRequest) {
         boolean needPaging = pageRequest.needPaging();
         if (needPaging) {
-            //分页
             PageHelper.startPage(pageRequest.getPageNum(), pageRequest.getPageSize());
         }
-        List<PageVo> pageVos = pageDao.selectByPage(page);
+
+        List<Page> pages = selectByPage(page);
+        List<PageVo> pageVos = pages.stream().map(p -> PageVo.convert(p, UserCache.getNickNameById(p.getCreatorUid()))).collect(Collectors.toList());
+
         if (needPaging) {
-            return Response.success(com.fgnb.model.Page.convert(pageVos));
+            // java8 stream会导致PageHelper total计算错误
+            // 所以这里用pages计算total
+            long total = com.fgnb.model.Page.getTotal(pages);
+            return Response.success(com.fgnb.model.Page.build(pageVos,total));
+        } else {
+            return Response.success(pageVos);
         }
-        return Response.success(pageVos);
+    }
+
+    public List<Page> selectByPage(Page page) {
+        if(page == null) {
+            page = new Page();
+        }
+
+        PageExample pageExample = new PageExample();
+        PageExample.Criteria criteria = pageExample.createCriteria();
+
+        if(page.getId() != null) {
+            criteria.andIdEqualTo(page.getId());
+        }
+        if(page.getCategoryId() != null) {
+            criteria.andCategoryIdEqualTo(page.getCategoryId());
+        }
+        if(page.getProjectId() != null) {
+            criteria.andProjectIdEqualTo(page.getProjectId());
+        }
+
+        pageExample.setOrderByClause("create_time desc");
+        return pageMapper.selectByExample(pageExample);
     }
 
 }

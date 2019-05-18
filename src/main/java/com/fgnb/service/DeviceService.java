@@ -1,8 +1,6 @@
 package com.fgnb.service;
 
 import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
-import com.fgnb.dao.DeviceDao;
 import com.fgnb.mbg.mapper.DeviceMapper;
 import com.fgnb.mbg.po.Device;
 import com.fgnb.mbg.po.DeviceExample;
@@ -25,9 +23,6 @@ public class DeviceService extends BaseService {
 
     @Autowired
     private DeviceMapper deviceMapper;
-
-    @Autowired
-    private DeviceDao deviceDao;
 
     /**
      * 保存手机信息
@@ -60,17 +55,49 @@ public class DeviceService extends BaseService {
      * @return
      */
     public Response list(Device device, PageRequest pageRequest) {
-        //是否要分页
         boolean needPaging = pageRequest.needPaging();
         if (needPaging) {
             PageHelper.startPage(pageRequest.getPageNum(), pageRequest.getPageSize());
         }
 
-        List<Device> devices = deviceDao.selectByDevice(device);
+        List<Device> devices = selectByDevice(device);
         if (needPaging) {
-            return Response.success(Page.convert(devices));
+            long total = Page.getTotal(devices);
+            return Response.success(Page.build(devices,total));
+        } else {
+            return Response.success(devices);
         }
-        return Response.success(devices);
+    }
+
+    public List<Device> selectByDevice(Device device) {
+        if(device == null) {
+            device = new Device();
+        }
+
+        DeviceExample deviceExample = new DeviceExample();
+        DeviceExample.Criteria criteria = deviceExample.createCriteria();
+
+        if(!StringUtils.isEmpty(device.getId())) {
+            criteria.andIdEqualTo(device.getId());
+        }
+        if(!StringUtils.isEmpty(device.getName())) {
+            criteria.andNameEqualTo(device.getName());
+        }
+        if(!StringUtils.isEmpty(device.getAgentIp())) {
+            criteria.andAgentIpEqualTo(device.getAgentIp());
+        }
+        if(device.getAgentPort() != null) {
+            criteria.andAgentPortEqualTo(device.getAgentPort());
+        }
+        if(device.getType() != null) {
+            criteria.andTypeEqualTo(device.getType());
+        }
+        if(device.getStatus() != null) {
+            criteria.andStatusEqualTo(device.getStatus());
+        }
+
+        deviceExample.setOrderByClause("status desc,create_time desc");
+        return deviceMapper.selectByExample(deviceExample);
     }
 
     /**
@@ -103,7 +130,6 @@ public class DeviceService extends BaseService {
         if(type != null) {
             criteria.andTypeEqualTo(type);
         }
-
         return Response.success(deviceMapper.selectByExample(deviceExample));
     }
 }

@@ -1,8 +1,8 @@
 package com.fgnb.service;
 
+import com.fgnb.mbg.po.GlobalVarExample;
+import com.fgnb.model.UserCache;
 import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
-import com.fgnb.dao.GlobalVarDao;
 import com.fgnb.mbg.mapper.GlobalVarMapper;
 import com.fgnb.mbg.po.GlobalVar;
 import com.fgnb.model.PageRequest;
@@ -12,9 +12,11 @@ import com.fgnb.model.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by jiangyitao.
@@ -24,8 +26,6 @@ public class GlobalVarService extends BaseService {
 
     @Autowired
     private GlobalVarMapper globalVarMapper;
-    @Autowired
-    private GlobalVarDao globalVarDao;
 
     /**
      * 添加全局变量
@@ -95,14 +95,44 @@ public class GlobalVarService extends BaseService {
     public Response list(GlobalVar globalVar, PageRequest pageRequest) {
         boolean needPaging = pageRequest.needPaging();
         if(needPaging) {
-            //分页
             PageHelper.startPage(pageRequest.getPageNum(), pageRequest.getPageSize());
         }
-        List<GlobalVarVo> globalVarVos = globalVarDao.selectByGlobalVar(globalVar);
+
+        List<GlobalVar> globalVars = selectByGlobalVar(globalVar);
+        List<GlobalVarVo> globalVarVos = globalVars.stream().map(g -> GlobalVarVo.convert(g, UserCache.getNickNameById(g.getCreatorUid()))).collect(Collectors.toList());
+
         if(needPaging) {
-            return Response.success(Page.convert(globalVarVos));
+            // java8 stream会导致PageHelper total计算错误
+            // 所以这里用globalVars计算total
+            long total = Page.getTotal(globalVars);
+            return Response.success(Page.build(globalVarVos,total));
+        } else {
+            return Response.success(globalVarVos);
         }
-        return Response.success(globalVarVos);
     }
 
+    public List<GlobalVar> selectByGlobalVar(GlobalVar globalVar) {
+        if (globalVar == null) {
+            globalVar = new GlobalVar();
+        }
+
+        GlobalVarExample globalVarExample = new GlobalVarExample();
+        GlobalVarExample.Criteria criteria = globalVarExample.createCriteria();
+
+        if(globalVar.getId() != null) {
+            criteria.andIdEqualTo(globalVar.getId());
+        }
+        if(globalVar.getProjectId() != null) {
+            criteria.andProjectIdEqualTo(globalVar.getProjectId());
+        }
+        if(!StringUtils.isEmpty(globalVar.getName())) {
+            criteria.andNameEqualTo(globalVar.getName());
+        }
+        if(!StringUtils.isEmpty(globalVar.getValue())) {
+            criteria.andValueEqualTo(globalVar.getValue());
+        }
+
+        globalVarExample.setOrderByClause("create_time desc");
+        return globalVarMapper.selectByExample(globalVarExample);
+    }
 }

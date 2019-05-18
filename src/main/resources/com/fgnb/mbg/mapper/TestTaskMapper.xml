@@ -5,6 +5,7 @@
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="project_id" jdbcType="INTEGER" property="projectId" />
     <result column="test_plan_id" jdbcType="INTEGER" property="testPlanId" />
+    <result column="test_plan_name" jdbcType="VARCHAR" property="testPlanName" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="description" jdbcType="VARCHAR" property="description" />
     <result column="run_mode" jdbcType="TINYINT" property="runMode" />
@@ -75,8 +76,8 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, project_id, test_plan_id, name, description, run_mode, status, creator_uid, pass_case_count, 
-    fail_case_count, skip_case_count, commit_time, finish_time
+    id, project_id, test_plan_id, test_plan_name, name, description, run_mode, status, 
+    creator_uid, pass_case_count, fail_case_count, skip_case_count, commit_time, finish_time
   </sql>
   <select id="selectByExample" parameterType="com.fgnb.mbg.po.TestTaskExample" resultMap="BaseResultMap">
     select
@@ -112,16 +113,16 @@
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into test_task (project_id, test_plan_id, name, 
-      description, run_mode, status, 
-      creator_uid, pass_case_count, fail_case_count, 
-      skip_case_count, commit_time, finish_time
-      )
-    values (#{projectId,jdbcType=INTEGER}, #{testPlanId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, 
-      #{description,jdbcType=VARCHAR}, #{runMode,jdbcType=TINYINT}, #{status,jdbcType=TINYINT}, 
-      #{creatorUid,jdbcType=INTEGER}, #{passCaseCount,jdbcType=INTEGER}, #{failCaseCount,jdbcType=INTEGER}, 
-      #{skipCaseCount,jdbcType=INTEGER}, #{commitTime,jdbcType=TIMESTAMP}, #{finishTime,jdbcType=TIMESTAMP}
-      )
+    insert into test_task (project_id, test_plan_id, test_plan_name, 
+      name, description, run_mode, 
+      status, creator_uid, pass_case_count, 
+      fail_case_count, skip_case_count, commit_time, 
+      finish_time)
+    values (#{projectId,jdbcType=INTEGER}, #{testPlanId,jdbcType=INTEGER}, #{testPlanName,jdbcType=VARCHAR}, 
+      #{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{runMode,jdbcType=TINYINT}, 
+      #{status,jdbcType=TINYINT}, #{creatorUid,jdbcType=INTEGER}, #{passCaseCount,jdbcType=INTEGER}, 
+      #{failCaseCount,jdbcType=INTEGER}, #{skipCaseCount,jdbcType=INTEGER}, #{commitTime,jdbcType=TIMESTAMP}, 
+      #{finishTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.fgnb.mbg.po.TestTask">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
@@ -134,6 +135,9 @@
       </if>
       <if test="testPlanId != null">
         test_plan_id,
+      </if>
+      <if test="testPlanName != null">
+        test_plan_name,
       </if>
       <if test="name != null">
         name,
@@ -172,6 +176,9 @@
       </if>
       <if test="testPlanId != null">
         #{testPlanId,jdbcType=INTEGER},
+      </if>
+      <if test="testPlanName != null">
+        #{testPlanName,jdbcType=VARCHAR},
       </if>
       <if test="name != null">
         #{name,jdbcType=VARCHAR},
@@ -223,6 +230,9 @@
       <if test="record.testPlanId != null">
         test_plan_id = #{record.testPlanId,jdbcType=INTEGER},
       </if>
+      <if test="record.testPlanName != null">
+        test_plan_name = #{record.testPlanName,jdbcType=VARCHAR},
+      </if>
       <if test="record.name != null">
         name = #{record.name,jdbcType=VARCHAR},
       </if>
@@ -263,6 +273,7 @@
     set id = #{record.id,jdbcType=INTEGER},
       project_id = #{record.projectId,jdbcType=INTEGER},
       test_plan_id = #{record.testPlanId,jdbcType=INTEGER},
+      test_plan_name = #{record.testPlanName,jdbcType=VARCHAR},
       name = #{record.name,jdbcType=VARCHAR},
       description = #{record.description,jdbcType=VARCHAR},
       run_mode = #{record.runMode,jdbcType=TINYINT},
@@ -285,6 +296,9 @@
       </if>
       <if test="testPlanId != null">
         test_plan_id = #{testPlanId,jdbcType=INTEGER},
+      </if>
+      <if test="testPlanName != null">
+        test_plan_name = #{testPlanName,jdbcType=VARCHAR},
       </if>
       <if test="name != null">
         name = #{name,jdbcType=VARCHAR},
@@ -323,6 +337,7 @@
     update test_task
     set project_id = #{projectId,jdbcType=INTEGER},
       test_plan_id = #{testPlanId,jdbcType=INTEGER},
+      test_plan_name = #{testPlanName,jdbcType=VARCHAR},
       name = #{name,jdbcType=VARCHAR},
       description = #{description,jdbcType=VARCHAR},
       run_mode = #{runMode,jdbcType=TINYINT},

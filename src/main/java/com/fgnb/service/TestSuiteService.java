@@ -1,8 +1,8 @@
 package com.fgnb.service;
 
+import com.fgnb.mbg.po.TestSuiteExample;
+import com.fgnb.model.UserCache;
 import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
-import com.fgnb.dao.TestSuiteDao;
 import com.fgnb.mbg.mapper.TestSuiteMapper;
 import com.fgnb.mbg.po.TestSuite;
 import com.fgnb.model.Page;
@@ -12,9 +12,11 @@ import com.fgnb.model.vo.TestSuiteVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by jiangyitao.
@@ -24,8 +26,6 @@ public class TestSuiteService extends BaseService {
 
     @Autowired
     private TestSuiteMapper testSuiteMapper;
-    @Autowired
-    private TestSuiteDao testSuiteDao;
 
     public Response add(TestSuite testSuite) {
 
@@ -76,15 +76,42 @@ public class TestSuiteService extends BaseService {
 
     public Response list(TestSuite testSuite, PageRequest pageRequest) {
         boolean needPaging = pageRequest.needPaging();
-
         if(needPaging) {
-            //分页
             PageHelper.startPage(pageRequest.getPageNum(),pageRequest.getPageSize());
         }
-        List<TestSuiteVo> testSuiteVos = testSuiteDao.selectByTestSuite(testSuite);
+
+        List<TestSuite> testSuites = selectByTestSuite(testSuite);
+        List<TestSuiteVo> testSuiteVos = testSuites.stream().map(s -> TestSuiteVo.convert(s, UserCache.getNickNameById(s.getCreatorUid()))).collect(Collectors.toList());
+
         if(needPaging) {
-            return Response.success(Page.convert(testSuiteVos));
+            // java8 stream会导致PageHelper total计算错误
+            // 所以这里用testSuites计算total
+            long total = Page.getTotal(testSuites);
+            return Response.success(Page.build(testSuiteVos,total));
+        } else {
+            return Response.success(testSuiteVos);
         }
-        return Response.success(testSuiteVos);
     }
+
+    public List<TestSuite> selectByTestSuite(TestSuite testSuite) {
+        if (testSuite == null) {
+            testSuite = new TestSuite();
+        }
+
+        TestSuiteExample testSuiteExample = new TestSuiteExample();
+        TestSuiteExample.Criteria criteria = testSuiteExample.createCriteria();
+
+        if(testSuite.getId() != null) {
+            criteria.andIdEqualTo(testSuite.getId());
+        }
+        if(testSuite.getProjectId() != null) {
+            criteria.andProjectIdEqualTo(testSuite.getProjectId());
+        }
+        if(!StringUtils.isEmpty(testSuite.getName())) {
+            criteria.andNameEqualTo(testSuite.getName());
+        }
+
+        return testSuiteMapper.selectByExampleWithBLOBs(testSuiteExample);
+    }
+
 }

@@ -5,7 +5,7 @@
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="description" jdbcType="VARCHAR" property="description" />
-    <result column="type" jdbcType="TINYINT" property="type" />
+    <result column="platform" jdbcType="TINYINT" property="platform" />
     <result column="creator_uid" jdbcType="INTEGER" property="creatorUid" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
@@ -68,7 +68,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, name, description, type, creator_uid, create_time
+    id, name, description, platform, creator_uid, create_time
   </sql>
   <select id="selectByExample" parameterType="com.fgnb.mbg.po.ProjectExample" resultMap="BaseResultMap">
     select
@@ -104,9 +104,9 @@
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into project (name, description, type, 
+    insert into project (name, description, platform, 
       creator_uid, create_time)
-    values (#{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{type,jdbcType=TINYINT}, 
+    values (#{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{platform,jdbcType=TINYINT}, 
       #{creatorUid,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.fgnb.mbg.po.Project">
@@ -121,8 +121,8 @@
       <if test="description != null">
         description,
       </if>
-      <if test="type != null">
-        type,
+      <if test="platform != null">
+        platform,
       </if>
       <if test="creatorUid != null">
         creator_uid,
@@ -138,8 +138,8 @@
       <if test="description != null">
         #{description,jdbcType=VARCHAR},
       </if>
-      <if test="type != null">
-        #{type,jdbcType=TINYINT},
+      <if test="platform != null">
+        #{platform,jdbcType=TINYINT},
       </if>
       <if test="creatorUid != null">
         #{creatorUid,jdbcType=INTEGER},
@@ -167,8 +167,8 @@
       <if test="record.description != null">
         description = #{record.description,jdbcType=VARCHAR},
       </if>
-      <if test="record.type != null">
-        type = #{record.type,jdbcType=TINYINT},
+      <if test="record.platform != null">
+        platform = #{record.platform,jdbcType=TINYINT},
       </if>
       <if test="record.creatorUid != null">
         creator_uid = #{record.creatorUid,jdbcType=INTEGER},
@@ -186,7 +186,7 @@
     set id = #{record.id,jdbcType=INTEGER},
       name = #{record.name,jdbcType=VARCHAR},
       description = #{record.description,jdbcType=VARCHAR},
-      type = #{record.type,jdbcType=TINYINT},
+      platform = #{record.platform,jdbcType=TINYINT},
       creator_uid = #{record.creatorUid,jdbcType=INTEGER},
       create_time = #{record.createTime,jdbcType=TIMESTAMP}
     <if test="_parameter != null">
@@ -202,8 +202,8 @@
       <if test="description != null">
         description = #{description,jdbcType=VARCHAR},
       </if>
-      <if test="type != null">
-        type = #{type,jdbcType=TINYINT},
+      <if test="platform != null">
+        platform = #{platform,jdbcType=TINYINT},
       </if>
       <if test="creatorUid != null">
         creator_uid = #{creatorUid,jdbcType=INTEGER},
@@ -218,7 +218,7 @@
     update project
     set name = #{name,jdbcType=VARCHAR},
       description = #{description,jdbcType=VARCHAR},
-      type = #{type,jdbcType=TINYINT},
+      platform = #{platform,jdbcType=TINYINT},
       creator_uid = #{creatorUid,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}

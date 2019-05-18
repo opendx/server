@@ -1,8 +1,8 @@
 package com.fgnb.service;
 
+import com.fgnb.mbg.po.ProjectExample;
+import com.fgnb.model.UserCache;
 import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
-import com.fgnb.dao.ProjectDao;
 import com.fgnb.mbg.mapper.ProjectMapper;
 import com.fgnb.mbg.po.Project;
 import com.fgnb.model.PageRequest;
@@ -12,9 +12,11 @@ import com.fgnb.model.vo.ProjectVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by jiangyitao.
@@ -24,8 +26,6 @@ public class ProjectService extends BaseService {
 
     @Autowired
     private ProjectMapper projectMapper;
-    @Autowired
-    private ProjectDao projectDao;
 
     /**
      * 新增项目
@@ -101,14 +101,39 @@ public class ProjectService extends BaseService {
     public Response list(Project project, PageRequest pageRequest) {
         boolean needPaging = pageRequest.needPaging();
         if (needPaging) {
-            //分页
             PageHelper.startPage(pageRequest.getPageNum(), pageRequest.getPageSize());
         }
-        List<ProjectVo> projectVos = projectDao.selectByProject(project);
+
+        List<Project> projects = selectByProject(project);
+        List<ProjectVo> projectVos = projects.stream().map(p -> ProjectVo.convert(p, UserCache.getNickNameById(p.getCreatorUid()))).collect(Collectors.toList());
+
         if (needPaging) {
-            return Response.success(Page.convert(projectVos));
+            // java8 stream会导致PageHelper total计算错误
+            // 所以这里用projects计算total
+            long total = Page.getTotal(projects);
+            return Response.success(Page.build(projectVos, total));
+        } else {
+            return Response.success(projectVos);
         }
-        return Response.success(projectVos);
     }
 
+    public List<Project> selectByProject(Project project) {
+        if (project == null) {
+            project = new Project();
+        }
+
+        ProjectExample projectExample = new ProjectExample();
+        ProjectExample.Criteria criteria = projectExample.createCriteria();
+        if (project.getId() != null) {
+            criteria.andIdEqualTo(project.getId());
+        }
+        if (!StringUtils.isEmpty(project.getName())) {
+            criteria.andNameEqualTo(project.getName());
+        }
+        if (project.getPlatform() != null) {
+            criteria.andPlatformEqualTo(project.getPlatform());
+        }
+        projectExample.setOrderByClause("create_time desc");
+        return projectMapper.selectByExample(projectExample);
+    }
 }

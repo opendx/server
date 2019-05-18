@@ -22,4 +22,8 @@ public class UserCache {
     public static void add(Integer uid, User user) {
         cache.put(uid, user);
     }
+
+    public static String getNickNameById(Integer uid) {
+        return getById(uid).getNickName();
+    }
 }

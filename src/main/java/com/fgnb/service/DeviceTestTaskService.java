@@ -79,8 +79,24 @@ public class DeviceTestTaskService {
             PageHelper.startPage(pageRequest.getPageNum(), pageRequest.getPageSize());
         }
 
+        List<DeviceTestTask> deviceTestTasks = selectByDeviceTestTask(deviceTestTask);
+
+        if (needPaging) {
+            long total = Page.getTotal(deviceTestTasks);
+            return Response.success(Page.build(deviceTestTasks,total));
+        } else {
+            return Response.success(deviceTestTasks);
+        }
+    }
+
+    public List<DeviceTestTask> selectByDeviceTestTask(DeviceTestTask deviceTestTask) {
+        if(deviceTestTask == null) {
+            deviceTestTask = new DeviceTestTask();
+        }
+
         DeviceTestTaskExample deviceTestTaskExample = new DeviceTestTaskExample();
         DeviceTestTaskExample.Criteria criteria = deviceTestTaskExample.createCriteria();
+
         if (deviceTestTask.getId() != null) {
             criteria.andIdEqualTo(deviceTestTask.getId());
         }
@@ -93,13 +109,8 @@ public class DeviceTestTaskService {
         if (deviceTestTask.getStatus() != null) {
             criteria.andStatusEqualTo(deviceTestTask.getStatus());
         }
-        List<DeviceTestTask> deviceTestTasks = deviceTestTaskMapper.selectByExampleWithBLOBs(deviceTestTaskExample);
 
-        if (needPaging) {
-            return Response.success(Page.convert(deviceTestTasks));
-        } else {
-            return Response.success(deviceTestTasks);
-        }
+        return deviceTestTaskMapper.selectByExampleWithBLOBs(deviceTestTaskExample);
     }
 
     public Response findUnStartTestTasksByDeviceIds(String[] deviceIds) {

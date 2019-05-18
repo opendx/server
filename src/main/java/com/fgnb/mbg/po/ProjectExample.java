@@ -305,63 +305,63 @@ public class ProjectExample {
             return (Criteria) this;
         }
 
-        public Criteria andTypeIsNull() {
-            addCriterion("type is null");
+        public Criteria andPlatformIsNull() {
+            addCriterion("platform is null");
             return (Criteria) this;
         }
 
-        public Criteria andTypeIsNotNull() {
-            addCriterion("type is not null");
+        public Criteria andPlatformIsNotNull() {
+            addCriterion("platform is not null");
             return (Criteria) this;
         }
 
-        public Criteria andTypeEqualTo(Integer value) {
-            addCriterion("type =", value, "type");
+        public Criteria andPlatformEqualTo(Integer value) {
+            addCriterion("platform =", value, "platform");
             return (Criteria) this;
         }
 
-        public Criteria andTypeNotEqualTo(Integer value) {
-            addCriterion("type <>", value, "type");
+        public Criteria andPlatformNotEqualTo(Integer value) {
+            addCriterion("platform <>", value, "platform");
             return (Criteria) this;
         }
 
-        public Criteria andTypeGreaterThan(Integer value) {
-            addCriterion("type >", value, "type");
+        public Criteria andPlatformGreaterThan(Integer value) {
+            addCriterion("platform >", value, "platform");
             return (Criteria) this;
         }
 
-        public Criteria andTypeGreaterThanOrEqualTo(Integer value) {
-            addCriterion("type >=", value, "type");
+        public Criteria andPlatformGreaterThanOrEqualTo(Integer value) {
+            addCriterion("platform >=", value, "platform");
             return (Criteria) this;
         }
 
-        public Criteria andTypeLessThan(Integer value) {
-            addCriterion("type <", value, "type");
+        public Criteria andPlatformLessThan(Integer value) {
+            addCriterion("platform <", value, "platform");
             return (Criteria) this;
         }
 
-        public Criteria andTypeLessThanOrEqualTo(Integer value) {
-            addCriterion("type <=", value, "type");
+        public Criteria andPlatformLessThanOrEqualTo(Integer value) {
+            addCriterion("platform <=", value, "platform");
             return (Criteria) this;
         }
 
-        public Criteria andTypeIn(List<Integer> values) {
-            addCriterion("type in", values, "type");
+        public Criteria andPlatformIn(List<Integer> values) {
+            addCriterion("platform in", values, "platform");
             return (Criteria) this;
         }
 
-        public Criteria andTypeNotIn(List<Integer> values) {
-            addCriterion("type not in", values, "type");
+        public Criteria andPlatformNotIn(List<Integer> values) {
+            addCriterion("platform not in", values, "platform");
             return (Criteria) this;
         }
 
-        public Criteria andTypeBetween(Integer value1, Integer value2) {
-            addCriterion("type between", value1, value2, "type");
+        public Criteria andPlatformBetween(Integer value1, Integer value2) {
+            addCriterion("platform between", value1, value2, "platform");
             return (Criteria) this;
         }
 
-        public Criteria andTypeNotBetween(Integer value1, Integer value2) {
-            addCriterion("type not between", value1, value2, "type");
+        public Criteria andPlatformNotBetween(Integer value1, Integer value2) {
+            addCriterion("platform not between", value1, value2, "platform");
             return (Criteria) this;
         }
 

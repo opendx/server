@@ -1,8 +1,8 @@
 package com.fgnb.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.fgnb.model.UserCache;
 import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import com.fgnb.agent.AgentApi;
 import com.fgnb.dao.ActionDao;
 import com.fgnb.mbg.mapper.ActionMapper;
@@ -143,11 +143,45 @@ public class ActionService extends BaseService {
         if (needPaging) {
             PageHelper.startPage(pageRequest.getPageNum(), pageRequest.getPageSize());
         }
-        List<ActionVo> actionVos = actionDao.selectByAction(action);
+        List<Action> actions = selectByAction(action);
+        List<ActionVo> actionVos = actions.stream()
+                .map(a -> {
+                    String creatorNickName = a.getCreatorUid() == null ? null : UserCache.getNickNameById(a.getCreatorUid());
+                    String updatorNickName = a.getUpdatorUid() == null ? null : UserCache.getNickNameById(a.getUpdatorUid());
+                    return ActionVo.convert(a,creatorNickName,updatorNickName);
+                }).collect(Collectors.toList());
         if (needPaging) {
-            return Response.success(Page.convert(actionVos));
+            // java8 stream会导致PageHelper total计算错误
+            // 所以这里用actions计算total
+            long total = Page.getTotal(actions);
+            return Response.success(Page.build(actionVos,total));
+        } else {
+            return Response.success(actionVos);
         }
-        return Response.success(actionVos);
+    }
+
+    public List<Action> selectByAction(Action action) {
+        if(action == null) {
+            action = new Action();
+        }
+
+        ActionExample actionExample = new ActionExample();
+        ActionExample.Criteria criteria = actionExample.createCriteria();
+
+        if(action.getId() != null) {
+            criteria.andIdEqualTo(action.getId());
+        }
+
+        if(action.getProjectId() != null) {
+            criteria.andProjectIdEqualTo(action.getProjectId());
+        }
+
+        if(action.getType() != null) {
+            criteria.andTypeEqualTo(action.getType());
+        }
+
+        actionExample.setOrderByClause("create_time desc");
+        return actionMapper.selectByExampleWithBLOBs(actionExample);
     }
 
     /**
@@ -176,7 +210,7 @@ public class ActionService extends BaseService {
 
         //同一项目类型的基础action
         ActionExample.Criteria criteria3 = actionExample.createCriteria();
-        criteria3.andProjectIdIsNull().andTypeEqualTo(Action.TYPE_BASE).andProjectTypeEqualTo(project.getType());
+        criteria3.andProjectIdIsNull().andTypeEqualTo(Action.TYPE_BASE).andProjectTypeEqualTo(project.getPlatform());
 
         actionExample.or(criteria2);
         actionExample.or(criteria3);

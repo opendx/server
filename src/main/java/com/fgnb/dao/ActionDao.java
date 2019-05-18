@@ -10,8 +10,5 @@ import java.util.List;
  * Created by jiangyitao.
  */
 public interface ActionDao {
-
-    List<ActionVo> selectByAction(Action action);
-
     List<Action> selectByStepActionId(@Param("stepActionId") Integer stepActionId);
 }

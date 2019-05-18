@@ -40,6 +40,14 @@ public class TestTask implements Serializable {
     private Integer testPlanId;
 
     /**
+     * 测试计划名
+     *
+     * @mbg.generated
+     */
+    @NotBlank(message = "测试计划名不能为空")
+    private String testPlanName;
+
+    /**
      * 任务名
      *
      * @mbg.generated
@@ -137,6 +145,14 @@ public class TestTask implements Serializable {
         this.testPlanId = testPlanId;
     }
 
+    public String getTestPlanName() {
+        return testPlanName;
+    }
+
+    public void setTestPlanName(String testPlanName) {
+        this.testPlanName = testPlanName;
+    }
+
     public String getName() {
         return name;
     }
@@ -226,6 +242,7 @@ public class TestTask implements Serializable {
         sb.append(", id=").append(id);
         sb.append(", projectId=").append(projectId);
         sb.append(", testPlanId=").append(testPlanId);
+        sb.append(", testPlanName=").append(testPlanName);
         sb.append(", name=").append(name);
         sb.append(", description=").append(description);
         sb.append(", runMode=").append(runMode);

@@ -1,8 +1,7 @@
 package com.fgnb.service;
 
+import com.fgnb.model.UserCache;
 import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
-import com.fgnb.dao.TestTaskDao;
 import com.fgnb.exception.BusinessException;
 import com.fgnb.mbg.mapper.*;
 import com.fgnb.mbg.po.*;
@@ -33,8 +32,6 @@ public class TestTaskService extends BaseService {
 
     @Autowired
     private TestTaskMapper testTaskMapper;
-    @Autowired
-    private TestTaskDao testTaskDao;
     @Autowired
     private TestPlanService testPlanService;
     @Autowired
@@ -204,11 +201,42 @@ public class TestTaskService extends BaseService {
         if (needPaging) {
             PageHelper.startPage(pageRequest.getPageNum(), pageRequest.getPageSize());
         }
-        List<TestTaskVo> testTaskVos = testTaskDao.selectByTestTask(testTask);
+
+        List<TestTask> testTasks = selectByTestTask(testTask);
+        List<TestTaskVo> testTaskVos = testTasks.stream().map(t -> TestTaskVo.convert(t, UserCache.getNickNameById(t.getCreatorUid()))).collect(Collectors.toList());
+
         if (needPaging) {
-            return Response.success(Page.convert(testTaskVos));
+            // java8 stream会导致PageHelper total计算错误
+            // 所以这里用testTasks计算total
+            long total = Page.getTotal(testTasks);
+            return Response.success(Page.build(testTaskVos,total));
         } else {
             return Response.success(testTaskVos);
         }
+    }
+
+    public List<TestTask> selectByTestTask(TestTask testTask) {
+        if(testTask == null) {
+            testTask = new TestTask();
+        }
+
+        TestTaskExample testTaskExample = new TestTaskExample();
+        TestTaskExample.Criteria criteria = testTaskExample.createCriteria();
+
+        if(testTask.getId() != null) {
+            criteria.andIdEqualTo(testTask.getId());
+        }
+        if(testTask.getProjectId() != null) {
+            criteria.andProjectIdEqualTo(testTask.getProjectId());
+        }
+        if(testTask.getTestPlanId() != null) {
+            criteria.andTestPlanIdEqualTo(testTask.getTestPlanId());
+        }
+        if(testTask.getStatus() != null) {
+            criteria.andStatusEqualTo(testTask.getStatus());
+        }
+
+        testTaskExample.setOrderByClause("create_time desc");
+        return testTaskMapper.selectByExample(testTaskExample);
     }
 }
