@@ -73,8 +73,7 @@ public class PageService extends BaseService {
             return Response.fail("pageId不能为空");
         }
         try {
-            // todo 如果categoryid为空，无法修改page分类
-            int updateRow = pageMapper.updateByPrimaryKeySelective(page);
+            int updateRow = pageMapper.updateByPrimaryKey(page);
             if (updateRow != 1) {
                 return Response.fail("更新失败，请稍后重试");
             }
