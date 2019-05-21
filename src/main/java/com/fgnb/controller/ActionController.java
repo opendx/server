@@ -69,9 +69,9 @@ public class ActionController {
      * @param projectId
      * @return
      */
-    @GetMapping("/selectable/{projectId}")
-    public Response findSelectableActions(@PathVariable Integer projectId) {
-        return actionService.findSelectableActions(projectId);
+    @GetMapping("/selectable/{projectId}/{platform}")
+    public Response findSelectableActions(@PathVariable Integer projectId, @PathVariable Integer platform) {
+        return actionService.findSelectableActions(projectId, platform);
     }
 
     /**

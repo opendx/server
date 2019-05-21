@@ -132,4 +132,10 @@ public class DeviceService extends BaseService {
         }
         return Response.success(deviceMapper.selectByExample(deviceExample));
     }
+
+    public List<Device> getOnlineDevicesByAgentIp(String agentIp) {
+        DeviceExample deviceExample = new DeviceExample();
+        deviceExample.createCriteria().andAgentIpEqualTo(agentIp).andStatusNotEqualTo(Device.OFFLINE_STATUS);
+        return deviceMapper.selectByExample(deviceExample);
+    }
 }

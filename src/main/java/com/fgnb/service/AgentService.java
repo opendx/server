@@ -3,9 +3,6 @@ package com.fgnb.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.fgnb.agent.AgentApi;
-import com.fgnb.mbg.mapper.DeviceMapper;
-import com.fgnb.mbg.po.Device;
-import com.fgnb.mbg.po.DeviceExample;
 import com.fgnb.model.Response;
 import com.fgnb.model.vo.AgentVo;
 import de.codecentric.boot.admin.server.domain.entities.Instance;
@@ -28,7 +25,7 @@ public class AgentService {
     private InstanceRegistry instanceRegistry;
 
     @Autowired
-    private DeviceMapper deviceMapper;
+    private DeviceService deviceService;
 
     @Autowired
     private AgentApi agentApi;
@@ -50,10 +47,7 @@ public class AgentService {
                     agentVo.setAgentPort(agentPort);
 
                     //在线的设备
-                    DeviceExample deviceExample = new DeviceExample();
-                    deviceExample.createCriteria().andAgentIpEqualTo(agentIp).andStatusNotEqualTo(Device.OFFLINE_STATUS);
-                    List<Device> onlineDevices = deviceMapper.selectByExample(deviceExample);
-                    agentVo.setDevices(onlineDevices);
+                    agentVo.setDevices(deviceService.getOnlineDevicesByAgentIp(agentIp));
 
                     try {
                         Response response = agentApi.getSeleniumDrivers(agentIp, agentPort);

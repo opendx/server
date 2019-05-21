@@ -6,8 +6,6 @@ import com.github.pagehelper.PageHelper;
 import com.fgnb.agent.AgentApi;
 import com.fgnb.dao.ActionDao;
 import com.fgnb.mbg.mapper.ActionMapper;
-import com.fgnb.mbg.mapper.GlobalVarMapper;
-import com.fgnb.mbg.mapper.ProjectMapper;
 import com.fgnb.mbg.po.*;
 import com.fgnb.model.Page;
 import com.fgnb.model.PageRequest;
@@ -35,9 +33,7 @@ public class ActionService extends BaseService {
     @Autowired
     private ActionDao actionDao;
     @Autowired
-    private ProjectMapper projectMapper;
-    @Autowired
-    private GlobalVarMapper globalVarMapper;
+    private GlobalVarService globalVarService;
     @Autowired
     private AgentApi agentApi;
 
@@ -190,14 +186,11 @@ public class ActionService extends BaseService {
      * @param projectId
      * @return
      */
-    public Response findSelectableActions(Integer projectId) {
-        if (projectId == null) {
-            return Response.fail("projectId不能为空");
+    public Response findSelectableActions(Integer projectId, Integer platform) {
+        if (projectId == null || platform == null) {
+            return Response.fail("projectId || platform不能为空");
         }
-        Project project = projectMapper.selectByPrimaryKey(projectId);
-        if (project == null) {
-            return Response.fail("项目不存在");
-        }
+
         ActionExample actionExample = new ActionExample();
 
         //同一个项目下自定义action
@@ -210,7 +203,7 @@ public class ActionService extends BaseService {
 
         //同一项目类型的基础action
         ActionExample.Criteria criteria3 = actionExample.createCriteria();
-        criteria3.andProjectIdIsNull().andTypeEqualTo(Action.TYPE_BASE).andProjectTypeEqualTo(project.getPlatform());
+        criteria3.andProjectIdIsNull().andTypeEqualTo(Action.TYPE_BASE).andProjectTypeEqualTo(platform);
 
         actionExample.or(criteria2);
         actionExample.or(criteria3);
@@ -238,9 +231,9 @@ public class ActionService extends BaseService {
         new ActionTreeBuilder(actionMapper).build(Arrays.asList(action));
 
         //该项目下的全局变量
-        GlobalVarExample globalVarExample = new GlobalVarExample();
-        globalVarExample.createCriteria().andProjectIdEqualTo(action.getProjectId());
-        List<GlobalVar> globalVars = globalVarMapper.selectByExample(globalVarExample);
+        GlobalVar globalVar = new GlobalVar();
+        globalVar.setProjectId(action.getProjectId());
+        List<GlobalVar> globalVars = globalVarService.selectByGlobalVar(globalVar);
 
         JSONObject requestBody = new JSONObject();
         requestBody.put("action", action);
@@ -266,6 +259,10 @@ public class ActionService extends BaseService {
         actionExample.createCriteria().andIdIn(actionIds);
 
         return actionMapper.selectByExampleWithBLOBs(actionExample);
+    }
+
+    public Action selectByPrimaryKey(Integer actioniId) {
+        return actionMapper.selectByPrimaryKey(actioniId);
     }
 
 }

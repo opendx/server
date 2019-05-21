@@ -43,6 +43,7 @@ public class DeviceTestTaskService {
             return Response.fail("更新失败，请稍后重试");
         }
 
+        //todo 统计改为定时任务
         //每个设备测试完成，需要检查是否所有设备都测试完成
         if (deviceTestTask.getStatus() != null && deviceTestTask.getStatus() == DeviceTestTask.FINISHED_STATUS) {
             deviceTestTask = deviceTestTaskMapper.selectByPrimaryKey(deviceTestTask.getId());

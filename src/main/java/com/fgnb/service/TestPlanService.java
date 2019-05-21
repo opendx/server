@@ -4,7 +4,6 @@ import com.fgnb.mbg.po.*;
 import com.fgnb.model.UserCache;
 import com.fgnb.model.vo.TestPlanVo;
 import com.github.pagehelper.PageHelper;
-import com.fgnb.mbg.mapper.ActionMapper;
 import com.fgnb.mbg.mapper.TestPlanMapper;
 import com.fgnb.mbg.mapper.TestSuiteMapper;
 import com.fgnb.model.Page;
@@ -34,8 +33,6 @@ public class TestPlanService extends BaseService {
     private TestSuiteMapper testSuiteMapper;
     @Autowired
     private ActionService actionService;
-    @Autowired
-    private ActionMapper actionMapper;
 
     public Response add(TestPlan testPlan) {
         testPlan.setCreateTime(new Date());
@@ -151,7 +148,7 @@ public class TestPlanService extends BaseService {
         BeanUtils.copyProperties(testPlan,testPlanDetailInfo);
 
         testPlan.getBefores().forEach(before -> {
-            Action action = actionMapper.selectByPrimaryKey(before.getActionId());
+            Action action = actionService.selectByPrimaryKey(before.getActionId());
             if(before.getType() == Before.BEFORE_METHOD_TYPE) {
                 testPlanDetailInfo.setBeforeMethodName(action.getName());
             }else if(before.getType() == Before.BEFORE_SUITE_TYPE) {
