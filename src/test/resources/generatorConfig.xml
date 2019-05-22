@@ -29,9 +29,9 @@
             <property name="forceBigDecimals" value="false"></property>
         </javaTypeResolver>
 
-        <javaModelGenerator targetPackage="com.fgnb.mbg.po" targetProject="C:\Users\jyt\Downloads\server\src\main\java"/>
-        <sqlMapGenerator targetPackage="com.fgnb.mbg.mapper" targetProject="C:\Users\jyt\Downloads\server\src\main\resources"/>
-        <javaClientGenerator type="XMLMAPPER" targetPackage="com.fgnb.mbg.mapper" targetProject="C:\Users\jyt\Downloads\server\src\main\java"/>
+        <javaModelGenerator targetPackage="com.fgnb.mbg.po" targetProject="D:\fgnb-server\fgnb-server\src\main\java"/>
+        <sqlMapGenerator targetPackage="com.fgnb.mbg.mapper" targetProject="D:\fgnb-server\fgnb-server\src\main\resources"/>
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.fgnb.mbg.mapper" targetProject="D:\fgnb-server\fgnb-server\src\main\java"/>
 
         <!--<table tableName="action">-->
             <!--<generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
@@ -64,13 +64,12 @@
             <!--<columnOverride column="test_suites" typeHandler="com.fgnb.typehandler.IntegerListTypeHandler" javaType="java.util.List&lt;Integer&gt;" jdbcType="LONGVARCHAR"/>-->
             <!--<columnOverride column="befores" typeHandler="com.fgnb.typehandler.BeforeListTypeHandler" javaType="java.util.List&lt;com.fgnb.model.testplan.Before&gt;" jdbcType="LONGVARCHAR"/>-->
         <!--</table>-->
-        <!--<table tableName="test_suite">-->
-            <!--<generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
-            <!--<columnOverride column="testcases" typeHandler="com.fgnb.typehandler.IntegerListTypeHandler" javaType="java.util.List&lt;Integer&gt;" jdbcType="LONGVARCHAR"/>-->
-        <!--</table>-->
-        <table tableName="test_task">
+        <table tableName="test_suite">
             <generatedKey column="id" sqlStatement="MySql" identity="true"/>
         </table>
+        <!--<table tableName="test_task">-->
+            <!--<generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
+        <!--</table>-->
         <!--<table tableName="user">-->
             <!--<generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
         <!--</table>-->

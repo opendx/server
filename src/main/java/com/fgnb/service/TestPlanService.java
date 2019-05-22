@@ -129,9 +129,11 @@ public class TestPlanService extends BaseService {
     public List<Action> getTestcasesByTestPlan(TestPlan testPlan) {
         TestSuiteExample testSuiteExample = new TestSuiteExample();
         testSuiteExample.createCriteria().andIdIn(testPlan.getTestSuites());
-        List<TestSuite> testSuites = testSuiteMapper.selectByExampleWithBLOBs(testSuiteExample);
-        List<Integer> testcaseIds = testSuites.stream().flatMap(testSuite -> testSuite.getTestcases().stream()).collect(Collectors.toList());
-        return actionService.findByIds(testcaseIds);
+        // todo reflact
+//        List<TestSuite> testSuites = testSuiteMapper.selectByExampleWithBLOBs(testSuiteExample);
+//        List<Integer> testcaseIds = testSuites.stream().flatMap(testSuite -> testSuite.getTestcases().stream()).collect(Collectors.toList());
+//        return actionService.findByIds(testcaseIds);
+        return null;
     }
 
     public Response getDetailInfo(Integer testPlanId) {

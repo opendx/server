@@ -2,9 +2,7 @@ package com.fgnb.mbg.mapper;
 
 import com.fgnb.mbg.po.TestSuite;
 import com.fgnb.mbg.po.TestSuiteExample;
-
 import java.util.List;
-
 import org.apache.ibatis.annotations.Param;
 
 public interface TestSuiteMapper {
@@ -18,21 +16,15 @@ public interface TestSuiteMapper {
 
     int insertSelective(TestSuite record);
 
-    List<TestSuite> selectByExampleWithBLOBs(TestSuiteExample example);
-
     List<TestSuite> selectByExample(TestSuiteExample example);
 
     TestSuite selectByPrimaryKey(Integer id);
 
     int updateByExampleSelective(@Param("record") TestSuite record, @Param("example") TestSuiteExample example);
 
-    int updateByExampleWithBLOBs(@Param("record") TestSuite record, @Param("example") TestSuiteExample example);
-
     int updateByExample(@Param("record") TestSuite record, @Param("example") TestSuiteExample example);
 
     int updateByPrimaryKeySelective(TestSuite record);
-
-    int updateByPrimaryKeyWithBLOBs(TestSuite record);
 
     int updateByPrimaryKey(TestSuite record);
 }

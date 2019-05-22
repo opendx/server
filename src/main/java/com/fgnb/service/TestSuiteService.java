@@ -111,7 +111,7 @@ public class TestSuiteService extends BaseService {
             criteria.andNameEqualTo(testSuite.getName());
         }
 
-        return testSuiteMapper.selectByExampleWithBLOBs(testSuiteExample);
+        return testSuiteMapper.selectByExample(testSuiteExample);
     }
 
 }

@@ -1,7 +1,6 @@
 package com.fgnb.mbg.po;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
@@ -50,14 +49,6 @@ public class TestSuite implements Serializable {
      * @mbg.generated
      */
     private Date createTime;
-
-    /**
-     * 测试用例：action表type为3的主键id
-     *
-     * @mbg.generated
-     */
-    @NotEmpty(message = "至少要有一条测试用例")
-    private java.util.List<Integer> testcases;
 
     private static final long serialVersionUID = 1L;
 
@@ -109,14 +100,6 @@ public class TestSuite implements Serializable {
         this.createTime = createTime;
     }
 
-    public java.util.List<Integer> getTestcases() {
-        return testcases;
-    }
-
-    public void setTestcases(java.util.List<Integer> testcases) {
-        this.testcases = testcases;
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -129,7 +112,6 @@ public class TestSuite implements Serializable {
         sb.append(", projectId=").append(projectId);
         sb.append(", creatorUid=").append(creatorUid);
         sb.append(", createTime=").append(createTime);
-        sb.append(", testcases=").append(testcases);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();
