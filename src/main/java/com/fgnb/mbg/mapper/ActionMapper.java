@@ -2,9 +2,7 @@ package com.fgnb.mbg.mapper;
 
 import com.fgnb.mbg.po.Action;
 import com.fgnb.mbg.po.ActionExample;
-
 import java.util.List;
-
 import org.apache.ibatis.annotations.Param;
 
 public interface ActionMapper {

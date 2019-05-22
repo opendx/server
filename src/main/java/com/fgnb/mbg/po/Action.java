@@ -1,31 +1,23 @@
 package com.fgnb.mbg.po;
 
-import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
 public class Action implements Serializable {
 
     /**
-     * 基础action
+     * 基础action(代码形式的)
      */
     public static final Integer TYPE_BASE = 1;
     /**
-     * 自定义action
+     * 用户在网页前端封装的action
      */
-    public static final Integer TYPE_CUSTOM = 2;
+    public static final Integer TYPE_ENCAPSULATION = 2;
     /**
      * 测试用例action
      */
     public static final Integer TYPE_TESTCASE = 3;
-    /**
-     * 测试计划前置action
-     */
-    public static final Integer TYPE_TEST_PLAN_BEFORE = 4;
-
     /**
      * 有返回值
      */
@@ -63,35 +55,11 @@ public class Action implements Serializable {
     private String description;
 
     /**
-     * 所属的项目id
+     * 类型：1.基础action（代码形式的） 2.用户在网页前端封装的action 3.测试用例
      *
      * @mbg.generated
      */
-    @NotNull(message = "项目id不能为空")
-    private Integer projectId;
-
-    /**
-     * 所属的page id
-     *
-     * @mbg.generated
-     */
-    private Integer pageId;
-
-    /**
-     * 类型：1.基础的action 2.用户自定义的action 3.测试用例 4.测试计划的前置action
-     *
-     * @mbg.generated
-     */
-    @NotNull(message = "actionType不能为空")
     private Integer type;
-
-    /**
-     * 1.android 2.ios 3.web
-     *
-     * @mbg.generated
-     */
-    @NotNull(message = "项目类型不能为空")
-    private Integer projectType;
 
     /**
      * 基础action专用：类名
@@ -108,19 +76,25 @@ public class Action implements Serializable {
     private Integer needDriver;
 
     /**
-     * 由于基础action是不会在表中记录returnValue的，为了区分是否有返回值，加了这个字段
+     * 是否有返回值
      *
      * @mbg.generated
      */
-    @NotNull(message = "是否有返回值不能为空")
     private Integer hasReturnValue;
 
     /**
-     * action的返回值，返回值都是用局部变量保存的，这里保存的局部变量的名字
+     * 返回值
      *
      * @mbg.generated
      */
     private String returnValue;
+
+    /**
+     * 返回值描述
+     *
+     * @mbg.generated
+     */
+    private String returnValueDesc;
 
     /**
      * 创建人id
@@ -151,18 +125,38 @@ public class Action implements Serializable {
     private Date updateTime;
 
     /**
-     * 所属的分类
+     * 1.android 2.ios
      *
      * @mbg.generated
      */
-    private Integer categoryId;
+    private Integer platform;
+
+    /**
+     * 所属的page id
+     *
+     * @mbg.generated
+     */
+    private Integer pageId;
+
+    /**
+     * 所属的项目id
+     *
+     * @mbg.generated
+     */
+    private Integer projectId;
+
+    /**
+     * 所属的测试集
+     *
+     * @mbg.generated
+     */
+    private Integer testSuiteId;
 
     /**
      * 方法参数
      *
      * @mbg.generated
      */
-    @Valid
     private java.util.List<com.fgnb.model.action.Param> params;
 
     /**
@@ -170,7 +164,6 @@ public class Action implements Serializable {
      *
      * @mbg.generated
      */
-    @Valid
     private java.util.List<com.fgnb.model.action.LocalVar> localVars;
 
     /**
@@ -178,8 +171,6 @@ public class Action implements Serializable {
      *
      * @mbg.generated
      */
-    @Valid
-    @NotEmpty(message = "步骤不能为空")
     private java.util.List<com.fgnb.model.action.Step> steps;
 
     private static final long serialVersionUID = 1L;
@@ -208,36 +199,12 @@ public class Action implements Serializable {
         this.description = description;
     }
 
-    public Integer getProjectId() {
-        return projectId;
-    }
-
-    public void setProjectId(Integer projectId) {
-        this.projectId = projectId;
-    }
-
-    public Integer getPageId() {
-        return pageId;
-    }
-
-    public void setPageId(Integer pageId) {
-        this.pageId = pageId;
-    }
-
     public Integer getType() {
         return type;
     }
 
     public void setType(Integer type) {
         this.type = type;
-    }
-
-    public Integer getProjectType() {
-        return projectType;
-    }
-
-    public void setProjectType(Integer projectType) {
-        this.projectType = projectType;
     }
 
     public String getClassName() {
@@ -272,6 +239,14 @@ public class Action implements Serializable {
         this.returnValue = returnValue;
     }
 
+    public String getReturnValueDesc() {
+        return returnValueDesc;
+    }
+
+    public void setReturnValueDesc(String returnValueDesc) {
+        this.returnValueDesc = returnValueDesc;
+    }
+
     public Integer getCreatorUid() {
         return creatorUid;
     }
@@ -304,12 +279,36 @@ public class Action implements Serializable {
         this.updateTime = updateTime;
     }
 
-    public Integer getCategoryId() {
-        return categoryId;
+    public Integer getPlatform() {
+        return platform;
     }
 
-    public void setCategoryId(Integer categoryId) {
-        this.categoryId = categoryId;
+    public void setPlatform(Integer platform) {
+        this.platform = platform;
+    }
+
+    public Integer getPageId() {
+        return pageId;
+    }
+
+    public void setPageId(Integer pageId) {
+        this.pageId = pageId;
+    }
+
+    public Integer getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(Integer projectId) {
+        this.projectId = projectId;
+    }
+
+    public Integer getTestSuiteId() {
+        return testSuiteId;
+    }
+
+    public void setTestSuiteId(Integer testSuiteId) {
+        this.testSuiteId = testSuiteId;
     }
 
     public java.util.List<com.fgnb.model.action.Param> getParams() {
@@ -345,19 +344,20 @@ public class Action implements Serializable {
         sb.append(", id=").append(id);
         sb.append(", name=").append(name);
         sb.append(", description=").append(description);
-        sb.append(", projectId=").append(projectId);
-        sb.append(", pageId=").append(pageId);
         sb.append(", type=").append(type);
-        sb.append(", projectType=").append(projectType);
         sb.append(", className=").append(className);
         sb.append(", needDriver=").append(needDriver);
         sb.append(", hasReturnValue=").append(hasReturnValue);
         sb.append(", returnValue=").append(returnValue);
+        sb.append(", returnValueDesc=").append(returnValueDesc);
         sb.append(", creatorUid=").append(creatorUid);
         sb.append(", createTime=").append(createTime);
         sb.append(", updatorUid=").append(updatorUid);
         sb.append(", updateTime=").append(updateTime);
-        sb.append(", categoryId=").append(categoryId);
+        sb.append(", platform=").append(platform);
+        sb.append(", pageId=").append(pageId);
+        sb.append(", projectId=").append(projectId);
+        sb.append(", testSuiteId=").append(testSuiteId);
         sb.append(", params=").append(params);
         sb.append(", localVars=").append(localVars);
         sb.append(", steps=").append(steps);

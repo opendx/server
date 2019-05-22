@@ -2,29 +2,28 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.fgnb.mbg.mapper.ActionMapper">
   <resultMap id="BaseResultMap" type="com.fgnb.mbg.po.Action">
-    <id column="id" jdbcType="INTEGER" property="id"/>
-    <result column="name" jdbcType="VARCHAR" property="name"/>
-    <result column="description" jdbcType="VARCHAR" property="description"/>
-    <result column="project_id" jdbcType="INTEGER" property="projectId"/>
-    <result column="page_id" jdbcType="INTEGER" property="pageId"/>
-    <result column="type" jdbcType="TINYINT" property="type"/>
-    <result column="project_type" jdbcType="TINYINT" property="projectType"/>
-    <result column="class_name" jdbcType="VARCHAR" property="className"/>
-    <result column="need_driver" jdbcType="TINYINT" property="needDriver"/>
-    <result column="has_return_value" jdbcType="TINYINT" property="hasReturnValue"/>
-    <result column="return_value" jdbcType="VARCHAR" property="returnValue"/>
-    <result column="creator_uid" jdbcType="INTEGER" property="creatorUid"/>
-    <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
-    <result column="updator_uid" jdbcType="INTEGER" property="updatorUid"/>
-    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
-    <result column="category_id" jdbcType="INTEGER" property="categoryId"/>
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="type" jdbcType="TINYINT" property="type" />
+    <result column="class_name" jdbcType="VARCHAR" property="className" />
+    <result column="need_driver" jdbcType="TINYINT" property="needDriver" />
+    <result column="has_return_value" jdbcType="TINYINT" property="hasReturnValue" />
+    <result column="return_value" jdbcType="VARCHAR" property="returnValue" />
+    <result column="return_value_desc" jdbcType="VARCHAR" property="returnValueDesc" />
+    <result column="creator_uid" jdbcType="INTEGER" property="creatorUid" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="updator_uid" jdbcType="INTEGER" property="updatorUid" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="platform" jdbcType="TINYINT" property="platform" />
+    <result column="page_id" jdbcType="INTEGER" property="pageId" />
+    <result column="project_id" jdbcType="INTEGER" property="projectId" />
+    <result column="test_suite_id" jdbcType="INTEGER" property="testSuiteId" />
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.fgnb.mbg.po.Action">
-    <result column="params" jdbcType="LONGVARCHAR" property="params"
-            typeHandler="com.fgnb.typehandler.ParamListTypeHandler"/>
-    <result column="local_vars" jdbcType="LONGVARCHAR" property="localVars"
-            typeHandler="com.fgnb.typehandler.LocalVarListTypeHandler"/>
-    <result column="steps" jdbcType="LONGVARCHAR" property="steps" typeHandler="com.fgnb.typehandler.StepListTypeHandler"/>
+    <result column="params" jdbcType="LONGVARCHAR" property="params" typeHandler="com.fgnb.typehandler.ParamListTypeHandler" />
+    <result column="local_vars" jdbcType="LONGVARCHAR" property="localVars" typeHandler="com.fgnb.typehandler.LocalVarListTypeHandler" />
+    <result column="steps" jdbcType="LONGVARCHAR" property="steps" typeHandler="com.fgnb.typehandler.StepListTypeHandler" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -85,9 +84,9 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, name, description, project_id, page_id, type, project_type, class_name, need_driver, 
-    has_return_value, return_value, creator_uid, create_time, updator_uid, update_time, 
-    category_id
+    id, name, description, type, class_name, need_driver, has_return_value, return_value, 
+    return_value_desc, creator_uid, create_time, updator_uid, update_time, platform, 
+    page_id, project_id, test_suite_id
   </sql>
   <sql id="Blob_Column_List">
     params, local_vars, steps
@@ -97,12 +96,12 @@
     <if test="distinct">
       distinct
     </if>
-    <include refid="Base_Column_List"/>
+    <include refid="Base_Column_List" />
     ,
-    <include refid="Blob_Column_List"/>
+    <include refid="Blob_Column_List" />
     from action
     <if test="_parameter != null">
-      <include refid="Example_Where_Clause"/>
+      <include refid="Example_Where_Clause" />
     </if>
     <if test="orderByClause != null">
       order by ${orderByClause}
@@ -113,20 +112,20 @@
     <if test="distinct">
       distinct
     </if>
-    <include refid="Base_Column_List"/>
+    <include refid="Base_Column_List" />
     from action
     <if test="_parameter != null">
-      <include refid="Example_Where_Clause"/>
+      <include refid="Example_Where_Clause" />
     </if>
     <if test="orderByClause != null">
       order by ${orderByClause}
     </if>
   </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
-    select
-    <include refid="Base_Column_List"/>
+    select 
+    <include refid="Base_Column_List" />
     ,
-    <include refid="Blob_Column_List"/>
+    <include refid="Blob_Column_List" />
     from action
     where id = #{id,jdbcType=INTEGER}
   </select>
@@ -137,29 +136,31 @@
   <delete id="deleteByExample" parameterType="com.fgnb.mbg.po.ActionExample">
     delete from action
     <if test="_parameter != null">
-      <include refid="Example_Where_Clause"/>
+      <include refid="Example_Where_Clause" />
     </if>
   </delete>
   <insert id="insert" parameterType="com.fgnb.mbg.po.Action">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into action (name, description, project_id,
-    page_id, type, project_type,
-    class_name, need_driver, has_return_value,
-    return_value, creator_uid, create_time,
-    updator_uid, update_time, category_id,
-    params,
-    local_vars,
-    steps)
-    values (#{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{projectId,jdbcType=INTEGER},
-    #{pageId,jdbcType=INTEGER}, #{type,jdbcType=TINYINT}, #{projectType,jdbcType=TINYINT},
-    #{className,jdbcType=VARCHAR}, #{needDriver,jdbcType=TINYINT}, #{hasReturnValue,jdbcType=TINYINT},
-    #{returnValue,jdbcType=VARCHAR}, #{creatorUid,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP},
-    #{updatorUid,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}, #{categoryId,jdbcType=INTEGER},
-    #{params,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.ParamListTypeHandler},
-    #{localVars,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.LocalVarListTypeHandler},
-    #{steps,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.StepListTypeHandler})
+    insert into action (name, description, type, 
+      class_name, need_driver, has_return_value, 
+      return_value, return_value_desc, creator_uid, 
+      create_time, updator_uid, update_time, 
+      platform, page_id, project_id, 
+      test_suite_id, params, 
+      local_vars, 
+      steps
+      )
+    values (#{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{type,jdbcType=TINYINT}, 
+      #{className,jdbcType=VARCHAR}, #{needDriver,jdbcType=TINYINT}, #{hasReturnValue,jdbcType=TINYINT}, 
+      #{returnValue,jdbcType=VARCHAR}, #{returnValueDesc,jdbcType=VARCHAR}, #{creatorUid,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updatorUid,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{platform,jdbcType=TINYINT}, #{pageId,jdbcType=INTEGER}, #{projectId,jdbcType=INTEGER}, 
+      #{testSuiteId,jdbcType=INTEGER}, #{params,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.ParamListTypeHandler}, 
+      #{localVars,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.LocalVarListTypeHandler}, 
+      #{steps,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.StepListTypeHandler}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.fgnb.mbg.po.Action">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
@@ -173,17 +174,8 @@
       <if test="description != null">
         description,
       </if>
-      <if test="projectId != null">
-        project_id,
-      </if>
-      <if test="pageId != null">
-        page_id,
-      </if>
       <if test="type != null">
         type,
-      </if>
-      <if test="projectType != null">
-        project_type,
       </if>
       <if test="className != null">
         class_name,
@@ -197,6 +189,9 @@
       <if test="returnValue != null">
         return_value,
       </if>
+      <if test="returnValueDesc != null">
+        return_value_desc,
+      </if>
       <if test="creatorUid != null">
         creator_uid,
       </if>
@@ -209,8 +204,17 @@
       <if test="updateTime != null">
         update_time,
       </if>
-      <if test="categoryId != null">
-        category_id,
+      <if test="platform != null">
+        platform,
+      </if>
+      <if test="pageId != null">
+        page_id,
+      </if>
+      <if test="projectId != null">
+        project_id,
+      </if>
+      <if test="testSuiteId != null">
+        test_suite_id,
       </if>
       <if test="params != null">
         params,
@@ -229,17 +233,8 @@
       <if test="description != null">
         #{description,jdbcType=VARCHAR},
       </if>
-      <if test="projectId != null">
-        #{projectId,jdbcType=INTEGER},
-      </if>
-      <if test="pageId != null">
-        #{pageId,jdbcType=INTEGER},
-      </if>
       <if test="type != null">
         #{type,jdbcType=TINYINT},
-      </if>
-      <if test="projectType != null">
-        #{projectType,jdbcType=TINYINT},
       </if>
       <if test="className != null">
         #{className,jdbcType=VARCHAR},
@@ -253,6 +248,9 @@
       <if test="returnValue != null">
         #{returnValue,jdbcType=VARCHAR},
       </if>
+      <if test="returnValueDesc != null">
+        #{returnValueDesc,jdbcType=VARCHAR},
+      </if>
       <if test="creatorUid != null">
         #{creatorUid,jdbcType=INTEGER},
       </if>
@@ -265,8 +263,17 @@
       <if test="updateTime != null">
         #{updateTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="categoryId != null">
-        #{categoryId,jdbcType=INTEGER},
+      <if test="platform != null">
+        #{platform,jdbcType=TINYINT},
+      </if>
+      <if test="pageId != null">
+        #{pageId,jdbcType=INTEGER},
+      </if>
+      <if test="projectId != null">
+        #{projectId,jdbcType=INTEGER},
+      </if>
+      <if test="testSuiteId != null">
+        #{testSuiteId,jdbcType=INTEGER},
       </if>
       <if test="params != null">
         #{params,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.ParamListTypeHandler},
@@ -282,7 +289,7 @@
   <select id="countByExample" parameterType="com.fgnb.mbg.po.ActionExample" resultType="java.lang.Long">
     select count(*) from action
     <if test="_parameter != null">
-      <include refid="Example_Where_Clause"/>
+      <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
@@ -297,17 +304,8 @@
       <if test="record.description != null">
         description = #{record.description,jdbcType=VARCHAR},
       </if>
-      <if test="record.projectId != null">
-        project_id = #{record.projectId,jdbcType=INTEGER},
-      </if>
-      <if test="record.pageId != null">
-        page_id = #{record.pageId,jdbcType=INTEGER},
-      </if>
       <if test="record.type != null">
         type = #{record.type,jdbcType=TINYINT},
-      </if>
-      <if test="record.projectType != null">
-        project_type = #{record.projectType,jdbcType=TINYINT},
       </if>
       <if test="record.className != null">
         class_name = #{record.className,jdbcType=VARCHAR},
@@ -321,6 +319,9 @@
       <if test="record.returnValue != null">
         return_value = #{record.returnValue,jdbcType=VARCHAR},
       </if>
+      <if test="record.returnValueDesc != null">
+        return_value_desc = #{record.returnValueDesc,jdbcType=VARCHAR},
+      </if>
       <if test="record.creatorUid != null">
         creator_uid = #{record.creatorUid,jdbcType=INTEGER},
       </if>
@@ -333,8 +334,17 @@
       <if test="record.updateTime != null">
         update_time = #{record.updateTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="record.categoryId != null">
-        category_id = #{record.categoryId,jdbcType=INTEGER},
+      <if test="record.platform != null">
+        platform = #{record.platform,jdbcType=TINYINT},
+      </if>
+      <if test="record.pageId != null">
+        page_id = #{record.pageId,jdbcType=INTEGER},
+      </if>
+      <if test="record.projectId != null">
+        project_id = #{record.projectId,jdbcType=INTEGER},
+      </if>
+      <if test="record.testSuiteId != null">
+        test_suite_id = #{record.testSuiteId,jdbcType=INTEGER},
       </if>
       <if test="record.params != null">
         params = #{record.params,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.ParamListTypeHandler},
@@ -347,54 +357,56 @@
       </if>
     </set>
     <if test="_parameter != null">
-      <include refid="Update_By_Example_Where_Clause"/>
+      <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
   <update id="updateByExampleWithBLOBs" parameterType="map">
     update action
     set id = #{record.id,jdbcType=INTEGER},
-    name = #{record.name,jdbcType=VARCHAR},
-    description = #{record.description,jdbcType=VARCHAR},
-    project_id = #{record.projectId,jdbcType=INTEGER},
-    page_id = #{record.pageId,jdbcType=INTEGER},
-    type = #{record.type,jdbcType=TINYINT},
-    project_type = #{record.projectType,jdbcType=TINYINT},
-    class_name = #{record.className,jdbcType=VARCHAR},
-    need_driver = #{record.needDriver,jdbcType=TINYINT},
-    has_return_value = #{record.hasReturnValue,jdbcType=TINYINT},
-    return_value = #{record.returnValue,jdbcType=VARCHAR},
-    creator_uid = #{record.creatorUid,jdbcType=INTEGER},
-    create_time = #{record.createTime,jdbcType=TIMESTAMP},
-    updator_uid = #{record.updatorUid,jdbcType=INTEGER},
-    update_time = #{record.updateTime,jdbcType=TIMESTAMP},
-    category_id = #{record.categoryId,jdbcType=INTEGER},
-    params = #{record.params,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.ParamListTypeHandler},
-    local_vars = #{record.localVars,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.LocalVarListTypeHandler},
-    steps = #{record.steps,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.StepListTypeHandler}
+      name = #{record.name,jdbcType=VARCHAR},
+      description = #{record.description,jdbcType=VARCHAR},
+      type = #{record.type,jdbcType=TINYINT},
+      class_name = #{record.className,jdbcType=VARCHAR},
+      need_driver = #{record.needDriver,jdbcType=TINYINT},
+      has_return_value = #{record.hasReturnValue,jdbcType=TINYINT},
+      return_value = #{record.returnValue,jdbcType=VARCHAR},
+      return_value_desc = #{record.returnValueDesc,jdbcType=VARCHAR},
+      creator_uid = #{record.creatorUid,jdbcType=INTEGER},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      updator_uid = #{record.updatorUid,jdbcType=INTEGER},
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      platform = #{record.platform,jdbcType=TINYINT},
+      page_id = #{record.pageId,jdbcType=INTEGER},
+      project_id = #{record.projectId,jdbcType=INTEGER},
+      test_suite_id = #{record.testSuiteId,jdbcType=INTEGER},
+      params = #{record.params,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.ParamListTypeHandler},
+      local_vars = #{record.localVars,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.LocalVarListTypeHandler},
+      steps = #{record.steps,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.StepListTypeHandler}
     <if test="_parameter != null">
-      <include refid="Update_By_Example_Where_Clause"/>
+      <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
     update action
     set id = #{record.id,jdbcType=INTEGER},
-    name = #{record.name,jdbcType=VARCHAR},
-    description = #{record.description,jdbcType=VARCHAR},
-    project_id = #{record.projectId,jdbcType=INTEGER},
-    page_id = #{record.pageId,jdbcType=INTEGER},
-    type = #{record.type,jdbcType=TINYINT},
-    project_type = #{record.projectType,jdbcType=TINYINT},
-    class_name = #{record.className,jdbcType=VARCHAR},
-    need_driver = #{record.needDriver,jdbcType=TINYINT},
-    has_return_value = #{record.hasReturnValue,jdbcType=TINYINT},
-    return_value = #{record.returnValue,jdbcType=VARCHAR},
-    creator_uid = #{record.creatorUid,jdbcType=INTEGER},
-    create_time = #{record.createTime,jdbcType=TIMESTAMP},
-    updator_uid = #{record.updatorUid,jdbcType=INTEGER},
-    update_time = #{record.updateTime,jdbcType=TIMESTAMP},
-    category_id = #{record.categoryId,jdbcType=INTEGER}
+      name = #{record.name,jdbcType=VARCHAR},
+      description = #{record.description,jdbcType=VARCHAR},
+      type = #{record.type,jdbcType=TINYINT},
+      class_name = #{record.className,jdbcType=VARCHAR},
+      need_driver = #{record.needDriver,jdbcType=TINYINT},
+      has_return_value = #{record.hasReturnValue,jdbcType=TINYINT},
+      return_value = #{record.returnValue,jdbcType=VARCHAR},
+      return_value_desc = #{record.returnValueDesc,jdbcType=VARCHAR},
+      creator_uid = #{record.creatorUid,jdbcType=INTEGER},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      updator_uid = #{record.updatorUid,jdbcType=INTEGER},
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      platform = #{record.platform,jdbcType=TINYINT},
+      page_id = #{record.pageId,jdbcType=INTEGER},
+      project_id = #{record.projectId,jdbcType=INTEGER},
+      test_suite_id = #{record.testSuiteId,jdbcType=INTEGER}
     <if test="_parameter != null">
-      <include refid="Update_By_Example_Where_Clause"/>
+      <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
   <update id="updateByPrimaryKeySelective" parameterType="com.fgnb.mbg.po.Action">
@@ -406,17 +418,8 @@
       <if test="description != null">
         description = #{description,jdbcType=VARCHAR},
       </if>
-      <if test="projectId != null">
-        project_id = #{projectId,jdbcType=INTEGER},
-      </if>
-      <if test="pageId != null">
-        page_id = #{pageId,jdbcType=INTEGER},
-      </if>
       <if test="type != null">
         type = #{type,jdbcType=TINYINT},
-      </if>
-      <if test="projectType != null">
-        project_type = #{projectType,jdbcType=TINYINT},
       </if>
       <if test="className != null">
         class_name = #{className,jdbcType=VARCHAR},
@@ -430,6 +433,9 @@
       <if test="returnValue != null">
         return_value = #{returnValue,jdbcType=VARCHAR},
       </if>
+      <if test="returnValueDesc != null">
+        return_value_desc = #{returnValueDesc,jdbcType=VARCHAR},
+      </if>
       <if test="creatorUid != null">
         creator_uid = #{creatorUid,jdbcType=INTEGER},
       </if>
@@ -442,8 +448,17 @@
       <if test="updateTime != null">
         update_time = #{updateTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="categoryId != null">
-        category_id = #{categoryId,jdbcType=INTEGER},
+      <if test="platform != null">
+        platform = #{platform,jdbcType=TINYINT},
+      </if>
+      <if test="pageId != null">
+        page_id = #{pageId,jdbcType=INTEGER},
+      </if>
+      <if test="projectId != null">
+        project_id = #{projectId,jdbcType=INTEGER},
+      </if>
+      <if test="testSuiteId != null">
+        test_suite_id = #{testSuiteId,jdbcType=INTEGER},
       </if>
       <if test="params != null">
         params = #{params,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.ParamListTypeHandler},
@@ -461,19 +476,20 @@
     update action
     set name = #{name,jdbcType=VARCHAR},
       description = #{description,jdbcType=VARCHAR},
-      project_id = #{projectId,jdbcType=INTEGER},
-      page_id = #{pageId,jdbcType=INTEGER},
       type = #{type,jdbcType=TINYINT},
-      project_type = #{projectType,jdbcType=TINYINT},
       class_name = #{className,jdbcType=VARCHAR},
       need_driver = #{needDriver,jdbcType=TINYINT},
       has_return_value = #{hasReturnValue,jdbcType=TINYINT},
       return_value = #{returnValue,jdbcType=VARCHAR},
+      return_value_desc = #{returnValueDesc,jdbcType=VARCHAR},
       creator_uid = #{creatorUid,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       updator_uid = #{updatorUid,jdbcType=INTEGER},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
-      category_id = #{categoryId,jdbcType=INTEGER},
+      platform = #{platform,jdbcType=TINYINT},
+      page_id = #{pageId,jdbcType=INTEGER},
+      project_id = #{projectId,jdbcType=INTEGER},
+      test_suite_id = #{testSuiteId,jdbcType=INTEGER},
       params = #{params,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.ParamListTypeHandler},
       local_vars = #{localVars,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.LocalVarListTypeHandler},
       steps = #{steps,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.StepListTypeHandler}
@@ -483,19 +499,20 @@
     update action
     set name = #{name,jdbcType=VARCHAR},
       description = #{description,jdbcType=VARCHAR},
-      project_id = #{projectId,jdbcType=INTEGER},
-      page_id = #{pageId,jdbcType=INTEGER},
       type = #{type,jdbcType=TINYINT},
-      project_type = #{projectType,jdbcType=TINYINT},
       class_name = #{className,jdbcType=VARCHAR},
       need_driver = #{needDriver,jdbcType=TINYINT},
       has_return_value = #{hasReturnValue,jdbcType=TINYINT},
       return_value = #{returnValue,jdbcType=VARCHAR},
+      return_value_desc = #{returnValueDesc,jdbcType=VARCHAR},
       creator_uid = #{creatorUid,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       updator_uid = #{updatorUid,jdbcType=INTEGER},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
-      category_id = #{categoryId,jdbcType=INTEGER}
+      platform = #{platform,jdbcType=TINYINT},
+      page_id = #{pageId,jdbcType=INTEGER},
+      project_id = #{projectId,jdbcType=INTEGER},
+      test_suite_id = #{testSuiteId,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

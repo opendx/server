@@ -44,13 +44,6 @@ public class ActionService extends BaseService {
      * @return
      */
     public Response add(Action action) {
-        if (action.getType() == Action.TYPE_TESTCASE) {
-            //测试用例 必须要有分类
-            if (action.getCategoryId() == null) {
-                return Response.fail("测试用例分类不能为空");
-            }
-        }
-
         action.setCreatorUid(getUid());
         action.setCreateTime(new Date());
 
@@ -105,17 +98,9 @@ public class ActionService extends BaseService {
         action.setUpdateTime(new Date());
         action.setUpdatorUid(getUid());
 
-        if (action.getHasReturnValue() == Action.NO_RETURN_VALUE) {
-            //如果returnValue是null，无法保存，重新设置为""
-            action.setReturnValue("");
-        }
-
-        //由于action的参数，可能被其他步骤使用，类似于方法的参数改动，其他调用该方法的地方都要改动
-        //为了安全起见，不更新ActionParam。设置null，插入的时候不会update这个值
-        action.setParams(null);
-
+        // todo 更新action参数或返回值，可能会影响到其它调用该action的action，先粗暴在前端限制无法修改参数和返回值
         try {
-            int updateRow = actionMapper.updateByPrimaryKeySelective(action);
+            int updateRow = actionMapper.updateByPrimaryKeyWithBLOBs(action);
             if (updateRow != 1) {
                 return Response.fail("更新失败，请稍后重试!");
             }
@@ -176,6 +161,18 @@ public class ActionService extends BaseService {
             criteria.andTypeEqualTo(action.getType());
         }
 
+        if(action.getPlatform() != null) {
+            criteria.andPlatformEqualTo(action.getPlatform());
+        }
+
+        if(action.getPageId() != null) {
+            criteria.andPageIdEqualTo(action.getPageId());
+        }
+
+        if(action.getTestSuiteId() != null) {
+            criteria.andTestSuiteIdEqualTo(action.getTestSuiteId());
+        }
+
         actionExample.setOrderByClause("create_time desc");
         return actionMapper.selectByExampleWithBLOBs(actionExample);
     }
@@ -193,20 +190,21 @@ public class ActionService extends BaseService {
 
         ActionExample actionExample = new ActionExample();
 
-        //同一个项目下自定义action
-        ActionExample.Criteria criteria1 = actionExample.createCriteria();
-        criteria1.andProjectIdEqualTo(projectId).andTypeEqualTo(Action.TYPE_CUSTOM);
+        //todo 完善
+//        //同一个项目下自定义action
+//        ActionExample.Criteria criteria1 = actionExample.createCriteria();
+//        criteria1.andProjectIdEqualTo(projectId).andTypeEqualTo(Action.TYPE_CUSTOM);
+//
+//        //所有项目公用的基础action
+//        ActionExample.Criteria criteria2 = actionExample.createCriteria();
+//        criteria2.andProjectIdIsNull().andTypeEqualTo(Action.TYPE_BASE).andProjectTypeIsNull();
+//
+//        //同一项目类型的基础action
+//        ActionExample.Criteria criteria3 = actionExample.createCriteria();
+//        criteria3.andProjectIdIsNull().andTypeEqualTo(Action.TYPE_BASE).andProjectTypeEqualTo(platform);
 
-        //所有项目公用的基础action
-        ActionExample.Criteria criteria2 = actionExample.createCriteria();
-        criteria2.andProjectIdIsNull().andTypeEqualTo(Action.TYPE_BASE).andProjectTypeIsNull();
-
-        //同一项目类型的基础action
-        ActionExample.Criteria criteria3 = actionExample.createCriteria();
-        criteria3.andProjectIdIsNull().andTypeEqualTo(Action.TYPE_BASE).andProjectTypeEqualTo(platform);
-
-        actionExample.or(criteria2);
-        actionExample.or(criteria3);
+//        actionExample.or(criteria2);
+//        actionExample.or(criteria3);
         actionExample.setOrderByClause("create_time desc");
 
         return Response.success(actionMapper.selectByExampleWithBLOBs(actionExample));
