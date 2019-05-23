@@ -183,28 +183,27 @@ public class ActionService extends BaseService {
      * @param projectId
      * @return
      */
-    public Response findSelectableActions(Integer projectId, Integer platform) {
+    public Response getSelectableActions(Integer projectId, Integer platform) {
         if (projectId == null || platform == null) {
             return Response.fail("projectId || platform不能为空");
         }
 
         ActionExample actionExample = new ActionExample();
 
-        //todo 完善
-//        //同一个项目下自定义action
-//        ActionExample.Criteria criteria1 = actionExample.createCriteria();
-//        criteria1.andProjectIdEqualTo(projectId).andTypeEqualTo(Action.TYPE_CUSTOM);
-//
-//        //所有项目公用的基础action
-//        ActionExample.Criteria criteria2 = actionExample.createCriteria();
-//        criteria2.andProjectIdIsNull().andTypeEqualTo(Action.TYPE_BASE).andProjectTypeIsNull();
-//
-//        //同一项目类型的基础action
-//        ActionExample.Criteria criteria3 = actionExample.createCriteria();
-//        criteria3.andProjectIdIsNull().andTypeEqualTo(Action.TYPE_BASE).andProjectTypeEqualTo(platform);
+        //同一个项目下的action
+        ActionExample.Criteria criteria1 = actionExample.createCriteria();
+        criteria1.andProjectIdEqualTo(projectId);
 
-//        actionExample.or(criteria2);
-//        actionExample.or(criteria3);
+        //所有项目公用的基础action
+        ActionExample.Criteria criteria2 = actionExample.createCriteria();
+        criteria2.andProjectIdIsNull().andTypeEqualTo(Action.TYPE_BASE).andPlatformIsNull();
+
+        //所有项目公用的同一平台的基础action
+        ActionExample.Criteria criteria3 = actionExample.createCriteria();
+        criteria3.andProjectIdIsNull().andTypeEqualTo(Action.TYPE_BASE).andPlatformEqualTo(platform);
+
+        actionExample.or(criteria2);
+        actionExample.or(criteria3);
         actionExample.setOrderByClause("create_time desc");
 
         return Response.success(actionMapper.selectByExampleWithBLOBs(actionExample));

@@ -70,8 +70,8 @@ public class ActionController {
      * @return
      */
     @GetMapping("/selectable/{projectId}/{platform}")
-    public Response findSelectableActions(@PathVariable Integer projectId, @PathVariable Integer platform) {
-        return actionService.findSelectableActions(projectId, platform);
+    public Response getSelectableActions(@PathVariable Integer projectId, @PathVariable Integer platform) {
+        return actionService.getSelectableActions(projectId, platform);
     }
 
     /**
