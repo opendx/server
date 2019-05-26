@@ -98,7 +98,6 @@ public class ActionService extends BaseService {
         action.setUpdateTime(new Date());
         action.setUpdatorUid(getUid());
 
-        // todo 更新action参数或返回值，可能会影响到其它调用该action的action，先粗暴在前端限制无法修改参数和返回值
         try {
             int updateRow = actionMapper.updateByPrimaryKeyWithBLOBs(action);
             if (updateRow != 1) {

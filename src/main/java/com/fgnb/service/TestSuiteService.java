@@ -111,6 +111,7 @@ public class TestSuiteService extends BaseService {
             criteria.andNameEqualTo(testSuite.getName());
         }
 
+        testSuiteExample.setOrderByClause("create_time desc");
         return testSuiteMapper.selectByExample(testSuiteExample);
     }
 
