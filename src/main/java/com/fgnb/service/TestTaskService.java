@@ -225,7 +225,7 @@ public class TestTaskService extends BaseService {
             criteria.andStatusEqualTo(testTask.getStatus());
         }
 
-        testTaskExample.setOrderByClause("create_time desc");
+        testTaskExample.setOrderByClause("commit_time desc");
         return testTaskMapper.selectByExample(testTaskExample);
     }
 }
