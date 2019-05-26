@@ -29,9 +29,9 @@
             <property name="forceBigDecimals" value="false"></property>
         </javaTypeResolver>
 
-        <javaModelGenerator targetPackage="com.fgnb.mbg.po" targetProject="D:\fgnb-server\fgnb-server\src\main\java"/>
-        <sqlMapGenerator targetPackage="com.fgnb.mbg.mapper" targetProject="D:\fgnb-server\fgnb-server\src\main\resources"/>
-        <javaClientGenerator type="XMLMAPPER" targetPackage="com.fgnb.mbg.mapper" targetProject="D:\fgnb-server\fgnb-server\src\main\java"/>
+        <javaModelGenerator targetPackage="com.fgnb.mbg.po" targetProject="C:\Users\jyt\Downloads\server\src\main\java"/>
+        <sqlMapGenerator targetPackage="com.fgnb.mbg.mapper" targetProject="C:\Users\jyt\Downloads\server\src\main\resources"/>
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.fgnb.mbg.mapper" targetProject="C:\Users\jyt\Downloads\server\src\main\java"/>
 
         <!--<table tableName="action">-->
             <!--<generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
@@ -44,12 +44,15 @@
         <!--</table>-->
         <!--<table tableName="device">-->
         <!--</table>-->
-        <!--<table tableName="device_test_task">-->
-            <!--<generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
-            <!--<columnOverride column="global_vars" typeHandler="com.fgnb.typehandler.GlobalVarListTypeHandler" javaType="java.util.List&lt;com.fgnb.mbg.po.GlobalVar&gt;" jdbcType="LONGVARCHAR"/>-->
-            <!--<columnOverride column="before_suite" typeHandler="com.fgnb.typehandler.ActionTypeHandler" javaType="com.fgnb.mbg.po.Action" jdbcType="LONGVARCHAR"/>-->
-            <!--<columnOverride column="testcases" typeHandler="com.fgnb.typehandler.TestcaseListTypeHandler" javaType="java.util.List&lt;com.fgnb.model.vo.Testcase&gt;" jdbcType="LONGVARCHAR"/>-->
-        <!--</table>-->
+        <table tableName="device_test_task">
+            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
+            <columnOverride column="global_vars" typeHandler="com.fgnb.typehandler.GlobalVarListTypeHandler" javaType="java.util.List&lt;com.fgnb.mbg.po.GlobalVar&gt;" jdbcType="LONGVARCHAR"/>
+            <columnOverride column="before_class" typeHandler="com.fgnb.typehandler.ActionTypeHandler" javaType="com.fgnb.mbg.po.Action" jdbcType="LONGVARCHAR"/>
+            <columnOverride column="before_method" typeHandler="com.fgnb.typehandler.ActionTypeHandler" javaType="com.fgnb.mbg.po.Action" jdbcType="LONGVARCHAR"/>
+            <columnOverride column="after_class" typeHandler="com.fgnb.typehandler.ActionTypeHandler" javaType="com.fgnb.mbg.po.Action" jdbcType="LONGVARCHAR"/>
+            <columnOverride column="after_method" typeHandler="com.fgnb.typehandler.ActionTypeHandler" javaType="com.fgnb.mbg.po.Action" jdbcType="LONGVARCHAR"/>
+            <columnOverride column="testcases" typeHandler="com.fgnb.typehandler.TestcaseListTypeHandler" javaType="java.util.List&lt;com.fgnb.model.vo.Testcase&gt;" jdbcType="LONGVARCHAR"/>
+        </table>
         <!--<table tableName="gloabal_var">-->
             <!--<generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
         <!--</table>-->
@@ -62,11 +65,10 @@
         <!--<table tableName="test_plan">-->
             <!--<generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
             <!--<columnOverride column="test_suites" typeHandler="com.fgnb.typehandler.IntegerListTypeHandler" javaType="java.util.List&lt;Integer&gt;" jdbcType="LONGVARCHAR"/>-->
-            <!--<columnOverride column="befores" typeHandler="com.fgnb.typehandler.BeforeListTypeHandler" javaType="java.util.List&lt;com.fgnb.model.testplan.Before&gt;" jdbcType="LONGVARCHAR"/>-->
         <!--</table>-->
-        <table tableName="test_suite">
-            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
-        </table>
+        <!--<table tableName="test_suite">-->
+            <!--<generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
+        <!--</table>-->
         <!--<table tableName="test_task">-->
             <!--<generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
         <!--</table>-->

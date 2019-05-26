@@ -63,15 +63,4 @@ public class TestPlanController {
     public Response list(TestPlan testPlan, PageRequest pageRequest) {
         return testPlanService.list(testPlan, pageRequest);
     }
-
-    /**
-     * 获取测试计划详细信息
-     * @param testPlanId
-     * @return
-     */
-    @GetMapping("/detailInfo/{testPlanId}")
-    public Response getDetailInfo(@PathVariable Integer testPlanId) {
-        return testPlanService.getDetailInfo(testPlanId);
-    }
-
 }

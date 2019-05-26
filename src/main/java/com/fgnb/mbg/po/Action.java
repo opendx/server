@@ -1,6 +1,9 @@
 package com.fgnb.mbg.po;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -129,6 +132,7 @@ public class Action implements Serializable {
      *
      * @mbg.generated
      */
+    @NotNull(message = "平台不能为空")
     private Integer platform;
 
     /**
@@ -143,6 +147,7 @@ public class Action implements Serializable {
      *
      * @mbg.generated
      */
+    @NotNull(message = "项目id不能为空")
     private Integer projectId;
 
     /**
@@ -157,6 +162,7 @@ public class Action implements Serializable {
      *
      * @mbg.generated
      */
+    @Valid
     private java.util.List<com.fgnb.model.action.Param> params;
 
     /**
@@ -164,6 +170,7 @@ public class Action implements Serializable {
      *
      * @mbg.generated
      */
+    @Valid
     private java.util.List<com.fgnb.model.action.LocalVar> localVars;
 
     /**
@@ -171,6 +178,8 @@ public class Action implements Serializable {
      *
      * @mbg.generated
      */
+    @Valid
+    @NotEmpty(message = "步骤不能为空")
     private java.util.List<com.fgnb.model.action.Step> steps;
 
     private static final long serialVersionUID = 1L;

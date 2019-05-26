@@ -5,6 +5,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 public class TestPlan implements Serializable {
     /**
@@ -38,6 +39,34 @@ public class TestPlan implements Serializable {
     private Integer projectId;
 
     /**
+     * BeforeClass
+     *
+     * @mbg.generated
+     */
+    private Integer beforeClass;
+
+    /**
+     * BeforeMehtod
+     *
+     * @mbg.generated
+     */
+    private Integer beforeMethod;
+
+    /**
+     * AfterClass
+     *
+     * @mbg.generated
+     */
+    private Integer afterClass;
+
+    /**
+     * AfterMethod
+     *
+     * @mbg.generated
+     */
+    private Integer afterMethod;
+
+    /**
      * 创建人
      *
      * @mbg.generated
@@ -50,13 +79,6 @@ public class TestPlan implements Serializable {
      * @mbg.generated
      */
     private Date createTime;
-
-    /**
-     * 前置条件(beforeSuite -> type = 1 , beforeMethod -> type = 2)
-     *
-     * @mbg.generated
-     */
-    private java.util.List<com.fgnb.model.testplan.Before> befores;
 
     /**
      * 测试集
@@ -100,6 +122,38 @@ public class TestPlan implements Serializable {
         this.projectId = projectId;
     }
 
+    public Integer getBeforeClass() {
+        return beforeClass;
+    }
+
+    public void setBeforeClass(Integer beforeClass) {
+        this.beforeClass = beforeClass;
+    }
+
+    public Integer getBeforeMethod() {
+        return beforeMethod;
+    }
+
+    public void setBeforeMethod(Integer beforeMethod) {
+        this.beforeMethod = beforeMethod;
+    }
+
+    public Integer getAfterClass() {
+        return afterClass;
+    }
+
+    public void setAfterClass(Integer afterClass) {
+        this.afterClass = afterClass;
+    }
+
+    public Integer getAfterMethod() {
+        return afterMethod;
+    }
+
+    public void setAfterMethod(Integer afterMethod) {
+        this.afterMethod = afterMethod;
+    }
+
     public Integer getCreatorUid() {
         return creatorUid;
     }
@@ -114,14 +168,6 @@ public class TestPlan implements Serializable {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
-    }
-
-    public java.util.List<com.fgnb.model.testplan.Before> getBefores() {
-        return befores;
-    }
-
-    public void setBefores(java.util.List<com.fgnb.model.testplan.Before> befores) {
-        this.befores = befores;
     }
 
     public java.util.List<Integer> getTestSuites() {
@@ -142,9 +188,12 @@ public class TestPlan implements Serializable {
         sb.append(", name=").append(name);
         sb.append(", description=").append(description);
         sb.append(", projectId=").append(projectId);
+        sb.append(", beforeClass=").append(beforeClass);
+        sb.append(", beforeMethod=").append(beforeMethod);
+        sb.append(", afterClass=").append(afterClass);
+        sb.append(", afterMethod=").append(afterMethod);
         sb.append(", creatorUid=").append(creatorUid);
         sb.append(", createTime=").append(createTime);
-        sb.append(", befores=").append(befores);
         sb.append(", testSuites=").append(testSuites);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");

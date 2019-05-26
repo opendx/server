@@ -44,36 +44,6 @@ public class TestSuiteService extends BaseService {
         return Response.success("添加成功");
     }
 
-    public Response delete(Integer testSuiteId) {
-        if (testSuiteId == null) {
-            return Response.fail("id不能为空");
-        }
-
-        int deleteRow = testSuiteMapper.deleteByPrimaryKey(testSuiteId);
-        if (deleteRow != 1) {
-            return Response.fail("删除失败");
-        }
-
-        return Response.success("删除成功");
-    }
-
-    public Response update(TestSuite testSuite) {
-        if (testSuite.getId() == null) {
-            return Response.fail("测试集id不能为空");
-        }
-
-        try {
-            int updateRow = testSuiteMapper.updateByPrimaryKeySelective(testSuite);
-            if (updateRow != 1) {
-                return Response.fail("更新失败");
-            }
-        } catch (DuplicateKeyException e) {
-            return Response.fail("命名冲突");
-        }
-
-        return Response.success("更新测试集成功");
-    }
-
     public Response list(TestSuite testSuite, PageRequest pageRequest) {
         boolean needPaging = pageRequest.needPaging();
         if(needPaging) {
@@ -114,5 +84,4 @@ public class TestSuiteService extends BaseService {
         testSuiteExample.setOrderByClause("create_time desc");
         return testSuiteMapper.selectByExample(testSuiteExample);
     }
-
 }

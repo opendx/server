@@ -365,6 +365,246 @@ public class TestPlanExample {
             return (Criteria) this;
         }
 
+        public Criteria andBeforeClassIsNull() {
+            addCriterion("before_class is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andBeforeClassIsNotNull() {
+            addCriterion("before_class is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andBeforeClassEqualTo(Integer value) {
+            addCriterion("before_class =", value, "beforeClass");
+            return (Criteria) this;
+        }
+
+        public Criteria andBeforeClassNotEqualTo(Integer value) {
+            addCriterion("before_class <>", value, "beforeClass");
+            return (Criteria) this;
+        }
+
+        public Criteria andBeforeClassGreaterThan(Integer value) {
+            addCriterion("before_class >", value, "beforeClass");
+            return (Criteria) this;
+        }
+
+        public Criteria andBeforeClassGreaterThanOrEqualTo(Integer value) {
+            addCriterion("before_class >=", value, "beforeClass");
+            return (Criteria) this;
+        }
+
+        public Criteria andBeforeClassLessThan(Integer value) {
+            addCriterion("before_class <", value, "beforeClass");
+            return (Criteria) this;
+        }
+
+        public Criteria andBeforeClassLessThanOrEqualTo(Integer value) {
+            addCriterion("before_class <=", value, "beforeClass");
+            return (Criteria) this;
+        }
+
+        public Criteria andBeforeClassIn(List<Integer> values) {
+            addCriterion("before_class in", values, "beforeClass");
+            return (Criteria) this;
+        }
+
+        public Criteria andBeforeClassNotIn(List<Integer> values) {
+            addCriterion("before_class not in", values, "beforeClass");
+            return (Criteria) this;
+        }
+
+        public Criteria andBeforeClassBetween(Integer value1, Integer value2) {
+            addCriterion("before_class between", value1, value2, "beforeClass");
+            return (Criteria) this;
+        }
+
+        public Criteria andBeforeClassNotBetween(Integer value1, Integer value2) {
+            addCriterion("before_class not between", value1, value2, "beforeClass");
+            return (Criteria) this;
+        }
+
+        public Criteria andBeforeMethodIsNull() {
+            addCriterion("before_method is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andBeforeMethodIsNotNull() {
+            addCriterion("before_method is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andBeforeMethodEqualTo(Integer value) {
+            addCriterion("before_method =", value, "beforeMethod");
+            return (Criteria) this;
+        }
+
+        public Criteria andBeforeMethodNotEqualTo(Integer value) {
+            addCriterion("before_method <>", value, "beforeMethod");
+            return (Criteria) this;
+        }
+
+        public Criteria andBeforeMethodGreaterThan(Integer value) {
+            addCriterion("before_method >", value, "beforeMethod");
+            return (Criteria) this;
+        }
+
+        public Criteria andBeforeMethodGreaterThanOrEqualTo(Integer value) {
+            addCriterion("before_method >=", value, "beforeMethod");
+            return (Criteria) this;
+        }
+
+        public Criteria andBeforeMethodLessThan(Integer value) {
+            addCriterion("before_method <", value, "beforeMethod");
+            return (Criteria) this;
+        }
+
+        public Criteria andBeforeMethodLessThanOrEqualTo(Integer value) {
+            addCriterion("before_method <=", value, "beforeMethod");
+            return (Criteria) this;
+        }
+
+        public Criteria andBeforeMethodIn(List<Integer> values) {
+            addCriterion("before_method in", values, "beforeMethod");
+            return (Criteria) this;
+        }
+
+        public Criteria andBeforeMethodNotIn(List<Integer> values) {
+            addCriterion("before_method not in", values, "beforeMethod");
+            return (Criteria) this;
+        }
+
+        public Criteria andBeforeMethodBetween(Integer value1, Integer value2) {
+            addCriterion("before_method between", value1, value2, "beforeMethod");
+            return (Criteria) this;
+        }
+
+        public Criteria andBeforeMethodNotBetween(Integer value1, Integer value2) {
+            addCriterion("before_method not between", value1, value2, "beforeMethod");
+            return (Criteria) this;
+        }
+
+        public Criteria andAfterClassIsNull() {
+            addCriterion("after_class is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andAfterClassIsNotNull() {
+            addCriterion("after_class is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andAfterClassEqualTo(Integer value) {
+            addCriterion("after_class =", value, "afterClass");
+            return (Criteria) this;
+        }
+
+        public Criteria andAfterClassNotEqualTo(Integer value) {
+            addCriterion("after_class <>", value, "afterClass");
+            return (Criteria) this;
+        }
+
+        public Criteria andAfterClassGreaterThan(Integer value) {
+            addCriterion("after_class >", value, "afterClass");
+            return (Criteria) this;
+        }
+
+        public Criteria andAfterClassGreaterThanOrEqualTo(Integer value) {
+            addCriterion("after_class >=", value, "afterClass");
+            return (Criteria) this;
+        }
+
+        public Criteria andAfterClassLessThan(Integer value) {
+            addCriterion("after_class <", value, "afterClass");
+            return (Criteria) this;
+        }
+
+        public Criteria andAfterClassLessThanOrEqualTo(Integer value) {
+            addCriterion("after_class <=", value, "afterClass");
+            return (Criteria) this;
+        }
+
+        public Criteria andAfterClassIn(List<Integer> values) {
+            addCriterion("after_class in", values, "afterClass");
+            return (Criteria) this;
+        }
+
+        public Criteria andAfterClassNotIn(List<Integer> values) {
+            addCriterion("after_class not in", values, "afterClass");
+            return (Criteria) this;
+        }
+
+        public Criteria andAfterClassBetween(Integer value1, Integer value2) {
+            addCriterion("after_class between", value1, value2, "afterClass");
+            return (Criteria) this;
+        }
+
+        public Criteria andAfterClassNotBetween(Integer value1, Integer value2) {
+            addCriterion("after_class not between", value1, value2, "afterClass");
+            return (Criteria) this;
+        }
+
+        public Criteria andAfterMethodIsNull() {
+            addCriterion("after_method is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andAfterMethodIsNotNull() {
+            addCriterion("after_method is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andAfterMethodEqualTo(Integer value) {
+            addCriterion("after_method =", value, "afterMethod");
+            return (Criteria) this;
+        }
+
+        public Criteria andAfterMethodNotEqualTo(Integer value) {
+            addCriterion("after_method <>", value, "afterMethod");
+            return (Criteria) this;
+        }
+
+        public Criteria andAfterMethodGreaterThan(Integer value) {
+            addCriterion("after_method >", value, "afterMethod");
+            return (Criteria) this;
+        }
+
+        public Criteria andAfterMethodGreaterThanOrEqualTo(Integer value) {
+            addCriterion("after_method >=", value, "afterMethod");
+            return (Criteria) this;
+        }
+
+        public Criteria andAfterMethodLessThan(Integer value) {
+            addCriterion("after_method <", value, "afterMethod");
+            return (Criteria) this;
+        }
+
+        public Criteria andAfterMethodLessThanOrEqualTo(Integer value) {
+            addCriterion("after_method <=", value, "afterMethod");
+            return (Criteria) this;
+        }
+
+        public Criteria andAfterMethodIn(List<Integer> values) {
+            addCriterion("after_method in", values, "afterMethod");
+            return (Criteria) this;
+        }
+
+        public Criteria andAfterMethodNotIn(List<Integer> values) {
+            addCriterion("after_method not in", values, "afterMethod");
+            return (Criteria) this;
+        }
+
+        public Criteria andAfterMethodBetween(Integer value1, Integer value2) {
+            addCriterion("after_method between", value1, value2, "afterMethod");
+            return (Criteria) this;
+        }
+
+        public Criteria andAfterMethodNotBetween(Integer value1, Integer value2) {
+            addCriterion("after_method not between", value1, value2, "afterMethod");
+            return (Criteria) this;
+        }
+
         public Criteria andCreatorUidIsNull() {
             addCriterion("creator_uid is null");
             return (Criteria) this;

@@ -167,4 +167,8 @@ public class DeviceTestTaskService {
             }
         }
     }
+
+    public int insertSelective(DeviceTestTask deviceTestTask) {
+        return deviceTestTaskMapper.insertSelective(deviceTestTask);
+    }
 }

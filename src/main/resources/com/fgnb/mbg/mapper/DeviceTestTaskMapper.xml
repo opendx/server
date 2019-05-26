@@ -3,6 +3,7 @@
 <mapper namespace="com.fgnb.mbg.mapper.DeviceTestTaskMapper">
   <resultMap id="BaseResultMap" type="com.fgnb.mbg.po.DeviceTestTask">
     <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="project_id" jdbcType="INTEGER" property="projectId" />
     <result column="test_task_id" jdbcType="INTEGER" property="testTaskId" />
     <result column="test_task_name" jdbcType="VARCHAR" property="testTaskName" />
     <result column="device_id" jdbcType="VARCHAR" property="deviceId" />
@@ -12,7 +13,10 @@
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.fgnb.mbg.po.DeviceTestTask">
     <result column="global_vars" jdbcType="LONGVARCHAR" property="globalVars" typeHandler="com.fgnb.typehandler.GlobalVarListTypeHandler" />
-    <result column="before_suite" jdbcType="LONGVARCHAR" property="beforeSuite" typeHandler="com.fgnb.typehandler.ActionTypeHandler" />
+    <result column="before_class" jdbcType="LONGVARCHAR" property="beforeClass" typeHandler="com.fgnb.typehandler.ActionTypeHandler" />
+    <result column="before_method" jdbcType="LONGVARCHAR" property="beforeMethod" typeHandler="com.fgnb.typehandler.ActionTypeHandler" />
+    <result column="after_class" jdbcType="LONGVARCHAR" property="afterClass" typeHandler="com.fgnb.typehandler.ActionTypeHandler" />
+    <result column="after_method" jdbcType="LONGVARCHAR" property="afterMethod" typeHandler="com.fgnb.typehandler.ActionTypeHandler" />
     <result column="testcases" jdbcType="LONGVARCHAR" property="testcases" typeHandler="com.fgnb.typehandler.TestcaseListTypeHandler" />
   </resultMap>
   <sql id="Example_Where_Clause">
@@ -74,10 +78,10 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, test_task_id, test_task_name, device_id, status, start_time, end_time
+    id, project_id, test_task_id, test_task_name, device_id, status, start_time, end_time
   </sql>
   <sql id="Blob_Column_List">
-    global_vars, before_suite, testcases
+    global_vars, before_class, before_method, after_class, after_method, testcases
   </sql>
   <select id="selectByExampleWithBLOBs" parameterType="com.fgnb.mbg.po.DeviceTestTaskExample" resultMap="ResultMapWithBLOBs">
     select
@@ -131,16 +135,22 @@
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into device_test_task (test_task_id, test_task_name, device_id, 
-      status, start_time, end_time, 
-      global_vars, 
-      before_suite, 
+    insert into device_test_task (project_id, test_task_id, test_task_name, 
+      device_id, status, start_time, 
+      end_time, global_vars, 
+      before_class, 
+      before_method, 
+      after_class, 
+      after_method, 
       testcases
       )
-    values (#{testTaskId,jdbcType=INTEGER}, #{testTaskName,jdbcType=VARCHAR}, #{deviceId,jdbcType=VARCHAR}, 
-      #{status,jdbcType=TINYINT}, #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, 
-      #{globalVars,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.GlobalVarListTypeHandler},
-      #{beforeSuite,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.ActionTypeHandler},
+    values (#{projectId,jdbcType=INTEGER}, #{testTaskId,jdbcType=INTEGER}, #{testTaskName,jdbcType=VARCHAR}, 
+      #{deviceId,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT}, #{startTime,jdbcType=TIMESTAMP}, 
+      #{endTime,jdbcType=TIMESTAMP}, #{globalVars,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.GlobalVarListTypeHandler}, 
+      #{beforeClass,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.ActionTypeHandler}, 
+      #{beforeMethod,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.ActionTypeHandler}, 
+      #{afterClass,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.ActionTypeHandler}, 
+      #{afterMethod,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.ActionTypeHandler}, 
       #{testcases,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.TestcaseListTypeHandler}
       )
   </insert>
@@ -150,6 +160,9 @@
     </selectKey>
     insert into device_test_task
     <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="projectId != null">
+        project_id,
+      </if>
       <if test="testTaskId != null">
         test_task_id,
       </if>
@@ -171,14 +184,26 @@
       <if test="globalVars != null">
         global_vars,
       </if>
-      <if test="beforeSuite != null">
-        before_suite,
+      <if test="beforeClass != null">
+        before_class,
+      </if>
+      <if test="beforeMethod != null">
+        before_method,
+      </if>
+      <if test="afterClass != null">
+        after_class,
+      </if>
+      <if test="afterMethod != null">
+        after_method,
       </if>
       <if test="testcases != null">
         testcases,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="projectId != null">
+        #{projectId,jdbcType=INTEGER},
+      </if>
       <if test="testTaskId != null">
         #{testTaskId,jdbcType=INTEGER},
       </if>
@@ -200,8 +225,17 @@
       <if test="globalVars != null">
         #{globalVars,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.GlobalVarListTypeHandler},
       </if>
-      <if test="beforeSuite != null">
-        #{beforeSuite,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.ActionTypeHandler},
+      <if test="beforeClass != null">
+        #{beforeClass,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.ActionTypeHandler},
+      </if>
+      <if test="beforeMethod != null">
+        #{beforeMethod,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.ActionTypeHandler},
+      </if>
+      <if test="afterClass != null">
+        #{afterClass,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.ActionTypeHandler},
+      </if>
+      <if test="afterMethod != null">
+        #{afterMethod,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.ActionTypeHandler},
       </if>
       <if test="testcases != null">
         #{testcases,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.TestcaseListTypeHandler},
@@ -219,6 +253,9 @@
     <set>
       <if test="record.id != null">
         id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.projectId != null">
+        project_id = #{record.projectId,jdbcType=INTEGER},
       </if>
       <if test="record.testTaskId != null">
         test_task_id = #{record.testTaskId,jdbcType=INTEGER},
@@ -241,8 +278,17 @@
       <if test="record.globalVars != null">
         global_vars = #{record.globalVars,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.GlobalVarListTypeHandler},
       </if>
-      <if test="record.beforeSuite != null">
-        before_suite = #{record.beforeSuite,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.ActionTypeHandler},
+      <if test="record.beforeClass != null">
+        before_class = #{record.beforeClass,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.ActionTypeHandler},
+      </if>
+      <if test="record.beforeMethod != null">
+        before_method = #{record.beforeMethod,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.ActionTypeHandler},
+      </if>
+      <if test="record.afterClass != null">
+        after_class = #{record.afterClass,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.ActionTypeHandler},
+      </if>
+      <if test="record.afterMethod != null">
+        after_method = #{record.afterMethod,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.ActionTypeHandler},
       </if>
       <if test="record.testcases != null">
         testcases = #{record.testcases,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.TestcaseListTypeHandler},
@@ -255,6 +301,7 @@
   <update id="updateByExampleWithBLOBs" parameterType="map">
     update device_test_task
     set id = #{record.id,jdbcType=INTEGER},
+      project_id = #{record.projectId,jdbcType=INTEGER},
       test_task_id = #{record.testTaskId,jdbcType=INTEGER},
       test_task_name = #{record.testTaskName,jdbcType=VARCHAR},
       device_id = #{record.deviceId,jdbcType=VARCHAR},
@@ -262,7 +309,10 @@
       start_time = #{record.startTime,jdbcType=TIMESTAMP},
       end_time = #{record.endTime,jdbcType=TIMESTAMP},
       global_vars = #{record.globalVars,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.GlobalVarListTypeHandler},
-      before_suite = #{record.beforeSuite,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.ActionTypeHandler},
+      before_class = #{record.beforeClass,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.ActionTypeHandler},
+      before_method = #{record.beforeMethod,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.ActionTypeHandler},
+      after_class = #{record.afterClass,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.ActionTypeHandler},
+      after_method = #{record.afterMethod,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.ActionTypeHandler},
       testcases = #{record.testcases,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.TestcaseListTypeHandler}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -271,6 +321,7 @@
   <update id="updateByExample" parameterType="map">
     update device_test_task
     set id = #{record.id,jdbcType=INTEGER},
+      project_id = #{record.projectId,jdbcType=INTEGER},
       test_task_id = #{record.testTaskId,jdbcType=INTEGER},
       test_task_name = #{record.testTaskName,jdbcType=VARCHAR},
       device_id = #{record.deviceId,jdbcType=VARCHAR},
@@ -284,6 +335,9 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.fgnb.mbg.po.DeviceTestTask">
     update device_test_task
     <set>
+      <if test="projectId != null">
+        project_id = #{projectId,jdbcType=INTEGER},
+      </if>
       <if test="testTaskId != null">
         test_task_id = #{testTaskId,jdbcType=INTEGER},
       </if>
@@ -305,8 +359,17 @@
       <if test="globalVars != null">
         global_vars = #{globalVars,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.GlobalVarListTypeHandler},
       </if>
-      <if test="beforeSuite != null">
-        before_suite = #{beforeSuite,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.ActionTypeHandler},
+      <if test="beforeClass != null">
+        before_class = #{beforeClass,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.ActionTypeHandler},
+      </if>
+      <if test="beforeMethod != null">
+        before_method = #{beforeMethod,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.ActionTypeHandler},
+      </if>
+      <if test="afterClass != null">
+        after_class = #{afterClass,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.ActionTypeHandler},
+      </if>
+      <if test="afterMethod != null">
+        after_method = #{afterMethod,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.ActionTypeHandler},
       </if>
       <if test="testcases != null">
         testcases = #{testcases,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.TestcaseListTypeHandler},
@@ -316,20 +379,25 @@
   </update>
   <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.fgnb.mbg.po.DeviceTestTask">
     update device_test_task
-    set test_task_id = #{testTaskId,jdbcType=INTEGER},
+    set project_id = #{projectId,jdbcType=INTEGER},
+      test_task_id = #{testTaskId,jdbcType=INTEGER},
       test_task_name = #{testTaskName,jdbcType=VARCHAR},
       device_id = #{deviceId,jdbcType=VARCHAR},
       status = #{status,jdbcType=TINYINT},
       start_time = #{startTime,jdbcType=TIMESTAMP},
       end_time = #{endTime,jdbcType=TIMESTAMP},
       global_vars = #{globalVars,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.GlobalVarListTypeHandler},
-      before_suite = #{beforeSuite,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.ActionTypeHandler},
+      before_class = #{beforeClass,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.ActionTypeHandler},
+      before_method = #{beforeMethod,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.ActionTypeHandler},
+      after_class = #{afterClass,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.ActionTypeHandler},
+      after_method = #{afterMethod,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.ActionTypeHandler},
       testcases = #{testcases,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.TestcaseListTypeHandler}
     where id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.fgnb.mbg.po.DeviceTestTask">
     update device_test_task
-    set test_task_id = #{testTaskId,jdbcType=INTEGER},
+    set project_id = #{projectId,jdbcType=INTEGER},
+      test_task_id = #{testTaskId,jdbcType=INTEGER},
       test_task_name = #{testTaskName,jdbcType=VARCHAR},
       device_id = #{deviceId,jdbcType=VARCHAR},
       status = #{status,jdbcType=TINYINT},

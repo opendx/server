@@ -8,9 +8,7 @@ import com.fgnb.mbg.po.*;
 import com.fgnb.model.Page;
 import com.fgnb.model.PageRequest;
 import com.fgnb.model.Response;
-import com.fgnb.model.action.Step;
 import com.fgnb.model.request.CommitTestTaskRequest;
-import com.fgnb.model.testplan.Before;
 import com.fgnb.model.vo.TestTaskVo;
 import com.fgnb.model.vo.Testcase;
 import org.springframework.beans.BeanUtils;
@@ -35,13 +33,11 @@ public class TestTaskService extends BaseService {
     @Autowired
     private TestPlanService testPlanService;
     @Autowired
-    private TestPlanMapper testPlanMapper;
+    private DeviceTestTaskService deviceTestTaskService;
     @Autowired
-    private ActionMapper actionMapper;
+    private GlobalVarService globalVarService;
     @Autowired
-    private DeviceTestTaskMapper deviceTestTaskMapper;
-    @Autowired
-    private GlobalVarMapper globalVarMapper;
+    private ActionService actionService;
 
     /**
      * 提交测试任务
@@ -52,46 +48,56 @@ public class TestTaskService extends BaseService {
     @Transactional
     public Response commit(CommitTestTaskRequest commitTestTaskRequest) {
         TestTask testTask = saveTestTask(commitTestTaskRequest);
+        TestPlan testPlan = testPlanService.selectByPrimaryKey(testTask.getTestPlanId());
 
-        TestPlan testPlan = testPlanMapper.selectByPrimaryKey(testTask.getTestPlanId());
-        List<Action> testcases = testPlanService.getTestcasesByTestPlan(testPlan);
-
-        //在每个用例的步骤插入beforeMethodAction，作为第0步
-        Action beforeMethodAction = getActionByBeforeType(testPlan.getBefores(), Before.BEFORE_METHOD_TYPE);
-        if (beforeMethodAction != null) {
-            testcases.forEach(testcase -> {
-                Step step = new Step();
-                step.setNumber(0);
-                step.setActionId(beforeMethodAction.getId());
-                step.setName("BeforeMethod - " + beforeMethodAction.getName());
-                testcase.getSteps().add(0, step);
-            });
-        }
+        Action beforeClass = testPlan.getBeforeClass() != null ? actionService.selectByPrimaryKey(testPlan.getBeforeClass()) : null;
+        Action beforeMethod = testPlan.getBeforeMethod() != null ? actionService.selectByPrimaryKey(testPlan.getBeforeMethod()) : null;
+        Action afterClass = testPlan.getAfterClass() != null ? actionService.selectByPrimaryKey(testPlan.getAfterClass()) : null;
+        Action afterMethod = testPlan.getAfterMethod() != null ? actionService.selectByPrimaryKey(testPlan.getAfterMethod()) : null;
+        List<Action> testcases = actionService.findByTestSuitIds(testPlan.getTestSuites());
 
         List<Action> needBuildActions = new ArrayList<>(testcases);
-        Action beforeSuiteAction = getActionByBeforeType(testPlan.getBefores(), Before.BEFORE_SUITE_TYPE);
-        if (beforeSuiteAction != null) {
-            needBuildActions.add(beforeSuiteAction);
+        if(beforeClass != null) {
+            needBuildActions.add(beforeClass);
+        }
+        if(beforeMethod != null) {
+            needBuildActions.add(beforeMethod);
+        }
+        if(afterClass != null) {
+            needBuildActions.add(afterClass);
+        }
+        if(afterMethod != null) {
+            needBuildActions.add(afterMethod);
         }
 
-        new ActionTreeBuilder(actionMapper).build(needBuildActions);
+        actionService.buildActionTree(needBuildActions);
 
-        //同一项目下的全局变量
-        GlobalVarExample globalVarExample = new GlobalVarExample();
-        globalVarExample.createCriteria().andProjectIdEqualTo(testTask.getProjectId());
-        List<GlobalVar> globalVars = globalVarMapper.selectByExample(globalVarExample);
+        // 同一项目下的全局变量
+        GlobalVar globalVar = new GlobalVar();
+        globalVar.setProjectId(testTask.getProjectId());
+        List<GlobalVar> globalVars = globalVarService.selectByGlobalVar(globalVar);
 
         //根据不同用例分发策略，给设备分配用例
         Map<String, List<Action>> deviceTestcases = allocateTestcaseToDevice(commitTestTaskRequest.getDeviceIds(), testcases, testTask.getRunMode());
 
         deviceTestcases.forEach((deviceId, actions) -> {
             DeviceTestTask deviceTestTask = new DeviceTestTask();
+            deviceTestTask.setProjectId(testTask.getProjectId());
             deviceTestTask.setTestTaskId(testTask.getId());
             deviceTestTask.setTestTaskName(testTask.getName());
             deviceTestTask.setDeviceId(deviceId);
             deviceTestTask.setGlobalVars(globalVars);
-            if (beforeSuiteAction != null) {
-                deviceTestTask.setBeforeSuite(beforeSuiteAction);
+            if(beforeClass != null) {
+                deviceTestTask.setBeforeClass(beforeClass);
+            }
+            if(beforeMethod != null) {
+                deviceTestTask.setBeforeMethod(beforeMethod);
+            }
+            if(afterClass != null) {
+                deviceTestTask.setAfterClass(afterClass);
+            }
+            if(afterMethod != null) {
+                deviceTestTask.setAfterMethod(afterMethod);
             }
             List<Testcase> cases = actions.stream().map(action -> {
                 Testcase testcase = new Testcase();
@@ -100,7 +106,7 @@ public class TestTaskService extends BaseService {
             }).collect(Collectors.toList());
             deviceTestTask.setTestcases(cases);
             deviceTestTask.setStatus(DeviceTestTask.UNSTART_STATUS);
-            int insertRow = deviceTestTaskMapper.insertSelective(deviceTestTask);
+            int insertRow = deviceTestTaskService.insertSelective(deviceTestTask);
             if (insertRow != 1) {
                 throw new BusinessException(deviceId + "保存测试任务失败");
             }
@@ -144,23 +150,6 @@ public class TestTaskService extends BaseService {
         }
 
         return result;
-    }
-
-    /**
-     * 根据不同的beforeType获取相应的action
-     *
-     * @param befores
-     * @param type
-     * @return
-     */
-    private Action getActionByBeforeType(List<Before> befores, Integer type) {
-        if (!CollectionUtils.isEmpty(befores)) {
-            Before before = befores.stream().filter(b -> b.getType() == type).findFirst().orElse(null);
-            if (before != null) {
-                return actionMapper.selectByPrimaryKey(before.getActionId());
-            }
-        }
-        return null;
     }
 
     /**

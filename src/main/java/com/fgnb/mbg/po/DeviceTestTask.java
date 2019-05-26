@@ -1,7 +1,10 @@
 package com.fgnb.mbg.po;
 
+import com.fgnb.mbg.po.GlobalVar;
+import com.fgnb.model.vo.Testcase;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 public class DeviceTestTask implements Serializable {
 
@@ -18,6 +21,13 @@ public class DeviceTestTask implements Serializable {
      * @mbg.generated
      */
     private Integer id;
+
+    /**
+     * 项目id
+     *
+     * @mbg.generated
+     */
+    private Integer projectId;
 
     /**
      * 测试任务id
@@ -69,11 +79,32 @@ public class DeviceTestTask implements Serializable {
     private java.util.List<GlobalVar> globalVars;
 
     /**
-     * 执行所有用例前执行的
+     * BeforeClass
      *
      * @mbg.generated
      */
-    private Action beforeSuite;
+    private Action beforeClass;
+
+    /**
+     * BeforeMethod
+     *
+     * @mbg.generated
+     */
+    private Action beforeMethod;
+
+    /**
+     * AfterClass
+     *
+     * @mbg.generated
+     */
+    private Action afterClass;
+
+    /**
+     * AfterMethod
+     *
+     * @mbg.generated
+     */
+    private Action afterMethod;
 
     /**
      * 执行的测试用例
@@ -90,6 +121,14 @@ public class DeviceTestTask implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(Integer projectId) {
+        this.projectId = projectId;
     }
 
     public Integer getTestTaskId() {
@@ -148,12 +187,36 @@ public class DeviceTestTask implements Serializable {
         this.globalVars = globalVars;
     }
 
-    public Action getBeforeSuite() {
-        return beforeSuite;
+    public Action getBeforeClass() {
+        return beforeClass;
     }
 
-    public void setBeforeSuite(Action beforeSuite) {
-        this.beforeSuite = beforeSuite;
+    public void setBeforeClass(Action beforeClass) {
+        this.beforeClass = beforeClass;
+    }
+
+    public Action getBeforeMethod() {
+        return beforeMethod;
+    }
+
+    public void setBeforeMethod(Action beforeMethod) {
+        this.beforeMethod = beforeMethod;
+    }
+
+    public Action getAfterClass() {
+        return afterClass;
+    }
+
+    public void setAfterClass(Action afterClass) {
+        this.afterClass = afterClass;
+    }
+
+    public Action getAfterMethod() {
+        return afterMethod;
+    }
+
+    public void setAfterMethod(Action afterMethod) {
+        this.afterMethod = afterMethod;
     }
 
     public java.util.List<com.fgnb.model.vo.Testcase> getTestcases() {
@@ -171,6 +234,7 @@ public class DeviceTestTask implements Serializable {
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
+        sb.append(", projectId=").append(projectId);
         sb.append(", testTaskId=").append(testTaskId);
         sb.append(", testTaskName=").append(testTaskName);
         sb.append(", deviceId=").append(deviceId);
@@ -178,7 +242,10 @@ public class DeviceTestTask implements Serializable {
         sb.append(", startTime=").append(startTime);
         sb.append(", endTime=").append(endTime);
         sb.append(", globalVars=").append(globalVars);
-        sb.append(", beforeSuite=").append(beforeSuite);
+        sb.append(", beforeClass=").append(beforeClass);
+        sb.append(", beforeMethod=").append(beforeMethod);
+        sb.append(", afterClass=").append(afterClass);
+        sb.append(", afterMethod=").append(afterMethod);
         sb.append(", testcases=").append(testcases);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");

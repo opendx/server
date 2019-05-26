@@ -30,28 +30,6 @@ public class TestSuiteController {
         return testSuiteService.add(testSuite);
     }
 
-    /**
-     * 删除测试集
-     *
-     * @param testSuiteId
-     * @return
-     */
-    @GetMapping("/delete/{testSuiteId}")
-    public Response delete(@PathVariable Integer testSuiteId) {
-        return testSuiteService.delete(testSuiteId);
-    }
-
-    /**
-     * 修改testSuite
-     *
-     * @param testSuite
-     * @return
-     */
-    @PostMapping("/update")
-    public Response update(@Valid @RequestBody TestSuite testSuite) {
-        return testSuiteService.update(testSuite);
-    }
-
 
     /**
      * 查询测试集列表

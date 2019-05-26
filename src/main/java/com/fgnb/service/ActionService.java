@@ -224,7 +224,7 @@ public class ActionService extends BaseService {
         }
 
         //构建action树
-        new ActionTreeBuilder(actionMapper).build(Arrays.asList(action));
+        buildActionTree(Arrays.asList(action));
 
         //该项目下的全局变量
         GlobalVar globalVar = new GlobalVar();
@@ -246,19 +246,21 @@ public class ActionService extends BaseService {
         }
     }
 
-    public List<Action> findByIds(List<Integer> actionIds) {
-        if (CollectionUtils.isEmpty(actionIds)) {
+    public List<Action> findByTestSuitIds(List<Integer> testSuiteIds) {
+        if (CollectionUtils.isEmpty(testSuiteIds)) {
             return new ArrayList<>();
         }
-
         ActionExample actionExample = new ActionExample();
-        actionExample.createCriteria().andIdIn(actionIds);
-
+        actionExample.createCriteria().andTestSuiteIdIn(testSuiteIds);
         return actionMapper.selectByExampleWithBLOBs(actionExample);
     }
 
     public Action selectByPrimaryKey(Integer actioniId) {
         return actionMapper.selectByPrimaryKey(actioniId);
+    }
+
+    public void buildActionTree(List<Action> actions) {
+        new ActionTreeBuilder(actionMapper).build(actions);
     }
 
 }

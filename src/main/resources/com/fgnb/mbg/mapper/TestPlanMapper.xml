@@ -6,11 +6,14 @@
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="description" jdbcType="VARCHAR" property="description" />
     <result column="project_id" jdbcType="INTEGER" property="projectId" />
+    <result column="before_class" jdbcType="INTEGER" property="beforeClass" />
+    <result column="before_method" jdbcType="INTEGER" property="beforeMethod" />
+    <result column="after_class" jdbcType="INTEGER" property="afterClass" />
+    <result column="after_method" jdbcType="INTEGER" property="afterMethod" />
     <result column="creator_uid" jdbcType="INTEGER" property="creatorUid" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.fgnb.mbg.po.TestPlan">
-    <result column="befores" jdbcType="LONGVARCHAR" property="befores" typeHandler="com.fgnb.typehandler.BeforeListTypeHandler" />
     <result column="test_suites" jdbcType="LONGVARCHAR" property="testSuites" typeHandler="com.fgnb.typehandler.IntegerListTypeHandler" />
   </resultMap>
   <sql id="Example_Where_Clause">
@@ -72,10 +75,11 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, name, description, project_id, creator_uid, create_time
+    id, name, description, project_id, before_class, before_method, after_class, after_method, 
+    creator_uid, create_time
   </sql>
   <sql id="Blob_Column_List">
-    befores, test_suites
+    test_suites
   </sql>
   <select id="selectByExampleWithBLOBs" parameterType="com.fgnb.mbg.po.TestPlanExample" resultMap="ResultMapWithBLOBs">
     select
@@ -130,11 +134,13 @@
       SELECT LAST_INSERT_ID()
     </selectKey>
     insert into test_plan (name, description, project_id, 
-      creator_uid, create_time, befores, 
+      before_class, before_method, after_class, 
+      after_method, creator_uid, create_time, 
       test_suites
       )
     values (#{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{projectId,jdbcType=INTEGER}, 
-      #{creatorUid,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{befores,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.BeforeListTypeHandler},
+      #{beforeClass,jdbcType=INTEGER}, #{beforeMethod,jdbcType=INTEGER}, #{afterClass,jdbcType=INTEGER}, 
+      #{afterMethod,jdbcType=INTEGER}, #{creatorUid,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
       #{testSuites,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.IntegerListTypeHandler}
       )
   </insert>
@@ -153,14 +159,23 @@
       <if test="projectId != null">
         project_id,
       </if>
+      <if test="beforeClass != null">
+        before_class,
+      </if>
+      <if test="beforeMethod != null">
+        before_method,
+      </if>
+      <if test="afterClass != null">
+        after_class,
+      </if>
+      <if test="afterMethod != null">
+        after_method,
+      </if>
       <if test="creatorUid != null">
         creator_uid,
       </if>
       <if test="createTime != null">
         create_time,
-      </if>
-      <if test="befores != null">
-        befores,
       </if>
       <if test="testSuites != null">
         test_suites,
@@ -176,14 +191,23 @@
       <if test="projectId != null">
         #{projectId,jdbcType=INTEGER},
       </if>
+      <if test="beforeClass != null">
+        #{beforeClass,jdbcType=INTEGER},
+      </if>
+      <if test="beforeMethod != null">
+        #{beforeMethod,jdbcType=INTEGER},
+      </if>
+      <if test="afterClass != null">
+        #{afterClass,jdbcType=INTEGER},
+      </if>
+      <if test="afterMethod != null">
+        #{afterMethod,jdbcType=INTEGER},
+      </if>
       <if test="creatorUid != null">
         #{creatorUid,jdbcType=INTEGER},
       </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="befores != null">
-        #{befores,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.BeforeListTypeHandler},
       </if>
       <if test="testSuites != null">
         #{testSuites,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.IntegerListTypeHandler},
@@ -211,14 +235,23 @@
       <if test="record.projectId != null">
         project_id = #{record.projectId,jdbcType=INTEGER},
       </if>
+      <if test="record.beforeClass != null">
+        before_class = #{record.beforeClass,jdbcType=INTEGER},
+      </if>
+      <if test="record.beforeMethod != null">
+        before_method = #{record.beforeMethod,jdbcType=INTEGER},
+      </if>
+      <if test="record.afterClass != null">
+        after_class = #{record.afterClass,jdbcType=INTEGER},
+      </if>
+      <if test="record.afterMethod != null">
+        after_method = #{record.afterMethod,jdbcType=INTEGER},
+      </if>
       <if test="record.creatorUid != null">
         creator_uid = #{record.creatorUid,jdbcType=INTEGER},
       </if>
       <if test="record.createTime != null">
         create_time = #{record.createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="record.befores != null">
-        befores = #{record.befores,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.BeforeListTypeHandler},
       </if>
       <if test="record.testSuites != null">
         test_suites = #{record.testSuites,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.IntegerListTypeHandler},
@@ -234,9 +267,12 @@
       name = #{record.name,jdbcType=VARCHAR},
       description = #{record.description,jdbcType=VARCHAR},
       project_id = #{record.projectId,jdbcType=INTEGER},
+      before_class = #{record.beforeClass,jdbcType=INTEGER},
+      before_method = #{record.beforeMethod,jdbcType=INTEGER},
+      after_class = #{record.afterClass,jdbcType=INTEGER},
+      after_method = #{record.afterMethod,jdbcType=INTEGER},
       creator_uid = #{record.creatorUid,jdbcType=INTEGER},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
-      befores = #{record.befores,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.BeforeListTypeHandler},
       test_suites = #{record.testSuites,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.IntegerListTypeHandler}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -248,6 +284,10 @@
       name = #{record.name,jdbcType=VARCHAR},
       description = #{record.description,jdbcType=VARCHAR},
       project_id = #{record.projectId,jdbcType=INTEGER},
+      before_class = #{record.beforeClass,jdbcType=INTEGER},
+      before_method = #{record.beforeMethod,jdbcType=INTEGER},
+      after_class = #{record.afterClass,jdbcType=INTEGER},
+      after_method = #{record.afterMethod,jdbcType=INTEGER},
       creator_uid = #{record.creatorUid,jdbcType=INTEGER},
       create_time = #{record.createTime,jdbcType=TIMESTAMP}
     <if test="_parameter != null">
@@ -266,14 +306,23 @@
       <if test="projectId != null">
         project_id = #{projectId,jdbcType=INTEGER},
       </if>
+      <if test="beforeClass != null">
+        before_class = #{beforeClass,jdbcType=INTEGER},
+      </if>
+      <if test="beforeMethod != null">
+        before_method = #{beforeMethod,jdbcType=INTEGER},
+      </if>
+      <if test="afterClass != null">
+        after_class = #{afterClass,jdbcType=INTEGER},
+      </if>
+      <if test="afterMethod != null">
+        after_method = #{afterMethod,jdbcType=INTEGER},
+      </if>
       <if test="creatorUid != null">
         creator_uid = #{creatorUid,jdbcType=INTEGER},
       </if>
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="befores != null">
-        befores = #{befores,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.BeforeListTypeHandler},
       </if>
       <if test="testSuites != null">
         test_suites = #{testSuites,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.IntegerListTypeHandler},
@@ -286,9 +335,12 @@
     set name = #{name,jdbcType=VARCHAR},
       description = #{description,jdbcType=VARCHAR},
       project_id = #{projectId,jdbcType=INTEGER},
+      before_class = #{beforeClass,jdbcType=INTEGER},
+      before_method = #{beforeMethod,jdbcType=INTEGER},
+      after_class = #{afterClass,jdbcType=INTEGER},
+      after_method = #{afterMethod,jdbcType=INTEGER},
       creator_uid = #{creatorUid,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
-      befores = #{befores,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.BeforeListTypeHandler},
       test_suites = #{testSuites,jdbcType=LONGVARCHAR,typeHandler=com.fgnb.typehandler.IntegerListTypeHandler}
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -297,6 +349,10 @@
     set name = #{name,jdbcType=VARCHAR},
       description = #{description,jdbcType=VARCHAR},
       project_id = #{projectId,jdbcType=INTEGER},
+      before_class = #{beforeClass,jdbcType=INTEGER},
+      before_method = #{beforeMethod,jdbcType=INTEGER},
+      after_class = #{afterClass,jdbcType=INTEGER},
+      after_method = #{afterMethod,jdbcType=INTEGER},
       creator_uid = #{creatorUid,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
