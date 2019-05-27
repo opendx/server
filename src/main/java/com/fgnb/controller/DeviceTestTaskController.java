@@ -44,8 +44,8 @@ public class DeviceTestTaskController {
      * @param deviceIds
      * @return
      */
-    @GetMapping("/findUnStartTestTasksByDeviceIds")
-    public Response findUnStartTestTasksByDeviceIds(String[] deviceIds) {
-        return deviceTestTaskService.findUnStartTestTasksByDeviceIds(deviceIds);
+    @GetMapping("/unStart")
+    public Response findUnStartDeviceTestTasksByDeviceIds(String[] deviceIds) {
+        return deviceTestTaskService.findUnStartDeviceTestTasksByDeviceIds(deviceIds);
     }
 }

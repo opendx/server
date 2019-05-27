@@ -86,12 +86,14 @@ public class DeviceTestTaskService {
         return deviceTestTaskMapper.selectByExampleWithBLOBs(deviceTestTaskExample);
     }
 
-    public Response findUnStartTestTasksByDeviceIds(String[] deviceIds) {
-        List<String> deviceIdList = Arrays.asList(deviceIds);
+    public Response findUnStartDeviceTestTasksByDeviceIds(String[] deviceIds) {
+        if(deviceIds == null) {
+            return Response.fail("deviceIds不能为空");
+        }
 
+        List<String> deviceIdList = Arrays.asList(deviceIds);
         DeviceTestTaskExample deviceTestTaskExample = new DeviceTestTaskExample();
         DeviceTestTaskExample.Criteria criteria = deviceTestTaskExample.createCriteria();
-
         criteria.andDeviceIdIn(deviceIdList).andStatusEqualTo(DeviceTestTask.UNSTART_STATUS);
 
         return Response.success(deviceTestTaskMapper.selectByExampleWithBLOBs(deviceTestTaskExample));
