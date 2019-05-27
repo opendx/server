@@ -65,9 +65,7 @@ public class UserService extends BaseService {
             user = users.get(0);
         }
 
-        UserVo userVo = new UserVo();
-        BeanUtils.copyProperties(user, userVo);
-        userVo.setToken(TokenUtil.create(user.getId() + ""));
+        UserVo userVo = UserVo.convert(user,TokenUtil.create(user.getId() + ""));
 
         UserCache.add(user.getId(), user);
         return Response.success("登录成功", userVo);
