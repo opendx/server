@@ -8,7 +8,6 @@ import com.fgnb.model.Response;
 import com.fgnb.model.UserCache;
 import com.fgnb.model.vo.UserVo;
 import com.fgnb.utils.TokenUtil;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
@@ -44,8 +43,7 @@ public class UserService extends BaseService {
         query.setPassword(user.getPassword());
         List<User> users = selectByUser(query);
 
-        if (CollectionUtils.isEmpty(users)) {
-            //注册
+        if (CollectionUtils.isEmpty(users)) { // 根据账号密码没查到用户信息
             if (StringUtils.isEmpty(user.getNickName())) {
                 //没有填昵称，认为是想登录
                 return Response.fail("账号或密码错误");
@@ -61,12 +59,11 @@ public class UserService extends BaseService {
                 return Response.fail("用户名已存在");
             }
         } else {
-            //登录
+            // 根据账号密码有查到用户
             user = users.get(0);
         }
 
         UserVo userVo = UserVo.convert(user,TokenUtil.create(user.getId() + ""));
-
         UserCache.add(user.getId(), user);
         return Response.success("登录成功", userVo);
     }
