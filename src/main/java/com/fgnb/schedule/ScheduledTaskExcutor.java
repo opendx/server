@@ -11,7 +11,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Date;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,16 +33,16 @@ public class ScheduledTaskExcutor {
     public void statisticsFinishedTestTask() {
         // 未完成的测试任务
         List<TestTask> unFinishedTestTasks = testTaskService.findUnFinishedTestTask();
-        if(CollectionUtils.isEmpty(unFinishedTestTasks)) {
+        if (CollectionUtils.isEmpty(unFinishedTestTasks)) {
             return;
         }
 
         unFinishedTestTasks.stream().parallel().forEach(unFinishedTestTask -> {
             List<DeviceTestTask> deviceTestTasks = deviceTestTaskService.findByTestTaskId(unFinishedTestTask.getId());
-            if(!CollectionUtils.isEmpty(deviceTestTasks)) {
+            if (!CollectionUtils.isEmpty(deviceTestTasks)) {
                 long finishedCount = deviceTestTasks.stream().filter(task -> task.getStatus() == DeviceTestTask.FINISHED_STATUS).count();
                 // 所有手机都测试完成
-                if(deviceTestTasks.size() == finishedCount) {
+                if (deviceTestTasks.size() == finishedCount) {
                     log.info("开始统计测试任务结果: {}", unFinishedTestTask.getId());
                     List<Testcase> testcases = deviceTestTasks.stream().flatMap(task -> task.getTestcases().stream()).collect(Collectors.toList());
 
@@ -53,7 +53,7 @@ public class ScheduledTaskExcutor {
                     TestTask testTask = new TestTask();
                     testTask.setId(unFinishedTestTask.getId());
                     testTask.setStatus(TestTask.FINISHED_STATUS);
-                    testTask.setFinishTime(new Date());
+                    testTask.setFinishTime(testcases.stream().map(Testcase::getEndTime).sorted(Comparator.reverseOrder()).findFirst().get()); //所有用例结束时间最晚的作为完成时间
                     testTask.setPassCaseCount((int) passCount);
                     testTask.setFailCaseCount((int) failCount);
                     testTask.setSkipCaseCount((int) skipCount);
