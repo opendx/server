@@ -29,7 +29,7 @@ public class ScheduledTaskExcutor {
     /**
      * 统计已完成的测试任务
      */
-    @Scheduled(fixedRate = 10000)
+    @Scheduled(fixedRate = 60000)
     public void statisticsFinishedTestTask() {
         // 未完成的测试任务
         List<TestTask> unFinishedTestTasks = testTaskService.findUnFinishedTestTask();
@@ -44,6 +44,7 @@ public class ScheduledTaskExcutor {
                 // 所有手机都测试完成
                 if(deviceTestTasks.size() == finishedCount) {
                     List<Testcase> testcases = deviceTestTasks.stream().flatMap(task -> task.getTestcases().stream()).collect(Collectors.toList());
+
                     long passCount = testcases.stream().filter(testcase -> testcase.getStatus() == Testcase.PASS_STATUS).count();
                     long failCount = testcases.stream().filter(testcase -> testcase.getStatus() == Testcase.FAIL_STATUS).count();
                     long skipCount = testcases.stream().filter(testcase -> testcase.getStatus() == Testcase.SKIP_STATUS).count();
