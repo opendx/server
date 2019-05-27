@@ -1,6 +1,5 @@
 package com.fgnb.mbg.po;
 
-
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -45,6 +44,13 @@ public class Category implements Serializable {
      */
     private Date createTime;
 
+    /**
+     * 创建人
+     *
+     * @mbg.generated
+     */
+    private Integer creatorUid;
+
     private static final long serialVersionUID = 1L;
 
     public Integer getId() {
@@ -87,6 +93,14 @@ public class Category implements Serializable {
         this.createTime = createTime;
     }
 
+    public Integer getCreatorUid() {
+        return creatorUid;
+    }
+
+    public void setCreatorUid(Integer creatorUid) {
+        this.creatorUid = creatorUid;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -98,6 +112,7 @@ public class Category implements Serializable {
         sb.append(", type=").append(type);
         sb.append(", projectId=").append(projectId);
         sb.append(", createTime=").append(createTime);
+        sb.append(", creatorUid=").append(creatorUid);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

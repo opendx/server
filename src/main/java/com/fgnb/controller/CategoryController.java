@@ -1,6 +1,7 @@
 package com.fgnb.controller;
 
 import com.fgnb.mbg.po.Category;
+import com.fgnb.model.PageRequest;
 import com.fgnb.model.Response;
 import com.fgnb.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,9 +37,8 @@ public class CategoryController {
      * @return
      */
     @PostMapping("/list")
-    public Response list(Category category) {
-        return categoryService.list(category);
+    public Response list(Category category, PageRequest pageRequest) {
+        return categoryService.list(category, pageRequest);
     }
-
 
 }

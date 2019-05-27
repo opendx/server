@@ -414,6 +414,66 @@ public class CategoryExample {
             addCriterion("create_time not between", value1, value2, "createTime");
             return (Criteria) this;
         }
+
+        public Criteria andCreatorUidIsNull() {
+            addCriterion("creator_uid is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreatorUidIsNotNull() {
+            addCriterion("creator_uid is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreatorUidEqualTo(Integer value) {
+            addCriterion("creator_uid =", value, "creatorUid");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreatorUidNotEqualTo(Integer value) {
+            addCriterion("creator_uid <>", value, "creatorUid");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreatorUidGreaterThan(Integer value) {
+            addCriterion("creator_uid >", value, "creatorUid");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreatorUidGreaterThanOrEqualTo(Integer value) {
+            addCriterion("creator_uid >=", value, "creatorUid");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreatorUidLessThan(Integer value) {
+            addCriterion("creator_uid <", value, "creatorUid");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreatorUidLessThanOrEqualTo(Integer value) {
+            addCriterion("creator_uid <=", value, "creatorUid");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreatorUidIn(List<Integer> values) {
+            addCriterion("creator_uid in", values, "creatorUid");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreatorUidNotIn(List<Integer> values) {
+            addCriterion("creator_uid not in", values, "creatorUid");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreatorUidBetween(Integer value1, Integer value2) {
+            addCriterion("creator_uid between", value1, value2, "creatorUid");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreatorUidNotBetween(Integer value1, Integer value2) {
+            addCriterion("creator_uid not between", value1, value2, "creatorUid");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {

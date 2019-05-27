@@ -7,6 +7,7 @@
     <result column="type" jdbcType="TINYINT" property="type" />
     <result column="project_id" jdbcType="INTEGER" property="projectId" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="creator_uid" jdbcType="INTEGER" property="creatorUid" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -67,7 +68,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, name, type, project_id, create_time
+    id, name, type, project_id, create_time, creator_uid
   </sql>
   <select id="selectByExample" parameterType="com.fgnb.mbg.po.CategoryExample" resultMap="BaseResultMap">
     select
@@ -104,9 +105,9 @@
       SELECT LAST_INSERT_ID()
     </selectKey>
     insert into category (name, type, project_id, 
-      create_time)
+      create_time, creator_uid)
     values (#{name,jdbcType=VARCHAR}, #{type,jdbcType=TINYINT}, #{projectId,jdbcType=INTEGER}, 
-      #{createTime,jdbcType=TIMESTAMP})
+      #{createTime,jdbcType=TIMESTAMP}, #{creatorUid,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.fgnb.mbg.po.Category">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
@@ -126,6 +127,9 @@
       <if test="createTime != null">
         create_time,
       </if>
+      <if test="creatorUid != null">
+        creator_uid,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="name != null">
@@ -139,6 +143,9 @@
       </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="creatorUid != null">
+        #{creatorUid,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -166,6 +173,9 @@
       <if test="record.createTime != null">
         create_time = #{record.createTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="record.creatorUid != null">
+        creator_uid = #{record.creatorUid,jdbcType=INTEGER},
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -177,7 +187,8 @@
       name = #{record.name,jdbcType=VARCHAR},
       type = #{record.type,jdbcType=TINYINT},
       project_id = #{record.projectId,jdbcType=INTEGER},
-      create_time = #{record.createTime,jdbcType=TIMESTAMP}
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      creator_uid = #{record.creatorUid,jdbcType=INTEGER}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -197,6 +208,9 @@
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="creatorUid != null">
+        creator_uid = #{creatorUid,jdbcType=INTEGER},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -205,7 +219,8 @@
     set name = #{name,jdbcType=VARCHAR},
       type = #{type,jdbcType=TINYINT},
       project_id = #{projectId,jdbcType=INTEGER},
-      create_time = #{createTime,jdbcType=TIMESTAMP}
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      creator_uid = #{creatorUid,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>
