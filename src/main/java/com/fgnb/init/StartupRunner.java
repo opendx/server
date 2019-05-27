@@ -27,7 +27,7 @@ public class StartupRunner implements ApplicationRunner {
     private UserService userService;
 
     @Override
-    public void run(ApplicationArguments args) throws Exception {
+    public void run(ApplicationArguments args) {
         File uploadImgDir = new File(uploadImgPath);
         if (!uploadImgDir.exists()) {
             log.info("创建图片上传存放目录 -> {}", uploadImgPath);
