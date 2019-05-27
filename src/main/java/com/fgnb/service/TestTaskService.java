@@ -1,6 +1,7 @@
 package com.fgnb.service;
 
 import com.fgnb.model.UserCache;
+import com.fgnb.model.vo.TestTaskSummary;
 import com.github.pagehelper.PageHelper;
 import com.fgnb.exception.BusinessException;
 import com.fgnb.mbg.mapper.*;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import java.text.NumberFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -38,6 +40,8 @@ public class TestTaskService extends BaseService {
     private GlobalVarService globalVarService;
     @Autowired
     private ActionService actionService;
+    @Autowired
+    private ProjectService projectService;
 
     /**
      * 提交测试任务
@@ -237,5 +241,34 @@ public class TestTaskService extends BaseService {
 
     public int updateByPrimaryKeySelective(TestTask testTask) {
         return testTaskMapper.updateByPrimaryKeySelective(testTask);
+    }
+
+    public Response getTestTaskSummary(Integer testTaskId) {
+        if(testTaskId == null) {
+            return Response.fail("testTaskId不能为空");
+        }
+
+        TestTask testTask = testTaskMapper.selectByPrimaryKey(testTaskId);
+        if(testTask == null) {
+            return Response.fail("测试任务不存在");
+        }
+
+        Integer projectId = testTask.getProjectId();
+        Project query = new Project();
+        query.setId(projectId);
+        Project project = projectService.selectByProject(query).get(0);
+
+        TestTaskSummary summary = new TestTaskSummary();
+        BeanUtils.copyProperties(testTask,summary);
+        summary.setPlatform(project.getPlatform());
+        summary.setProjectName(project.getName());
+        summary.setCommitorNickName(UserCache.getNickNameById(testTask.getCreatorUid()));
+        Integer passCaseCount = testTask.getPassCaseCount();
+        Integer totalCaseCount = testTask.getPassCaseCount() + testTask.getFailCaseCount() + testTask.getSkipCaseCount();
+        NumberFormat numberFormat = NumberFormat.getInstance();
+        numberFormat.setMaximumFractionDigits(2); // 精确到小数点2位
+        summary.setPassPercent(numberFormat.format(passCaseCount.floatValue() * 100 / totalCaseCount) + "%");
+
+        return Response.success(summary);
     }
 }

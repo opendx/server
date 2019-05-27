@@ -6,10 +6,7 @@ import com.fgnb.model.Response;
 import com.fgnb.model.request.CommitTestTaskRequest;
 import com.fgnb.service.TestTaskService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -36,5 +33,10 @@ public class TestTaskController {
     @PostMapping("/list")
     public Response list(TestTask testTask, PageRequest pageRequest) {
         return testTaskService.list(testTask,pageRequest);
+    }
+
+    @GetMapping("/summary/{testTaskId}")
+    public Response getTestTaskSummary(@PathVariable Integer testTaskId) {
+        return testTaskService.getTestTaskSummary(testTaskId);
     }
 }
