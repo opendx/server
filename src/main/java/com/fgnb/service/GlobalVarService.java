@@ -74,7 +74,6 @@ public class GlobalVarService extends BaseService {
         if (globalVar.getId() == null) {
             return Response.fail("全局变量id不能为空");
         }
-        // todo 校验name是否被action使用，如果被使用则不能直接修改name
         // 先在前端限制无法修改name
         try {
             int updateRow = globalVarMapper.updateByPrimaryKeySelective(globalVar);

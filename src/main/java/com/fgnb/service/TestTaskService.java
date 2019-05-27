@@ -228,4 +228,14 @@ public class TestTaskService extends BaseService {
         testTaskExample.setOrderByClause("commit_time desc");
         return testTaskMapper.selectByExample(testTaskExample);
     }
+
+    public List<TestTask> findUnFinishedTestTask() {
+        TestTask testTask = new TestTask();
+        testTask.setStatus(TestTask.UNFINISHED_STATUS);
+        return selectByTestTask(testTask);
+    }
+
+    public int updateByPrimaryKeySelective(TestTask testTask) {
+        return testTaskMapper.updateByPrimaryKeySelective(testTask);
+    }
 }
