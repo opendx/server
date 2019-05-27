@@ -1,8 +1,5 @@
 package com.fgnb.service;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.fgnb.agent.AgentApi;
 import com.fgnb.model.Response;
 import com.fgnb.model.vo.AgentVo;
 import de.codecentric.boot.admin.server.domain.entities.Instance;
@@ -21,14 +18,11 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class AgentService {
+
     @Autowired
     private InstanceRegistry instanceRegistry;
-
     @Autowired
     private DeviceService deviceService;
-
-    @Autowired
-    private AgentApi agentApi;
 
     public Response listOfOnline() {
         List<Instance> agents = instanceRegistry.getInstances().collectList().block();
@@ -45,19 +39,7 @@ public class AgentService {
                     AgentVo agentVo = new AgentVo();
                     agentVo.setAgentIp(agentIp);
                     agentVo.setAgentPort(agentPort);
-
-                    //在线的设备
                     agentVo.setDevices(deviceService.getOnlineDevicesByAgentIp(agentIp));
-
-                    try {
-                        Response response = agentApi.getSeleniumDrivers(agentIp, agentPort);
-                        if(response.isSuccess()) {
-                            List<AgentVo.Driver> drivers = JSON.parseArray(JSONArray.toJSONString(response.getData()), AgentVo.Driver.class);
-                            agentVo.setDrivers(drivers);
-                        }
-                    } catch (Exception e) {
-                        log.error("获取selenium drivers出错",e);
-                    }
 
                     return agentVo;
                 }).collect(Collectors.toList());

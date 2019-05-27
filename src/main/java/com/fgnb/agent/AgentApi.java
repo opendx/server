@@ -28,15 +28,4 @@ public class AgentApi {
     public Response debugAction(String agentIp, int agentPort, JSONObject requestBody) {
         return restTemplate.postForObject(PROTOCOL_PREFIX + agentIp + ":" + agentPort + "/action/debug", requestBody, Response.class);
     }
-
-    /**
-     * 获取agent开启的webDrivers (chromeDriver ...)
-     *
-     * @param agentIp
-     * @param agentPort
-     * @return
-     */
-    public Response getSeleniumDrivers(String agentIp, int agentPort) {
-        return restTemplate.getForObject(PROTOCOL_PREFIX + agentIp + ":" + agentPort + "/selenium/getDrivers", Response.class);
-    }
 }

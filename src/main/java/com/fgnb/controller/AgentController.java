@@ -23,7 +23,7 @@ public class AgentController {
      *
      * @return
      */
-    @GetMapping("/listOfOnline")
+    @GetMapping("/list/online")
     public Response listOfOnline() {
         return agentService.listOfOnline();
     }
