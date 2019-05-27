@@ -23,13 +23,5 @@ public class Page<T> {
         page.setData(data);
         return page;
     }
-
-    public static <T> Page<T> convert(List<T> data){
-        PageInfo pageInfo = new PageInfo(data);
-        Page pageVo = new Page();
-        pageVo.setTotal(pageInfo.getTotal());
-        pageVo.setData(pageInfo.getList());
-        return pageVo;
-    }
 }
 
