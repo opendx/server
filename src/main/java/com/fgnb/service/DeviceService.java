@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -137,5 +138,11 @@ public class DeviceService extends BaseService {
         DeviceExample deviceExample = new DeviceExample();
         deviceExample.createCriteria().andAgentIpEqualTo(agentIp).andStatusNotEqualTo(Device.OFFLINE_STATUS);
         return deviceMapper.selectByExample(deviceExample);
+    }
+
+    public int updateByAgentIp(Device device,String agentIp){
+        DeviceExample deviceExample = new DeviceExample();
+        deviceExample.createCriteria().andAgentIpEqualTo(agentIp);
+        return deviceMapper.updateByExampleSelective(device, deviceExample);
     }
 }

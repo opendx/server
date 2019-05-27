@@ -1,8 +1,7 @@
 package com.fgnb.agent;
 
-import com.fgnb.mbg.mapper.DeviceMapper;
 import com.fgnb.mbg.po.Device;
-import com.fgnb.mbg.po.DeviceExample;
+import com.fgnb.service.DeviceService;
 import de.codecentric.boot.admin.server.domain.entities.Instance;
 import de.codecentric.boot.admin.server.domain.entities.InstanceRepository;
 import de.codecentric.boot.admin.server.domain.events.InstanceEvent;
@@ -25,7 +24,7 @@ import java.util.Date;
 public class AgentStatusChangeNotifier extends AbstractStatusChangeNotifier {
 
     @Autowired
-    private DeviceMapper deviceMapper;
+    private DeviceService deviceService;
 
     public AgentStatusChangeNotifier(InstanceRepository repositpry) {
         super(repositpry);
@@ -37,20 +36,16 @@ public class AgentStatusChangeNotifier extends AbstractStatusChangeNotifier {
             if (event instanceof InstanceStatusChangedEvent) {
                 String status = ((InstanceStatusChangedEvent) event).getStatusInfo().getStatus();
                 if (!StatusInfo.STATUS_UP.equals(status)) {
-                    //非在线
+                    // 非在线
                     String agentURL = instance.getRegistration().getServiceUrl();// http://xx.xx.xx.xx:xxx/
                     log.info("检测到agent {} 处于非在线状态", agentURL);
                     String agentIp = agentURL.split("//")[1].split(":")[0];// xx.xx.xx.xx
 
-                    //把该agent下的设备都改为离线
+                    // 把该agent下的设备都改为离线
                     Device device = new Device();
                     device.setStatus(Device.OFFLINE_STATUS);
                     device.setLastOfflineTime(new Date());
-
-                    DeviceExample deviceExample = new DeviceExample();
-                    deviceExample.createCriteria().andAgentIpEqualTo(agentIp);
-
-                    int updateRow = deviceMapper.updateByExampleSelective(device, deviceExample);
+                    int updateRow = deviceService.updateByAgentIp(device,agentIp);
                     log.info("agent({})下的{}个设备已成功离线",agentIp,updateRow);
                 }
             }
