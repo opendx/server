@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -90,8 +89,8 @@ public class DeviceService extends BaseService {
         if(device.getAgentPort() != null) {
             criteria.andAgentPortEqualTo(device.getAgentPort());
         }
-        if(device.getType() != null) {
-            criteria.andTypeEqualTo(device.getType());
+        if(device.getPlatform() != null) {
+            criteria.andPlatformEqualTo(device.getPlatform());
         }
         if(device.getStatus() != null) {
             criteria.andStatusEqualTo(device.getStatus());
@@ -124,12 +123,12 @@ public class DeviceService extends BaseService {
         return Response.success("ok");
     }
 
-    public Response getOnlineDevices(Integer type) {
+    public Response getOnlineDevices(Integer platform) {
         DeviceExample deviceExample = new DeviceExample();
         DeviceExample.Criteria criteria = deviceExample.createCriteria();
         criteria.andStatusNotEqualTo(Device.OFFLINE_STATUS);
-        if(type != null) {
-            criteria.andTypeEqualTo(type);
+        if(platform != null) {
+            criteria.andPlatformEqualTo(platform);
         }
         return Response.success(deviceMapper.selectByExample(deviceExample));
     }

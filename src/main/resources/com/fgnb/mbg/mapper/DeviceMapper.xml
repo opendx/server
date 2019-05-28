@@ -12,7 +12,7 @@
     <result column="screen_width" jdbcType="INTEGER" property="screenWidth" />
     <result column="screen_height" jdbcType="INTEGER" property="screenHeight" />
     <result column="img_url" jdbcType="VARCHAR" property="imgUrl" />
-    <result column="type" jdbcType="TINYINT" property="type" />
+    <result column="platform" jdbcType="TINYINT" property="platform" />
     <result column="status" jdbcType="TINYINT" property="status" />
     <result column="stf_status" jdbcType="TINYINT" property="stfStatus" />
     <result column="macaca_status" jdbcType="TINYINT" property="macacaStatus" />
@@ -81,7 +81,7 @@
   </sql>
   <sql id="Base_Column_List">
     id, name, agent_ip, agent_port, system_version, cpu_info, mem_size, screen_width, 
-    screen_height, img_url, type, status, stf_status, macaca_status, last_online_time, 
+    screen_height, img_url, platform, status, stf_status, macaca_status, last_online_time, 
     last_offline_time, username, create_time
   </sql>
   <select id="selectByExample" parameterType="com.fgnb.mbg.po.DeviceExample" resultMap="BaseResultMap">
@@ -118,14 +118,14 @@
     insert into device (id, name, agent_ip, 
       agent_port, system_version, cpu_info, 
       mem_size, screen_width, screen_height, 
-      img_url, type, status, 
+      img_url, platform, status, 
       stf_status, macaca_status, last_online_time, 
       last_offline_time, username, create_time
       )
     values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{agentIp,jdbcType=VARCHAR}, 
       #{agentPort,jdbcType=INTEGER}, #{systemVersion,jdbcType=VARCHAR}, #{cpuInfo,jdbcType=VARCHAR}, 
       #{memSize,jdbcType=VARCHAR}, #{screenWidth,jdbcType=INTEGER}, #{screenHeight,jdbcType=INTEGER}, 
-      #{imgUrl,jdbcType=VARCHAR}, #{type,jdbcType=TINYINT}, #{status,jdbcType=TINYINT}, 
+      #{imgUrl,jdbcType=VARCHAR}, #{platform,jdbcType=TINYINT}, #{status,jdbcType=TINYINT}, 
       #{stfStatus,jdbcType=TINYINT}, #{macacaStatus,jdbcType=TINYINT}, #{lastOnlineTime,jdbcType=TIMESTAMP}, 
       #{lastOfflineTime,jdbcType=TIMESTAMP}, #{username,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}
       )
@@ -163,8 +163,8 @@
       <if test="imgUrl != null">
         img_url,
       </if>
-      <if test="type != null">
-        type,
+      <if test="platform != null">
+        platform,
       </if>
       <if test="status != null">
         status,
@@ -219,8 +219,8 @@
       <if test="imgUrl != null">
         #{imgUrl,jdbcType=VARCHAR},
       </if>
-      <if test="type != null">
-        #{type,jdbcType=TINYINT},
+      <if test="platform != null">
+        #{platform,jdbcType=TINYINT},
       </if>
       <if test="status != null">
         #{status,jdbcType=TINYINT},
@@ -284,8 +284,8 @@
       <if test="record.imgUrl != null">
         img_url = #{record.imgUrl,jdbcType=VARCHAR},
       </if>
-      <if test="record.type != null">
-        type = #{record.type,jdbcType=TINYINT},
+      <if test="record.platform != null">
+        platform = #{record.platform,jdbcType=TINYINT},
       </if>
       <if test="record.status != null">
         status = #{record.status,jdbcType=TINYINT},
@@ -325,7 +325,7 @@
       screen_width = #{record.screenWidth,jdbcType=INTEGER},
       screen_height = #{record.screenHeight,jdbcType=INTEGER},
       img_url = #{record.imgUrl,jdbcType=VARCHAR},
-      type = #{record.type,jdbcType=TINYINT},
+      platform = #{record.platform,jdbcType=TINYINT},
       status = #{record.status,jdbcType=TINYINT},
       stf_status = #{record.stfStatus,jdbcType=TINYINT},
       macaca_status = #{record.macacaStatus,jdbcType=TINYINT},
@@ -367,8 +367,8 @@
       <if test="imgUrl != null">
         img_url = #{imgUrl,jdbcType=VARCHAR},
       </if>
-      <if test="type != null">
-        type = #{type,jdbcType=TINYINT},
+      <if test="platform != null">
+        platform = #{platform,jdbcType=TINYINT},
       </if>
       <if test="status != null">
         status = #{status,jdbcType=TINYINT},
@@ -405,7 +405,7 @@
       screen_width = #{screenWidth,jdbcType=INTEGER},
       screen_height = #{screenHeight,jdbcType=INTEGER},
       img_url = #{imgUrl,jdbcType=VARCHAR},
-      type = #{type,jdbcType=TINYINT},
+      platform = #{platform,jdbcType=TINYINT},
       status = #{status,jdbcType=TINYINT},
       stf_status = #{stfStatus,jdbcType=TINYINT},
       macaca_status = #{macacaStatus,jdbcType=TINYINT},

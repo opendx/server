@@ -6,8 +6,8 @@ import java.util.Date;
 
 public class Device implements Serializable {
 
-    public static final Integer ANDROID_TYPE = 1;
-    public static final Integer IOS_TYPE = 2;
+    public static final Integer ANDROID = 1;
+    public static final Integer IOS = 2;
 
     public static final Integer OFFLINE_STATUS = 0;
     public static final Integer USING_STATUS = 1;
@@ -85,14 +85,14 @@ public class Device implements Serializable {
     private String imgUrl;
 
     /**
-     * 设备类型：1.android  2.ios
+     * 平台：1.android  2.ios
      *
      * @mbg.generated
      */
-    private Integer type;
+    private Integer platform;
 
     /**
-     * 设备状态：0.离线 1.空闲 2.使用中
+     * 设备状态：0.离线 1.使用中 2.空闲
      *
      * @mbg.generated
      */
@@ -222,12 +222,12 @@ public class Device implements Serializable {
         this.imgUrl = imgUrl;
     }
 
-    public Integer getType() {
-        return type;
+    public Integer getPlatform() {
+        return platform;
     }
 
-    public void setType(Integer type) {
-        this.type = type;
+    public void setPlatform(Integer platform) {
+        this.platform = platform;
     }
 
     public Integer getStatus() {
@@ -302,7 +302,7 @@ public class Device implements Serializable {
         sb.append(", screenWidth=").append(screenWidth);
         sb.append(", screenHeight=").append(screenHeight);
         sb.append(", imgUrl=").append(imgUrl);
-        sb.append(", type=").append(type);
+        sb.append(", platform=").append(platform);
         sb.append(", status=").append(status);
         sb.append(", stfStatus=").append(stfStatus);
         sb.append(", macacaStatus=").append(macacaStatus);

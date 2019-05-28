@@ -1,7 +1,5 @@
 package com.fgnb.controller;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.fgnb.mbg.po.Device;
 import com.fgnb.model.PageRequest;
 import com.fgnb.model.Response;
@@ -34,26 +32,6 @@ public class DeviceController {
     }
 
     /**
-     * 获取设备类型
-     */
-    @GetMapping("/types")
-    public Response getDeviceTypes() {
-        JSONObject android = new JSONObject();
-        android.put("type", Device.ANDROID_TYPE);
-        android.put("name", "Android");
-
-        JSONObject ios = new JSONObject();
-        ios.put("type", Device.IOS_TYPE);
-        ios.put("name", "iOS");
-
-        JSONArray deviceTypes = new JSONArray();
-        deviceTypes.add(android);
-        deviceTypes.add(ios);
-
-        return Response.success(deviceTypes);
-    }
-
-    /**
      * 查询设备列表
      *
      * @param device
@@ -78,11 +56,11 @@ public class DeviceController {
 
     /**
      * 获取在线的设备
-     * @param type
+     * @param platform
      * @return
      */
-    @GetMapping("/online/{type}")
-    public Response getOnlineDevices(@PathVariable Integer type) {
-        return deviceService.getOnlineDevices(type);
+    @GetMapping("/online/{platform}")
+    public Response getOnlineDevices(@PathVariable Integer platform) {
+        return deviceService.getOnlineDevices(platform);
     }
 }
