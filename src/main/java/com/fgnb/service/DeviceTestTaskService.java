@@ -26,8 +26,6 @@ public class DeviceTestTaskService {
 
     @Autowired
     private DeviceTestTaskMapper deviceTestTaskMapper;
-    @Autowired
-    private TestTaskMapper testTaskMapper;
 
     public Response update(DeviceTestTask deviceTestTask) {
         if (deviceTestTask.getId() == null) {

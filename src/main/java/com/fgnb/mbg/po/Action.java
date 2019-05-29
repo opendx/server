@@ -62,6 +62,7 @@ public class Action implements Serializable {
      *
      * @mbg.generated
      */
+    @NotNull(message = "action type不能为空")
     private Integer type;
 
     /**
