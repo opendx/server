@@ -1,12 +1,10 @@
 package com.fgnb.service;
 
 import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import com.fgnb.mbg.mapper.DeviceTestTaskMapper;
 import com.fgnb.mbg.mapper.TestTaskMapper;
 import com.fgnb.mbg.po.DeviceTestTask;
 import com.fgnb.mbg.po.DeviceTestTaskExample;
-import com.fgnb.mbg.po.TestTask;
 import com.fgnb.model.Page;
 import com.fgnb.model.PageRequest;
 import com.fgnb.model.Response;
@@ -14,12 +12,10 @@ import com.fgnb.model.vo.Testcase;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by jiangyitao.
@@ -56,14 +52,14 @@ public class DeviceTestTaskService {
 
         if (needPaging) {
             long total = Page.getTotal(deviceTestTasks);
-            return Response.success(Page.build(deviceTestTasks,total));
+            return Response.success(Page.build(deviceTestTasks, total));
         } else {
             return Response.success(deviceTestTasks);
         }
     }
 
     public List<DeviceTestTask> selectByDeviceTestTask(DeviceTestTask deviceTestTask) {
-        if(deviceTestTask == null) {
+        if (deviceTestTask == null) {
             deviceTestTask = new DeviceTestTask();
         }
 
@@ -86,17 +82,22 @@ public class DeviceTestTaskService {
         return deviceTestTaskMapper.selectByExampleWithBLOBs(deviceTestTaskExample);
     }
 
-    public Response findUnStartDeviceTestTasksByDeviceIds(String[] deviceIds) {
-        if(deviceIds == null) {
-            return Response.fail("deviceIds不能为空");
+    public Response findFirstUnStartDeviceTestTask(String deviceId) {
+        if (StringUtils.isEmpty(deviceId)) {
+            return Response.fail("deviceId不能为空");
         }
 
-        List<String> deviceIdList = Arrays.asList(deviceIds);
         DeviceTestTaskExample deviceTestTaskExample = new DeviceTestTaskExample();
         DeviceTestTaskExample.Criteria criteria = deviceTestTaskExample.createCriteria();
-        criteria.andDeviceIdIn(deviceIdList).andStatusEqualTo(DeviceTestTask.UNSTART_STATUS);
+        criteria.andDeviceIdEqualTo(deviceId).andStatusEqualTo(DeviceTestTask.UNSTART_STATUS);
+        deviceTestTaskExample.setOrderByClause("id asc limit 1");
+        List<DeviceTestTask> deviceTestTasks = deviceTestTaskMapper.selectByExampleWithBLOBs(deviceTestTaskExample);
 
-        return Response.success(deviceTestTaskMapper.selectByExampleWithBLOBs(deviceTestTaskExample));
+        if (CollectionUtils.isEmpty(deviceTestTasks)) {
+            return Response.success("ok", null);
+        } else {
+            return Response.success(deviceTestTasks.get(0));
+        }
     }
 
     public Response updateTestcase(Integer deviceTestTaskId, Testcase testcase) {

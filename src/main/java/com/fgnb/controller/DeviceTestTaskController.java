@@ -40,12 +40,11 @@ public class DeviceTestTaskController {
     }
 
     /**
-     * 通过设备id查询当前未开始的测试任务
-     * @param deviceIds
+     * 通过设备id查询未开始的测试任务（最开始的一条）
      * @return
      */
-    @GetMapping("/unStart")
-    public Response findUnStartDeviceTestTasksByDeviceIds(String[] deviceIds) {
-        return deviceTestTaskService.findUnStartDeviceTestTasksByDeviceIds(deviceIds);
+    @GetMapping("/firstUnStart/{deviceId}")
+    public Response findFirstUnStartDeviceTestTask(@PathVariable String deviceId) {
+        return deviceTestTaskService.findFirstUnStartDeviceTestTask(deviceId);
     }
 }
