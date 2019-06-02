@@ -45,8 +45,8 @@ public class AgentStatusChangeNotifier extends AbstractStatusChangeNotifier {
                     Device device = new Device();
                     device.setStatus(Device.OFFLINE_STATUS);
                     device.setLastOfflineTime(new Date());
-                    int updateRow = deviceService.updateByAgentIp(device,agentIp);
-                    log.info("agent({})下的{}个设备已成功离线",agentIp,updateRow);
+                    int updateRow = deviceService.updateByAgentIp(device, agentIp);
+                    log.info("agent({})下的{}个设备已成功离线", agentIp, updateRow);
                 }
             }
         });
