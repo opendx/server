@@ -13,7 +13,7 @@ import java.sql.SQLException;
 /**
  * Created by jiangyitao.
  */
-public class ActionTypeHandler extends BaseTypeHandler<Action>{
+public class ActionTypeHandler extends BaseTypeHandler<Action> {
     @Override
     public void setNonNullParameter(PreparedStatement preparedStatement, int i, Action action, JdbcType jdbcType) throws SQLException {
         preparedStatement.setString(i, JSONObject.toJSONString(action));
@@ -21,16 +21,16 @@ public class ActionTypeHandler extends BaseTypeHandler<Action>{
 
     @Override
     public Action getNullableResult(ResultSet resultSet, String s) throws SQLException {
-        return JSONObject.parseObject(resultSet.getString(s),Action.class);
+        return JSONObject.parseObject(resultSet.getString(s), Action.class);
     }
 
     @Override
     public Action getNullableResult(ResultSet resultSet, int i) throws SQLException {
-        return JSONObject.parseObject(resultSet.getString(i),Action.class);
+        return JSONObject.parseObject(resultSet.getString(i), Action.class);
     }
 
     @Override
     public Action getNullableResult(CallableStatement callableStatement, int i) throws SQLException {
-        return JSONObject.parseObject(callableStatement.getString(i),Action.class);
+        return JSONObject.parseObject(callableStatement.getString(i), Action.class);
     }
 }
