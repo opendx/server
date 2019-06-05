@@ -2,7 +2,6 @@ package com.fgnb.service;
 
 import com.github.pagehelper.PageHelper;
 import com.fgnb.mbg.mapper.DeviceTestTaskMapper;
-import com.fgnb.mbg.mapper.TestTaskMapper;
 import com.fgnb.mbg.po.DeviceTestTask;
 import com.fgnb.mbg.po.DeviceTestTaskExample;
 import com.fgnb.model.Page;
@@ -29,14 +28,14 @@ public class DeviceTestTaskService {
 
     public Response update(DeviceTestTask deviceTestTask) {
         if (deviceTestTask.getId() == null) {
-            return Response.fail("testTaskDevice不能为空");
+            return Response.fail("deviceTestTaskId不能为空");
         }
 
         int insertRow = deviceTestTaskMapper.updateByPrimaryKeySelective(deviceTestTask);
-        if (insertRow != 1) {
-            return Response.fail("更新失败，请稍后重试");
-        } else {
+        if (insertRow == 1) {
             return Response.success("更新成功");
+        } else {
+            return Response.fail("更新失败，请稍后重试");
         }
     }
 
@@ -89,10 +88,11 @@ public class DeviceTestTaskService {
         DeviceTestTaskExample.Criteria criteria = deviceTestTaskExample.createCriteria();
         criteria.andDeviceIdEqualTo(deviceId).andStatusEqualTo(DeviceTestTask.UNSTART_STATUS);
         deviceTestTaskExample.setOrderByClause("id asc limit 1");
+
         List<DeviceTestTask> deviceTestTasks = deviceTestTaskMapper.selectByExampleWithBLOBs(deviceTestTaskExample);
 
         if (CollectionUtils.isEmpty(deviceTestTasks)) {
-            return Response.success("ok", null);
+            return Response.success();
         } else {
             return Response.success(deviceTestTasks.get(0));
         }
@@ -107,7 +107,7 @@ public class DeviceTestTaskService {
         if (deviceTestTask == null) {
             return Response.fail("DeviceTestTask不存在");
         } else {
-            //更新testcase运行结果
+            // 更新testcase运行结果
             List<Testcase> testcases = deviceTestTask.getTestcases();
             for (Testcase tc : testcases) {
                 if (tc.getId() == testcase.getId()) {

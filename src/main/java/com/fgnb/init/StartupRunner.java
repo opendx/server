@@ -39,6 +39,7 @@ public class StartupRunner implements ApplicationRunner {
             log.info("创建视频上传存放目录 -> {}", uploadVideoPath);
             uploadVideoDir.mkdirs();
         }
+
         // 首次启动将所有用户放入单机缓存，以后有集群需求再用redis
         UserCache.set(userService.selectAll().stream().collect(Collectors.toMap(User::getId, user -> user)));
     }

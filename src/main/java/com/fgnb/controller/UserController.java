@@ -20,6 +20,7 @@ public class UserController {
 
     /**
      * 登录或注册
+     *
      * @param user
      * @return
      */
@@ -30,6 +31,7 @@ public class UserController {
 
     /**
      * 获取用户信息
+     *
      * @return
      */
     @GetMapping("/info")
@@ -39,6 +41,7 @@ public class UserController {
 
     /**
      * 登出
+     *
      * @return
      */
     @PostMapping("/logout")

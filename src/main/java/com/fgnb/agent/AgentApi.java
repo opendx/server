@@ -12,7 +12,7 @@ import org.springframework.web.client.RestTemplate;
 @Component
 public class AgentApi {
 
-    public static final String PROTOCOL_PREFIX = "http://";
+    private static final String PROTOCOL_PREFIX = "http://";
 
     @Autowired
     private RestTemplate restTemplate;

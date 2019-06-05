@@ -37,51 +37,43 @@ public class ActionService extends BaseService {
     @Autowired
     private AgentApi agentApi;
 
-    /**
-     * 添加action
-     *
-     * @param action
-     * @return
-     */
     public Response add(Action action) {
         action.setCreatorUid(getUid());
         action.setCreateTime(new Date());
 
+        int insertRow;
         try {
-            int insertRow = actionMapper.insertSelective(action);
-            if (insertRow != 1) {
-                return Response.fail("添加失败，稍后刷新重试");
-            }
+            insertRow = actionMapper.insertSelective(action);
         } catch (DuplicateKeyException e) {
             return Response.fail("命名冲突");
         }
 
-        return Response.success(action);
+        if (insertRow == 1) {
+            return Response.success("添加action成功");
+        } else {
+            return Response.fail("添加action失败，请稍后重试");
+        }
     }
 
-    /**
-     * 删除action
-     *
-     * @param actionId
-     * @return
-     */
     public Response delete(Integer actionId) {
         if (actionId == null) {
             return Response.fail("actionId不能为空");
         }
 
+        // 检查action是否被其他step使用
         List<Action> actions = actionDao.selectByStepActionId(actionId);
         if (!CollectionUtils.isEmpty(actions)) {
-            //正在使用该action的actionNames
+            // 正在使用该action的actionNames
             String usingActionNames = actions.stream().map(Action::getName).collect(Collectors.joining("、"));
             return Response.fail(usingActionNames + "正在使用此action，无法删除");
         }
 
         int deleteRow = actionMapper.deleteByPrimaryKey(actionId);
-        if (deleteRow != 1) {
+        if (deleteRow == 1) {
+            return Response.success("删除成功");
+        } else {
             return Response.fail("删除失败，请稍后重试");
         }
-        return Response.success("删除成功");
     }
 
     /**
@@ -98,16 +90,18 @@ public class ActionService extends BaseService {
         action.setUpdateTime(new Date());
         action.setUpdatorUid(getUid());
 
+        int updateRow;
         try {
-            int updateRow = actionMapper.updateByPrimaryKeyWithBLOBs(action);
-            if (updateRow != 1) {
-                return Response.fail("更新失败，请稍后重试!");
-            }
+            updateRow = actionMapper.updateByPrimaryKeyWithBLOBs(action);
         } catch (DuplicateKeyException e) {
             return Response.fail("命名冲突");
         }
 
-        return Response.success("更新成功");
+        if (updateRow == 1) {
+            return Response.success("更新Action成功");
+        } else {
+            return Response.fail("更新Action失败，请稍后重试");
+        }
     }
 
     /**
@@ -119,56 +113,52 @@ public class ActionService extends BaseService {
      */
     public Response list(Action action, PageRequest pageRequest) {
         boolean needPaging = pageRequest.needPaging();
-        //需要分页
+        // 需要分页
         if (needPaging) {
             PageHelper.startPage(pageRequest.getPageNum(), pageRequest.getPageSize());
         }
+
         List<Action> actions = selectByAction(action);
         List<ActionVo> actionVos = actions.stream()
                 .map(a -> {
                     String creatorNickName = a.getCreatorUid() == null ? null : UserCache.getNickNameById(a.getCreatorUid());
                     String updatorNickName = a.getUpdatorUid() == null ? null : UserCache.getNickNameById(a.getUpdatorUid());
-                    return ActionVo.convert(a,creatorNickName,updatorNickName);
+                    return ActionVo.convert(a, creatorNickName, updatorNickName);
                 }).collect(Collectors.toList());
         if (needPaging) {
             // java8 stream会导致PageHelper total计算错误
             // 所以这里用actions计算total
             long total = Page.getTotal(actions);
-            return Response.success(Page.build(actionVos,total));
+            return Response.success(Page.build(actionVos, total));
         } else {
             return Response.success(actionVos);
         }
     }
 
     public List<Action> selectByAction(Action action) {
-        if(action == null) {
+        if (action == null) {
             action = new Action();
         }
 
         ActionExample actionExample = new ActionExample();
         ActionExample.Criteria criteria = actionExample.createCriteria();
 
-        if(action.getId() != null) {
+        if (action.getId() != null) {
             criteria.andIdEqualTo(action.getId());
         }
-
-        if(action.getProjectId() != null) {
+        if (action.getProjectId() != null) {
             criteria.andProjectIdEqualTo(action.getProjectId());
         }
-
-        if(action.getType() != null) {
+        if (action.getType() != null) {
             criteria.andTypeEqualTo(action.getType());
         }
-
-        if(action.getPlatform() != null) {
+        if (action.getPlatform() != null) {
             criteria.andPlatformEqualTo(action.getPlatform());
         }
-
-        if(action.getPageId() != null) {
+        if (action.getPageId() != null) {
             criteria.andPageIdEqualTo(action.getPageId());
         }
-
-        if(action.getTestSuiteId() != null) {
+        if (action.getTestSuiteId() != null) {
             criteria.andTestSuiteIdEqualTo(action.getTestSuiteId());
         }
 
@@ -189,15 +179,15 @@ public class ActionService extends BaseService {
 
         ActionExample actionExample = new ActionExample();
 
-        //同一个项目下的action
+        // 同一个项目下的action
         ActionExample.Criteria criteria1 = actionExample.createCriteria();
         criteria1.andProjectIdEqualTo(projectId);
 
-        //所有项目公用的基础action
+        // 所有项目公用的基础action
         ActionExample.Criteria criteria2 = actionExample.createCriteria();
         criteria2.andProjectIdIsNull().andTypeEqualTo(Action.TYPE_BASE).andPlatformIsNull();
 
-        //所有项目公用的同一平台的基础action
+        // 所有项目公用的同一平台的基础action
         ActionExample.Criteria criteria3 = actionExample.createCriteria();
         criteria3.andProjectIdIsNull().andTypeEqualTo(Action.TYPE_BASE).andPlatformEqualTo(platform);
 
@@ -218,15 +208,15 @@ public class ActionService extends BaseService {
         Action action = actionDebugRequest.getAction();
         ActionDebugRequest.DebugInfo debugInfo = actionDebugRequest.getDebugInfo();
 
-        //没保存过的action设置个默认的actionId
+        // 没保存过的action设置个默认的actionId
         if (action.getId() == null) {
             action.setId(0);
         }
 
-        //构建action树
+        // 构建action树
         buildActionTree(Arrays.asList(action));
 
-        //该项目下的全局变量
+        // 该项目下的全局变量
         GlobalVar globalVar = new GlobalVar();
         globalVar.setProjectId(action.getProjectId());
         List<GlobalVar> globalVars = globalVarService.selectByGlobalVar(globalVar);
@@ -246,6 +236,12 @@ public class ActionService extends BaseService {
         }
     }
 
+    /**
+     * 查询测试集下的测试用例
+     *
+     * @param testSuiteIds
+     * @return
+     */
     public List<Action> findByTestSuitIds(List<Integer> testSuiteIds) {
         if (CollectionUtils.isEmpty(testSuiteIds)) {
             return new ArrayList<>();
@@ -259,6 +255,11 @@ public class ActionService extends BaseService {
         return actionMapper.selectByPrimaryKey(actioniId);
     }
 
+    /**
+     * 构建actionTree
+     *
+     * @param actions
+     */
     public void buildActionTree(List<Action> actions) {
         new ActionTreeBuilder(actionMapper).build(actions);
     }

@@ -28,7 +28,7 @@ public class AgentService {
         List<Instance> agents = instanceRegistry.getInstances().collectList().block();
 
         List<AgentVo> agentVos = agents.stream()
-                .filter(agent -> StatusInfo.STATUS_UP.equals(agent.getStatusInfo().getStatus())) //过滤出在线的agent
+                .filter(agent -> StatusInfo.STATUS_UP.equals(agent.getStatusInfo().getStatus())) // 过滤出在线的agent
                 .map(agent -> {
                     String url = agent.getRegistration().getServiceUrl(); // http://xx.xx.xx.x:xx/
                     String[] host = url.split("//")[1].split(":");

@@ -70,5 +70,4 @@ public class GlobalExceptionHandler {
         return Response.fail(e.getBindingResult().getFieldError().getDefaultMessage());
     }
 
-
 }

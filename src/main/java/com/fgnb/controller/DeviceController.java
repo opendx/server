@@ -49,7 +49,7 @@ public class DeviceController {
      * @param deviceId
      * @return
      */
-    @GetMapping("/start/{deviceId}")
+    @GetMapping("/{deviceId}/start")
     public Response start(@PathVariable String deviceId) {
         return deviceService.start(deviceId);
     }
@@ -59,8 +59,9 @@ public class DeviceController {
      * @param platform
      * @return
      */
-    @GetMapping("/online/{platform}")
+    @GetMapping("/online/platform/{platform}")
     public Response getOnlineDevices(@PathVariable Integer platform) {
         return deviceService.getOnlineDevices(platform);
     }
+
 }

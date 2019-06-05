@@ -28,20 +28,21 @@ public class TestSuiteService extends BaseService {
     private TestSuiteMapper testSuiteMapper;
 
     public Response add(TestSuite testSuite) {
-
         testSuite.setCreateTime(new Date());
         testSuite.setCreatorUid(getUid());
 
+        int insertRow;
         try {
-            int insertRow = testSuiteMapper.insertSelective(testSuite);
-            if (insertRow != 1) {
-                return Response.fail("添加测试集失败");
-            }
+            insertRow = testSuiteMapper.insertSelective(testSuite);
         } catch (DuplicateKeyException e) {
             return Response.fail("命名冲突");
         }
 
-        return Response.success("添加成功");
+        if (insertRow == 1) {
+            return Response.success("添加TestSuite成功");
+        } else {
+            return Response.fail("添加TestSuite失败");
+        }
     }
 
     public Response list(TestSuite testSuite, PageRequest pageRequest) {
@@ -80,8 +81,8 @@ public class TestSuiteService extends BaseService {
         if(!StringUtils.isEmpty(testSuite.getName())) {
             criteria.andNameEqualTo(testSuite.getName());
         }
-
         testSuiteExample.setOrderByClause("create_time desc");
+
         return testSuiteMapper.selectByExample(testSuiteExample);
     }
 }

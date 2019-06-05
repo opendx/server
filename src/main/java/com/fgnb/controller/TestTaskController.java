@@ -22,6 +22,7 @@ public class TestTaskController {
 
     /**
      * 提交测试任务
+     *
      * @param commitTestTaskRequest
      * @return
      */
@@ -30,12 +31,23 @@ public class TestTaskController {
         return testTaskService.commit(commitTestTaskRequest);
     }
 
+    /**
+     * 测试任务列表
+     * @param testTask
+     * @param pageRequest
+     * @return
+     */
     @PostMapping("/list")
     public Response list(TestTask testTask, PageRequest pageRequest) {
-        return testTaskService.list(testTask,pageRequest);
+        return testTaskService.list(testTask, pageRequest);
     }
 
-    @GetMapping("/summary/{testTaskId}")
+    /**
+     * 测试任务概要
+     * @param testTaskId
+     * @return
+     */
+    @GetMapping("/{testTaskId}/summary")
     public Response getTestTaskSummary(@PathVariable Integer testTaskId) {
         return testTaskService.getTestTaskSummary(testTaskId);
     }

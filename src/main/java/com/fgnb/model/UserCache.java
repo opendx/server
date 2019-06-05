@@ -24,7 +24,7 @@ public class UserCache {
     }
 
     public static String getNickNameById(Integer uid) {
-        if(uid == null) {
+        if (uid == null) {
             return null;
         }
         User user = getById(uid);

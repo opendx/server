@@ -61,16 +61,16 @@ public class TestTaskService extends BaseService {
         List<Action> testcases = actionService.findByTestSuitIds(testPlan.getTestSuites());
 
         List<Action> needBuildActions = new ArrayList<>(testcases);
-        if(beforeClass != null) {
+        if (beforeClass != null) {
             needBuildActions.add(beforeClass);
         }
-        if(beforeMethod != null) {
+        if (beforeMethod != null) {
             needBuildActions.add(beforeMethod);
         }
-        if(afterClass != null) {
+        if (afterClass != null) {
             needBuildActions.add(afterClass);
         }
-        if(afterMethod != null) {
+        if (afterMethod != null) {
             needBuildActions.add(afterMethod);
         }
 
@@ -91,16 +91,16 @@ public class TestTaskService extends BaseService {
             deviceTestTask.setTestTaskName(testTask.getName());
             deviceTestTask.setDeviceId(deviceId);
             deviceTestTask.setGlobalVars(globalVars);
-            if(beforeClass != null) {
+            if (beforeClass != null) {
                 deviceTestTask.setBeforeClass(beforeClass);
             }
-            if(beforeMethod != null) {
+            if (beforeMethod != null) {
                 deviceTestTask.setBeforeMethod(beforeMethod);
             }
-            if(afterClass != null) {
+            if (afterClass != null) {
                 deviceTestTask.setAfterClass(afterClass);
             }
-            if(afterMethod != null) {
+            if (afterMethod != null) {
                 deviceTestTask.setAfterMethod(afterMethod);
             }
             List<Testcase> cases = actions.stream().map(action -> {
@@ -110,6 +110,7 @@ public class TestTaskService extends BaseService {
             }).collect(Collectors.toList());
             deviceTestTask.setTestcases(cases);
             deviceTestTask.setStatus(DeviceTestTask.UNSTART_STATUS);
+
             int insertRow = deviceTestTaskService.insertSelective(deviceTestTask);
             if (insertRow != 1) {
                 throw new BusinessException(deviceId + "保存测试任务失败");
@@ -134,9 +135,9 @@ public class TestTaskService extends BaseService {
 
         Map<String, List<Action>> result = new HashMap<>(); // deviceId : List<Action>
 
-        if (runMode == TestTask.RUN_MODE_COMPATIBLE) { //兼容模式： 所有设备都运行同一份用例
+        if (runMode == TestTask.RUN_MODE_COMPATIBLE) { // 兼容模式： 所有设备都运行同一份用例
             result = deviceIds.stream().collect(Collectors.toMap(deviceId -> deviceId, v -> testcases));
-        } else if (runMode == TestTask.RUN_MODE_EFFICIENCY) { //高效模式：平均分配用例给设备
+        } else if (runMode == TestTask.RUN_MODE_EFFICIENCY) { // 高效模式：平均分配用例给设备
             int deviceIndex = 0; //当前分配到第几个设备
             for (int i = 0; i < testcases.size(); i++) {
                 List<Action> actions = result.get(deviceIds.get(deviceIndex));
@@ -146,7 +147,7 @@ public class TestTaskService extends BaseService {
                 }
                 actions.add(testcases.get(i));
                 deviceIndex++;
-                //分配完最后一个设备，再从第一个设备开始分配
+                // 分配完最后一个设备，再从第一个设备开始分配
                 if (deviceIndex == deviceIds.size()) {
                     deviceIndex = 0;
                 }
@@ -170,16 +171,18 @@ public class TestTaskService extends BaseService {
         testTask.setCreatorUid(getUid());
         testTask.setStatus(TestTask.UNFINISHED_STATUS);
 
+        int insertRow;
         try {
-            int insertRow = testTaskMapper.insertSelective(testTask);
-            if (insertRow != 1) {
-                throw new BusinessException("任务提交失败，请稍后重试");
-            }
+            insertRow = testTaskMapper.insertSelective(testTask);
         } catch (DuplicateKeyException e) {
             throw new BusinessException("命名冲突");
         }
 
-        return testTask;
+        if (insertRow == 1) {
+            return testTask;
+        } else {
+            throw new BusinessException("任务提交失败，请稍后重试");
+        }
     }
 
     /**
@@ -202,34 +205,34 @@ public class TestTaskService extends BaseService {
             // java8 stream会导致PageHelper total计算错误
             // 所以这里用testTasks计算total
             long total = Page.getTotal(testTasks);
-            return Response.success(Page.build(testTaskVos,total));
+            return Response.success(Page.build(testTaskVos, total));
         } else {
             return Response.success(testTaskVos);
         }
     }
 
     public List<TestTask> selectByTestTask(TestTask testTask) {
-        if(testTask == null) {
+        if (testTask == null) {
             testTask = new TestTask();
         }
 
         TestTaskExample testTaskExample = new TestTaskExample();
         TestTaskExample.Criteria criteria = testTaskExample.createCriteria();
 
-        if(testTask.getId() != null) {
+        if (testTask.getId() != null) {
             criteria.andIdEqualTo(testTask.getId());
         }
-        if(testTask.getProjectId() != null) {
+        if (testTask.getProjectId() != null) {
             criteria.andProjectIdEqualTo(testTask.getProjectId());
         }
-        if(testTask.getTestPlanId() != null) {
+        if (testTask.getTestPlanId() != null) {
             criteria.andTestPlanIdEqualTo(testTask.getTestPlanId());
         }
-        if(testTask.getStatus() != null) {
+        if (testTask.getStatus() != null) {
             criteria.andStatusEqualTo(testTask.getStatus());
         }
-
         testTaskExample.setOrderByClause("commit_time desc");
+
         return testTaskMapper.selectByExample(testTaskExample);
     }
 
@@ -244,12 +247,12 @@ public class TestTaskService extends BaseService {
     }
 
     public Response getTestTaskSummary(Integer testTaskId) {
-        if(testTaskId == null) {
+        if (testTaskId == null) {
             return Response.fail("testTaskId不能为空");
         }
 
         TestTask testTask = testTaskMapper.selectByPrimaryKey(testTaskId);
-        if(testTask == null) {
+        if (testTask == null) {
             return Response.fail("测试任务不存在");
         }
 
@@ -259,14 +262,17 @@ public class TestTaskService extends BaseService {
         Project project = projectService.selectByProject(query).get(0);
 
         TestTaskSummary summary = new TestTaskSummary();
-        BeanUtils.copyProperties(testTask,summary);
+        BeanUtils.copyProperties(testTask, summary);
         summary.setPlatform(project.getPlatform());
         summary.setProjectName(project.getName());
         summary.setCommitorNickName(UserCache.getNickNameById(testTask.getCreatorUid()));
+
         Integer passCaseCount = testTask.getPassCaseCount();
         Integer totalCaseCount = testTask.getPassCaseCount() + testTask.getFailCaseCount() + testTask.getSkipCaseCount();
+
         NumberFormat numberFormat = NumberFormat.getInstance();
         numberFormat.setMaximumFractionDigits(2); // 精确到小数点2位
+
         summary.setPassPercent(numberFormat.format(passCaseCount.floatValue() * 100 / totalCaseCount) + "%");
 
         return Response.success(summary);

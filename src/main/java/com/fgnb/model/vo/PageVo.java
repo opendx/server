@@ -11,7 +11,7 @@ import org.springframework.beans.BeanUtils;
 public class PageVo extends Page {
     private String creatorNickName;
 
-    public static PageVo convert(Page page,String creatorNickName) {
+    public static PageVo convert(Page page, String creatorNickName) {
         PageVo pageVo = new PageVo();
         BeanUtils.copyProperties(page, pageVo);
         pageVo.setCreatorNickName(creatorNickName);

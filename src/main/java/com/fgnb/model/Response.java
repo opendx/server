@@ -5,7 +5,6 @@ import lombok.Data;
 
 /**
  * Created by jiangyitao.
- * 响应对象
  */
 @Data
 public class Response {
@@ -28,7 +27,11 @@ public class Response {
 
     @JsonIgnore
     public boolean isSuccess() {
-        return status == SUCCESS ? true : false;
+        return status == SUCCESS;
+    }
+
+    public static Response success() {
+        return buildResponse(SUCCESS, "success", null);
     }
 
     public static Response success(Object data) {

@@ -49,7 +49,7 @@ public class UploadController {
                 return Response.fail("暂不支持该格式文件上传");
             }
         } catch (IOException e) {
-            log.error("transfer err",e);
+            log.error("transfer err", e);
             return Response.fail(e.getMessage());
         }
 
@@ -59,8 +59,8 @@ public class UploadController {
             data.put("downloadURL", downloadURL);
             return Response.success("上传成功", data);
         } catch (UnknownHostException e) {
-            log.error("UnknownHost",e);
-            return Response.fail("获取LocalHost出错");
+            log.error("UnknownHost", e);
+            return Response.fail(e.getMessage());
         }
     }
 }

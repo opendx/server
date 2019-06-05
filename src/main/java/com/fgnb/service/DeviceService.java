@@ -31,20 +31,21 @@ public class DeviceService extends BaseService {
      * @return
      */
     public Response save(Device device) {
-        //数据库是否有该手机
+        // 数据库是否有该手机
         Device dbDevice = deviceMapper.selectByPrimaryKey(device.getId());
         int saveRow;
         if (dbDevice == null) {
-            //首次接入的device
+            // 首次接入的device
             saveRow = deviceMapper.insertSelective(device);
         } else {
-            //更新Device
+            // 更新Device
             saveRow = deviceMapper.updateByPrimaryKeySelective(device);
         }
-        if (saveRow != 1) {
+        if (saveRow == 1) {
+            return Response.success("保存成功");
+        } else {
             return Response.fail("保存失败，请稍后重试");
         }
-        return Response.success("保存成功");
     }
 
     /**
@@ -63,40 +64,40 @@ public class DeviceService extends BaseService {
         List<Device> devices = selectByDevice(device);
         if (needPaging) {
             long total = Page.getTotal(devices);
-            return Response.success(Page.build(devices,total));
+            return Response.success(Page.build(devices, total));
         } else {
             return Response.success(devices);
         }
     }
 
     public List<Device> selectByDevice(Device device) {
-        if(device == null) {
+        if (device == null) {
             device = new Device();
         }
 
         DeviceExample deviceExample = new DeviceExample();
         DeviceExample.Criteria criteria = deviceExample.createCriteria();
 
-        if(!StringUtils.isEmpty(device.getId())) {
+        if (!StringUtils.isEmpty(device.getId())) {
             criteria.andIdEqualTo(device.getId());
         }
-        if(!StringUtils.isEmpty(device.getName())) {
+        if (!StringUtils.isEmpty(device.getName())) {
             criteria.andNameEqualTo(device.getName());
         }
-        if(!StringUtils.isEmpty(device.getAgentIp())) {
+        if (!StringUtils.isEmpty(device.getAgentIp())) {
             criteria.andAgentIpEqualTo(device.getAgentIp());
         }
-        if(device.getAgentPort() != null) {
+        if (device.getAgentPort() != null) {
             criteria.andAgentPortEqualTo(device.getAgentPort());
         }
-        if(device.getPlatform() != null) {
+        if (device.getPlatform() != null) {
             criteria.andPlatformEqualTo(device.getPlatform());
         }
-        if(device.getStatus() != null) {
+        if (device.getStatus() != null) {
             criteria.andStatusEqualTo(device.getStatus());
         }
-
         deviceExample.setOrderByClause("status desc,create_time desc");
+
         return deviceMapper.selectByExample(deviceExample);
     }
 
@@ -115,19 +116,18 @@ public class DeviceService extends BaseService {
         if (device == null) {
             return Response.fail("手机不存在");
         }
-
         if (device.getStatus() != Device.IDLE_STATUS) {
             return Response.fail("手机未闲置");
         }
 
-        return Response.success("ok");
+        return Response.success();
     }
 
     public Response getOnlineDevices(Integer platform) {
         DeviceExample deviceExample = new DeviceExample();
         DeviceExample.Criteria criteria = deviceExample.createCriteria();
         criteria.andStatusNotEqualTo(Device.OFFLINE_STATUS);
-        if(platform != null) {
+        if (platform != null) {
             criteria.andPlatformEqualTo(platform);
         }
         return Response.success(deviceMapper.selectByExample(deviceExample));
@@ -139,7 +139,7 @@ public class DeviceService extends BaseService {
         return deviceMapper.selectByExample(deviceExample);
     }
 
-    public int updateByAgentIp(Device device,String agentIp){
+    public int updateByAgentIp(Device device, String agentIp) {
         DeviceExample deviceExample = new DeviceExample();
         deviceExample.createCriteria().andAgentIpEqualTo(agentIp);
         return deviceMapper.updateByExampleSelective(device, deviceExample);

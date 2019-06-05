@@ -38,7 +38,7 @@ public class PageController {
      * @param pageId
      * @return
      */
-    @GetMapping("/delete/{pageId}")
+    @DeleteMapping("/{pageId}")
     public Response delete(@PathVariable Integer pageId) {
         return pageService.delete(pageId);
     }

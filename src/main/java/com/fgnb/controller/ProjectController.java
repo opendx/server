@@ -1,7 +1,5 @@
 package com.fgnb.controller;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.fgnb.mbg.po.Project;
 import com.fgnb.model.PageRequest;
 import com.fgnb.model.Response;
@@ -39,7 +37,7 @@ public class ProjectController {
      * @param projectId
      * @return
      */
-    @GetMapping("/delete/{projectId}")
+    @DeleteMapping("/{projectId}")
     public Response delete(@PathVariable Integer projectId) {
         return projectService.delete(projectId);
     }
@@ -55,11 +53,12 @@ public class ProjectController {
 
     /**
      * 查询项目列表
+     *
      * @return
      */
     @PostMapping("/list")
-    public Response list(Project project, PageRequest pageRequest){
-        return projectService.list(project,pageRequest);
+    public Response list(Project project, PageRequest pageRequest) {
+        return projectService.list(project, pageRequest);
     }
 
 }

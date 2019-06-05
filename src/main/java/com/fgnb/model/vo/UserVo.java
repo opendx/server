@@ -11,7 +11,7 @@ import org.springframework.beans.BeanUtils;
 public class UserVo extends User {
     private String token;
 
-    public static UserVo convert(User user,String token) {
+    public static UserVo convert(User user, String token) {
         UserVo userVo = new UserVo();
         BeanUtils.copyProperties(user, userVo);
         userVo.setToken(token);

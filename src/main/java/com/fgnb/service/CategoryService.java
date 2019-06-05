@@ -36,15 +36,19 @@ public class CategoryService extends BaseService {
     public Response addCategory(Category category) {
         category.setCreateTime(new Date());
         category.setCreatorUid(getUid());
+
+        int insertRow;
         try {
-            int insertRow = categoryMapper.insertSelective(category);
-            if (insertRow != 1) {
-                return Response.fail("添加分类失败");
-            }
+            insertRow = categoryMapper.insertSelective(category);
         } catch (DuplicateKeyException e) {
             return Response.fail("命名冲突");
         }
-        return Response.success("添加成功");
+
+        if (insertRow == 1) {
+            return Response.success("添加Category成功");
+        } else {
+            return Response.fail("添加Category失败");
+        }
     }
 
     /**
@@ -69,7 +73,6 @@ public class CategoryService extends BaseService {
         } else {
             return Response.success(categoryVos);
         }
-
     }
 
     public List<Category> selectByCategory(Category category) {

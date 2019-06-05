@@ -34,20 +34,21 @@ public class ProjectService extends BaseService {
      * @return
      */
     public Response add(Project project) {
-
         project.setCreateTime(new Date());
         project.setCreatorUid(getUid());
 
+        int insertRow;
         try {
-            int insertRow = projectMapper.insertSelective(project);
-            if (insertRow != 1) {
-                return Response.fail("添加失败，请稍后重试");
-            }
+            insertRow = projectMapper.insertSelective(project);
         } catch (DuplicateKeyException e) {
             return Response.fail("命名冲突");
         }
 
-        return Response.success("添加项目成功");
+        if (insertRow == 1) {
+            return Response.success("添加Project成功");
+        } else {
+            return Response.fail("添加Project失败，请稍后重试");
+        }
     }
 
     /**
@@ -61,11 +62,12 @@ public class ProjectService extends BaseService {
         }
 
         int deleteRow = projectMapper.deleteByPrimaryKey(projectId);
-        if (deleteRow != 1) {
-            return Response.fail("删除失败，请确认项目是否存在");
-        }
 
-        return Response.success("删除成功");
+        if (deleteRow == 1) {
+            return Response.success("删除Project成功");
+        } else {
+            return Response.fail("删除Project失败，请稍后重试");
+        }
     }
 
     /**
@@ -78,16 +80,18 @@ public class ProjectService extends BaseService {
             return Response.fail("项目id不能为空");
         }
 
+        int updateRow;
         try {
-            int updateRow = projectMapper.updateByPrimaryKeySelective(project);
-            if (updateRow != 1) {
-                return Response.fail("修改失败,请刷新重试");
-            }
+            updateRow = projectMapper.updateByPrimaryKeySelective(project);
         } catch (DuplicateKeyException e) {
             return Response.fail("命名冲突");
         }
 
-        return Response.success("更新成功");
+        if (updateRow == 1) {
+            return Response.success("更新Project成功");
+        } else {
+            return Response.fail("修改Project失败,请稍后重试");
+        }
     }
 
 
@@ -124,6 +128,7 @@ public class ProjectService extends BaseService {
 
         ProjectExample projectExample = new ProjectExample();
         ProjectExample.Criteria criteria = projectExample.createCriteria();
+
         if (project.getId() != null) {
             criteria.andIdEqualTo(project.getId());
         }
@@ -134,6 +139,7 @@ public class ProjectService extends BaseService {
             criteria.andPlatformEqualTo(project.getPlatform());
         }
         projectExample.setOrderByClause("create_time desc");
+
         return projectMapper.selectByExample(projectExample);
     }
 }

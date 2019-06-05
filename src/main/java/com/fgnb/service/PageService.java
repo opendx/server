@@ -35,16 +35,18 @@ public class PageService extends BaseService {
         page.setCreateTime(new Date());
         page.setCreatorUid(getUid());
 
+        int insertRow;
         try {
-            int insertRow = pageMapper.insertSelective(page);
-            if (insertRow != 1) {
-                return Response.fail("新增失败，请稍后重试");
-            }
+            insertRow = pageMapper.insertSelective(page);
         } catch (DuplicateKeyException e) {
             return Response.fail("命名冲突");
         }
 
-        return Response.success("添加成功");
+        if (insertRow == 1) {
+            return Response.success("添加Page成功");
+        } else {
+            return Response.fail("添加Page失败，请稍后重试");
+        }
     }
 
     /**
@@ -56,11 +58,13 @@ public class PageService extends BaseService {
         if (pageId == null) {
             return Response.fail("pageId不能为空");
         }
+        //todo 校验是否有pageAction
         int delRow = pageMapper.deleteByPrimaryKey(pageId);
-        if (delRow != 1) {
-            return Response.fail("删除失败，请刷新重试");
+        if (delRow == 1) {
+            return Response.success("删除Page成功");
+        } else {
+            return Response.fail("删除Page失败，请稍后重试");
         }
-        return Response.success("删除成功");
     }
 
     /**
@@ -72,15 +76,19 @@ public class PageService extends BaseService {
         if (page.getId() == null) {
             return Response.fail("pageId不能为空");
         }
+
+        int updateRow;
         try {
-            int updateRow = pageMapper.updateByPrimaryKey(page);
-            if (updateRow != 1) {
-                return Response.fail("更新失败，请稍后重试");
-            }
+            updateRow = pageMapper.updateByPrimaryKeyWithBLOBs(page);
         } catch (DuplicateKeyException e) {
             return Response.fail("命名冲突");
         }
-        return Response.success("更新成功");
+
+        if (updateRow == 1) {
+            return Response.success("更新Page成功");
+        } else {
+            return Response.fail("更新Page失败，请稍后重试");
+        }
     }
 
     /**
@@ -103,31 +111,31 @@ public class PageService extends BaseService {
             // java8 stream会导致PageHelper total计算错误
             // 所以这里用pages计算total
             long total = com.fgnb.model.Page.getTotal(pages);
-            return Response.success(com.fgnb.model.Page.build(pageVos,total));
+            return Response.success(com.fgnb.model.Page.build(pageVos, total));
         } else {
             return Response.success(pageVos);
         }
     }
 
     public List<Page> selectByPage(Page page) {
-        if(page == null) {
+        if (page == null) {
             page = new Page();
         }
 
         PageExample pageExample = new PageExample();
         PageExample.Criteria criteria = pageExample.createCriteria();
 
-        if(page.getId() != null) {
+        if (page.getId() != null) {
             criteria.andIdEqualTo(page.getId());
         }
-        if(page.getCategoryId() != null) {
+        if (page.getCategoryId() != null) {
             criteria.andCategoryIdEqualTo(page.getCategoryId());
         }
-        if(page.getProjectId() != null) {
+        if (page.getProjectId() != null) {
             criteria.andProjectIdEqualTo(page.getProjectId());
         }
-
         pageExample.setOrderByClause("create_time desc");
+
         return pageMapper.selectByExampleWithBLOBs(pageExample);
     }
 

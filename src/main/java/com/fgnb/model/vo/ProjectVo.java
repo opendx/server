@@ -11,7 +11,7 @@ import org.springframework.beans.BeanUtils;
 public class ProjectVo extends Project {
     private String creatorNickName;
 
-    public static ProjectVo convert(Project project,String creatorNickName) {
+    public static ProjectVo convert(Project project, String creatorNickName) {
         ProjectVo projectVo = new ProjectVo();
         BeanUtils.copyProperties(project, projectVo);
         projectVo.setCreatorNickName(creatorNickName);

@@ -8,12 +8,12 @@ import org.springframework.beans.BeanUtils;
  * Created by jiangyitao.
  */
 @Data
-public class GlobalVarVo extends GlobalVar{
+public class GlobalVarVo extends GlobalVar {
     private String creatorNickName;
 
-    public static GlobalVarVo convert(GlobalVar globalVar,String creatorNickName) {
+    public static GlobalVarVo convert(GlobalVar globalVar, String creatorNickName) {
         GlobalVarVo globalVarVo = new GlobalVarVo();
-        BeanUtils.copyProperties(globalVar,globalVarVo);
+        BeanUtils.copyProperties(globalVar, globalVarVo);
         globalVarVo.setCreatorNickName(creatorNickName);
         return globalVarVo;
     }

@@ -17,7 +17,6 @@ import java.util.Date;
 
 /**
  * Created by jiangyitao.
- * Agent状态变化通知器
  */
 @Component
 @Slf4j
@@ -35,11 +34,10 @@ public class AgentStatusChangeNotifier extends AbstractStatusChangeNotifier {
         return Mono.fromRunnable(() -> {
             if (event instanceof InstanceStatusChangedEvent) {
                 String status = ((InstanceStatusChangedEvent) event).getStatusInfo().getStatus();
-                if (!StatusInfo.STATUS_UP.equals(status)) {
-                    // 非在线
-                    String agentURL = instance.getRegistration().getServiceUrl();// http://xx.xx.xx.xx:xxx/
-                    log.info("检测到agent {} 处于非在线状态", agentURL);
-                    String agentIp = agentURL.split("//")[1].split(":")[0];// xx.xx.xx.xx
+                if (!StatusInfo.STATUS_UP.equals(status)) { // 非在线
+                    String agentUrl = instance.getRegistration().getServiceUrl();// http://xx.xx.xx.xx:xxx/
+                    log.info("检测到agent {} 处于非在线状态", agentUrl);
+                    String agentIp = agentUrl.split("//")[1].split(":")[0];// xx.xx.xx.xx
 
                     // 把该agent下的设备都改为离线
                     Device device = new Device();

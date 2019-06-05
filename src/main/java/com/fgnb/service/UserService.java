@@ -44,27 +44,30 @@ public class UserService extends BaseService {
         List<User> users = selectByUser(query);
 
         if (CollectionUtils.isEmpty(users)) { // 根据账号密码没查到用户信息
-            if (StringUtils.isEmpty(user.getNickName())) {
-                //没有填昵称，认为是想登录
+            if (StringUtils.isEmpty(user.getNickName())) { //没有填昵称，认为是想登录
                 return Response.fail("账号或密码错误");
             }
             //有昵称，注册
             user.setCreateTime(new Date());
+
+            int insertRow;
             try {
-                int insertRow = userMapper.insertSelective(user);
-                if (insertRow != 1) {
-                    return Response.fail("注册失败，请稍后重试");
-                }
+                insertRow = userMapper.insertSelective(user);
             } catch (DuplicateKeyException e) {
                 return Response.fail("用户名已存在");
+            }
+
+            if (insertRow != 1) {
+                return Response.fail("注册失败，请稍后重试");
             }
         } else {
             // 根据账号密码有查到用户
             user = users.get(0);
         }
 
-        UserVo userVo = UserVo.convert(user,TokenUtil.create(user.getId() + ""));
+        UserVo userVo = UserVo.convert(user, TokenUtil.create(user.getId() + ""));
         UserCache.add(user.getId(), user);
+
         return Response.success("登录成功", userVo);
     }
 
@@ -81,7 +84,7 @@ public class UserService extends BaseService {
     }
 
     public Response logout() {
-        return Response.success("ok");
+        return Response.success();
     }
 
     public List<User> selectAll() {
@@ -107,6 +110,7 @@ public class UserService extends BaseService {
         if (!StringUtils.isEmpty(user.getNickName())) {
             criteria.andNickNameEqualTo(user.getNickName());
         }
+
         return userMapper.selectByExample(userExample);
     }
 }

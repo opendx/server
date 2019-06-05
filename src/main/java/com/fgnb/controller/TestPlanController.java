@@ -36,7 +36,7 @@ public class TestPlanController {
      * @param testPlanId
      * @return
      */
-    @GetMapping("/delete/{testPlanId}")
+    @DeleteMapping("/{testPlanId}")
     public Response deleteTestPlan(@PathVariable Integer testPlanId) {
         return testPlanService.delete(testPlanId);
     }

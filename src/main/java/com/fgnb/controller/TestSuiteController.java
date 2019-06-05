@@ -30,7 +30,6 @@ public class TestSuiteController {
         return testSuiteService.add(testSuite);
     }
 
-
     /**
      * 查询测试集列表
      *
@@ -40,6 +39,5 @@ public class TestSuiteController {
     public Response list(TestSuite testSuite, PageRequest pageRequest) {
         return testSuiteService.list(testSuite, pageRequest);
     }
-
 
 }

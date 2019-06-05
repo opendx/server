@@ -30,16 +30,18 @@ public class TestPlanService extends BaseService {
         testPlan.setCreateTime(new Date());
         testPlan.setCreatorUid(getUid());
 
+        int insertRow;
         try {
-            int insertRow = testPlanMapper.insertSelective(testPlan);
-            if (insertRow != 1) {
-                return Response.fail("添加测试计划失败，请稍后重试");
-            }
+            insertRow = testPlanMapper.insertSelective(testPlan);
         } catch (DuplicateKeyException e) {
             return Response.fail("重复命名");
         }
 
-        return Response.success("添加测试计划成功");
+        if (insertRow == 1) {
+            return Response.success("添加TestPlan成功");
+        } else {
+            return Response.fail("添加TestPlan败，请稍后重试");
+        }
     }
 
     public Response delete(Integer testPlanId) {
@@ -49,10 +51,10 @@ public class TestPlanService extends BaseService {
 
         int deleteRow = testPlanMapper.deleteByPrimaryKey(testPlanId);
 
-        if (deleteRow != 1) {
-            return Response.fail("删除测试计划失败，请稍后重试");
+        if (deleteRow == 1) {
+            return Response.success("删除TestPlan成功");
         } else {
-            return Response.success("删除成功");
+            return Response.fail("删除TestPlan失败，请稍后重试");
         }
     }
 
@@ -61,16 +63,18 @@ public class TestPlanService extends BaseService {
             return Response.fail("测试计划id不能为空");
         }
 
+        int updateRow;
         try {
-            int updateRow = testPlanMapper.updateByPrimaryKeyWithBLOBs(testPlan);
-            if (updateRow != 1) {
-                return Response.fail("更新测试计划失败");
-            }
+            updateRow = testPlanMapper.updateByPrimaryKeyWithBLOBs(testPlan);
         } catch (DuplicateKeyException e) {
             return Response.fail("命名冲突");
         }
 
-        return Response.success("更新测试计划成功");
+        if (updateRow == 1) {
+            return Response.success("更新TestPlan成功");
+        } else {
+            return Response.fail("更新TestPlan失败，请稍后重试");
+        }
     }
 
     public Response list(TestPlan testPlan, PageRequest pageRequest) {
@@ -109,8 +113,8 @@ public class TestPlanService extends BaseService {
         if(!StringUtils.isEmpty(testPlan.getName())) {
             criteria.andNameEqualTo(testPlan.getName());
         }
-
         testPlanExample.setOrderByClause("create_time desc");
+
         return testPlanMapper.selectByExampleWithBLOBs(testPlanExample);
     }
 

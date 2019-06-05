@@ -12,9 +12,9 @@ public class ActionVo extends Action {
     private String creatorNickName;
     private String updatorNickName;
 
-    public static ActionVo convert(Action action,String creatorNickName,String updatorNickName) {
+    public static ActionVo convert(Action action, String creatorNickName, String updatorNickName) {
         ActionVo actionVo = new ActionVo();
-        BeanUtils.copyProperties(action,actionVo);
+        BeanUtils.copyProperties(action, actionVo);
         actionVo.setCreatorNickName(creatorNickName);
         actionVo.setUpdatorNickName(updatorNickName);
         return actionVo;

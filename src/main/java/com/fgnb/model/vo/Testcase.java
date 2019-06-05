@@ -17,11 +17,17 @@ public class Testcase extends Action {
 
     private Date startTime;
     private Date endTime;
-    /** 失败截图 */
+    /**
+     * 失败截图
+     */
     private String failImgUrl;
-    /** 失败信息 */
+    /**
+     * 失败信息
+     */
     private String failInfo;
-    /** 运行视频 */
+    /**
+     * 运行视频
+     */
     private String videoUrl;
     private Integer status;
 }

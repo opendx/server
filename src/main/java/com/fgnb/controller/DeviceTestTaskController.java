@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 /**
  * Created by jiangyitao.
-*/
+ */
 @RestController
 @RequestMapping("/deviceTestTask")
 public class DeviceTestTaskController {
@@ -24,27 +24,30 @@ public class DeviceTestTaskController {
     }
 
     @PostMapping("/list")
-    public Response list(DeviceTestTask testTaskDevice,PageRequest pageRequest) {
-        return deviceTestTaskService.list(testTaskDevice,pageRequest);
+    public Response list(DeviceTestTask testTaskDevice, PageRequest pageRequest) {
+        return deviceTestTaskService.list(testTaskDevice, pageRequest);
     }
 
     /**
      * 更新设备的测试用例运行信息
+     *
      * @param deviceTestTaskId
      * @param testcase
      * @return
      */
-    @PostMapping("/updateTestcase/{deviceTestTaskId}")
+    @PostMapping("/{deviceTestTaskId}/updateTestcase")
     public Response updateTestcase(@PathVariable Integer deviceTestTaskId, @RequestBody Testcase testcase) {
-        return deviceTestTaskService.updateTestcase(deviceTestTaskId,testcase);
+        return deviceTestTaskService.updateTestcase(deviceTestTaskId, testcase);
     }
 
     /**
      * 通过设备id查询未开始的测试任务（最开始的一条）
+     *
      * @return
      */
-    @GetMapping("/firstUnStart/{deviceId}")
+    @GetMapping("/firstUnStart/device/{deviceId}")
     public Response findFirstUnStartDeviceTestTask(@PathVariable String deviceId) {
         return deviceTestTaskService.findFirstUnStartDeviceTestTask(deviceId);
     }
+
 }

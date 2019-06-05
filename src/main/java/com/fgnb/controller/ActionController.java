@@ -38,7 +38,7 @@ public class ActionController {
      * @param actionId
      * @return
      */
-    @GetMapping("/delete/{actionId}")
+    @DeleteMapping("/{actionId}")
     public Response delete(@PathVariable Integer actionId) {
         return actionService.delete(actionId);
     }
@@ -69,7 +69,7 @@ public class ActionController {
      * @param projectId
      * @return
      */
-    @GetMapping("/selectable/{projectId}/{platform}")
+    @GetMapping("/selectable/project/{projectId}/platform/{platform}")
     public Response getSelectableActions(@PathVariable Integer projectId, @PathVariable Integer platform) {
         return actionService.getSelectableActions(projectId, platform);
     }
