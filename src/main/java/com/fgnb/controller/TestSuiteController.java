@@ -30,6 +30,11 @@ public class TestSuiteController {
         return testSuiteService.add(testSuite);
     }
 
+    @DeleteMapping("/{testSuiteId}")
+    public Response delete(@PathVariable Integer testSuiteId) {
+        return testSuiteService.delete(testSuiteId);
+    }
+
     /**
      * 查询测试集列表
      *

@@ -41,6 +41,7 @@ public class ActionService extends BaseService {
         action.setCreatorUid(getUid());
         action.setCreateTime(new Date());
 
+        // todo 校验是否符合规范 前端逻辑转到后端来
         int insertRow;
         try {
             insertRow = actionMapper.insertSelective(action);
@@ -90,6 +91,7 @@ public class ActionService extends BaseService {
         action.setUpdateTime(new Date());
         action.setUpdatorUid(getUid());
 
+        // todo 校验
         int updateRow;
         try {
             updateRow = actionMapper.updateByPrimaryKeyWithBLOBs(action);

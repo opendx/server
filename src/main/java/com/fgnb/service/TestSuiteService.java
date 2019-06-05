@@ -1,5 +1,6 @@
 package com.fgnb.service;
 
+import com.fgnb.mbg.po.Action;
 import com.fgnb.mbg.po.TestSuiteExample;
 import com.fgnb.model.UserCache;
 import com.github.pagehelper.PageHelper;
@@ -12,6 +13,7 @@ import com.fgnb.model.vo.TestSuiteVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.Date;
@@ -26,6 +28,10 @@ public class TestSuiteService extends BaseService {
 
     @Autowired
     private TestSuiteMapper testSuiteMapper;
+    @Autowired
+    private ActionService actionService;
+    @Autowired
+    private TestPlanService testPlanService;
 
     public Response add(TestSuite testSuite) {
         testSuite.setCreateTime(new Date());
@@ -43,6 +49,23 @@ public class TestSuiteService extends BaseService {
         } else {
             return Response.fail("添加TestSuite失败");
         }
+    }
+
+    public Response delete(Integer testSuiteId) {
+        if (testSuiteId == null) {
+            return Response.fail("testSuiteId不能为空");
+        }
+
+        // 检查该测试集下是否有testcase
+        Action query = new Action();
+        query.setTestSuiteId(testSuiteId);
+        List<Action> actions = actionService.selectByAction(query);
+        if (!CollectionUtils.isEmpty(actions)) {
+            return Response.fail("该测试集下有测试用例，无法删除");
+        }
+
+        // todo 检查该测试集是否被testplan使用
+        testPlanService.selectByTestPlan()
     }
 
     public Response list(TestSuite testSuite, PageRequest pageRequest) {
@@ -85,4 +108,5 @@ public class TestSuiteService extends BaseService {
 
         return testSuiteMapper.selectByExample(testSuiteExample);
     }
+
 }

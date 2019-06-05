@@ -26,8 +26,13 @@ public class CategoryController {
      * @return
      */
     @PostMapping("/add")
-    public Response addCategory(@RequestBody @Valid Category category) {
-        return categoryService.addCategory(category);
+    public Response add(@RequestBody @Valid Category category) {
+        return categoryService.add(category);
+    }
+
+    @DeleteMapping("/{categoryId}")
+    public Response delete(@PathVariable Integer categoryId) {
+        return categoryService.delete(categoryId);
     }
 
     /**

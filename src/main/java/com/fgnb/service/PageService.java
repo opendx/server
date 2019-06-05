@@ -1,5 +1,6 @@
 package com.fgnb.service;
 
+import com.fgnb.mbg.po.Action;
 import com.fgnb.mbg.po.PageExample;
 import com.fgnb.model.UserCache;
 import com.github.pagehelper.PageHelper;
@@ -11,6 +12,7 @@ import com.fgnb.model.vo.PageVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Date;
 import java.util.List;
@@ -24,6 +26,8 @@ public class PageService extends BaseService {
 
     @Autowired
     private PageMapper pageMapper;
+    @Autowired
+    private ActionService actionService;
 
     /**
      * 添加page
@@ -58,7 +62,15 @@ public class PageService extends BaseService {
         if (pageId == null) {
             return Response.fail("pageId不能为空");
         }
-        //todo 校验是否有pageAction
+
+        // 检查Page名下是否有action
+        Action query = new Action();
+        query.setPageId(pageId);
+        List<Action> actions = actionService.selectByAction(query);
+        if (!CollectionUtils.isEmpty(actions)) {
+            return Response.fail("有action绑定了该page，无法删除");
+        }
+
         int delRow = pageMapper.deleteByPrimaryKey(pageId);
         if (delRow == 1) {
             return Response.success("删除Page成功");

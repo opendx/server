@@ -12,6 +12,7 @@ import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.Date;
@@ -26,6 +27,8 @@ public class CategoryService extends BaseService {
 
     @Autowired
     private CategoryMapper categoryMapper;
+    @Autowired
+    private PageService pageService;
 
     /**
      * 添加分类
@@ -33,7 +36,7 @@ public class CategoryService extends BaseService {
      * @param category
      * @return
      */
-    public Response addCategory(Category category) {
+    public Response add(Category category) {
         category.setCreateTime(new Date());
         category.setCreatorUid(getUid());
 
@@ -48,6 +51,28 @@ public class CategoryService extends BaseService {
             return Response.success("添加Category成功");
         } else {
             return Response.fail("添加Category失败");
+        }
+    }
+
+    public Response delete(Integer categoryId) {
+        if (categoryId == null) {
+            return Response.fail("categoryId不能为空");
+        }
+
+        // 检查该分类下是否有page
+        com.fgnb.mbg.po.Page query = new com.fgnb.mbg.po.Page();
+        query.setCategoryId(categoryId);
+        List<com.fgnb.mbg.po.Page> pages = pageService.selectByPage(query);
+        if (!CollectionUtils.isEmpty(pages)) {
+            return Response.fail("分类下有page，无法删除");
+        }
+
+        int deleteRow = categoryMapper.deleteByPrimaryKey(categoryId);
+
+        if (deleteRow == 1) {
+            return Response.success("删除分类成功");
+        } else {
+            return Response.fail("删除分类失败，请稍后重试");
         }
     }
 
