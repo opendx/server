@@ -65,7 +65,7 @@ public class GlobalVarService extends BaseService {
             return Response.fail("globalVarId不能为空");
         }
 
-        // 校验全部变量是否被其他action使用
+        // 校验全局变量是否被其他action使用
         GlobalVar globalVar = globalVarMapper.selectByPrimaryKey(globalVarId);
         if (globalVar == null) {
            return Response.fail("GlobalVar不存在");
@@ -92,7 +92,7 @@ public class GlobalVarService extends BaseService {
         if (globalVar.getId() == null) {
             return Response.fail("globalVarId不能为空");
         }
-        // todo 校验更新name
+        // 前端限制无法修改name，以防action steps使用到此全局变量时，编译失败
         int updateRow;
         try {
             updateRow = globalVarMapper.updateByPrimaryKeySelective(globalVar);
