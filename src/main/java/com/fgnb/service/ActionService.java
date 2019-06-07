@@ -165,7 +165,7 @@ public class ActionService extends BaseService {
                 if (CollectionUtils.isEmpty(params)) {
                     throw new BusinessException("返回值" + returnValue + "为方法参数，但方法参数为空");
                 }
-                long count = params.stream().filter(param -> returnValue.substring(2, returnValue.length() - 1) == param.getName()).count();
+                long count = params.stream().filter(param -> returnValue.substring(2, returnValue.length() - 1).equals(param.getName())).count();
                 if (count != 1) {
                     throw new BusinessException("返回值" + returnValue + "为方法参数，但与返回值匹配的方法参数的个数不为1");
                 }
@@ -175,7 +175,7 @@ public class ActionService extends BaseService {
                 if (CollectionUtils.isEmpty(localVars)) {
                     throw new BusinessException("返回值" + returnValue + "为局部变量，但局部变量为空");
                 }
-                long count = localVars.stream().filter(localVar -> returnValue.substring(2, returnValue.length() - 1) == localVar.getName()).count();
+                long count = localVars.stream().filter(localVar -> returnValue.substring(2, returnValue.length() - 1).equals(localVar.getName())).count();
                 if (count != 1) {
                     throw new BusinessException("返回值" + returnValue + "为局部变量，但与返回值匹配的局部变量的个数不为1");
                 }
@@ -194,7 +194,7 @@ public class ActionService extends BaseService {
                 if (!evaluation.startsWith(LOCAL_VAR_PREFIX) || !evaluation.endsWith(COMMON_SUFFIX)) {
                     throw new BusinessException(evaluation + "必须为局部变量");
                 }
-                long count = localVars.stream().filter(localVar -> evaluation.substring(2, evaluation.length() - 1) == localVar.getName()).count();
+                long count = localVars.stream().filter(localVar -> evaluation.substring(2, evaluation.length() - 1).equals(localVar.getName())).count();
                 if (count != 1) {
                     throw new BusinessException("与赋值" + evaluation + "匹配的局部变量的个数不为1");
                 }
