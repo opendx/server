@@ -14,7 +14,7 @@ public class Param {
     /**
      * 参数名
      */
-    @NotBlank(message = "actionParamName不能为空")
+    @NotBlank(message = "方法参数名不能为空")
     private String name;
     /**
      * 参数描述

@@ -13,7 +13,7 @@ public class LocalVar {
     /**
      * 局部变量名
      */
-    @NotBlank(message = "actionLocalVarName不能为空")
+    @NotBlank(message = "局部变量名不能为空")
     private String name;
     /**
      * 局部变量值

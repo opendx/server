@@ -17,7 +17,7 @@ public class Step {
     /**
      * 调用的action id
      */
-    @NotNull(message = "步骤的actionId不能为空")
+    @NotNull(message = "步骤Action不能为空")
     private Integer actionId;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)

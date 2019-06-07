@@ -47,7 +47,7 @@ public class Action implements Serializable {
      *
      * @mbg.generated
      */
-    @NotBlank(message = "actionName不能为空")
+    @NotBlank(message = "action名不能为空")
     private String name;
 
     /**
@@ -62,7 +62,7 @@ public class Action implements Serializable {
      *
      * @mbg.generated
      */
-    @NotNull(message = "action type不能为空")
+    @NotNull(message = "ActionType不能为空")
     private Integer type;
 
     /**
