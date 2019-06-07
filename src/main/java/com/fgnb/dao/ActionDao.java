@@ -10,4 +10,6 @@ import java.util.List;
  */
 public interface ActionDao {
     List<Action> selectByStepActionId(@Param("stepActionId") Integer stepActionId);
+
+    List<Action> selectByProjectIdAndGlobalVarName(@Param("projectId") Integer projectId, @Param("globalVarName") String globalVarName);
 }

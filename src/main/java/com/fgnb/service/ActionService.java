@@ -266,4 +266,8 @@ public class ActionService extends BaseService {
         new ActionTreeBuilder(actionMapper).build(actions);
     }
 
+    public List<Action> findByProjectIdAndGlobalVar(Integer projectId, String globalVarName) {
+        return actionDao.selectByProjectIdAndGlobalVarName(projectId, "${" + globalVarName + "}");
+    }
+
 }
