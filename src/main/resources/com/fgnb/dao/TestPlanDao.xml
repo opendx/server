@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fgnb.dao.TestPlanDao">
+    <resultMap id="ResultMapWithBLOBs" type="com.fgnb.mbg.po.TestPlan" extends="com.fgnb.mbg.mapper.TestPlanMapper.ResultMapWithBLOBs"/>
+
+    <select id="selectByTestSuiteId" resultMap="ResultMapWithBLOBs">
+        select * from test_plan where JSON_CONTAINS(test_suites->'$[*]', '${testSuiteId}','$')
+    </select>
+</mapper>

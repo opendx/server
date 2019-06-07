@@ -1,5 +1,6 @@
 package com.fgnb.service;
 
+import com.fgnb.dao.TestPlanDao;
 import com.fgnb.mbg.po.*;
 import com.fgnb.model.UserCache;
 import com.fgnb.model.vo.TestPlanVo;
@@ -25,6 +26,8 @@ public class TestPlanService extends BaseService {
 
     @Autowired
     private TestPlanMapper testPlanMapper;
+    @Autowired
+    private TestPlanDao testPlanDao;
 
     public Response add(TestPlan testPlan) {
         testPlan.setCreateTime(new Date());
@@ -90,27 +93,27 @@ public class TestPlanService extends BaseService {
             // java8 stream会导致PageHelper total计算错误
             // 所以这里用testPlans计算total
             long total = Page.getTotal(testPlans);
-            return Response.success(Page.build(testPlanVos,total));
+            return Response.success(Page.build(testPlanVos, total));
         } else {
             return Response.success(testPlanVos);
         }
     }
 
     public List<TestPlan> selectByTestPlan(TestPlan testPlan) {
-        if(testPlan == null) {
+        if (testPlan == null) {
             testPlan = new TestPlan();
         }
 
         TestPlanExample testPlanExample = new TestPlanExample();
         TestPlanExample.Criteria criteria = testPlanExample.createCriteria();
 
-        if(testPlan.getId() != null) {
+        if (testPlan.getId() != null) {
             criteria.andIdEqualTo(testPlan.getId());
         }
-        if(testPlan.getProjectId() != null) {
+        if (testPlan.getProjectId() != null) {
             criteria.andProjectIdEqualTo(testPlan.getProjectId());
         }
-        if(!StringUtils.isEmpty(testPlan.getName())) {
+        if (!StringUtils.isEmpty(testPlan.getName())) {
             criteria.andNameEqualTo(testPlan.getName());
         }
         testPlanExample.setOrderByClause("create_time desc");
@@ -120,5 +123,9 @@ public class TestPlanService extends BaseService {
 
     public TestPlan selectByPrimaryKey(Integer testPlanId) {
         return testPlanMapper.selectByPrimaryKey(testPlanId);
+    }
+
+    public List<TestPlan> selectByTestSuiteId(Integer testSuiteId) {
+        return testPlanDao.selectByTestSuiteId(testSuiteId);
     }
 }

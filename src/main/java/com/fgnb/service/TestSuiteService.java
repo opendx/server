@@ -1,6 +1,7 @@
 package com.fgnb.service;
 
 import com.fgnb.mbg.po.Action;
+import com.fgnb.mbg.po.TestPlan;
 import com.fgnb.mbg.po.TestSuiteExample;
 import com.fgnb.model.UserCache;
 import com.github.pagehelper.PageHelper;
@@ -64,24 +65,34 @@ public class TestSuiteService extends BaseService {
             return Response.fail("该测试集下有测试用例，无法删除");
         }
 
-        // todo 检查该测试集是否被testplan使用
-        testPlanService.selectByTestPlan()
+        // 检查该测试集是否被testplan使用
+        List<TestPlan> testPlans = testPlanService.selectByTestSuiteId(testSuiteId);
+        if (!CollectionUtils.isEmpty(testPlans)) {
+            return Response.fail("该测试集被测试计划使用，无法删除");
+        }
+
+        int deleteRow = testSuiteMapper.deleteByPrimaryKey(testSuiteId);
+        if (deleteRow == 1) {
+            return Response.success("删除TestSuite成功");
+        } else {
+            return Response.fail("删除TestSuite失败，请稍后重试");
+        }
     }
 
     public Response list(TestSuite testSuite, PageRequest pageRequest) {
         boolean needPaging = pageRequest.needPaging();
-        if(needPaging) {
-            PageHelper.startPage(pageRequest.getPageNum(),pageRequest.getPageSize());
+        if (needPaging) {
+            PageHelper.startPage(pageRequest.getPageNum(), pageRequest.getPageSize());
         }
 
         List<TestSuite> testSuites = selectByTestSuite(testSuite);
         List<TestSuiteVo> testSuiteVos = testSuites.stream().map(s -> TestSuiteVo.convert(s, UserCache.getNickNameById(s.getCreatorUid()))).collect(Collectors.toList());
 
-        if(needPaging) {
+        if (needPaging) {
             // java8 stream会导致PageHelper total计算错误
             // 所以这里用testSuites计算total
             long total = Page.getTotal(testSuites);
-            return Response.success(Page.build(testSuiteVos,total));
+            return Response.success(Page.build(testSuiteVos, total));
         } else {
             return Response.success(testSuiteVos);
         }
@@ -95,13 +106,13 @@ public class TestSuiteService extends BaseService {
         TestSuiteExample testSuiteExample = new TestSuiteExample();
         TestSuiteExample.Criteria criteria = testSuiteExample.createCriteria();
 
-        if(testSuite.getId() != null) {
+        if (testSuite.getId() != null) {
             criteria.andIdEqualTo(testSuite.getId());
         }
-        if(testSuite.getProjectId() != null) {
+        if (testSuite.getProjectId() != null) {
             criteria.andProjectIdEqualTo(testSuite.getProjectId());
         }
-        if(!StringUtils.isEmpty(testSuite.getName())) {
+        if (!StringUtils.isEmpty(testSuite.getName())) {
             criteria.andNameEqualTo(testSuite.getName());
         }
         testSuiteExample.setOrderByClause("create_time desc");
