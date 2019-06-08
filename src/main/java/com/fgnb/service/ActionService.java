@@ -273,6 +273,7 @@ public class ActionService extends BaseService {
      */
     public Response debug(ActionDebugRequest actionDebugRequest) {
         Action action = actionDebugRequest.getAction();
+        check(action);
         ActionDebugRequest.DebugInfo debugInfo = actionDebugRequest.getDebugInfo();
 
         // 没保存过的action设置个默认的actionId
