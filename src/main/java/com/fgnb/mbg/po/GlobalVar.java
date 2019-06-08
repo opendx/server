@@ -6,6 +6,16 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class GlobalVar implements Serializable {
+
+    /**
+     * 被引用时的前缀
+     */
+    public static final String QUOTE_PREFIX = "${";
+    /**
+     * 被引用时的后缀
+     */
+    public static final String QUOTE_SUFFIX = "}";
+
     /**
      * 全局变量id
      *

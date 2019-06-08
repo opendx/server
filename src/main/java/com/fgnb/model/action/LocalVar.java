@@ -10,6 +10,16 @@ import javax.validation.constraints.NotBlank;
  */
 @Data
 public class LocalVar {
+
+    /**
+     * 被引用时的前缀
+     */
+    public static final String QUOTE_PREFIX = "@{";
+    /**
+     * 被引用时的后缀
+     */
+    public static final String QUOTE_SUFFIX = "}";
+
     /**
      * 局部变量名
      */

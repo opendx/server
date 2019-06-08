@@ -33,11 +33,6 @@ import java.util.stream.Collectors;
 @Slf4j
 public class ActionService extends BaseService {
 
-    private static final String GLOBAL_VAR_PREFIX = "${"; // 全局变量前缀
-    private static final String ACTION_PARAM_PREFIX = "#{"; // 方法参数前缀
-    private static final String LOCAL_VAR_PREFIX = "@{"; // 局部变量前缀
-    private static final String COMMON_SUFFIX = "}";
-
     @Autowired
     private ActionMapper actionMapper;
     @Autowired
@@ -159,7 +154,7 @@ public class ActionService extends BaseService {
         // 1. 检查返回值。可以是一个普通的字符串或方法参数或局部变量或全局变量。全局变量暂时不检查
         if (action.getHasReturnValue() == Action.HAS_RETURN_VALUE) {
             String returnValue = action.getReturnValue(); // 前端已校验过，此时返回值一定有值
-            if (returnValue.startsWith(ACTION_PARAM_PREFIX) && returnValue.endsWith(COMMON_SUFFIX)) {
+            if (returnValue.startsWith(Param.QUOTE_PREFIX) && returnValue.endsWith(Param.QUOTE_SUFFIX)) {
                 // 返回值 -> 方法参数
                 List<Param> params = action.getParams();
                 if (CollectionUtils.isEmpty(params)) {
@@ -169,7 +164,7 @@ public class ActionService extends BaseService {
                 if (count != 1) {
                     throw new BusinessException("返回值" + returnValue + "为方法参数，但与返回值匹配的方法参数的个数不为1");
                 }
-            } else if (returnValue.startsWith(LOCAL_VAR_PREFIX) && returnValue.endsWith(COMMON_SUFFIX)) {
+            } else if (returnValue.startsWith(LocalVar.QUOTE_PREFIX) && returnValue.endsWith(LocalVar.QUOTE_SUFFIX)) {
                 // 返回值 -> 局部变量
                 List<LocalVar> localVars = action.getLocalVars();
                 if (CollectionUtils.isEmpty(localVars)) {
@@ -191,7 +186,7 @@ public class ActionService extends BaseService {
                 throw new BusinessException("赋值不为空，但局部变量为空");
             }
             for (String evaluation : evaluations) {
-                if (!evaluation.startsWith(LOCAL_VAR_PREFIX) || !evaluation.endsWith(COMMON_SUFFIX)) {
+                if (!evaluation.startsWith(LocalVar.QUOTE_PREFIX) || !evaluation.endsWith(LocalVar.QUOTE_SUFFIX)) {
                     throw new BusinessException(evaluation + "必须为局部变量");
                 }
                 long count = localVars.stream().filter(localVar -> evaluation.substring(2, evaluation.length() - 1).equals(localVar.getName())).count();
@@ -333,7 +328,7 @@ public class ActionService extends BaseService {
     }
 
     public List<Action> findByProjectIdAndGlobalVar(Integer projectId, String globalVarName) {
-        return actionDao.selectByProjectIdAndGlobalVarName(projectId, GLOBAL_VAR_PREFIX + globalVarName + COMMON_SUFFIX);
+        return actionDao.selectByProjectIdAndGlobalVarName(projectId, GlobalVar.QUOTE_PREFIX + globalVarName + GlobalVar.QUOTE_SUFFIX);
     }
 
 }
