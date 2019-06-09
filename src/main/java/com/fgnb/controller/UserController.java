@@ -18,15 +18,14 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    /**
-     * 登录或注册
-     *
-     * @param user
-     * @return
-     */
-    @PostMapping("/loginOrRegister")
-    public Response loginOrRegister(@Valid @RequestBody User user) {
-        return userService.loginOrRegister(user);
+    @PostMapping("/login")
+    public Response login(@Valid @RequestBody User user) {
+        return userService.login(user);
+    }
+
+    @PostMapping("/register")
+    public Response register(@Valid @RequestBody User user) {
+        return userService.register(user);
     }
 
     /**

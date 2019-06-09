@@ -29,13 +29,7 @@ public class UserService extends BaseService {
     @Autowired
     private UserMapper userMapper;
 
-    /**
-     * 登录或注册
-     *
-     * @param user
-     * @return
-     */
-    public Response loginOrRegister(User user) {
+    public Response login(User user) {
         user.setPassword(DigestUtils.md5DigestAsHex(user.getPassword().getBytes()));
 
         User query = new User();
@@ -43,32 +37,35 @@ public class UserService extends BaseService {
         query.setPassword(user.getPassword());
         List<User> users = selectByUser(query);
 
-        if (CollectionUtils.isEmpty(users)) { // 根据账号密码没查到用户信息
-            if (StringUtils.isEmpty(user.getNickName())) { //没有填昵称，认为是想登录
-                return Response.fail("账号或密码错误");
-            }
-            //有昵称，注册
-            user.setCreateTime(new Date());
-
-            int insertRow;
-            try {
-                insertRow = userMapper.insertSelective(user);
-            } catch (DuplicateKeyException e) {
-                return Response.fail("用户名已存在");
-            }
-
-            if (insertRow != 1) {
-                return Response.fail("注册失败，请稍后重试");
-            }
+        if (CollectionUtils.isEmpty(users)) {
+            return Response.fail("账号或密码错误");
         } else {
-            // 根据账号密码有查到用户
             user = users.get(0);
+            UserVo userVo = UserVo.convert(user, TokenUtil.create(user.getId() + ""));
+            UserCache.add(user.getId(), user);
+            return Response.success("登录成功", userVo);
+        }
+    }
+
+    public Response register(User user) {
+        if (StringUtils.isEmpty(user.getNickName())) {
+            return Response.fail("昵称不能为空");
+        }
+        user.setPassword(DigestUtils.md5DigestAsHex(user.getPassword().getBytes()));
+        user.setCreateTime(new Date());
+
+        int insertRow;
+        try {
+            insertRow = userMapper.insertSelective(user);
+        } catch (DuplicateKeyException e) {
+            return Response.fail("用户名已存在");
         }
 
-        UserVo userVo = UserVo.convert(user, TokenUtil.create(user.getId() + ""));
-        UserCache.add(user.getId(), user);
-
-        return Response.success("登录成功", userVo);
+        if (insertRow == 1) {
+            return Response.success("注册成功");
+        } else {
+            return Response.fail("注册失败，请稍后重试");
+        }
     }
 
     public Response getInfo() {
