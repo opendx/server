@@ -7,7 +7,7 @@ import lombok.Data;
  * Created by jiangyitao.
  */
 @Data
-public class Response {
+public class Response<T> {
 
     private static final Integer SUCCESS = 1;
     private static final Integer FAIL = 0;
@@ -15,9 +15,9 @@ public class Response {
 
     private Integer status;
     private String msg;
-    private Object data;
+    private T data;
 
-    private static Response buildResponse(Integer status, String msg, Object data) {
+    private static <T> Response<T> buildResponse(Integer status, String msg, T data) {
         Response response = new Response();
         response.setStatus(status);
         response.setMsg(msg);
@@ -34,7 +34,7 @@ public class Response {
         return buildResponse(SUCCESS, "success", null);
     }
 
-    public static Response success(Object data) {
+    public static <T> Response<T> success(T data) {
         return buildResponse(SUCCESS, "success", data);
     }
 
@@ -42,7 +42,7 @@ public class Response {
         return buildResponse(SUCCESS, msg, null);
     }
 
-    public static Response success(String msg, Object data) {
+    public static <T> Response<T> success(String msg, T data) {
         return buildResponse(SUCCESS, msg, data);
     }
 
