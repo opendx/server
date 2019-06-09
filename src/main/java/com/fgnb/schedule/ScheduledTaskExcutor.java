@@ -29,7 +29,7 @@ public class ScheduledTaskExcutor {
     /**
      * 统计已完成的测试任务
      */
-    @Scheduled(fixedRate = 60000)
+    @Scheduled(fixedRate = 30000)
     public void statisticsFinishedTestTask() {
         // 未完成的测试任务
         List<TestTask> unFinishedTestTasks = testTaskService.findUnFinishedTestTask();
