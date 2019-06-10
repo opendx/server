@@ -1,14 +1,14 @@
-package com.fgnb.service;
+package com.daxiang.service;
 
-import com.fgnb.mbg.po.Action;
-import com.fgnb.mbg.po.PageExample;
-import com.fgnb.model.UserCache;
+import com.daxiang.mbg.po.Action;
+import com.daxiang.mbg.po.PageExample;
+import com.daxiang.model.UserCache;
 import com.github.pagehelper.PageHelper;
-import com.fgnb.mbg.mapper.PageMapper;
-import com.fgnb.mbg.po.Page;
-import com.fgnb.model.PageRequest;
-import com.fgnb.model.Response;
-import com.fgnb.model.vo.PageVo;
+import com.daxiang.mbg.mapper.PageMapper;
+import com.daxiang.mbg.po.Page;
+import com.daxiang.model.PageRequest;
+import com.daxiang.model.Response;
+import com.daxiang.model.vo.PageVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
@@ -122,8 +122,8 @@ public class PageService extends BaseService {
         if (needPaging) {
             // java8 stream会导致PageHelper total计算错误
             // 所以这里用pages计算total
-            long total = com.fgnb.model.Page.getTotal(pages);
-            return Response.success(com.fgnb.model.Page.build(pageVos, total));
+            long total = com.daxiang.model.Page.getTotal(pages);
+            return Response.success(com.daxiang.model.Page.build(pageVos, total));
         } else {
             return Response.success(pageVos);
         }

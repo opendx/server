@@ -1,13 +1,13 @@
-package com.fgnb.service;
+package com.daxiang.service;
 
-import com.fgnb.mbg.mapper.CategoryMapper;
-import com.fgnb.mbg.po.Category;
-import com.fgnb.mbg.po.CategoryExample;
-import com.fgnb.model.Page;
-import com.fgnb.model.PageRequest;
-import com.fgnb.model.Response;
-import com.fgnb.model.UserCache;
-import com.fgnb.model.vo.CategoryVo;
+import com.daxiang.mbg.mapper.CategoryMapper;
+import com.daxiang.mbg.po.Category;
+import com.daxiang.mbg.po.Page;
+import com.daxiang.model.PageRequest;
+import com.daxiang.model.Response;
+import com.daxiang.mbg.po.CategoryExample;
+import com.daxiang.model.UserCache;
+import com.daxiang.model.vo.CategoryVo;
 import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -60,9 +60,9 @@ public class CategoryService extends BaseService {
         }
 
         // 检查该分类下是否有page
-        com.fgnb.mbg.po.Page query = new com.fgnb.mbg.po.Page();
+        Page query = new Page();
         query.setCategoryId(categoryId);
-        List<com.fgnb.mbg.po.Page> pages = pageService.selectByPage(query);
+        List<Page> pages = pageService.selectByPage(query);
         if (!CollectionUtils.isEmpty(pages)) {
             return Response.fail("分类下有page，无法删除");
         }
@@ -93,8 +93,8 @@ public class CategoryService extends BaseService {
         if (needPaging) {
             // java8 stream会导致PageHelper total计算错误
             // 所以这里用categories计算total
-            long total = Page.getTotal(categories);
-            return Response.success(Page.build(categoryVos, total));
+            long total = com.daxiang.model.Page.getTotal(categories);
+            return Response.success(com.daxiang.model.Page.build(categoryVos, total));
         } else {
             return Response.success(categoryVos);
         }
