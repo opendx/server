@@ -10,6 +10,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 public class Action implements Serializable {
 
@@ -169,7 +170,7 @@ public class Action implements Serializable {
      * @mbg.generated
      */
     @Valid
-    private java.util.List<Param> params;
+    private List<Param> params;
 
     /**
      * 局部变量
@@ -177,7 +178,7 @@ public class Action implements Serializable {
      * @mbg.generated
      */
     @Valid
-    private java.util.List<LocalVar> localVars;
+    private List<LocalVar> localVars;
 
     /**
      * 步骤
@@ -186,7 +187,7 @@ public class Action implements Serializable {
      */
     @Valid
     @NotEmpty(message = "步骤不能为空")
-    private java.util.List<Step> steps;
+    private List<Step> steps;
 
     private static final long serialVersionUID = 1L;
 

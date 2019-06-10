@@ -4,6 +4,7 @@ import com.daxiang.model.vo.Testcase;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 public class DeviceTestTask implements Serializable {
 
@@ -75,7 +76,7 @@ public class DeviceTestTask implements Serializable {
      *
      * @mbg.generated
      */
-    private java.util.List<GlobalVar> globalVars;
+    private List<GlobalVar> globalVars;
 
     /**
      * BeforeClass
@@ -110,7 +111,7 @@ public class DeviceTestTask implements Serializable {
      *
      * @mbg.generated
      */
-    private java.util.List<Testcase> testcases;
+    private List<Testcase> testcases;
 
     private static final long serialVersionUID = 1L;
 

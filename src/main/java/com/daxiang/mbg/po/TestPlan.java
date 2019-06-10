@@ -86,7 +86,7 @@ public class TestPlan implements Serializable {
      * @mbg.generated
      */
     @NotEmpty(message = "至少有要一个测试集")
-    private java.util.List<Integer> testSuites;
+    private List<Integer> testSuites;
 
     private static final long serialVersionUID = 1L;
 
