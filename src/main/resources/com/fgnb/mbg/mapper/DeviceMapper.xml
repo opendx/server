@@ -14,8 +14,6 @@
     <result column="img_url" jdbcType="VARCHAR" property="imgUrl" />
     <result column="platform" jdbcType="TINYINT" property="platform" />
     <result column="status" jdbcType="TINYINT" property="status" />
-    <result column="stf_status" jdbcType="TINYINT" property="stfStatus" />
-    <result column="macaca_status" jdbcType="TINYINT" property="macacaStatus" />
     <result column="last_online_time" jdbcType="TIMESTAMP" property="lastOnlineTime" />
     <result column="last_offline_time" jdbcType="TIMESTAMP" property="lastOfflineTime" />
     <result column="username" jdbcType="VARCHAR" property="username" />
@@ -81,8 +79,8 @@
   </sql>
   <sql id="Base_Column_List">
     id, name, agent_ip, agent_port, system_version, cpu_info, mem_size, screen_width, 
-    screen_height, img_url, platform, status, stf_status, macaca_status, last_online_time, 
-    last_offline_time, username, create_time
+    screen_height, img_url, platform, status, last_online_time, last_offline_time, username, 
+    create_time
   </sql>
   <select id="selectByExample" parameterType="com.fgnb.mbg.po.DeviceExample" resultMap="BaseResultMap">
     select
@@ -119,16 +117,14 @@
       agent_port, system_version, cpu_info, 
       mem_size, screen_width, screen_height, 
       img_url, platform, status, 
-      stf_status, macaca_status, last_online_time, 
-      last_offline_time, username, create_time
-      )
+      last_online_time, last_offline_time, username, 
+      create_time)
     values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{agentIp,jdbcType=VARCHAR}, 
       #{agentPort,jdbcType=INTEGER}, #{systemVersion,jdbcType=VARCHAR}, #{cpuInfo,jdbcType=VARCHAR}, 
       #{memSize,jdbcType=VARCHAR}, #{screenWidth,jdbcType=INTEGER}, #{screenHeight,jdbcType=INTEGER}, 
       #{imgUrl,jdbcType=VARCHAR}, #{platform,jdbcType=TINYINT}, #{status,jdbcType=TINYINT}, 
-      #{stfStatus,jdbcType=TINYINT}, #{macacaStatus,jdbcType=TINYINT}, #{lastOnlineTime,jdbcType=TIMESTAMP}, 
-      #{lastOfflineTime,jdbcType=TIMESTAMP}, #{username,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}
-      )
+      #{lastOnlineTime,jdbcType=TIMESTAMP}, #{lastOfflineTime,jdbcType=TIMESTAMP}, #{username,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.fgnb.mbg.po.Device">
     insert into device
@@ -168,12 +164,6 @@
       </if>
       <if test="status != null">
         status,
-      </if>
-      <if test="stfStatus != null">
-        stf_status,
-      </if>
-      <if test="macacaStatus != null">
-        macaca_status,
       </if>
       <if test="lastOnlineTime != null">
         last_online_time,
@@ -224,12 +214,6 @@
       </if>
       <if test="status != null">
         #{status,jdbcType=TINYINT},
-      </if>
-      <if test="stfStatus != null">
-        #{stfStatus,jdbcType=TINYINT},
-      </if>
-      <if test="macacaStatus != null">
-        #{macacaStatus,jdbcType=TINYINT},
       </if>
       <if test="lastOnlineTime != null">
         #{lastOnlineTime,jdbcType=TIMESTAMP},
@@ -290,12 +274,6 @@
       <if test="record.status != null">
         status = #{record.status,jdbcType=TINYINT},
       </if>
-      <if test="record.stfStatus != null">
-        stf_status = #{record.stfStatus,jdbcType=TINYINT},
-      </if>
-      <if test="record.macacaStatus != null">
-        macaca_status = #{record.macacaStatus,jdbcType=TINYINT},
-      </if>
       <if test="record.lastOnlineTime != null">
         last_online_time = #{record.lastOnlineTime,jdbcType=TIMESTAMP},
       </if>
@@ -327,8 +305,6 @@
       img_url = #{record.imgUrl,jdbcType=VARCHAR},
       platform = #{record.platform,jdbcType=TINYINT},
       status = #{record.status,jdbcType=TINYINT},
-      stf_status = #{record.stfStatus,jdbcType=TINYINT},
-      macaca_status = #{record.macacaStatus,jdbcType=TINYINT},
       last_online_time = #{record.lastOnlineTime,jdbcType=TIMESTAMP},
       last_offline_time = #{record.lastOfflineTime,jdbcType=TIMESTAMP},
       username = #{record.username,jdbcType=VARCHAR},
@@ -373,12 +349,6 @@
       <if test="status != null">
         status = #{status,jdbcType=TINYINT},
       </if>
-      <if test="stfStatus != null">
-        stf_status = #{stfStatus,jdbcType=TINYINT},
-      </if>
-      <if test="macacaStatus != null">
-        macaca_status = #{macacaStatus,jdbcType=TINYINT},
-      </if>
       <if test="lastOnlineTime != null">
         last_online_time = #{lastOnlineTime,jdbcType=TIMESTAMP},
       </if>
@@ -407,8 +377,6 @@
       img_url = #{imgUrl,jdbcType=VARCHAR},
       platform = #{platform,jdbcType=TINYINT},
       status = #{status,jdbcType=TINYINT},
-      stf_status = #{stfStatus,jdbcType=TINYINT},
-      macaca_status = #{macacaStatus,jdbcType=TINYINT},
       last_online_time = #{lastOnlineTime,jdbcType=TIMESTAMP},
       last_offline_time = #{lastOfflineTime,jdbcType=TIMESTAMP},
       username = #{username,jdbcType=VARCHAR},

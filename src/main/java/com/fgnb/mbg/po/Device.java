@@ -6,9 +6,6 @@ import java.util.Date;
 
 public class Device implements Serializable {
 
-    public static final Integer ANDROID = 1;
-    public static final Integer IOS = 2;
-
     public static final Integer OFFLINE_STATUS = 0;
     public static final Integer USING_STATUS = 1;
     public static final Integer IDLE_STATUS = 2;
@@ -97,20 +94,6 @@ public class Device implements Serializable {
      * @mbg.generated
      */
     private Integer status;
-
-    /**
-     * stf初始化状态：0.失败 1.成功
-     *
-     * @mbg.generated
-     */
-    private Integer stfStatus;
-
-    /**
-     * macaca初始化状态：0.失败 1.成功
-     *
-     * @mbg.generated
-     */
-    private Integer macacaStatus;
 
     /**
      * 最近一次在线时间
@@ -238,22 +221,6 @@ public class Device implements Serializable {
         this.status = status;
     }
 
-    public Integer getStfStatus() {
-        return stfStatus;
-    }
-
-    public void setStfStatus(Integer stfStatus) {
-        this.stfStatus = stfStatus;
-    }
-
-    public Integer getMacacaStatus() {
-        return macacaStatus;
-    }
-
-    public void setMacacaStatus(Integer macacaStatus) {
-        this.macacaStatus = macacaStatus;
-    }
-
     public Date getLastOnlineTime() {
         return lastOnlineTime;
     }
@@ -304,8 +271,6 @@ public class Device implements Serializable {
         sb.append(", imgUrl=").append(imgUrl);
         sb.append(", platform=").append(platform);
         sb.append(", status=").append(status);
-        sb.append(", stfStatus=").append(stfStatus);
-        sb.append(", macacaStatus=").append(macacaStatus);
         sb.append(", lastOnlineTime=").append(lastOnlineTime);
         sb.append(", lastOfflineTime=").append(lastOfflineTime);
         sb.append(", username=").append(username);
