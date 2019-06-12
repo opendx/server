@@ -6,6 +6,7 @@ import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -19,26 +20,24 @@ public class Step {
      */
     @NotNull(message = "步骤Action不能为空")
     private Integer actionId;
-
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Action action;
-    /**
-     * 步骤名
-     */
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Date startTime;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Date endTime;
+
     @NotBlank(message = "步骤名不能为空")
     private String name;
     /**
      * 步骤赋值
      */
     private String evaluation;
-    /**
-     * 步骤号，即第几步
-     */
     @NotNull(message = "步骤号不能为空")
     private Integer number;
     /**
      * 调用action传入的值
      */
     private List<ParamValue> paramValues;
-
 }
