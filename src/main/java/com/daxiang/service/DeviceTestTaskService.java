@@ -107,31 +107,33 @@ public class DeviceTestTaskService {
         DeviceTestTask deviceTestTask = deviceTestTaskMapper.selectByPrimaryKey(deviceTestTaskId);
         if (deviceTestTask == null) {
             return Response.fail("DeviceTestTask不存在");
-        } else {
-            deviceTestTask.getTestcases().stream()
-                    .filter(targetTestcase -> targetTestcase.getId() == sourceTestcase.getId())
-                    .forEach(targetTestcase -> {
-                        // 更新testcase运行结果
-                        copyTestcaseProperties(sourceTestcase, targetTestcase);
-                        List<Step> sourceSteps = sourceTestcase.getSteps();
-                        if (!CollectionUtils.isEmpty(sourceSteps)) {
-                            // 每次agent只会传1个要更新的步骤
-                            Step sourceStep = sourceTestcase.getSteps().stream().findFirst().get();
-                            targetTestcase.getSteps().stream()
-                                    .filter(targetStep -> targetStep.getNumber() == sourceStep.getNumber())
-                                    .forEach(targetStep -> {
-                                        // 更新step运行结果
-                                        copyStepProperties(sourceStep, targetStep);
-                                    });
-                        }
-                    });
+        }
 
-            int updateRow = deviceTestTaskMapper.updateByPrimaryKeySelective(deviceTestTask);
-            if (updateRow == 1) {
-                return Response.success("更新成功");
-            } else {
-                return Response.fail("更新失败");
-            }
+        List<Testcase> testcases = deviceTestTask.getTestcases();
+        testcases.stream()
+                .filter(targetTestcase -> targetTestcase.getId() == sourceTestcase.getId())
+                .forEach(targetTestcase -> {
+                    // 更新testcase运行结果
+                    copyTestcaseProperties(sourceTestcase, targetTestcase);
+                    List<Step> sourceSteps = sourceTestcase.getSteps();
+                    if (!CollectionUtils.isEmpty(sourceSteps)) {
+                        // 每次agent只会传1个要更新的步骤
+                        Step sourceStep = sourceTestcase.getSteps().stream().findFirst().get();
+                        List<Step> steps = targetTestcase.getSteps();
+                        steps.stream()
+                                .filter(targetStep -> targetStep.getNumber() == sourceStep.getNumber())
+                                .forEach(targetStep -> {
+                                    // 更新step运行结果
+                                    copyStepProperties(sourceStep, targetStep);
+                                });
+                    }
+                });
+
+        int updateRow = deviceTestTaskMapper.updateByPrimaryKeySelective(deviceTestTask);
+        if (updateRow == 1) {
+            return Response.success("更新成功");
+        } else {
+            return Response.fail("更新失败");
         }
     }
 
