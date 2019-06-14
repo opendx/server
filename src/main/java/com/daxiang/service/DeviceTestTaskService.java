@@ -111,7 +111,7 @@ public class DeviceTestTaskService {
 
         List<Testcase> testcases = deviceTestTask.getTestcases();
         testcases.stream()
-                .filter(targetTestcase -> targetTestcase.getId() == sourceTestcase.getId())
+                .filter(targetTestcase -> targetTestcase.getId().equals(sourceTestcase.getId()))
                 .forEach(targetTestcase -> {
                     // 更新testcase运行结果
                     copyTestcaseProperties(sourceTestcase, targetTestcase);
@@ -121,7 +121,7 @@ public class DeviceTestTaskService {
                         Step sourceStep = sourceTestcase.getSteps().stream().findFirst().get();
                         List<Step> steps = targetTestcase.getSteps();
                         steps.stream()
-                                .filter(targetStep -> targetStep.getNumber() == sourceStep.getNumber())
+                                .filter(targetStep -> targetStep.getNumber().equals(sourceStep.getNumber()))
                                 .forEach(targetStep -> {
                                     // 更新step运行结果
                                     copyStepProperties(sourceStep, targetStep);
