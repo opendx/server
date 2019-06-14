@@ -1,6 +1,7 @@
 package com.daxiang.controller;
 
 import com.daxiang.model.Response;
+import com.daxiang.utils.NetUtil;
 import com.daxiang.utils.UUIDUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,8 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+import java.net.SocketException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -54,12 +54,12 @@ public class UploadController {
         }
 
         try {
-            String downloadURL = request.getScheme() + "://" + InetAddress.getLocalHost().getHostAddress() + ":" + request.getServerPort() + "/" + newFileName;
+            String downloadURL = request.getScheme() + "://" + NetUtil.getIp() + ":" + request.getServerPort() + "/" + newFileName;
             Map data = new HashMap();
             data.put("downloadURL", downloadURL);
             return Response.success("上传成功", data);
-        } catch (UnknownHostException e) {
-            log.error("UnknownHost", e);
+        } catch (SocketException e) {
+            log.error("获取ip出错", e);
             return Response.fail(e.getMessage());
         }
     }
