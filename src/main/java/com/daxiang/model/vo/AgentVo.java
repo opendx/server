@@ -11,7 +11,9 @@ import java.util.List;
  */
 @Data
 public class AgentVo {
-    private String agentIp;
-    private Integer agentPort;
+    private String ip;
+    private Integer port;
+    private String osName;
+    private String javaVersion;
     private List<Device> devices;
 }
