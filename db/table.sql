@@ -44,6 +44,24 @@ CREATE TABLE `action`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 1000 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = 'action表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
+-- Table structure for app
+-- ----------------------------
+DROP TABLE IF EXISTS `app`;
+CREATE TABLE `app`  (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `platform` int(4) NOT NULL COMMENT '平台：1.android 2.iOS',
+  `name` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT 'app名',
+  `version` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '版本号',
+  `package_name` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT 'android: 包名',
+  `launch_activity` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT 'android: 启动activity',
+  `download_url` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '下载地址',
+  `upload_time` datetime(0) NULL DEFAULT NULL COMMENT '上传时间',
+  `uploador_uid` int(11) NULL DEFAULT NULL COMMENT '上传人',
+  `project_id` int(11) NOT NULL COMMENT '所属项目',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = 'app表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
 -- Table structure for category
 -- ----------------------------
 DROP TABLE IF EXISTS `category`;
