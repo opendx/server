@@ -39,20 +39,23 @@
             <!--<columnOverride column="params" typeHandler="com.daxiang.typehandler.ParamListTypeHandler" javaType="java.util.List&lt;com.daxiang.model.action.Param&gt;" jdbcType="LONGVARCHAR"/>-->
             <!--<columnOverride column="local_vars" typeHandler="com.daxiang.typehandler.LocalVarListTypeHandler" javaType="java.util.List&lt;com.daxiang.model.action.LocalVar&gt;" jdbcType="LONGVARCHAR"/>-->
         <!--</table>-->
+        <table tableName="app">
+            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
+        </table>
         <!--<table tableName="category">-->
             <!--<generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
         <!--</table>-->
         <!--<table tableName="device">-->
         <!--</table>-->
-        <table tableName="device_test_task">
-            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
-            <columnOverride column="global_vars" typeHandler="com.daxiang.typehandler.GlobalVarListTypeHandler" javaType="java.util.List&lt;com.daxiang.mbg.po.GlobalVar&gt;" jdbcType="LONGVARCHAR"/>
-            <columnOverride column="before_class" typeHandler="com.daxiang.typehandler.ActionTypeHandler" javaType="com.daxiang.mbg.po.Action" jdbcType="LONGVARCHAR"/>
-            <columnOverride column="before_method" typeHandler="com.daxiang.typehandler.ActionTypeHandler" javaType="com.daxiang.mbg.po.Action" jdbcType="LONGVARCHAR"/>
-            <columnOverride column="after_class" typeHandler="com.daxiang.typehandler.ActionTypeHandler" javaType="com.daxiang.mbg.po.Action" jdbcType="LONGVARCHAR"/>
-            <columnOverride column="after_method" typeHandler="com.daxiang.typehandler.ActionTypeHandler" javaType="com.daxiang.mbg.po.Action" jdbcType="LONGVARCHAR"/>
-            <columnOverride column="testcases" typeHandler="com.daxiang.typehandler.TestcaseListTypeHandler" javaType="java.util.List&lt;com.daxiang.model.vo.Testcase&gt;" jdbcType="LONGVARCHAR"/>
-        </table>
+        <!--<table tableName="device_test_task">-->
+            <!--<generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
+            <!--<columnOverride column="global_vars" typeHandler="com.daxiang.typehandler.GlobalVarListTypeHandler" javaType="java.util.List&lt;com.daxiang.mbg.po.GlobalVar&gt;" jdbcType="LONGVARCHAR"/>-->
+            <!--<columnOverride column="before_class" typeHandler="com.daxiang.typehandler.ActionTypeHandler" javaType="com.daxiang.mbg.po.Action" jdbcType="LONGVARCHAR"/>-->
+            <!--<columnOverride column="before_method" typeHandler="com.daxiang.typehandler.ActionTypeHandler" javaType="com.daxiang.mbg.po.Action" jdbcType="LONGVARCHAR"/>-->
+            <!--<columnOverride column="after_class" typeHandler="com.daxiang.typehandler.ActionTypeHandler" javaType="com.daxiang.mbg.po.Action" jdbcType="LONGVARCHAR"/>-->
+            <!--<columnOverride column="after_method" typeHandler="com.daxiang.typehandler.ActionTypeHandler" javaType="com.daxiang.mbg.po.Action" jdbcType="LONGVARCHAR"/>-->
+            <!--<columnOverride column="testcases" typeHandler="com.daxiang.typehandler.TestcaseListTypeHandler" javaType="java.util.List&lt;com.daxiang.model.vo.Testcase&gt;" jdbcType="LONGVARCHAR"/>-->
+        <!--</table>-->
         <!--<table tableName="gloabal_var">-->
             <!--<generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
         <!--</table>-->
