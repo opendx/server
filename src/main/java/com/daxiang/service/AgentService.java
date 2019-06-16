@@ -66,4 +66,18 @@ public class AgentService {
 
         return Response.success(agentVos);
     }
+
+    public List<AgentVo> getOnlineAgent() {
+        return instanceRegistry.getInstances().collectList().block().stream()
+                .filter(agent -> StatusInfo.STATUS_UP.equals(agent.getStatusInfo().getStatus()))
+                .map(agent -> {
+                    String url = agent.getRegistration().getServiceUrl(); // http://xx.xx.xx.x:xx/
+                    String[] host = url.split("//")[1].split(":");
+
+                    AgentVo agentVo = new AgentVo();
+                    agentVo.setIp(host[0]);
+                    agentVo.setPort(Integer.parseInt(host[1].substring(0, host[1].length() - 1)));
+                    return agentVo;
+                }).collect(Collectors.toList());
+    }
 }

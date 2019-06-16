@@ -28,4 +28,16 @@ public class AgentApi {
     public Response debugAction(String agentIp, int agentPort, JSONObject requestBody) {
         return restTemplate.postForObject(PROTOCOL_PREFIX + agentIp + ":" + agentPort + "/action/debug", requestBody, Response.class);
     }
+
+    /**
+     * dump apk信息
+     *
+     * @param agentIp
+     * @param agentPort
+     * @param apkDownloadUrl
+     * @return
+     */
+    public Response aaptDumpBadging(String agentIp, int agentPort, String apkDownloadUrl) {
+        return restTemplate.postForObject(PROTOCOL_PREFIX + agentIp + ":" + agentPort + "/android/aaptDumpBadging", apkDownloadUrl, Response.class);
+    }
 }
