@@ -45,12 +45,7 @@ public class PageService extends BaseService {
         } catch (DuplicateKeyException e) {
             return Response.fail("命名冲突");
         }
-
-        if (insertRow == 1) {
-            return Response.success("添加Page成功");
-        } else {
-            return Response.fail("添加Page失败，请稍后重试");
-        }
+        return insertRow == 1 ? Response.success("添加Page成功") : Response.fail("添加Page失败，请稍后重试");
     }
 
     /**
@@ -72,11 +67,7 @@ public class PageService extends BaseService {
         }
 
         int delRow = pageMapper.deleteByPrimaryKey(pageId);
-        if (delRow == 1) {
-            return Response.success("删除Page成功");
-        } else {
-            return Response.fail("删除Page失败，请稍后重试");
-        }
+        return delRow == 1 ? Response.success("删除Page成功") : Response.fail("删除Page失败，请稍后重试");
     }
 
     /**
@@ -95,12 +86,7 @@ public class PageService extends BaseService {
         } catch (DuplicateKeyException e) {
             return Response.fail("命名冲突");
         }
-
-        if (updateRow == 1) {
-            return Response.success("更新Page成功");
-        } else {
-            return Response.fail("更新Page失败，请稍后重试");
-        }
+        return updateRow == 1 ? Response.success("更新Page成功") : Response.fail("更新Page失败，请稍后重试");
     }
 
     /**

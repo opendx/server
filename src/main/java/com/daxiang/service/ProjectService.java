@@ -43,12 +43,7 @@ public class ProjectService extends BaseService {
         } catch (DuplicateKeyException e) {
             return Response.fail("命名冲突");
         }
-
-        if (insertRow == 1) {
-            return Response.success("添加Project成功");
-        } else {
-            return Response.fail("添加Project失败，请稍后重试");
-        }
+        return insertRow == 1 ? Response.success("添加Project成功") : Response.fail("添加Project失败，请稍后重试");
     }
 
     /**
@@ -62,12 +57,7 @@ public class ProjectService extends BaseService {
         }
 
         int deleteRow = projectMapper.deleteByPrimaryKey(projectId);
-
-        if (deleteRow == 1) {
-            return Response.success("删除Project成功");
-        } else {
-            return Response.fail("删除Project失败，请稍后重试");
-        }
+        return deleteRow == 1 ? Response.success("删除Project成功") : Response.fail("删除Project失败，请稍后重试");
     }
 
     /**
@@ -86,12 +76,7 @@ public class ProjectService extends BaseService {
         } catch (DuplicateKeyException e) {
             return Response.fail("命名冲突");
         }
-
-        if (updateRow == 1) {
-            return Response.success("更新Project成功");
-        } else {
-            return Response.fail("修改Project失败,请稍后重试");
-        }
+        return updateRow == 1 ? Response.success("更新Project成功") : Response.fail("修改Project失败,请稍后重试");
     }
 
 

@@ -46,12 +46,7 @@ public class CategoryService extends BaseService {
         } catch (DuplicateKeyException e) {
             return Response.fail("命名冲突");
         }
-
-        if (insertRow == 1) {
-            return Response.success("添加Category成功");
-        } else {
-            return Response.fail("添加Category失败");
-        }
+        return insertRow == 1 ? Response.success("添加Category成功") : Response.fail("添加Category失败");
     }
 
     public Response delete(Integer categoryId) {
@@ -68,12 +63,7 @@ public class CategoryService extends BaseService {
         }
 
         int deleteRow = categoryMapper.deleteByPrimaryKey(categoryId);
-
-        if (deleteRow == 1) {
-            return Response.success("删除分类成功");
-        } else {
-            return Response.fail("删除分类失败，请稍后重试");
-        }
+        return deleteRow == 1 ? Response.success("删除分类成功") : Response.fail("删除分类失败，请稍后重试");
     }
 
     /**

@@ -33,11 +33,7 @@ public class DeviceTestTaskService {
         }
 
         int insertRow = deviceTestTaskMapper.updateByPrimaryKeySelective(deviceTestTask);
-        if (insertRow == 1) {
-            return Response.success("更新成功");
-        } else {
-            return Response.fail("更新失败，请稍后重试");
-        }
+        return insertRow == 1 ? Response.success("更新成功") : Response.fail("更新失败，请稍后重试");
     }
 
     public Response list(DeviceTestTask deviceTestTask, PageRequest pageRequest) {
@@ -91,12 +87,7 @@ public class DeviceTestTaskService {
         deviceTestTaskExample.setOrderByClause("id asc limit 1");
 
         List<DeviceTestTask> deviceTestTasks = deviceTestTaskMapper.selectByExampleWithBLOBs(deviceTestTaskExample);
-
-        if (CollectionUtils.isEmpty(deviceTestTasks)) {
-            return Response.success();
-        } else {
-            return Response.success(deviceTestTasks.get(0));
-        }
+        return CollectionUtils.isEmpty(deviceTestTasks) ? Response.success() : Response.success(deviceTestTasks.get(0));
     }
 
     public Response updateTestcase(Integer deviceTestTaskId, Testcase sourceTestcase) {
@@ -130,11 +121,7 @@ public class DeviceTestTaskService {
                 });
 
         int updateRow = deviceTestTaskMapper.updateByPrimaryKeySelective(deviceTestTask);
-        if (updateRow == 1) {
-            return Response.success("更新成功");
-        } else {
-            return Response.fail("更新失败");
-        }
+        return updateRow == 1 ? Response.success("更新成功") : Response.fail("更新失败");
     }
 
     private void copyStepProperties(Step sourceStep, Step targetStep) {

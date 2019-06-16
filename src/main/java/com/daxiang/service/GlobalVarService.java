@@ -47,12 +47,7 @@ public class GlobalVarService extends BaseService {
         } catch (DuplicateKeyException e) {
             return Response.fail("命名冲突");
         }
-
-        if (insertRow == 1) {
-            return Response.success("添加GlobalVar成功");
-        } else {
-            return Response.fail("添加GlobalVar失败，请稍后重试");
-        }
+        return insertRow == 1 ? Response.success("添加GlobalVar成功") : Response.fail("添加GlobalVar失败，请稍后重试");
     }
 
     /**
@@ -68,7 +63,7 @@ public class GlobalVarService extends BaseService {
         // 校验全局变量是否被其他action使用
         GlobalVar globalVar = globalVarMapper.selectByPrimaryKey(globalVarId);
         if (globalVar == null) {
-           return Response.fail("GlobalVar不存在");
+            return Response.fail("GlobalVar不存在");
         }
         List<Action> actions = actionService.findByProjectIdAndGlobalVar(globalVar.getProjectId(), globalVar.getName());
         if (!CollectionUtils.isEmpty(actions)) {
@@ -76,11 +71,7 @@ public class GlobalVarService extends BaseService {
         }
 
         int deleteRow = globalVarMapper.deleteByPrimaryKey(globalVarId);
-        if (deleteRow == 1) {
-            return Response.success("删除成功");
-        } else {
-            return Response.fail("删除失败,请稍后重试");
-        }
+        return deleteRow == 1 ? Response.success("删除成功") : Response.fail("删除失败,请稍后重试");
     }
 
     /**
@@ -99,12 +90,7 @@ public class GlobalVarService extends BaseService {
         } catch (DuplicateKeyException e) {
             return Response.fail("命名冲突");
         }
-
-        if (updateRow == 1) {
-            return Response.success("更新GlobalVar成功");
-        } else {
-            return Response.fail("更新GlobalVar失败,请稍后重试");
-        }
+        return updateRow == 1 ? Response.success("更新GlobalVar成功") : Response.fail("更新GlobalVar失败,请稍后重试");
     }
 
     /**

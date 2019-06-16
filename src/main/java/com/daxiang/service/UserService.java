@@ -60,12 +60,7 @@ public class UserService extends BaseService {
         } catch (DuplicateKeyException e) {
             return Response.fail("用户名已存在");
         }
-
-        if (insertRow == 1) {
-            return Response.success("注册成功");
-        } else {
-            return Response.fail("注册失败，请稍后重试");
-        }
+        return insertRow == 1 ? Response.success("注册成功") : Response.fail("注册失败，请稍后重试");
     }
 
     public Response getInfo() {

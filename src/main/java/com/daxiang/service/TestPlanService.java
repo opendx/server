@@ -40,12 +40,7 @@ public class TestPlanService extends BaseService {
         } catch (DuplicateKeyException e) {
             return Response.fail("重复命名");
         }
-
-        if (insertRow == 1) {
-            return Response.success("添加TestPlan成功");
-        } else {
-            return Response.fail("添加TestPlan败，请稍后重试");
-        }
+        return insertRow == 1 ? Response.success("添加TestPlan成功") : Response.fail("添加TestPlan败，请稍后重试");
     }
 
     public Response delete(Integer testPlanId) {
@@ -54,12 +49,7 @@ public class TestPlanService extends BaseService {
         }
 
         int deleteRow = testPlanMapper.deleteByPrimaryKey(testPlanId);
-
-        if (deleteRow == 1) {
-            return Response.success("删除TestPlan成功");
-        } else {
-            return Response.fail("删除TestPlan失败，请稍后重试");
-        }
+        return deleteRow == 1 ? Response.success("删除TestPlan成功") : Response.fail("删除TestPlan失败，请稍后重试");
     }
 
     public Response update(TestPlan testPlan) {
@@ -73,12 +63,7 @@ public class TestPlanService extends BaseService {
         } catch (DuplicateKeyException e) {
             return Response.fail("命名冲突");
         }
-
-        if (updateRow == 1) {
-            return Response.success("更新TestPlan成功");
-        } else {
-            return Response.fail("更新TestPlan失败，请稍后重试");
-        }
+        return updateRow == 1 ? Response.success("更新TestPlan成功") : Response.fail("更新TestPlan失败，请稍后重试");
     }
 
     public Response list(TestPlan testPlan, PageRequest pageRequest) {

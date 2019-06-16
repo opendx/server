@@ -56,12 +56,7 @@ public class ActionService extends BaseService {
         } catch (DuplicateKeyException e) {
             return Response.fail("命名冲突");
         }
-
-        if (insertRow == 1) {
-            return Response.success("添加action成功");
-        } else {
-            return Response.fail("添加action失败，请稍后重试");
-        }
+        return insertRow == 1 ? Response.success("添加action成功") : Response.fail("添加action失败，请稍后重试");
     }
 
     public Response delete(Integer actionId) {
@@ -78,11 +73,7 @@ public class ActionService extends BaseService {
         }
 
         int deleteRow = actionMapper.deleteByPrimaryKey(actionId);
-        if (deleteRow == 1) {
-            return Response.success("删除成功");
-        } else {
-            return Response.fail("删除失败，请稍后重试");
-        }
+        return deleteRow == 1 ? Response.success("删除成功") : Response.fail("删除失败，请稍后重试");
     }
 
     /**
@@ -108,12 +99,7 @@ public class ActionService extends BaseService {
         } catch (DuplicateKeyException e) {
             return Response.fail("命名冲突");
         }
-
-        if (updateRow == 1) {
-            return Response.success("更新Action成功");
-        } else {
-            return Response.fail("更新Action失败，请稍后重试");
-        }
+        return updateRow == 1 ? Response.success("更新Action成功") : Response.fail("更新Action失败，请稍后重试");
     }
 
     /**
@@ -292,13 +278,9 @@ public class ActionService extends BaseService {
         requestBody.put("deviceId", debugInfo.getDeviceId());
         requestBody.put("port", debugInfo.getPort());
 
-        //发送到agent执行
+        // 发送到agent执行
         Response agentResponse = agentApi.debugAction(debugInfo.getAgentIp(), debugInfo.getAgentPort(), requestBody);
-        if (agentResponse.isSuccess()) {
-            return Response.success(agentResponse.getMsg());
-        } else {
-            return Response.fail(agentResponse.getMsg());
-        }
+        return agentResponse.isSuccess() ? Response.success(agentResponse.getMsg()) : Response.fail(agentResponse.getMsg());
     }
 
     /**

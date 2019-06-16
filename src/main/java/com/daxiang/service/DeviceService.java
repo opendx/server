@@ -41,11 +41,7 @@ public class DeviceService extends BaseService {
             // 更新Device
             saveRow = deviceMapper.updateByPrimaryKeySelective(device);
         }
-        if (saveRow == 1) {
-            return Response.success("保存成功");
-        } else {
-            return Response.fail("保存失败，请稍后重试");
-        }
+        return saveRow == 1 ? Response.success("保存成功") : Response.fail("保存失败，请稍后重试");
     }
 
     /**

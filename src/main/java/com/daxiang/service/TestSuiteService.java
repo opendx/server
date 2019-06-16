@@ -44,12 +44,7 @@ public class TestSuiteService extends BaseService {
         } catch (DuplicateKeyException e) {
             return Response.fail("命名冲突");
         }
-
-        if (insertRow == 1) {
-            return Response.success("添加TestSuite成功");
-        } else {
-            return Response.fail("添加TestSuite失败");
-        }
+        return insertRow == 1 ? Response.success("添加TestSuite成功") : Response.fail("添加TestSuite失败");
     }
 
     public Response delete(Integer testSuiteId) {
@@ -72,11 +67,7 @@ public class TestSuiteService extends BaseService {
         }
 
         int deleteRow = testSuiteMapper.deleteByPrimaryKey(testSuiteId);
-        if (deleteRow == 1) {
-            return Response.success("删除TestSuite成功");
-        } else {
-            return Response.fail("删除TestSuite失败，请稍后重试");
-        }
+        return deleteRow == 1 ? Response.success("删除TestSuite成功") : Response.fail("删除TestSuite失败，请稍后重试");
     }
 
     public Response list(TestSuite testSuite, PageRequest pageRequest) {
