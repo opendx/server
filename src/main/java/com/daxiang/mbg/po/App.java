@@ -71,6 +71,14 @@ public class App implements Serializable {
      */
     private Integer uploadorUid;
 
+    /**
+     * 所属项目
+     *
+     * @mbg.generated
+     */
+    @NotNull(message = "项目id不能为空")
+    private Integer projectId;
+
     private static final long serialVersionUID = 1L;
 
     public Integer getId() {
@@ -145,6 +153,14 @@ public class App implements Serializable {
         this.uploadorUid = uploadorUid;
     }
 
+    public Integer getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(Integer projectId) {
+        this.projectId = projectId;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -160,6 +176,7 @@ public class App implements Serializable {
         sb.append(", downloadUrl=").append(downloadUrl);
         sb.append(", uploadTime=").append(uploadTime);
         sb.append(", uploadorUid=").append(uploadorUid);
+        sb.append(", projectId=").append(projectId);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

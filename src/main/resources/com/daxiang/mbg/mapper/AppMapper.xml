@@ -11,6 +11,7 @@
     <result column="download_url" jdbcType="VARCHAR" property="downloadUrl" />
     <result column="upload_time" jdbcType="TIMESTAMP" property="uploadTime" />
     <result column="uploador_uid" jdbcType="INTEGER" property="uploadorUid" />
+    <result column="project_id" jdbcType="INTEGER" property="projectId" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -72,7 +73,7 @@
   </sql>
   <sql id="Base_Column_List">
     id, platform, name, version, package_name, launch_activity, download_url, upload_time, 
-    uploador_uid
+    uploador_uid, project_id
   </sql>
   <select id="selectByExample" parameterType="com.daxiang.mbg.po.AppExample" resultMap="BaseResultMap">
     select
@@ -110,10 +111,12 @@
     </selectKey>
     insert into app (platform, name, version, 
       package_name, launch_activity, download_url, 
-      upload_time, uploador_uid)
+      upload_time, uploador_uid, project_id
+      )
     values (#{platform,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{version,jdbcType=VARCHAR}, 
       #{packageName,jdbcType=VARCHAR}, #{launchActivity,jdbcType=VARCHAR}, #{downloadUrl,jdbcType=VARCHAR}, 
-      #{uploadTime,jdbcType=TIMESTAMP}, #{uploadorUid,jdbcType=INTEGER})
+      #{uploadTime,jdbcType=TIMESTAMP}, #{uploadorUid,jdbcType=INTEGER}, #{projectId,jdbcType=INTEGER}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.daxiang.mbg.po.App">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
@@ -145,6 +148,9 @@
       <if test="uploadorUid != null">
         uploador_uid,
       </if>
+      <if test="projectId != null">
+        project_id,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="platform != null">
@@ -170,6 +176,9 @@
       </if>
       <if test="uploadorUid != null">
         #{uploadorUid,jdbcType=INTEGER},
+      </if>
+      <if test="projectId != null">
+        #{projectId,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -209,6 +218,9 @@
       <if test="record.uploadorUid != null">
         uploador_uid = #{record.uploadorUid,jdbcType=INTEGER},
       </if>
+      <if test="record.projectId != null">
+        project_id = #{record.projectId,jdbcType=INTEGER},
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -224,7 +236,8 @@
       launch_activity = #{record.launchActivity,jdbcType=VARCHAR},
       download_url = #{record.downloadUrl,jdbcType=VARCHAR},
       upload_time = #{record.uploadTime,jdbcType=TIMESTAMP},
-      uploador_uid = #{record.uploadorUid,jdbcType=INTEGER}
+      uploador_uid = #{record.uploadorUid,jdbcType=INTEGER},
+      project_id = #{record.projectId,jdbcType=INTEGER}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -256,6 +269,9 @@
       <if test="uploadorUid != null">
         uploador_uid = #{uploadorUid,jdbcType=INTEGER},
       </if>
+      <if test="projectId != null">
+        project_id = #{projectId,jdbcType=INTEGER},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -268,7 +284,8 @@
       launch_activity = #{launchActivity,jdbcType=VARCHAR},
       download_url = #{downloadUrl,jdbcType=VARCHAR},
       upload_time = #{uploadTime,jdbcType=TIMESTAMP},
-      uploador_uid = #{uploadorUid,jdbcType=INTEGER}
+      uploador_uid = #{uploadorUid,jdbcType=INTEGER},
+      project_id = #{projectId,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>
