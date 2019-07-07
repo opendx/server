@@ -25,8 +25,8 @@ VALUES
 	1,
 	'[{"name": "packageName", "description": "包名"}]'
 );
--- 2.ExcuteAdbShellCmd
 
+-- 2.ExcuteAdbShellCmd
 INSERT INTO `action` (
 	`id`,
 	`name`,
@@ -52,8 +52,8 @@ VALUES
 	1,
 	'[{"name": "cmd", "description": "执行的命令"}]'
 );
--- 3.InstallApk
 
+-- 3.InstallApk
 INSERT INTO `action` (
 	`id`,
 	`name`,
