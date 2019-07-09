@@ -25,8 +25,6 @@ public class ActionDebugRequest {
         private String agentIp;
         @NotNull(message = "agentPort不能为空")
         private Integer agentPort;
-        @NotNull(message = "调试端口不能为空")
-        private Integer port;
         /**
          * 移动端需要设备id
          */
