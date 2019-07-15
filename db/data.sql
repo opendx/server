@@ -156,7 +156,7 @@ INSERT INTO `action` (
 VALUES
 (
 	201,
-	'查找元素（通过Uiautomator）',
+	'通过Uiautomator查找元素',
 	'androidDriver.findElementByAndroidUIAutomator',
 	1,
 	'com.daxiang.action.appium.android.FindElementByUiautomator',
