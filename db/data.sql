@@ -1,4 +1,5 @@
 -- ################################################################################################################################
+
 -- -----------------------------------------------com.daxiang.action.android(1-100)-----------------------------------------------
 -- 1.ClearApkData
 INSERT INTO `action` (
@@ -296,8 +297,8 @@ VALUES
 	1,
 	'com.daxiang.action.appium.SendKeys',
 	1,
-	0,
-	null,
+	1,
+	'WebElement',
 	null,
   '[{"name": "findBy", "description": "查找方式", "possibleValues": [{"value": "id", "description": ""}, {"value": "xpath", "description": ""}]},{"name": "value", "description": "查找值"},{"name": "content", "description": "输入内容"}]'
 );
@@ -378,6 +379,32 @@ VALUES
   'WebElement',
   null,
   '[{"name": "findBy", "description": "查找方式", "possibleValues": [{"value": "id", "description": ""}, {"value": "xpath", "description": ""}]},{"name": "value", "description": "查找值"},{"name": "maxWaitTimeInSeconds", "description": "最大等待时间"}]'
+);
+-- 308.ElementSendKeys
+INSERT INTO `action` (
+	`id`,
+	`name`,
+	`description`,
+	`type`,
+	`class_name`,
+	`need_driver`,
+	`has_return_value`,
+	`return_value_desc`,
+	`platform`,
+	`params`
+)
+VALUES
+(
+	308,
+	'元素输入',
+	'WebElement.sendKeys',
+	1,
+	'com.daxiang.action.appium.ElementSendKeys',
+	0,
+	1,
+	'WebElement',
+	null,
+	'[{"name": "WebElement", "description": "元素对象"}, {"name": "content", "description": "输入内容"}]'
 );
 -- -----------------------------------------------com.daxiang.action.appium(301-600)-----------------------------------------------
 
