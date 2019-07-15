@@ -41,7 +41,7 @@ CREATE TABLE `action`  (
   `test_suite_id` int(11) NULL DEFAULT NULL COMMENT '所属的测试集',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `uniq_name_projectId_type`(`name`, `project_id`, `type`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1000 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = 'action表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3000 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = 'action表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for app
