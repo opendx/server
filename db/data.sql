@@ -133,7 +133,7 @@ VALUES
 	0,
 	0,
 	null,
-	1,
+	null,
 	'[{"name": "sleepTimeInSeconds", "description": "休眠时长，单位：秒"}]'
 );
 -- -----------------------------------------------com.daxiang.action.common(101-200)-----------------------------------------------
@@ -405,6 +405,32 @@ VALUES
 	'WebElement',
 	null,
 	'[{"name": "WebElement", "description": "元素对象"}, {"name": "content", "description": "输入内容"}]'
+);
+-- 309.FindElementByImage
+INSERT INTO `action` (
+	`id`,
+	`name`,
+	`description`,
+	`type`,
+	`class_name`,
+	`need_driver`,
+	`has_return_value`,
+	`return_value_desc`,
+	`platform`,
+	`params`
+)
+VALUES
+(
+	309,
+	'通过图像查找元素',
+	'driver.findElementByImage',
+	1,
+	'com.daxiang.action.appium.FindElementByImage',
+	1,
+	1,
+	'WebElement',
+	null,
+	'[{"name": "base64ImageTemplate", "description": "base64图片模板"}]'
 );
 -- -----------------------------------------------com.daxiang.action.appium(301-600)-----------------------------------------------
 
