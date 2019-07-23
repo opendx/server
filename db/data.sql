@@ -158,7 +158,7 @@ VALUES
 (
 	201,
 	'通过Uiautomator查找元素',
-	'androidDriver.findElementByAndroidUIAutomator',
+	'AndroidDriver.findElementByAndroidUIAutomator',
 	1,
 	'com.daxiang.action.appium.android.FindElementByUiautomator',
 	1,
@@ -184,7 +184,7 @@ VALUES
 (
 	202,
 	'发送keycode到android手机执行',
-	'androidDriver.pressKeyCode(keyCode)',
+	'AndroidDriver.pressKeyCode',
 	1,
 	'com.daxiang.action.appium.android.PressKey',
 	1,
@@ -215,7 +215,7 @@ VALUES
 (
 	301,
 	'点击',
-	'WebElement.click()',
+	'WebElement.click',
 	1,
 	'com.daxiang.action.appium.Click',
 	1,
@@ -241,7 +241,7 @@ VALUES
 (
   302,
 	'点击元素',
-	'WebElement.click()',
+	'WebElement.click',
 	1,
 	'com.daxiang.action.appium.ClickElement',
 	0,
@@ -267,7 +267,7 @@ VALUES
 (
 	303,
 	'查找元素',
-	'appiumDriver.findElement',
+	'AppiumDriver.findElement',
 	1,
 	'com.daxiang.action.appium.FindElement',
 	1,
@@ -293,7 +293,7 @@ VALUES
 (
   304,
 	'输入',
-	'webElement.sendKeys',
+	'WebElement.sendKeys',
 	1,
 	'com.daxiang.action.appium.SendKeys',
 	1,
@@ -319,7 +319,7 @@ VALUES
 (
   305,
   '设置隐士等待时间',
-  'driver.manage().timeouts().implicitlyWait',
+  'AppiumDriver.manage().timeouts().implicitlyWait',
   1,
   'com.daxiang.action.appium.SetImplicitlyWaitTime',
   1,
@@ -345,7 +345,7 @@ VALUES
 (
   306,
   '等待元素存在',
-  'WebDriverWait(driver, timeOutInSeconds).until(ExpectedConditions.presenceOfElementLocated(By))，可用于检测toast',
+  'WebDriverWait().until(ExpectedConditions.presenceOfElementLocated)，可用于检测toast',
   1,
   'com.daxiang.action.appium.WaitForElementPresence',
   1,
@@ -371,7 +371,7 @@ VALUES
 (
   307,
   '等待元素可见',
-  'WebDriverWait(driver, timeOutInSeconds).until(ExpectedConditions.visibilityOfElementLocated(By))',
+  'WebDriverWait().until(ExpectedConditions.visibilityOfElementLocated)',
   1,
   'com.daxiang.action.appium.WaitForElementVisible',
   1,
@@ -423,7 +423,7 @@ VALUES
 (
 	309,
 	'通过图像查找元素',
-	'driver.findElementByImage',
+	'AppiumDriver.findElementByImage',
 	1,
 	'com.daxiang.action.appium.FindElementByImage',
 	1,
