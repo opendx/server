@@ -136,6 +136,32 @@ VALUES
 	null,
 	'[{"name": "SleepTimeInSeconds", "description": "休眠时长，单位：秒"}]'
 );
+-- 102.AssertEquals
+INSERT INTO `action` (
+	`id`,
+	`name`,
+	`description`,
+	`type`,
+	`class_name`,
+	`need_driver`,
+	`has_return_value`,
+	`return_value_desc`,
+	`platform`,
+	`params`
+)
+VALUES
+(
+	102,
+	'AssertEquals',
+	'Assert.assertEquals',
+	1,
+	'com.daxiang.action.common.AssertEquals',
+	0,
+	0,
+	null,
+	null,
+	'[{"name": "expected", "description": "期望"},{"name": "actual", "description": "实际"}]'
+);
 -- -----------------------------------------------com.daxiang.action.common(101-200)-----------------------------------------------
 
 -- ################################################################################################################################
@@ -431,6 +457,33 @@ VALUES
 	'WebElement',
 	null,
 	'[{"name": "Base64ImageTemplate", "description": "base64图片模板"}]'
+);
+
+-- 310.GetAttribute
+INSERT INTO `action` (
+	`id`,
+	`name`,
+	`description`,
+	`type`,
+	`class_name`,
+	`need_driver`,
+	`has_return_value`,
+	`return_value_desc`,
+	`platform`,
+	`params`
+)
+VALUES
+(
+	310,
+	'获取元素属性',
+	'WebElement.getAttribute',
+	1,
+	'com.daxiang.action.appium.GetAttribute',
+	0,
+	1,
+	'元素属性值',
+	null,
+	'[{"name": "WebElement", "description": "元素对象"},{"name": "attributeName", "description": "属性名"}]'
 );
 -- -----------------------------------------------com.daxiang.action.appium(301-600)-----------------------------------------------
 
