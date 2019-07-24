@@ -18,14 +18,14 @@ VALUES
 (
 	1,
 	'清除APK数据',
-	'pm clear {packageName}',
+	'pm clear {PackageName}',
 	1,
 	'com.daxiang.action.android.ClearApkData',
 	1,
 	0,
 	null,
 	1,
-	'[{"name": "packageName", "description": "包名"}]'
+	'[{"name": "PackageName", "description": "包名"}]'
 );
 -- 2.ExcuteAdbShellCommond
 INSERT INTO `action` (
@@ -44,14 +44,14 @@ VALUES
 (
 	2,
 	'adb shell',
-	'adb shell {cmd}',
+	'adb shell {Cmd}',
 	1,
 	'com.daxiang.action.android.ExcuteAdbShellCommond',
 	1,
 	1,
 	'执行命令返回的结果',
 	1,
-	'[{"name": "cmd", "description": "执行的命令"}]'
+	'[{"name": "Cmd", "description": "执行的命令"}]'
 );
 -- 3.InstallApk
 INSERT INTO `action` (
@@ -77,7 +77,7 @@ VALUES
 	0,
 	null,
 	1,
-	'[{"name": "apkDownloadUrl", "description": "apk下载地址"}]'
+	'[{"name": "ApkDownloadUrl", "description": "apk下载地址"}]'
 );
 -- 4.RestartApk
 INSERT INTO `action` (
@@ -96,14 +96,14 @@ VALUES
 (
 	4,
 	'启动/重启 Apk',
-	'am start -S -n {packageName}/{launchActivity}',
+	'am start -S -n {PackageName}/{LaunchActivity}',
 	1,
 	'com.daxiang.action.android.RestartApk',
 	1,
 	0,
 	null,
 	1,
-	'[{"name": "packageName", "description": "包名"},{"name": "launchActivity", "description": "启动Activity名"}]'
+	'[{"name": "PackageName", "description": "包名"},{"name": "LaunchActivity", "description": "启动Activity名"}]'
 );
 -- -----------------------------------------------com.daxiang.action.android(1-100)-----------------------------------------------
 
@@ -134,7 +134,7 @@ VALUES
 	0,
 	null,
 	null,
-	'[{"name": "sleepTimeInSeconds", "description": "休眠时长，单位：秒"}]'
+	'[{"name": "SleepTimeInSeconds", "description": "休眠时长，单位：秒"}]'
 );
 -- -----------------------------------------------com.daxiang.action.common(101-200)-----------------------------------------------
 
@@ -165,7 +165,7 @@ VALUES
 	1,
 	'WebElement',
 	1,
-	'[{"name": "uiautomator", "description": "eg. new UiSelector().text(xxx)"}]'
+	'[{"name": "Uiautomator", "description": "eg. new UiSelector().text(xxx)"}]'
 );
 -- 202.PressKey
 INSERT INTO `action` (
@@ -191,7 +191,7 @@ VALUES
 	0,
 	null,
 	1,
-	'[{"name": "code", "description": "Android key code https://www.jianshu.com/p/f7ec856ff56f"}]'
+	'[{"name": "Code", "description": "AndroidKeyCode https://www.jianshu.com/p/f7ec856ff56f"}]'
 );
 -- -------------------------------------------com.daxiang.action.appium.android(201-300)-------------------------------------------
 
@@ -222,7 +222,7 @@ VALUES
 	1,
 	'WebElement',
 	null,
-	'[{"name": "findBy", "description": "查找方式", "possibleValues": [{"value": "id", "description": ""}, {"value": "xpath", "description": ""}]},{"name": "value", "description": "查找值"}]'
+	'[{"name": "FindBy", "description": "查找方式", "possibleValues": [{"value": "id", "description": ""}, {"value": "xpath", "description": ""}]},{"name": "Value", "description": "查找值"}]'
 );
 -- 302. ClickElement
 INSERT INTO `action` (
@@ -274,7 +274,7 @@ VALUES
 	1,
 	'WebElement',
 	null,
-  '[{"name": "findBy", "description": "查找方式", "possibleValues": [{"value": "id", "description": ""}, {"value": "xpath", "description": ""}]},{"name": "value", "description": "查找值"}]'
+  '[{"name": "FindBy", "description": "查找方式", "possibleValues": [{"value": "id", "description": ""}, {"value": "xpath", "description": ""}]},{"name": "Value", "description": "查找值"}]'
 );
 -- 304.SendKeys
 INSERT INTO `action` (
@@ -300,7 +300,7 @@ VALUES
 	1,
 	'WebElement',
 	null,
-  '[{"name": "findBy", "description": "查找方式", "possibleValues": [{"value": "id", "description": ""}, {"value": "xpath", "description": ""}]},{"name": "value", "description": "查找值"},{"name": "content", "description": "输入内容"}]'
+  '[{"name": "FindBy", "description": "查找方式", "possibleValues": [{"value": "id", "description": ""}, {"value": "xpath", "description": ""}]},{"name": "Value", "description": "查找值"},{"name": "Content", "description": "输入内容"}]'
 );
 -- 305.SetImplicitlyWaitTime
 INSERT INTO `action` (
@@ -326,7 +326,7 @@ VALUES
   0,
   null,
   null,
-  '[{"name": "implicitlyWaitTimeInSeconds", "description": "隐士等待时间，单位：秒"}]'
+  '[{"name": "ImplicitlyWaitTimeInSeconds", "description": "隐士等待时间，单位：秒"}]'
 );
 -- 306.WaitForElementPresence
 INSERT INTO `action` (
@@ -352,7 +352,7 @@ VALUES
   1,
   'WebElement',
   null,
-  '[{"name": "findBy", "description": "查找方式", "possibleValues": [{"value": "id", "description": ""}, {"value": "xpath", "description": ""}]},{"name": "value", "description": "查找值"},{"name": "maxWaitTimeInSeconds", "description": "最大等待时间"}]'
+  '[{"name": "FindBy", "description": "查找方式", "possibleValues": [{"value": "id", "description": ""}, {"value": "xpath", "description": ""}]},{"name": "Value", "description": "查找值"},{"name": "MaxWaitTimeInSeconds", "description": "最大等待时间"}]'
 );
 -- 307.WaitForElementVisible
 INSERT INTO `action` (
@@ -378,7 +378,7 @@ VALUES
   1,
   'WebElement',
   null,
-  '[{"name": "findBy", "description": "查找方式", "possibleValues": [{"value": "id", "description": ""}, {"value": "xpath", "description": ""}]},{"name": "value", "description": "查找值"},{"name": "maxWaitTimeInSeconds", "description": "最大等待时间"}]'
+  '[{"name": "FindBy", "description": "查找方式", "possibleValues": [{"value": "id", "description": ""}, {"value": "xpath", "description": ""}]},{"name": "Value", "description": "查找值"},{"name": "MaxWaitTimeInSeconds", "description": "最大等待时间"}]'
 );
 -- 308.ElementSendKeys
 INSERT INTO `action` (
@@ -404,7 +404,7 @@ VALUES
 	1,
 	'WebElement',
 	null,
-	'[{"name": "WebElement", "description": "元素对象"}, {"name": "content", "description": "输入内容"}]'
+	'[{"name": "WebElement", "description": "元素对象"}, {"name": "Content", "description": "输入内容"}]'
 );
 -- 309.FindElementByImage
 INSERT INTO `action` (
@@ -430,7 +430,7 @@ VALUES
 	1,
 	'WebElement',
 	null,
-	'[{"name": "base64ImageTemplate", "description": "base64图片模板"}]'
+	'[{"name": "Base64ImageTemplate", "description": "base64图片模板"}]'
 );
 -- -----------------------------------------------com.daxiang.action.appium(301-600)-----------------------------------------------
 
