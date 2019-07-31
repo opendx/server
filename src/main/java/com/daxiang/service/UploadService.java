@@ -2,6 +2,7 @@ package com.daxiang.service;
 
 import com.daxiang.model.Response;
 import com.daxiang.utils.UUIDUtil;
+import com.google.common.collect.ImmutableMap;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -11,8 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by jiangyitao.
@@ -51,8 +50,6 @@ public class UploadService {
         }
 
         String downloadURL = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + "/" + newFileName;
-        Map data = new HashMap();
-        data.put("downloadURL", downloadURL);
-        return Response.success("上传成功", data);
+        return Response.success("上传成功", ImmutableMap.of("downloadURL", downloadURL));
     }
 }
