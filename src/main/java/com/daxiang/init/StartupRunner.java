@@ -25,6 +25,8 @@ public class StartupRunner implements ApplicationRunner {
     private String uploadVideoPath;
     @Value("${web.upload-apk-path}")
     private String uploadApkPath;
+    @Value("${web.upload-ipa-path}")
+    private String uploadIpaPath;
     @Autowired
     private UserService userService;
 
@@ -46,6 +48,12 @@ public class StartupRunner implements ApplicationRunner {
         if (!uploadApkDir.exists()) {
             log.info("创建apk上传存放目录 -> {}", uploadApkPath);
             uploadApkDir.mkdirs();
+        }
+
+        File uploadIpaDir = new File(uploadIpaPath);
+        if (!uploadIpaDir.exists()) {
+            log.info("创建ipa上传存放目录 -> {}", uploadIpaDir);
+            uploadIpaDir.mkdirs();
         }
 
         // 首次启动将所有用户放入单机缓存，以后有集群需求再用redis
