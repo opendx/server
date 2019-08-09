@@ -22,7 +22,7 @@ CREATE TABLE `action`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键id',
   `name` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT 'action名',
   `description` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '描述',
-  `type` tinyint(4) NOT NULL COMMENT '类型：1.基础action（代码形式的） 2.用户在网页前端封装的action 3.测试用例',
+  `type` tinyint(4) NOT NULL DEFAULT '1' COMMENT '类型：1.基础action（代码形式的） 2.用户在网页前端封装的action 3.测试用例',
   `class_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '基础action专用：类名',
   `need_driver` tinyint(4) NULL DEFAULT NULL COMMENT '基础action专用：是否需要传入driver',
   `has_return_value` tinyint(4) NOT NULL COMMENT '是否有返回值',
