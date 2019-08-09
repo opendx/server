@@ -5,7 +5,6 @@
 ## 数据库
 * 创建数据库（配置文件配置的数据库名为daxiang）
 * 创建表（db/table.sql）
-* 导入数据(db/data.sql)
 
 ## ide运行
 运行src/main/java/com/daxiang/Application.java main方法即可
