@@ -26,6 +26,8 @@ public class UploadService {
     private String uploadVideoPath;
     @Value("${web.upload-apk-path}")
     private String uploadApkPath;
+    @Value("${web.upload-ipa-path}")
+    private String uploadIpaPath;
 
     public Response uploadFile(MultipartFile file, HttpServletRequest request) {
         if (file == null) {
@@ -41,6 +43,8 @@ public class UploadService {
                 file.transferTo(new File(new File(uploadVideoPath).getAbsolutePath() + File.separator + newFileName));
             } else if (newFileName.endsWith(".apk")) {
                 file.transferTo(new File(new File(uploadApkPath).getAbsolutePath() + File.separator + newFileName));
+            } else if (newFileName.endsWith(".ipa")) {
+                file.transferTo(new File(new File(uploadIpaPath).getAbsolutePath() + File.separator + newFileName));
             } else {
                 return Response.fail("暂不支持该格式文件上传");
             }
