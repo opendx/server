@@ -1,7 +1,9 @@
 package com.daxiang.service;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.daxiang.agent.AgentApi;
 import com.daxiang.model.Response;
 import com.daxiang.model.vo.AgentVo;
 import de.codecentric.boot.admin.server.domain.entities.Instance;
@@ -30,6 +32,8 @@ public class AgentService {
     private DeviceService deviceService;
     @Autowired
     private RestTemplate restTemplate;
+    @Autowired
+    private AgentApi agentApi;
 
     public Response listOfOnline() {
         List<Instance> agents = instanceRegistry.getInstances().collectList().block();
@@ -43,6 +47,13 @@ public class AgentService {
                     Integer agentPort = Integer.parseInt(host[1].substring(0, host[1].length() - 1));
                     String agentOsName = null;
                     String agentJavaVersion = null;
+                    String agentAppiumVersion = null;
+
+                    Response getAppiumVerisonResponse = agentApi.getAppiumVersion(agentIp, agentPort);
+                    if (getAppiumVerisonResponse.isSuccess()) {
+                        String data = JSONObject.toJSONString(getAppiumVerisonResponse.getData());
+                        agentAppiumVersion = JSON.parseObject(data).getString("verison");
+                    }
 
                     Optional<Endpoint> env = agent.getEndpoints().get("env");
                     if (env.isPresent()) {
@@ -60,6 +71,7 @@ public class AgentService {
                     agentVo.setPort(agentPort);
                     agentVo.setOsName(agentOsName);
                     agentVo.setJavaVersion(agentJavaVersion);
+                    agentVo.setAppiumVersion(agentAppiumVersion);
                     agentVo.setDevices(deviceService.getOnlineDevicesByAgentIp(agentIp));
                     return agentVo;
                 }).collect(Collectors.toList());

@@ -40,4 +40,8 @@ public class AgentApi {
     public Response aaptDumpBadging(String agentIp, int agentPort, String apkDownloadUrl) {
         return restTemplate.postForObject(PROTOCOL_PREFIX + agentIp + ":" + agentPort + "/android/aaptDumpBadging", apkDownloadUrl, Response.class);
     }
+
+    public Response getAppiumVersion(String agentIp, int agentPort) {
+        return restTemplate.getForObject(PROTOCOL_PREFIX + agentIp + ":" + agentPort + "/appium/version", Response.class);
+    }
 }

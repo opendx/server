@@ -25,8 +25,8 @@ public class AgentStatusChangeNotifier extends AbstractStatusChangeNotifier {
     @Autowired
     private DeviceService deviceService;
 
-    public AgentStatusChangeNotifier(InstanceRepository repositpry) {
-        super(repositpry);
+    public AgentStatusChangeNotifier(InstanceRepository repository) {
+        super(repository);
     }
 
     @Override

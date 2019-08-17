@@ -15,5 +15,6 @@ public class AgentVo {
     private Integer port;
     private String osName;
     private String javaVersion;
+    private String appiumVersion;
     private List<Device> devices;
 }
