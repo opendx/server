@@ -1,5 +1,6 @@
 package com.daxiang.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.daxiang.mbg.mapper.TestTaskMapper;
 import com.daxiang.mbg.po.*;
 import com.daxiang.model.vo.TestTaskVo;
@@ -276,5 +277,30 @@ public class TestTaskService extends BaseService {
         summary.setPassPercent(numberFormat.format(passCaseCount.floatValue() * 100 / totalCaseCount) + "%");
 
         return Response.success(summary);
+    }
+
+    public Response getTestTaskProgress(Integer testTaskId) {
+        if (testTaskId == null) {
+            return Response.fail("testTaskId不能为空");
+        }
+
+        List<DeviceTestTask> deviceTestTasks = deviceTestTaskService.findByTestTaskId(testTaskId);
+        if (CollectionUtils.isEmpty(deviceTestTasks)) {
+            return Response.fail("未找到设备测试任务");
+        }
+
+        List<JSONObject> progresss = deviceTestTasks.stream().map(deviceTestTask -> {
+            JSONObject progress = new JSONObject();
+            progress.put("deviceId", deviceTestTask.getDeviceId());
+
+            List<Testcase> testcases = deviceTestTask.getTestcases();
+            long finishedTestcaseCount = testcases.stream().filter(testcase -> testcase.getEndTime() != null).count();
+            long finishedTestcasePercent = finishedTestcaseCount * 100 / testcases.size();
+            progress.put("finishedTestcasePercent", finishedTestcasePercent);
+
+            return progress;
+        }).collect(Collectors.toList());
+
+        return Response.success(progresss);
     }
 }

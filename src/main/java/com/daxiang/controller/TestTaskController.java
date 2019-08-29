@@ -51,4 +51,14 @@ public class TestTaskController {
     public Response getTestTaskSummary(@PathVariable Integer testTaskId) {
         return testTaskService.getTestTaskSummary(testTaskId);
     }
+
+    /**
+     * 测试任务进度
+     * @param testTaskId
+     * @return
+     */
+    @GetMapping("/{testTaskId}/progress")
+    public Response getTestTaskProgress(@PathVariable Integer testTaskId) {
+        return testTaskService.getTestTaskProgress(testTaskId);
+    }
 }
