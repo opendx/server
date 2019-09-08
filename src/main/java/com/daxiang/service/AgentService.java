@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -41,10 +43,15 @@ public class AgentService {
                 .filter(agent -> StatusInfo.STATUS_UP.equals(agent.getStatusInfo().getStatus())) // 过滤出在线的agent
                 .map(agent -> {
                     String url = agent.getRegistration().getServiceUrl(); // http://xx.xx.xx.x:xx/
-                    String[] host = url.split("//")[1].split(":");
+                    URI uri;
+                    try {
+                        uri = new URI(url);
+                    } catch (URISyntaxException e) {
+                        throw new RuntimeException(e);
+                    }
 
-                    String agentIp = host[0];
-                    Integer agentPort = Integer.parseInt(host[1].substring(0, host[1].length() - 1));
+                    String agentIp = uri.getHost();
+                    Integer agentPort = uri.getPort();
                     String agentOsName = null;
                     String agentJavaVersion = null;
                     String agentAppiumVersion = null;
@@ -84,11 +91,16 @@ public class AgentService {
                 .filter(agent -> StatusInfo.STATUS_UP.equals(agent.getStatusInfo().getStatus()))
                 .map(agent -> {
                     String url = agent.getRegistration().getServiceUrl(); // http://xx.xx.xx.x:xx/
-                    String[] host = url.split("//")[1].split(":");
+                    URI uri;
+                    try {
+                        uri = new URI(url);
+                    } catch (URISyntaxException e) {
+                        throw new RuntimeException(e);
+                    }
 
                     AgentVo agentVo = new AgentVo();
-                    agentVo.setIp(host[0]);
-                    agentVo.setPort(Integer.parseInt(host[1].substring(0, host[1].length() - 1)));
+                    agentVo.setIp(uri.getHost());
+                    agentVo.setPort(uri.getPort());
                     return agentVo;
                 }).collect(Collectors.toList());
     }
