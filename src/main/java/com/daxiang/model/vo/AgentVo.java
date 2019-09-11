@@ -16,5 +16,6 @@ public class AgentVo {
     private String osName;
     private String javaVersion;
     private String appiumVersion;
+    private Boolean isConfigAapt;
     private List<Device> devices;
 }

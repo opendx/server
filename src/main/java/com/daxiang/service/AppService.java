@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -124,13 +125,17 @@ public class AppService extends BaseService {
             return Response.fail("只有Android平台才能执行aapt dump");
         }
 
-        List<AgentVo> onlineAgents = agentService.getOnlineAgent();
+        List<AgentVo> onlineAgents = agentService.getOnlineAgentsWithoutDevices();
         if (CollectionUtils.isEmpty(onlineAgents)) {
             return Response.fail("暂无在线的agent，无法执行aapt dump");
         }
-        // 任意一个在线的agent
-        AgentVo agentVo = onlineAgents.stream().findAny().get();
-        Response agentResponse = agentApi.aaptDumpBadging(agentVo.getIp(), agentVo.getPort(), app.getDownloadUrl());
+
+        Optional<AgentVo> agentVo = onlineAgents.stream().filter(AgentVo::getIsConfigAapt).findAny();
+        if (!agentVo.isPresent()) {
+            return Response.fail("暂无配置了aapt的agent，无法执行aapt dump");
+        }
+
+        Response agentResponse = agentApi.aaptDumpBadging(agentVo.get().getIp(), agentVo.get().getPort(), app.getDownloadUrl());
         if (!agentResponse.isSuccess()) {
             return agentResponse;
         }

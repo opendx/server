@@ -25,7 +25,7 @@ public class AgentController {
      */
     @GetMapping("/list/online")
     public Response listOfOnline() {
-        return agentService.listOfOnline();
+        return agentService.getOnlineAgents();
     }
 
 }
