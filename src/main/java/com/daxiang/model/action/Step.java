@@ -34,6 +34,10 @@ public class Step {
      * 步骤赋值
      */
     private String evaluation;
+    /**
+     * 异常处理： null.中断执行 0.忽略，继续执行 1.抛出跳过异常
+     */
+    private Integer handleException;
     @NotNull(message = "步骤号不能为空")
     private Integer number;
     /**
