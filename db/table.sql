@@ -26,7 +26,6 @@ CREATE TABLE `action`  (
   `class_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '基础action专用：类名',
   `need_driver` tinyint(4) NULL DEFAULT NULL COMMENT '基础action专用：是否需要传入driver',
   `has_return_value` tinyint(4) NOT NULL COMMENT '是否有返回值',
-  `return_value` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '返回值',
   `return_value_desc` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '返回值描述',
   `params` json NULL COMMENT '方法参数',
   `local_vars` json NULL COMMENT '局部变量',
