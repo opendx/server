@@ -69,7 +69,6 @@ public class GlobalVarService extends BaseService {
         if (globalVar.getId() == null) {
             return Response.fail("globalVarId不能为空");
         }
-        // 前端限制无法修改name，以防action steps使用到此全局变量时，编译失败
         int updateRow;
         try {
             updateRow = globalVarMapper.updateByPrimaryKeySelective(globalVar);

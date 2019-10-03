@@ -83,7 +83,6 @@ public class ActionService extends BaseService {
         action.setUpdateTime(new Date());
         action.setUpdatorUid(getUid());
 
-        // 为了防止更新action影响到其他action，暂时在前端屏蔽了更新方法参数与返回值（即方法参数无法添加删除，方法参数名无法修改，返回值无法编辑）
         int updateRow;
         try {
             updateRow = actionMapper.updateByPrimaryKeyWithBLOBs(action);
