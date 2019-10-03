@@ -93,13 +93,6 @@ public class Action implements Serializable {
     private Integer hasReturnValue;
 
     /**
-     * 返回值
-     *
-     * @mbg.generated
-     */
-    private String returnValue;
-
-    /**
      * 返回值描述
      *
      * @mbg.generated
@@ -247,14 +240,6 @@ public class Action implements Serializable {
         this.hasReturnValue = hasReturnValue;
     }
 
-    public String getReturnValue() {
-        return returnValue;
-    }
-
-    public void setReturnValue(String returnValue) {
-        this.returnValue = returnValue;
-    }
-
     public String getReturnValueDesc() {
         return returnValueDesc;
     }
@@ -364,7 +349,6 @@ public class Action implements Serializable {
         sb.append(", className=").append(className);
         sb.append(", needDriver=").append(needDriver);
         sb.append(", hasReturnValue=").append(hasReturnValue);
-        sb.append(", returnValue=").append(returnValue);
         sb.append(", returnValueDesc=").append(returnValueDesc);
         sb.append(", creatorUid=").append(creatorUid);
         sb.append(", createTime=").append(createTime);
