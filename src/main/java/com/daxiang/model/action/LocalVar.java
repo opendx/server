@@ -12,15 +12,6 @@ import javax.validation.constraints.NotBlank;
 public class LocalVar {
 
     /**
-     * 被引用时的前缀
-     */
-    public static final String QUOTE_PREFIX = "@{";
-    /**
-     * 被引用时的后缀
-     */
-    public static final String QUOTE_SUFFIX = "}";
-
-    /**
      * 局部变量名
      */
     @NotBlank(message = "局部变量名不能为空")

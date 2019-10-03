@@ -6,8 +6,4 @@
     <select id="selectByStepActionId" resultMap="ResultMapWithBLOBs">
         select * from action where JSON_CONTAINS(steps->'$[*].actionId', '${stepActionId}', '$')
     </select>
-
-    <select id="selectByProjectIdAndGlobalVarName" resultMap="ResultMapWithBLOBs">
-        select * from action where project_id = #{projectId} and ( return_value = #{globalVarName} or steps like '%${globalVarName}%' )
-    </select>
 </mapper>

@@ -2,7 +2,6 @@ package com.daxiang.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.daxiang.agent.AgentApi;
-import com.daxiang.exception.BusinessException;
 import com.daxiang.mbg.mapper.ActionMapper;
 import com.daxiang.mbg.po.Action;
 import com.daxiang.mbg.po.ActionExample;
@@ -10,12 +9,9 @@ import com.daxiang.mbg.po.GlobalVar;
 import com.daxiang.model.Page;
 import com.daxiang.model.PageRequest;
 import com.daxiang.model.Response;
-import com.daxiang.model.action.LocalVar;
-import com.daxiang.model.action.Param;
 import com.daxiang.model.request.ActionDebugRequest;
 import com.daxiang.model.vo.ActionVo;
 import com.daxiang.model.UserCache;
-import com.daxiang.model.action.Step;
 import com.github.pagehelper.PageHelper;
 import com.daxiang.dao.ActionDao;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -45,8 +40,6 @@ public class ActionService extends BaseService {
     private AgentApi agentApi;
 
     public Response add(Action action) {
-        check(action);
-
         action.setCreatorUid(getUid());
         action.setCreateTime(new Date());
 
@@ -86,8 +79,6 @@ public class ActionService extends BaseService {
         if (action.getId() == null) {
             return Response.fail("actionId不能为空");
         }
-
-        check(action);
 
         action.setUpdateTime(new Date());
         action.setUpdatorUid(getUid());
@@ -130,58 +121,6 @@ public class ActionService extends BaseService {
             return Response.success(Page.build(actionVos, total));
         } else {
             return Response.success(actionVos);
-        }
-    }
-
-    /**
-     * 校验action是否符合规则，防止编译出错。部分已经用@Valid校验过
-     *
-     * @param action
-     */
-    private void check(Action action) {
-        // 1. 检查返回值。可以是一个普通的字符串或方法参数或局部变量或全局变量。全局变量暂时不检查
-        if (action.getHasReturnValue() == Action.HAS_RETURN_VALUE) {
-            String returnValue = action.getReturnValue(); // 前端已校验过，此时返回值一定有值
-            if (returnValue.startsWith(Param.QUOTE_PREFIX) && returnValue.endsWith(Param.QUOTE_SUFFIX)) {
-                // 返回值 -> 方法参数
-                List<Param> params = action.getParams();
-                if (CollectionUtils.isEmpty(params)) {
-                    throw new BusinessException("返回值" + returnValue + "为方法参数，但方法参数为空");
-                }
-                long count = params.stream().filter(param -> returnValue.substring(2, returnValue.length() - 1).equals(param.getName())).count();
-                if (count != 1) {
-                    throw new BusinessException("返回值" + returnValue + "为方法参数，但与返回值匹配的方法参数的个数不为1");
-                }
-            } else if (returnValue.startsWith(LocalVar.QUOTE_PREFIX) && returnValue.endsWith(LocalVar.QUOTE_SUFFIX)) {
-                // 返回值 -> 局部变量
-                List<LocalVar> localVars = action.getLocalVars();
-                if (CollectionUtils.isEmpty(localVars)) {
-                    throw new BusinessException("返回值" + returnValue + "为局部变量，但局部变量为空");
-                }
-                long count = localVars.stream().filter(localVar -> returnValue.substring(2, returnValue.length() - 1).equals(localVar.getName())).count();
-                if (count != 1) {
-                    throw new BusinessException("返回值" + returnValue + "为局部变量，但与返回值匹配的局部变量的个数不为1");
-                }
-            }
-        }
-
-        // 2. 检查赋值。赋值必须为局部变量，给方法参数或全部变量重新赋值，意义不大
-        List<Step> steps = action.getSteps(); // @valid已校验steps不为空
-        List<String> evaluations = steps.stream().filter(step -> !StringUtils.isEmpty(step.getEvaluation())).map(Step::getEvaluation).collect(Collectors.toList());
-        if (!CollectionUtils.isEmpty(evaluations)) {
-            List<LocalVar> localVars = action.getLocalVars();
-            if (CollectionUtils.isEmpty(localVars)) {
-                throw new BusinessException("赋值不为空，但局部变量为空");
-            }
-            for (String evaluation : evaluations) {
-                if (!evaluation.startsWith(LocalVar.QUOTE_PREFIX) || !evaluation.endsWith(LocalVar.QUOTE_SUFFIX)) {
-                    throw new BusinessException(evaluation + "必须为局部变量");
-                }
-                long count = localVars.stream().filter(localVar -> evaluation.substring(2, evaluation.length() - 1).equals(localVar.getName())).count();
-                if (count != 1) {
-                    throw new BusinessException("与赋值" + evaluation + "匹配的局部变量的个数不为1");
-                }
-            }
         }
     }
 
@@ -256,7 +195,6 @@ public class ActionService extends BaseService {
      */
     public Response debug(ActionDebugRequest actionDebugRequest) {
         Action action = actionDebugRequest.getAction();
-        check(action);
         ActionDebugRequest.DebugInfo debugInfo = actionDebugRequest.getDebugInfo();
 
         // 没保存过的action设置个默认的actionId
@@ -308,10 +246,6 @@ public class ActionService extends BaseService {
      */
     public void buildActionTree(List<Action> actions) {
         new ActionTreeBuilder(actionMapper).build(actions);
-    }
-
-    public List<Action> findByProjectIdAndGlobalVar(Integer projectId, String globalVarName) {
-        return actionDao.selectByProjectIdAndGlobalVarName(projectId, GlobalVar.QUOTE_PREFIX + globalVarName + GlobalVar.QUOTE_SUFFIX);
     }
 
 }
