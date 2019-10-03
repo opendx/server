@@ -9,6 +9,7 @@ import com.daxiang.mbg.po.GlobalVar;
 import com.daxiang.model.Page;
 import com.daxiang.model.PageRequest;
 import com.daxiang.model.Response;
+import com.daxiang.model.action.Step;
 import com.daxiang.model.request.ActionDebugRequest;
 import com.daxiang.model.vo.ActionVo;
 import com.daxiang.model.UserCache;
@@ -199,6 +200,17 @@ public class ActionService extends BaseService {
         // 没保存过的action设置个默认的actionId
         if (action.getId() == null) {
             action.setId(0);
+        }
+
+        List<Step> steps = action.getSteps();
+        if (CollectionUtils.isEmpty(steps)) {
+            return Response.fail("至少选择一个步骤");
+        }
+
+        for (Step step : steps) {
+            if (step.getActionId() == null) {
+                return Response.fail("step action不能为空");
+            }
         }
 
         // 构建action树
