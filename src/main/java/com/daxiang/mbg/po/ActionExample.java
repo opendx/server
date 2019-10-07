@@ -365,133 +365,73 @@ public class ActionExample {
             return (Criteria) this;
         }
 
-        public Criteria andClassNameIsNull() {
-            addCriterion("class_name is null");
+        public Criteria andInvokeIsNull() {
+            addCriterion("invoke is null");
             return (Criteria) this;
         }
 
-        public Criteria andClassNameIsNotNull() {
-            addCriterion("class_name is not null");
+        public Criteria andInvokeIsNotNull() {
+            addCriterion("invoke is not null");
             return (Criteria) this;
         }
 
-        public Criteria andClassNameEqualTo(String value) {
-            addCriterion("class_name =", value, "className");
+        public Criteria andInvokeEqualTo(String value) {
+            addCriterion("invoke =", value, "invoke");
             return (Criteria) this;
         }
 
-        public Criteria andClassNameNotEqualTo(String value) {
-            addCriterion("class_name <>", value, "className");
+        public Criteria andInvokeNotEqualTo(String value) {
+            addCriterion("invoke <>", value, "invoke");
             return (Criteria) this;
         }
 
-        public Criteria andClassNameGreaterThan(String value) {
-            addCriterion("class_name >", value, "className");
+        public Criteria andInvokeGreaterThan(String value) {
+            addCriterion("invoke >", value, "invoke");
             return (Criteria) this;
         }
 
-        public Criteria andClassNameGreaterThanOrEqualTo(String value) {
-            addCriterion("class_name >=", value, "className");
+        public Criteria andInvokeGreaterThanOrEqualTo(String value) {
+            addCriterion("invoke >=", value, "invoke");
             return (Criteria) this;
         }
 
-        public Criteria andClassNameLessThan(String value) {
-            addCriterion("class_name <", value, "className");
+        public Criteria andInvokeLessThan(String value) {
+            addCriterion("invoke <", value, "invoke");
             return (Criteria) this;
         }
 
-        public Criteria andClassNameLessThanOrEqualTo(String value) {
-            addCriterion("class_name <=", value, "className");
+        public Criteria andInvokeLessThanOrEqualTo(String value) {
+            addCriterion("invoke <=", value, "invoke");
             return (Criteria) this;
         }
 
-        public Criteria andClassNameLike(String value) {
-            addCriterion("class_name like", value, "className");
+        public Criteria andInvokeLike(String value) {
+            addCriterion("invoke like", value, "invoke");
             return (Criteria) this;
         }
 
-        public Criteria andClassNameNotLike(String value) {
-            addCriterion("class_name not like", value, "className");
+        public Criteria andInvokeNotLike(String value) {
+            addCriterion("invoke not like", value, "invoke");
             return (Criteria) this;
         }
 
-        public Criteria andClassNameIn(List<String> values) {
-            addCriterion("class_name in", values, "className");
+        public Criteria andInvokeIn(List<String> values) {
+            addCriterion("invoke in", values, "invoke");
             return (Criteria) this;
         }
 
-        public Criteria andClassNameNotIn(List<String> values) {
-            addCriterion("class_name not in", values, "className");
+        public Criteria andInvokeNotIn(List<String> values) {
+            addCriterion("invoke not in", values, "invoke");
             return (Criteria) this;
         }
 
-        public Criteria andClassNameBetween(String value1, String value2) {
-            addCriterion("class_name between", value1, value2, "className");
+        public Criteria andInvokeBetween(String value1, String value2) {
+            addCriterion("invoke between", value1, value2, "invoke");
             return (Criteria) this;
         }
 
-        public Criteria andClassNameNotBetween(String value1, String value2) {
-            addCriterion("class_name not between", value1, value2, "className");
-            return (Criteria) this;
-        }
-
-        public Criteria andNeedDriverIsNull() {
-            addCriterion("need_driver is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andNeedDriverIsNotNull() {
-            addCriterion("need_driver is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andNeedDriverEqualTo(Integer value) {
-            addCriterion("need_driver =", value, "needDriver");
-            return (Criteria) this;
-        }
-
-        public Criteria andNeedDriverNotEqualTo(Integer value) {
-            addCriterion("need_driver <>", value, "needDriver");
-            return (Criteria) this;
-        }
-
-        public Criteria andNeedDriverGreaterThan(Integer value) {
-            addCriterion("need_driver >", value, "needDriver");
-            return (Criteria) this;
-        }
-
-        public Criteria andNeedDriverGreaterThanOrEqualTo(Integer value) {
-            addCriterion("need_driver >=", value, "needDriver");
-            return (Criteria) this;
-        }
-
-        public Criteria andNeedDriverLessThan(Integer value) {
-            addCriterion("need_driver <", value, "needDriver");
-            return (Criteria) this;
-        }
-
-        public Criteria andNeedDriverLessThanOrEqualTo(Integer value) {
-            addCriterion("need_driver <=", value, "needDriver");
-            return (Criteria) this;
-        }
-
-        public Criteria andNeedDriverIn(List<Integer> values) {
-            addCriterion("need_driver in", values, "needDriver");
-            return (Criteria) this;
-        }
-
-        public Criteria andNeedDriverNotIn(List<Integer> values) {
-            addCriterion("need_driver not in", values, "needDriver");
-            return (Criteria) this;
-        }
-
-        public Criteria andNeedDriverBetween(Integer value1, Integer value2) {
-            addCriterion("need_driver between", value1, value2, "needDriver");
-            return (Criteria) this;
-        }
-
-        public Criteria andNeedDriverNotBetween(Integer value1, Integer value2) {
-            addCriterion("need_driver not between", value1, value2, "needDriver");
+        public Criteria andInvokeNotBetween(String value1, String value2) {
+            addCriterion("invoke not between", value1, value2, "invoke");
             return (Criteria) this;
         }
 

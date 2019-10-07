@@ -36,11 +36,6 @@ public class Action implements Serializable {
     public static final Integer NO_RETURN_VALUE = 0;
 
     /**
-     * 是否需要在代码模板里传client/driver
-     */
-    public static final Integer NEED_DRIVER = 1;
-
-    /**
      * 主键id
      *
      * @mbg.generated
@@ -71,18 +66,11 @@ public class Action implements Serializable {
     private Integer type;
 
     /**
-     * 基础action专用：类名
+     * 基础action专用：调用
      *
      * @mbg.generated
      */
-    private String className;
-
-    /**
-     * 基础action专用：是否需要传入driver
-     *
-     * @mbg.generated
-     */
-    private Integer needDriver;
+    private String invoke;
 
     /**
      * 是否有返回值
@@ -216,20 +204,12 @@ public class Action implements Serializable {
         this.type = type;
     }
 
-    public String getClassName() {
-        return className;
+    public String getInvoke() {
+        return invoke;
     }
 
-    public void setClassName(String className) {
-        this.className = className;
-    }
-
-    public Integer getNeedDriver() {
-        return needDriver;
-    }
-
-    public void setNeedDriver(Integer needDriver) {
-        this.needDriver = needDriver;
+    public void setInvoke(String invoke) {
+        this.invoke = invoke;
     }
 
     public Integer getHasReturnValue() {
@@ -346,8 +326,7 @@ public class Action implements Serializable {
         sb.append(", name=").append(name);
         sb.append(", description=").append(description);
         sb.append(", type=").append(type);
-        sb.append(", className=").append(className);
-        sb.append(", needDriver=").append(needDriver);
+        sb.append(", invoke=").append(invoke);
         sb.append(", hasReturnValue=").append(hasReturnValue);
         sb.append(", returnValueDesc=").append(returnValueDesc);
         sb.append(", creatorUid=").append(creatorUid);

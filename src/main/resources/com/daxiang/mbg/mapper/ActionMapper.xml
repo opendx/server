@@ -6,8 +6,7 @@
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="description" jdbcType="VARCHAR" property="description" />
     <result column="type" jdbcType="TINYINT" property="type" />
-    <result column="class_name" jdbcType="VARCHAR" property="className" />
-    <result column="need_driver" jdbcType="TINYINT" property="needDriver" />
+    <result column="invoke" jdbcType="VARCHAR" property="invoke" />
     <result column="has_return_value" jdbcType="TINYINT" property="hasReturnValue" />
     <result column="return_value_desc" jdbcType="VARCHAR" property="returnValueDesc" />
     <result column="creator_uid" jdbcType="INTEGER" property="creatorUid" />
@@ -83,9 +82,8 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, name, description, type, class_name, need_driver, has_return_value, return_value_desc, 
-    creator_uid, create_time, updator_uid, update_time, platform, page_id, project_id, 
-    test_suite_id
+    id, name, description, type, invoke, has_return_value, return_value_desc, creator_uid, 
+    create_time, updator_uid, update_time, platform, page_id, project_id, test_suite_id
   </sql>
   <sql id="Blob_Column_List">
     params, local_vars, steps
@@ -143,20 +141,18 @@
       SELECT LAST_INSERT_ID()
     </selectKey>
     insert into action (name, description, type, 
-      class_name, need_driver, has_return_value, 
-      return_value_desc, creator_uid, create_time, 
-      updator_uid, update_time, platform, 
-      page_id, project_id, test_suite_id, 
-      params, 
+      invoke, has_return_value, return_value_desc, 
+      creator_uid, create_time, updator_uid, 
+      update_time, platform, page_id, 
+      project_id, test_suite_id, params, 
       local_vars, 
       steps
       )
     values (#{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{type,jdbcType=TINYINT}, 
-      #{className,jdbcType=VARCHAR}, #{needDriver,jdbcType=TINYINT}, #{hasReturnValue,jdbcType=TINYINT}, 
-      #{returnValueDesc,jdbcType=VARCHAR}, #{creatorUid,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{updatorUid,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}, #{platform,jdbcType=TINYINT}, 
-      #{pageId,jdbcType=INTEGER}, #{projectId,jdbcType=INTEGER}, #{testSuiteId,jdbcType=INTEGER}, 
-      #{params,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.ParamListTypeHandler}, 
+      #{invoke,jdbcType=VARCHAR}, #{hasReturnValue,jdbcType=TINYINT}, #{returnValueDesc,jdbcType=VARCHAR}, 
+      #{creatorUid,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updatorUid,jdbcType=INTEGER}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{platform,jdbcType=TINYINT}, #{pageId,jdbcType=INTEGER}, 
+      #{projectId,jdbcType=INTEGER}, #{testSuiteId,jdbcType=INTEGER}, #{params,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.ParamListTypeHandler}, 
       #{localVars,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.LocalVarListTypeHandler}, 
       #{steps,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.StepListTypeHandler}
       )
@@ -176,11 +172,8 @@
       <if test="type != null">
         type,
       </if>
-      <if test="className != null">
-        class_name,
-      </if>
-      <if test="needDriver != null">
-        need_driver,
+      <if test="invoke != null">
+        invoke,
       </if>
       <if test="hasReturnValue != null">
         has_return_value,
@@ -232,11 +225,8 @@
       <if test="type != null">
         #{type,jdbcType=TINYINT},
       </if>
-      <if test="className != null">
-        #{className,jdbcType=VARCHAR},
-      </if>
-      <if test="needDriver != null">
-        #{needDriver,jdbcType=TINYINT},
+      <if test="invoke != null">
+        #{invoke,jdbcType=VARCHAR},
       </if>
       <if test="hasReturnValue != null">
         #{hasReturnValue,jdbcType=TINYINT},
@@ -300,11 +290,8 @@
       <if test="record.type != null">
         type = #{record.type,jdbcType=TINYINT},
       </if>
-      <if test="record.className != null">
-        class_name = #{record.className,jdbcType=VARCHAR},
-      </if>
-      <if test="record.needDriver != null">
-        need_driver = #{record.needDriver,jdbcType=TINYINT},
+      <if test="record.invoke != null">
+        invoke = #{record.invoke,jdbcType=VARCHAR},
       </if>
       <if test="record.hasReturnValue != null">
         has_return_value = #{record.hasReturnValue,jdbcType=TINYINT},
@@ -356,8 +343,7 @@
       name = #{record.name,jdbcType=VARCHAR},
       description = #{record.description,jdbcType=VARCHAR},
       type = #{record.type,jdbcType=TINYINT},
-      class_name = #{record.className,jdbcType=VARCHAR},
-      need_driver = #{record.needDriver,jdbcType=TINYINT},
+      invoke = #{record.invoke,jdbcType=VARCHAR},
       has_return_value = #{record.hasReturnValue,jdbcType=TINYINT},
       return_value_desc = #{record.returnValueDesc,jdbcType=VARCHAR},
       creator_uid = #{record.creatorUid,jdbcType=INTEGER},
@@ -381,8 +367,7 @@
       name = #{record.name,jdbcType=VARCHAR},
       description = #{record.description,jdbcType=VARCHAR},
       type = #{record.type,jdbcType=TINYINT},
-      class_name = #{record.className,jdbcType=VARCHAR},
-      need_driver = #{record.needDriver,jdbcType=TINYINT},
+      invoke = #{record.invoke,jdbcType=VARCHAR},
       has_return_value = #{record.hasReturnValue,jdbcType=TINYINT},
       return_value_desc = #{record.returnValueDesc,jdbcType=VARCHAR},
       creator_uid = #{record.creatorUid,jdbcType=INTEGER},
@@ -409,11 +394,8 @@
       <if test="type != null">
         type = #{type,jdbcType=TINYINT},
       </if>
-      <if test="className != null">
-        class_name = #{className,jdbcType=VARCHAR},
-      </if>
-      <if test="needDriver != null">
-        need_driver = #{needDriver,jdbcType=TINYINT},
+      <if test="invoke != null">
+        invoke = #{invoke,jdbcType=VARCHAR},
       </if>
       <if test="hasReturnValue != null">
         has_return_value = #{hasReturnValue,jdbcType=TINYINT},
@@ -462,8 +444,7 @@
     set name = #{name,jdbcType=VARCHAR},
       description = #{description,jdbcType=VARCHAR},
       type = #{type,jdbcType=TINYINT},
-      class_name = #{className,jdbcType=VARCHAR},
-      need_driver = #{needDriver,jdbcType=TINYINT},
+      invoke = #{invoke,jdbcType=VARCHAR},
       has_return_value = #{hasReturnValue,jdbcType=TINYINT},
       return_value_desc = #{returnValueDesc,jdbcType=VARCHAR},
       creator_uid = #{creatorUid,jdbcType=INTEGER},
@@ -484,8 +465,7 @@
     set name = #{name,jdbcType=VARCHAR},
       description = #{description,jdbcType=VARCHAR},
       type = #{type,jdbcType=TINYINT},
-      class_name = #{className,jdbcType=VARCHAR},
-      need_driver = #{needDriver,jdbcType=TINYINT},
+      invoke = #{invoke,jdbcType=VARCHAR},
       has_return_value = #{hasReturnValue,jdbcType=TINYINT},
       return_value_desc = #{returnValueDesc,jdbcType=VARCHAR},
       creator_uid = #{creatorUid,jdbcType=INTEGER},
