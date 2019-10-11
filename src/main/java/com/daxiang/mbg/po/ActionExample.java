@@ -435,63 +435,73 @@ public class ActionExample {
             return (Criteria) this;
         }
 
-        public Criteria andHasReturnValueIsNull() {
-            addCriterion("has_return_value is null");
+        public Criteria andReturnValueIsNull() {
+            addCriterion("return_value is null");
             return (Criteria) this;
         }
 
-        public Criteria andHasReturnValueIsNotNull() {
-            addCriterion("has_return_value is not null");
+        public Criteria andReturnValueIsNotNull() {
+            addCriterion("return_value is not null");
             return (Criteria) this;
         }
 
-        public Criteria andHasReturnValueEqualTo(Integer value) {
-            addCriterion("has_return_value =", value, "hasReturnValue");
+        public Criteria andReturnValueEqualTo(String value) {
+            addCriterion("return_value =", value, "returnValue");
             return (Criteria) this;
         }
 
-        public Criteria andHasReturnValueNotEqualTo(Integer value) {
-            addCriterion("has_return_value <>", value, "hasReturnValue");
+        public Criteria andReturnValueNotEqualTo(String value) {
+            addCriterion("return_value <>", value, "returnValue");
             return (Criteria) this;
         }
 
-        public Criteria andHasReturnValueGreaterThan(Integer value) {
-            addCriterion("has_return_value >", value, "hasReturnValue");
+        public Criteria andReturnValueGreaterThan(String value) {
+            addCriterion("return_value >", value, "returnValue");
             return (Criteria) this;
         }
 
-        public Criteria andHasReturnValueGreaterThanOrEqualTo(Integer value) {
-            addCriterion("has_return_value >=", value, "hasReturnValue");
+        public Criteria andReturnValueGreaterThanOrEqualTo(String value) {
+            addCriterion("return_value >=", value, "returnValue");
             return (Criteria) this;
         }
 
-        public Criteria andHasReturnValueLessThan(Integer value) {
-            addCriterion("has_return_value <", value, "hasReturnValue");
+        public Criteria andReturnValueLessThan(String value) {
+            addCriterion("return_value <", value, "returnValue");
             return (Criteria) this;
         }
 
-        public Criteria andHasReturnValueLessThanOrEqualTo(Integer value) {
-            addCriterion("has_return_value <=", value, "hasReturnValue");
+        public Criteria andReturnValueLessThanOrEqualTo(String value) {
+            addCriterion("return_value <=", value, "returnValue");
             return (Criteria) this;
         }
 
-        public Criteria andHasReturnValueIn(List<Integer> values) {
-            addCriterion("has_return_value in", values, "hasReturnValue");
+        public Criteria andReturnValueLike(String value) {
+            addCriterion("return_value like", value, "returnValue");
             return (Criteria) this;
         }
 
-        public Criteria andHasReturnValueNotIn(List<Integer> values) {
-            addCriterion("has_return_value not in", values, "hasReturnValue");
+        public Criteria andReturnValueNotLike(String value) {
+            addCriterion("return_value not like", value, "returnValue");
             return (Criteria) this;
         }
 
-        public Criteria andHasReturnValueBetween(Integer value1, Integer value2) {
-            addCriterion("has_return_value between", value1, value2, "hasReturnValue");
+        public Criteria andReturnValueIn(List<String> values) {
+            addCriterion("return_value in", values, "returnValue");
             return (Criteria) this;
         }
 
-        public Criteria andHasReturnValueNotBetween(Integer value1, Integer value2) {
-            addCriterion("has_return_value not between", value1, value2, "hasReturnValue");
+        public Criteria andReturnValueNotIn(List<String> values) {
+            addCriterion("return_value not in", values, "returnValue");
+            return (Criteria) this;
+        }
+
+        public Criteria andReturnValueBetween(String value1, String value2) {
+            addCriterion("return_value between", value1, value2, "returnValue");
+            return (Criteria) this;
+        }
+
+        public Criteria andReturnValueNotBetween(String value1, String value2) {
+            addCriterion("return_value not between", value1, value2, "returnValue");
             return (Criteria) this;
         }
 

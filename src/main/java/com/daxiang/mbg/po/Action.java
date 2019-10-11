@@ -73,12 +73,12 @@ public class Action implements Serializable {
     private String invoke;
 
     /**
-     * 是否有返回值
+     * 返回值: void / 其他
      *
      * @mbg.generated
      */
-    @NotNull(message = "是否有返回值不能为空")
-    private Integer hasReturnValue;
+    @NotBlank(message = "返回值不能为空")
+    private String returnValue;
 
     /**
      * 返回值描述
@@ -212,12 +212,12 @@ public class Action implements Serializable {
         this.invoke = invoke;
     }
 
-    public Integer getHasReturnValue() {
-        return hasReturnValue;
+    public String getReturnValue() {
+        return returnValue;
     }
 
-    public void setHasReturnValue(Integer hasReturnValue) {
-        this.hasReturnValue = hasReturnValue;
+    public void setReturnValue(String returnValue) {
+        this.returnValue = returnValue;
     }
 
     public String getReturnValueDesc() {
@@ -327,7 +327,7 @@ public class Action implements Serializable {
         sb.append(", description=").append(description);
         sb.append(", type=").append(type);
         sb.append(", invoke=").append(invoke);
-        sb.append(", hasReturnValue=").append(hasReturnValue);
+        sb.append(", returnValue=").append(returnValue);
         sb.append(", returnValueDesc=").append(returnValueDesc);
         sb.append(", creatorUid=").append(creatorUid);
         sb.append(", createTime=").append(createTime);
