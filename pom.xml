@@ -6,7 +6,7 @@
 
     <groupId>com.daxiang</groupId>
     <artifactId>server</artifactId>
-    <version>0.1.7-beta</version>
+    <version>0.1.8-beta</version>
     <packaging>jar</packaging>
 
     <properties>
