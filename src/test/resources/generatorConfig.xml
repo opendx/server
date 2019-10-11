@@ -29,19 +29,20 @@
             <property name="forceBigDecimals" value="false"></property>
         </javaTypeResolver>
 
-        <javaModelGenerator targetPackage="com.daxiang.mbg.po" targetProject="C:\Users\jyt\Downloads\server\src\main\java"/>
-        <sqlMapGenerator targetPackage="com.daxiang.mbg.mapper" targetProject="C:\Users\jyt\Downloads\server\src\main\resources"/>
-        <javaClientGenerator type="XMLMAPPER" targetPackage="com.daxiang.mbg.mapper" targetProject="C:\Users\jyt\Downloads\server\src\main\java"/>
+        <javaModelGenerator targetPackage="com.daxiang.mbg.po" targetProject="D:\fgnb\fgnb-server\src\main\java"/>
+        <sqlMapGenerator targetPackage="com.daxiang.mbg.mapper" targetProject="D:\fgnb\fgnb-server\src\main\resources"/>
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.daxiang.mbg.mapper" targetProject="D:\fgnb\fgnb-server\src\main\java"/>
 
-        <!--<table tableName="action">-->
-            <!--<generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
-            <!--<columnOverride column="steps" typeHandler="com.daxiang.typehandler.StepListTypeHandler" javaType="java.util.List&lt;com.daxiang.model.action.Step&gt;" jdbcType="LONGVARCHAR"/>-->
-            <!--<columnOverride column="params" typeHandler="com.daxiang.typehandler.ParamListTypeHandler" javaType="java.util.List&lt;com.daxiang.model.action.Param&gt;" jdbcType="LONGVARCHAR"/>-->
-            <!--<columnOverride column="local_vars" typeHandler="com.daxiang.typehandler.LocalVarListTypeHandler" javaType="java.util.List&lt;com.daxiang.model.action.LocalVar&gt;" jdbcType="LONGVARCHAR"/>-->
-        <!--</table>-->
-        <table tableName="app">
+        <table tableName="action">
             <generatedKey column="id" sqlStatement="MySql" identity="true"/>
+            <columnOverride column="steps" typeHandler="com.daxiang.typehandler.StepListTypeHandler" javaType="java.util.List&lt;com.daxiang.model.action.Step&gt;" jdbcType="LONGVARCHAR"/>
+            <columnOverride column="params" typeHandler="com.daxiang.typehandler.ParamListTypeHandler" javaType="java.util.List&lt;com.daxiang.model.action.Param&gt;" jdbcType="LONGVARCHAR"/>
+            <columnOverride column="local_vars" typeHandler="com.daxiang.typehandler.LocalVarListTypeHandler" javaType="java.util.List&lt;com.daxiang.model.action.LocalVar&gt;" jdbcType="LONGVARCHAR"/>
+            <columnOverride column="java_imports" typeHandler="com.daxiang.typehandler.StringListTypeHandler" javaType="java.util.List&lt;String&gt;" jdbcType="LONGVARCHAR"/>
         </table>
+        <!--<table tableName="app">-->
+            <!--<generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
+        <!--</table>-->
         <!--<table tableName="category">-->
             <!--<generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
         <!--</table>-->
@@ -56,7 +57,7 @@
             <!--<columnOverride column="after_method" typeHandler="com.daxiang.typehandler.ActionTypeHandler" javaType="com.daxiang.mbg.po.Action" jdbcType="LONGVARCHAR"/>-->
             <!--<columnOverride column="testcases" typeHandler="com.daxiang.typehandler.TestcaseListTypeHandler" javaType="java.util.List&lt;com.daxiang.model.vo.Testcase&gt;" jdbcType="LONGVARCHAR"/>-->
         <!--</table>-->
-        <!--<table tableName="gloabal_var">-->
+        <!--<table tableName="global_var">-->
             <!--<generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
         <!--</table>-->
         <!--<table tableName="page">-->

@@ -168,7 +168,14 @@ public class Action implements Serializable {
      */
     @Valid
     @NotEmpty(message = "步骤不能为空")
-    private List<Step> steps;
+    private java.util.List<com.daxiang.model.action.Step> steps;
+
+    /**
+     * java imports
+     *
+     * @mbg.generated
+     */
+    private java.util.List<String> javaImports;
 
     private static final long serialVersionUID = 1L;
 
@@ -292,28 +299,36 @@ public class Action implements Serializable {
         this.testSuiteId = testSuiteId;
     }
 
-    public java.util.List<Param> getParams() {
+    public java.util.List<com.daxiang.model.action.Param> getParams() {
         return params;
     }
 
-    public void setParams(java.util.List<Param> params) {
+    public void setParams(java.util.List<com.daxiang.model.action.Param> params) {
         this.params = params;
     }
 
-    public java.util.List<LocalVar> getLocalVars() {
+    public java.util.List<com.daxiang.model.action.LocalVar> getLocalVars() {
         return localVars;
     }
 
-    public void setLocalVars(java.util.List<LocalVar> localVars) {
+    public void setLocalVars(java.util.List<com.daxiang.model.action.LocalVar> localVars) {
         this.localVars = localVars;
     }
 
-    public java.util.List<Step> getSteps() {
+    public java.util.List<com.daxiang.model.action.Step> getSteps() {
         return steps;
     }
 
-    public void setSteps(java.util.List<Step> steps) {
+    public void setSteps(java.util.List<com.daxiang.model.action.Step> steps) {
         this.steps = steps;
+    }
+
+    public java.util.List<String> getJavaImports() {
+        return javaImports;
+    }
+
+    public void setJavaImports(java.util.List<String> javaImports) {
+        this.javaImports = javaImports;
     }
 
     @Override
@@ -340,6 +355,7 @@ public class Action implements Serializable {
         sb.append(", params=").append(params);
         sb.append(", localVars=").append(localVars);
         sb.append(", steps=").append(steps);
+        sb.append(", javaImports=").append(javaImports);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();
