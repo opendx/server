@@ -6,7 +6,6 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class GlobalVar implements Serializable {
-
     /**
      * 全局变量id
      *
@@ -21,6 +20,14 @@ public class GlobalVar implements Serializable {
      */
     @NotBlank(message = "变量名不能为空")
     private String name;
+
+    /**
+     * 变量类型
+     *
+     * @mbg.generated
+     */
+    @NotBlank(message = "变量类型不能为空")
+    private String type;
 
     /**
      * 变量值
@@ -77,6 +84,14 @@ public class GlobalVar implements Serializable {
         this.name = name;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
     public String getValue() {
         return value;
     }
@@ -125,6 +140,7 @@ public class GlobalVar implements Serializable {
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
         sb.append(", name=").append(name);
+        sb.append(", type=").append(type);
         sb.append(", value=").append(value);
         sb.append(", description=").append(description);
         sb.append(", projectId=").append(projectId);

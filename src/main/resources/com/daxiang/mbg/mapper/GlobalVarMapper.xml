@@ -4,6 +4,7 @@
   <resultMap id="BaseResultMap" type="com.daxiang.mbg.po.GlobalVar">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
     <result column="value" jdbcType="VARCHAR" property="value" />
     <result column="description" jdbcType="VARCHAR" property="description" />
     <result column="project_id" jdbcType="INTEGER" property="projectId" />
@@ -69,7 +70,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, name, value, description, project_id, creator_uid, create_time
+    id, name, type, value, description, project_id, creator_uid, create_time
   </sql>
   <select id="selectByExample" parameterType="com.daxiang.mbg.po.GlobalVarExample" resultMap="BaseResultMap">
     select
@@ -105,12 +106,12 @@
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into global_var (name, value, description, 
-      project_id, creator_uid, create_time
-      )
-    values (#{name,jdbcType=VARCHAR}, #{value,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
-      #{projectId,jdbcType=INTEGER}, #{creatorUid,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}
-      )
+    insert into global_var (name, type, value, 
+      description, project_id, creator_uid, 
+      create_time)
+    values (#{name,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, #{value,jdbcType=VARCHAR}, 
+      #{description,jdbcType=VARCHAR}, #{projectId,jdbcType=INTEGER}, #{creatorUid,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.daxiang.mbg.po.GlobalVar">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
@@ -120,6 +121,9 @@
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="name != null">
         name,
+      </if>
+      <if test="type != null">
+        type,
       </if>
       <if test="value != null">
         value,
@@ -140,6 +144,9 @@
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="name != null">
         #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=VARCHAR},
       </if>
       <if test="value != null">
         #{value,jdbcType=VARCHAR},
@@ -173,6 +180,9 @@
       <if test="record.name != null">
         name = #{record.name,jdbcType=VARCHAR},
       </if>
+      <if test="record.type != null">
+        type = #{record.type,jdbcType=VARCHAR},
+      </if>
       <if test="record.value != null">
         value = #{record.value,jdbcType=VARCHAR},
       </if>
@@ -197,6 +207,7 @@
     update global_var
     set id = #{record.id,jdbcType=INTEGER},
       name = #{record.name,jdbcType=VARCHAR},
+      type = #{record.type,jdbcType=VARCHAR},
       value = #{record.value,jdbcType=VARCHAR},
       description = #{record.description,jdbcType=VARCHAR},
       project_id = #{record.projectId,jdbcType=INTEGER},
@@ -211,6 +222,9 @@
     <set>
       <if test="name != null">
         name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=VARCHAR},
       </if>
       <if test="value != null">
         value = #{value,jdbcType=VARCHAR},
@@ -233,6 +247,7 @@
   <update id="updateByPrimaryKey" parameterType="com.daxiang.mbg.po.GlobalVar">
     update global_var
     set name = #{name,jdbcType=VARCHAR},
+      type = #{type,jdbcType=VARCHAR},
       value = #{value,jdbcType=VARCHAR},
       description = #{description,jdbcType=VARCHAR},
       project_id = #{projectId,jdbcType=INTEGER},

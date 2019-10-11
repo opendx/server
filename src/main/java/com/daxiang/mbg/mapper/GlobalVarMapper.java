@@ -2,7 +2,6 @@ package com.daxiang.mbg.mapper;
 
 import com.daxiang.mbg.po.GlobalVar;
 import com.daxiang.mbg.po.GlobalVarExample;
-
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
