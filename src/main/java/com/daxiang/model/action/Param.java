@@ -11,7 +11,11 @@ import java.util.List;
  */
 @Data
 public class Param {
-
+    /**
+     * 参数类型
+     */
+    @NotBlank(message = "方法参数类型不能为空")
+    private String type;
     /**
      * 参数名
      */

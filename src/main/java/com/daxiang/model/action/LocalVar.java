@@ -10,7 +10,11 @@ import javax.validation.constraints.NotBlank;
  */
 @Data
 public class LocalVar {
-
+    /**
+     * 参数类型
+     */
+    @NotBlank(message = "局部变量类型不能为空")
+    private String type;
     /**
      * 局部变量名
      */
