@@ -13,6 +13,10 @@ public class ParamValue {
      */
     private String paramName;
     /**
+     * 参数类型
+     */
+    private String paramType;
+    /**
      * 参数值
      */
     private String paramValue;

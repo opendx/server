@@ -24,11 +24,12 @@ CREATE TABLE `action`  (
   `description` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '描述',
   `type` tinyint(4) NOT NULL DEFAULT '1' COMMENT '类型：1.基础action（代码形式的） 2.用户在网页前端封装的action 3.测试用例',
   `invoke` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '基础action专用：调用',
-  `has_return_value` tinyint(4) NOT NULL COMMENT '是否有返回值',
+  `return_value` varchar(255) NOT NULL COMMENT '返回值: void / 其他',
   `return_value_desc` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '返回值描述',
   `params` json NULL COMMENT '方法参数',
   `local_vars` json NULL COMMENT '局部变量',
   `steps` json NULL COMMENT '步骤',
+  `java_imports` json DEFAULT NULL COMMENT 'java imports',
   `creator_uid` int(11) NULL DEFAULT NULL COMMENT '创建人id',
   `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
   `updator_uid` int(11) NULL DEFAULT NULL COMMENT '更新人id',
@@ -127,6 +128,7 @@ CREATE TABLE `device_test_task`  (
 DROP TABLE IF EXISTS `global_var`;
 CREATE TABLE `global_var`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '全局变量id',
+  `type` varchar(255) NOT NULL COMMENT '变量类型',
   `name` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '变量名',
   `value` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '变量值',
   `description` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '描述',
