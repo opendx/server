@@ -1,351 +1,349 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.daxiang.mbg.mapper.PageMapper">
-    <resultMap id="BaseResultMap" type="com.daxiang.mbg.po.Page">
-        <id column="id" jdbcType="INTEGER" property="id"/>
-        <result column="name" jdbcType="VARCHAR" property="name"/>
-        <result column="project_id" jdbcType="INTEGER" property="projectId"/>
-        <result column="category_id" jdbcType="INTEGER" property="categoryId"/>
-        <result column="description" jdbcType="VARCHAR" property="description"/>
-        <result column="img_url" jdbcType="VARCHAR" property="imgUrl"/>
-        <result column="img_height" jdbcType="INTEGER" property="imgHeight"/>
-        <result column="img_width" jdbcType="INTEGER" property="imgWidth"/>
-        <result column="device_id" jdbcType="VARCHAR" property="deviceId"/>
-        <result column="creator_uid" jdbcType="INTEGER" property="creatorUid"/>
-        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
-    </resultMap>
-    <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.daxiang.mbg.po.Page">
-        <result column="window_hierarchy_json" jdbcType="LONGVARCHAR" property="windowHierarchyJson"/>
-    </resultMap>
-    <sql id="Example_Where_Clause">
-        <where>
-            <foreach collection="oredCriteria" item="criteria" separator="or">
-                <if test="criteria.valid">
-                    <trim prefix="(" prefixOverrides="and" suffix=")">
-                        <foreach collection="criteria.criteria" item="criterion">
-                            <choose>
-                                <when test="criterion.noValue">
-                                    and ${criterion.condition}
-                                </when>
-                                <when test="criterion.singleValue">
-                                    and ${criterion.condition} #{criterion.value}
-                                </when>
-                                <when test="criterion.betweenValue">
-                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
-                                </when>
-                                <when test="criterion.listValue">
-                                    and ${criterion.condition}
-                                    <foreach close=")" collection="criterion.value" item="listItem" open="("
-                                             separator=",">
-                                        #{listItem}
-                                    </foreach>
-                                </when>
-                            </choose>
-                        </foreach>
-                    </trim>
-                </if>
+  <resultMap id="BaseResultMap" type="com.daxiang.mbg.po.Page">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="project_id" jdbcType="INTEGER" property="projectId" />
+    <result column="category_id" jdbcType="INTEGER" property="categoryId" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="img_url" jdbcType="VARCHAR" property="imgUrl" />
+    <result column="img_height" jdbcType="INTEGER" property="imgHeight" />
+    <result column="img_width" jdbcType="INTEGER" property="imgWidth" />
+    <result column="device_id" jdbcType="VARCHAR" property="deviceId" />
+    <result column="creator_uid" jdbcType="INTEGER" property="creatorUid" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.daxiang.mbg.po.Page">
+    <result column="window_hierarchy" jdbcType="LONGVARCHAR" property="windowHierarchy" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
             </foreach>
-        </where>
-    </sql>
-    <sql id="Update_By_Example_Where_Clause">
-        <where>
-            <foreach collection="example.oredCriteria" item="criteria" separator="or">
-                <if test="criteria.valid">
-                    <trim prefix="(" prefixOverrides="and" suffix=")">
-                        <foreach collection="criteria.criteria" item="criterion">
-                            <choose>
-                                <when test="criterion.noValue">
-                                    and ${criterion.condition}
-                                </when>
-                                <when test="criterion.singleValue">
-                                    and ${criterion.condition} #{criterion.value}
-                                </when>
-                                <when test="criterion.betweenValue">
-                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
-                                </when>
-                                <when test="criterion.listValue">
-                                    and ${criterion.condition}
-                                    <foreach close=")" collection="criterion.value" item="listItem" open="("
-                                             separator=",">
-                                        #{listItem}
-                                    </foreach>
-                                </when>
-                            </choose>
-                        </foreach>
-                    </trim>
-                </if>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
             </foreach>
-        </where>
-    </sql>
-    <sql id="Base_Column_List">
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
     id, name, project_id, category_id, description, img_url, img_height, img_width, device_id, 
     creator_uid, create_time
   </sql>
-    <sql id="Blob_Column_List">
-    window_hierarchy_json
+  <sql id="Blob_Column_List">
+    window_hierarchy
   </sql>
-    <select id="selectByExampleWithBLOBs" parameterType="com.daxiang.mbg.po.PageExample" resultMap="ResultMapWithBLOBs">
-        select
-        <if test="distinct">
-            distinct
-        </if>
-        <include refid="Base_Column_List"/>
-        ,
-        <include refid="Blob_Column_List"/>
-        from page
-        <if test="_parameter != null">
-            <include refid="Example_Where_Clause"/>
-        </if>
-        <if test="orderByClause != null">
-            order by ${orderByClause}
-        </if>
-    </select>
-    <select id="selectByExample" parameterType="com.daxiang.mbg.po.PageExample" resultMap="BaseResultMap">
-        select
-        <if test="distinct">
-            distinct
-        </if>
-        <include refid="Base_Column_List"/>
-        from page
-        <if test="_parameter != null">
-            <include refid="Example_Where_Clause"/>
-        </if>
-        <if test="orderByClause != null">
-            order by ${orderByClause}
-        </if>
-    </select>
-    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
-        select
-        <include refid="Base_Column_List"/>
-        ,
-        <include refid="Blob_Column_List"/>
-        from page
-        where id = #{id,jdbcType=INTEGER}
-    </select>
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-        delete from page
-        where id = #{id,jdbcType=INTEGER}
-    </delete>
-    <delete id="deleteByExample" parameterType="com.daxiang.mbg.po.PageExample">
-        delete from page
-        <if test="_parameter != null">
-            <include refid="Example_Where_Clause"/>
-        </if>
-    </delete>
-    <insert id="insert" parameterType="com.daxiang.mbg.po.Page">
-        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
-            SELECT LAST_INSERT_ID()
-        </selectKey>
-        insert into page (name, project_id, category_id,
-        description, img_url, img_height,
-        img_width, device_id, creator_uid,
-        create_time, window_hierarchy_json)
-        values (#{name,jdbcType=VARCHAR}, #{projectId,jdbcType=INTEGER}, #{categoryId,jdbcType=INTEGER},
-        #{description,jdbcType=VARCHAR}, #{imgUrl,jdbcType=VARCHAR}, #{imgHeight,jdbcType=INTEGER},
-        #{imgWidth,jdbcType=INTEGER}, #{deviceId,jdbcType=VARCHAR}, #{creatorUid,jdbcType=INTEGER},
-        #{createTime,jdbcType=TIMESTAMP}, #{windowHierarchyJson,jdbcType=LONGVARCHAR})
-    </insert>
-    <insert id="insertSelective" parameterType="com.daxiang.mbg.po.Page">
-        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
-            SELECT LAST_INSERT_ID()
-        </selectKey>
-        insert into page
-        <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="name != null">
-                name,
-            </if>
-            <if test="projectId != null">
-                project_id,
-            </if>
-            <if test="categoryId != null">
-                category_id,
-            </if>
-            <if test="description != null">
-                description,
-            </if>
-            <if test="imgUrl != null">
-                img_url,
-            </if>
-            <if test="imgHeight != null">
-                img_height,
-            </if>
-            <if test="imgWidth != null">
-                img_width,
-            </if>
-            <if test="deviceId != null">
-                device_id,
-            </if>
-            <if test="creatorUid != null">
-                creator_uid,
-            </if>
-            <if test="createTime != null">
-                create_time,
-            </if>
-            <if test="windowHierarchyJson != null">
-                window_hierarchy_json,
-            </if>
-        </trim>
-        <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="name != null">
-                #{name,jdbcType=VARCHAR},
-            </if>
-            <if test="projectId != null">
-                #{projectId,jdbcType=INTEGER},
-            </if>
-            <if test="categoryId != null">
-                #{categoryId,jdbcType=INTEGER},
-            </if>
-            <if test="description != null">
-                #{description,jdbcType=VARCHAR},
-            </if>
-            <if test="imgUrl != null">
-                #{imgUrl,jdbcType=VARCHAR},
-            </if>
-            <if test="imgHeight != null">
-                #{imgHeight,jdbcType=INTEGER},
-            </if>
-            <if test="imgWidth != null">
-                #{imgWidth,jdbcType=INTEGER},
-            </if>
-            <if test="deviceId != null">
-                #{deviceId,jdbcType=VARCHAR},
-            </if>
-            <if test="creatorUid != null">
-                #{creatorUid,jdbcType=INTEGER},
-            </if>
-            <if test="createTime != null">
-                #{createTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="windowHierarchyJson != null">
-                #{windowHierarchyJson,jdbcType=LONGVARCHAR},
-            </if>
-        </trim>
-    </insert>
-    <select id="countByExample" parameterType="com.daxiang.mbg.po.PageExample" resultType="java.lang.Long">
-        select count(*) from page
-        <if test="_parameter != null">
-            <include refid="Example_Where_Clause"/>
-        </if>
-    </select>
-    <update id="updateByExampleSelective" parameterType="map">
-        update page
-        <set>
-            <if test="record.id != null">
-                id = #{record.id,jdbcType=INTEGER},
-            </if>
-            <if test="record.name != null">
-                name = #{record.name,jdbcType=VARCHAR},
-            </if>
-            <if test="record.projectId != null">
-                project_id = #{record.projectId,jdbcType=INTEGER},
-            </if>
-            <if test="record.categoryId != null">
-                category_id = #{record.categoryId,jdbcType=INTEGER},
-            </if>
-            <if test="record.description != null">
-                description = #{record.description,jdbcType=VARCHAR},
-            </if>
-            <if test="record.imgUrl != null">
-                img_url = #{record.imgUrl,jdbcType=VARCHAR},
-            </if>
-            <if test="record.imgHeight != null">
-                img_height = #{record.imgHeight,jdbcType=INTEGER},
-            </if>
-            <if test="record.imgWidth != null">
-                img_width = #{record.imgWidth,jdbcType=INTEGER},
-            </if>
-            <if test="record.deviceId != null">
-                device_id = #{record.deviceId,jdbcType=VARCHAR},
-            </if>
-            <if test="record.creatorUid != null">
-                creator_uid = #{record.creatorUid,jdbcType=INTEGER},
-            </if>
-            <if test="record.createTime != null">
-                create_time = #{record.createTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="record.windowHierarchyJson != null">
-                window_hierarchy_json = #{record.windowHierarchyJson,jdbcType=LONGVARCHAR},
-            </if>
-        </set>
-        <if test="_parameter != null">
-            <include refid="Update_By_Example_Where_Clause"/>
-        </if>
-    </update>
-    <update id="updateByExampleWithBLOBs" parameterType="map">
-        update page
-        set id = #{record.id,jdbcType=INTEGER},
+  <select id="selectByExampleWithBLOBs" parameterType="com.daxiang.mbg.po.PageExample" resultMap="ResultMapWithBLOBs">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from page
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" parameterType="com.daxiang.mbg.po.PageExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from page
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from page
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from page
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.daxiang.mbg.po.PageExample">
+    delete from page
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.daxiang.mbg.po.Page">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into page (name, project_id, category_id, 
+      description, img_url, img_height, 
+      img_width, device_id, creator_uid, 
+      create_time, window_hierarchy)
+    values (#{name,jdbcType=VARCHAR}, #{projectId,jdbcType=INTEGER}, #{categoryId,jdbcType=INTEGER}, 
+      #{description,jdbcType=VARCHAR}, #{imgUrl,jdbcType=VARCHAR}, #{imgHeight,jdbcType=INTEGER}, 
+      #{imgWidth,jdbcType=INTEGER}, #{deviceId,jdbcType=VARCHAR}, #{creatorUid,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{windowHierarchy,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.daxiang.mbg.po.Page">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into page
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        name,
+      </if>
+      <if test="projectId != null">
+        project_id,
+      </if>
+      <if test="categoryId != null">
+        category_id,
+      </if>
+      <if test="description != null">
+        description,
+      </if>
+      <if test="imgUrl != null">
+        img_url,
+      </if>
+      <if test="imgHeight != null">
+        img_height,
+      </if>
+      <if test="imgWidth != null">
+        img_width,
+      </if>
+      <if test="deviceId != null">
+        device_id,
+      </if>
+      <if test="creatorUid != null">
+        creator_uid,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="windowHierarchy != null">
+        window_hierarchy,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="projectId != null">
+        #{projectId,jdbcType=INTEGER},
+      </if>
+      <if test="categoryId != null">
+        #{categoryId,jdbcType=INTEGER},
+      </if>
+      <if test="description != null">
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="imgUrl != null">
+        #{imgUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="imgHeight != null">
+        #{imgHeight,jdbcType=INTEGER},
+      </if>
+      <if test="imgWidth != null">
+        #{imgWidth,jdbcType=INTEGER},
+      </if>
+      <if test="deviceId != null">
+        #{deviceId,jdbcType=VARCHAR},
+      </if>
+      <if test="creatorUid != null">
+        #{creatorUid,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="windowHierarchy != null">
+        #{windowHierarchy,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.daxiang.mbg.po.PageExample" resultType="java.lang.Long">
+    select count(*) from page
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update page
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.name != null">
         name = #{record.name,jdbcType=VARCHAR},
+      </if>
+      <if test="record.projectId != null">
         project_id = #{record.projectId,jdbcType=INTEGER},
+      </if>
+      <if test="record.categoryId != null">
         category_id = #{record.categoryId,jdbcType=INTEGER},
+      </if>
+      <if test="record.description != null">
         description = #{record.description,jdbcType=VARCHAR},
+      </if>
+      <if test="record.imgUrl != null">
         img_url = #{record.imgUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="record.imgHeight != null">
         img_height = #{record.imgHeight,jdbcType=INTEGER},
+      </if>
+      <if test="record.imgWidth != null">
         img_width = #{record.imgWidth,jdbcType=INTEGER},
+      </if>
+      <if test="record.deviceId != null">
         device_id = #{record.deviceId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.creatorUid != null">
         creator_uid = #{record.creatorUid,jdbcType=INTEGER},
+      </if>
+      <if test="record.createTime != null">
         create_time = #{record.createTime,jdbcType=TIMESTAMP},
-        window_hierarchy_json = #{record.windowHierarchyJson,jdbcType=LONGVARCHAR}
-        <if test="_parameter != null">
-            <include refid="Update_By_Example_Where_Clause"/>
-        </if>
-    </update>
-    <update id="updateByExample" parameterType="map">
-        update page
-        set id = #{record.id,jdbcType=INTEGER},
-        name = #{record.name,jdbcType=VARCHAR},
-        project_id = #{record.projectId,jdbcType=INTEGER},
-        category_id = #{record.categoryId,jdbcType=INTEGER},
-        description = #{record.description,jdbcType=VARCHAR},
-        img_url = #{record.imgUrl,jdbcType=VARCHAR},
-        img_height = #{record.imgHeight,jdbcType=INTEGER},
-        img_width = #{record.imgWidth,jdbcType=INTEGER},
-        device_id = #{record.deviceId,jdbcType=VARCHAR},
-        creator_uid = #{record.creatorUid,jdbcType=INTEGER},
-        create_time = #{record.createTime,jdbcType=TIMESTAMP}
-        <if test="_parameter != null">
-            <include refid="Update_By_Example_Where_Clause"/>
-        </if>
-    </update>
-    <update id="updateByPrimaryKeySelective" parameterType="com.daxiang.mbg.po.Page">
-        update page
-        <set>
-            <if test="name != null">
-                name = #{name,jdbcType=VARCHAR},
-            </if>
-            <if test="projectId != null">
-                project_id = #{projectId,jdbcType=INTEGER},
-            </if>
-            <if test="categoryId != null">
-                category_id = #{categoryId,jdbcType=INTEGER},
-            </if>
-            <if test="description != null">
-                description = #{description,jdbcType=VARCHAR},
-            </if>
-            <if test="imgUrl != null">
-                img_url = #{imgUrl,jdbcType=VARCHAR},
-            </if>
-            <if test="imgHeight != null">
-                img_height = #{imgHeight,jdbcType=INTEGER},
-            </if>
-            <if test="imgWidth != null">
-                img_width = #{imgWidth,jdbcType=INTEGER},
-            </if>
-            <if test="deviceId != null">
-                device_id = #{deviceId,jdbcType=VARCHAR},
-            </if>
-            <if test="creatorUid != null">
-                creator_uid = #{creatorUid,jdbcType=INTEGER},
-            </if>
-            <if test="createTime != null">
-                create_time = #{createTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="windowHierarchyJson != null">
-                window_hierarchy_json = #{windowHierarchyJson,jdbcType=LONGVARCHAR},
-            </if>
-        </set>
-        where id = #{id,jdbcType=INTEGER}
-    </update>
-    <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.daxiang.mbg.po.Page">
+      </if>
+      <if test="record.windowHierarchy != null">
+        window_hierarchy = #{record.windowHierarchy,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map">
+    update page
+    set id = #{record.id,jdbcType=INTEGER},
+      name = #{record.name,jdbcType=VARCHAR},
+      project_id = #{record.projectId,jdbcType=INTEGER},
+      category_id = #{record.categoryId,jdbcType=INTEGER},
+      description = #{record.description,jdbcType=VARCHAR},
+      img_url = #{record.imgUrl,jdbcType=VARCHAR},
+      img_height = #{record.imgHeight,jdbcType=INTEGER},
+      img_width = #{record.imgWidth,jdbcType=INTEGER},
+      device_id = #{record.deviceId,jdbcType=VARCHAR},
+      creator_uid = #{record.creatorUid,jdbcType=INTEGER},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      window_hierarchy = #{record.windowHierarchy,jdbcType=LONGVARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update page
+    set id = #{record.id,jdbcType=INTEGER},
+      name = #{record.name,jdbcType=VARCHAR},
+      project_id = #{record.projectId,jdbcType=INTEGER},
+      category_id = #{record.categoryId,jdbcType=INTEGER},
+      description = #{record.description,jdbcType=VARCHAR},
+      img_url = #{record.imgUrl,jdbcType=VARCHAR},
+      img_height = #{record.imgHeight,jdbcType=INTEGER},
+      img_width = #{record.imgWidth,jdbcType=INTEGER},
+      device_id = #{record.deviceId,jdbcType=VARCHAR},
+      creator_uid = #{record.creatorUid,jdbcType=INTEGER},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.daxiang.mbg.po.Page">
+    update page
+    <set>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="projectId != null">
+        project_id = #{projectId,jdbcType=INTEGER},
+      </if>
+      <if test="categoryId != null">
+        category_id = #{categoryId,jdbcType=INTEGER},
+      </if>
+      <if test="description != null">
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="imgUrl != null">
+        img_url = #{imgUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="imgHeight != null">
+        img_height = #{imgHeight,jdbcType=INTEGER},
+      </if>
+      <if test="imgWidth != null">
+        img_width = #{imgWidth,jdbcType=INTEGER},
+      </if>
+      <if test="deviceId != null">
+        device_id = #{deviceId,jdbcType=VARCHAR},
+      </if>
+      <if test="creatorUid != null">
+        creator_uid = #{creatorUid,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="windowHierarchy != null">
+        window_hierarchy = #{windowHierarchy,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.daxiang.mbg.po.Page">
     update page
     set name = #{name,jdbcType=VARCHAR},
       project_id = #{projectId,jdbcType=INTEGER},
@@ -357,10 +355,10 @@
       device_id = #{deviceId,jdbcType=VARCHAR},
       creator_uid = #{creatorUid,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
-      window_hierarchy_json = #{windowHierarchyJson,jdbcType=LONGVARCHAR}
+      window_hierarchy = #{windowHierarchy,jdbcType=LONGVARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
-    <update id="updateByPrimaryKey" parameterType="com.daxiang.mbg.po.Page">
+  <update id="updateByPrimaryKey" parameterType="com.daxiang.mbg.po.Page">
     update page
     set name = #{name,jdbcType=VARCHAR},
       project_id = #{projectId,jdbcType=INTEGER},

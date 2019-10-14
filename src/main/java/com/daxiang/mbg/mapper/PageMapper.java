@@ -2,9 +2,7 @@ package com.daxiang.mbg.mapper;
 
 import com.daxiang.mbg.po.Page;
 import com.daxiang.mbg.po.PageExample;
-
 import java.util.List;
-
 import org.apache.ibatis.annotations.Param;
 
 public interface PageMapper {

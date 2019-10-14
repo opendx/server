@@ -152,7 +152,7 @@ CREATE TABLE `page`  (
   `img_url` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '截图下载地址',
   `img_height` int(11) NULL DEFAULT NULL COMMENT '截图高度',
   `img_width` int(11) NULL DEFAULT NULL COMMENT '截图宽度',
-  `window_hierarchy_json` mediumtext CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT 'dump布局json',
+  `window_hierarchy` mediumtext CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '页面布局',
   `device_id` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '图片所属的设备id',
   `creator_uid` int(11) NULL DEFAULT NULL COMMENT '创建人id',
   `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',

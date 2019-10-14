@@ -86,11 +86,11 @@ public class Page implements Serializable {
     private Date createTime;
 
     /**
-     * dump布局json
+     * 页面布局
      *
      * @mbg.generated
      */
-    private String windowHierarchyJson;
+    private String windowHierarchy;
 
     private static final long serialVersionUID = 1L;
 
@@ -182,12 +182,12 @@ public class Page implements Serializable {
         this.createTime = createTime;
     }
 
-    public String getWindowHierarchyJson() {
-        return windowHierarchyJson;
+    public String getWindowHierarchy() {
+        return windowHierarchy;
     }
 
-    public void setWindowHierarchyJson(String windowHierarchyJson) {
-        this.windowHierarchyJson = windowHierarchyJson;
+    public void setWindowHierarchy(String windowHierarchy) {
+        this.windowHierarchy = windowHierarchy;
     }
 
     @Override
@@ -207,7 +207,7 @@ public class Page implements Serializable {
         sb.append(", deviceId=").append(deviceId);
         sb.append(", creatorUid=").append(creatorUid);
         sb.append(", createTime=").append(createTime);
-        sb.append(", windowHierarchyJson=").append(windowHierarchyJson);
+        sb.append(", windowHierarchy=").append(windowHierarchy);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();
