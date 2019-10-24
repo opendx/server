@@ -36,7 +36,7 @@ public class UploadService {
 
         String newFileName = UUIDUtil.getUUID() + "." + StringUtils.unqualify(file.getOriginalFilename());
         try {
-            if (newFileName.endsWith(".jpg") || newFileName.endsWith(".png")) {
+            if (newFileName.endsWith(".jpg") || newFileName.endsWith(".png") || newFileName.endsWith(".tiff")) {
                 // 不用绝对路径会报错
                 file.transferTo(new File(new File(uploadImgPath).getAbsolutePath() + File.separator + newFileName));
             } else if (newFileName.endsWith(".mp4")) {
