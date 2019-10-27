@@ -131,6 +131,13 @@ public class Action implements Serializable {
     private Integer pageId;
 
     /**
+     * 所属的分类id
+     *
+     * @mbg.generated
+     */
+    private Integer categoryId;
+
+    /**
      * 所属的项目id
      *
      * @mbg.generated
@@ -151,7 +158,7 @@ public class Action implements Serializable {
      * @mbg.generated
      */
     @Valid
-    private List<Param> params;
+    private java.util.List<com.daxiang.model.action.Param> params;
 
     /**
      * 局部变量
@@ -159,7 +166,7 @@ public class Action implements Serializable {
      * @mbg.generated
      */
     @Valid
-    private List<LocalVar> localVars;
+    private java.util.List<com.daxiang.model.action.LocalVar> localVars;
 
     /**
      * 步骤
@@ -283,6 +290,14 @@ public class Action implements Serializable {
         this.pageId = pageId;
     }
 
+    public Integer getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(Integer categoryId) {
+        this.categoryId = categoryId;
+    }
+
     public Integer getProjectId() {
         return projectId;
     }
@@ -350,6 +365,7 @@ public class Action implements Serializable {
         sb.append(", updateTime=").append(updateTime);
         sb.append(", platform=").append(platform);
         sb.append(", pageId=").append(pageId);
+        sb.append(", categoryId=").append(categoryId);
         sb.append(", projectId=").append(projectId);
         sb.append(", testSuiteId=").append(testSuiteId);
         sb.append(", params=").append(params);

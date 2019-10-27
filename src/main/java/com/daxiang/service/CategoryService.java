@@ -1,6 +1,7 @@
 package com.daxiang.service;
 
 import com.daxiang.mbg.mapper.CategoryMapper;
+import com.daxiang.mbg.po.Action;
 import com.daxiang.mbg.po.Category;
 import com.daxiang.mbg.po.Page;
 import com.daxiang.model.PageRequest;
@@ -29,6 +30,8 @@ public class CategoryService extends BaseService {
     private CategoryMapper categoryMapper;
     @Autowired
     private PageService pageService;
+    @Autowired
+    private ActionService actionService;
 
     /**
      * 添加分类
@@ -54,12 +57,33 @@ public class CategoryService extends BaseService {
             return Response.fail("categoryId不能为空");
         }
 
-        // 检查该分类下是否有page
-        Page query = new Page();
-        query.setCategoryId(categoryId);
-        List<Page> pages = pageService.selectByPage(query);
-        if (!CollectionUtils.isEmpty(pages)) {
-            return Response.fail("分类下有page，无法删除");
+        Category categoryQuery = new Category();
+        categoryQuery.setId(categoryId);
+        List<Category> categories = selectByCategory(categoryQuery);
+        if (CollectionUtils.isEmpty(categories)) {
+            return Response.fail("分类不存在");
+        }
+
+        Category category = categories.get(0);
+
+        if (category.getType() == Category.PAGE) {
+            // 检查该分类下是否有page
+            Page pageQuery = new Page();
+            pageQuery.setCategoryId(categoryId);
+            List<Page> pages = pageService.selectByPage(pageQuery);
+            if (!CollectionUtils.isEmpty(pages)) {
+                return Response.fail("分类下有page，无法删除");
+            }
+        } else if (category.getType() == Category.ACTION) {
+            // 检查该分类下是否有action
+            Action actionQuery = new Action();
+            actionQuery.setCategoryId(categoryId);
+            List<Action> actions = actionService.selectByAction(actionQuery);
+            if (!CollectionUtils.isEmpty(actions)) {
+                return Response.fail("分类下有action，无法删除");
+            }
+        } else {
+            return Response.fail("不支持的分类类型");
         }
 
         int deleteRow = categoryMapper.deleteByPrimaryKey(categoryId);
@@ -110,7 +134,7 @@ public class CategoryService extends BaseService {
         if (!StringUtils.isEmpty(category.getName())) {
             criteria.andNameEqualTo(category.getName());
         }
-        categoryExample.setOrderByClause("create_time desc");
+        categoryExample.setOrderByClause("create_time asc");
 
         return categoryMapper.selectByExample(categoryExample);
     }

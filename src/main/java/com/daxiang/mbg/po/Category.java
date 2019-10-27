@@ -6,6 +6,10 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class Category implements Serializable {
+
+    public static final int PAGE = 1;
+    public static final int ACTION = 2;
+
     /**
      * 分类id
      *

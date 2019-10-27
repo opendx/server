@@ -36,6 +36,7 @@ CREATE TABLE `action`  (
   `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
   `platform` tinyint(4) NULL DEFAULT NULL COMMENT '1.android 2.ios',
   `page_id` int(11) NULL DEFAULT NULL COMMENT '所属的page id',
+  `category_id` int(11) NULL DEFAULT NULL COMMENT '所属的分类id',
   `project_id` int(11) NULL DEFAULT NULL COMMENT '所属的项目id',
   `test_suite_id` int(11) NULL DEFAULT NULL COMMENT '所属的测试集',
   PRIMARY KEY (`id`) USING BTREE,
@@ -67,7 +68,7 @@ DROP TABLE IF EXISTS `category`;
 CREATE TABLE `category`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '分类id',
   `name` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '分类名字',
-  `type` tinyint(4) NOT NULL COMMENT '类型：1.Page',
+  `type` tinyint(4) NOT NULL COMMENT '类型：1.Page 2.action',
   `project_id` int(11) NOT NULL COMMENT '所属项目的id',
   `creator_uid` int(11) NULL DEFAULT NULL COMMENT '创建人',
   `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',

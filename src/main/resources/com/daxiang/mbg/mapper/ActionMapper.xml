@@ -15,6 +15,7 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="platform" jdbcType="TINYINT" property="platform" />
     <result column="page_id" jdbcType="INTEGER" property="pageId" />
+    <result column="category_id" jdbcType="INTEGER" property="categoryId" />
     <result column="project_id" jdbcType="INTEGER" property="projectId" />
     <result column="test_suite_id" jdbcType="INTEGER" property="testSuiteId" />
   </resultMap>
@@ -84,7 +85,8 @@
   </sql>
   <sql id="Base_Column_List">
     id, name, description, type, invoke, return_value, return_value_desc, creator_uid, 
-    create_time, updator_uid, update_time, platform, page_id, project_id, test_suite_id
+    create_time, updator_uid, update_time, platform, page_id, category_id, project_id, 
+    test_suite_id
   </sql>
   <sql id="Blob_Column_List">
     params, local_vars, steps, java_imports
@@ -145,7 +147,8 @@
       invoke, return_value, return_value_desc, 
       creator_uid, create_time, updator_uid, 
       update_time, platform, page_id, 
-      project_id, test_suite_id, params, 
+      category_id, project_id, test_suite_id, 
+      params, 
       local_vars, 
       steps, 
       java_imports
@@ -154,7 +157,8 @@
       #{invoke,jdbcType=VARCHAR}, #{returnValue,jdbcType=VARCHAR}, #{returnValueDesc,jdbcType=VARCHAR}, 
       #{creatorUid,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updatorUid,jdbcType=INTEGER}, 
       #{updateTime,jdbcType=TIMESTAMP}, #{platform,jdbcType=TINYINT}, #{pageId,jdbcType=INTEGER}, 
-      #{projectId,jdbcType=INTEGER}, #{testSuiteId,jdbcType=INTEGER}, #{params,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.ParamListTypeHandler}, 
+      #{categoryId,jdbcType=INTEGER}, #{projectId,jdbcType=INTEGER}, #{testSuiteId,jdbcType=INTEGER}, 
+      #{params,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.ParamListTypeHandler}, 
       #{localVars,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.LocalVarListTypeHandler}, 
       #{steps,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.StepListTypeHandler}, 
       #{javaImports,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.StringListTypeHandler}
@@ -201,6 +205,9 @@
       </if>
       <if test="pageId != null">
         page_id,
+      </if>
+      <if test="categoryId != null">
+        category_id,
       </if>
       <if test="projectId != null">
         project_id,
@@ -257,6 +264,9 @@
       </if>
       <if test="pageId != null">
         #{pageId,jdbcType=INTEGER},
+      </if>
+      <if test="categoryId != null">
+        #{categoryId,jdbcType=INTEGER},
       </if>
       <if test="projectId != null">
         #{projectId,jdbcType=INTEGER},
@@ -326,6 +336,9 @@
       <if test="record.pageId != null">
         page_id = #{record.pageId,jdbcType=INTEGER},
       </if>
+      <if test="record.categoryId != null">
+        category_id = #{record.categoryId,jdbcType=INTEGER},
+      </if>
       <if test="record.projectId != null">
         project_id = #{record.projectId,jdbcType=INTEGER},
       </if>
@@ -364,6 +377,7 @@
       update_time = #{record.updateTime,jdbcType=TIMESTAMP},
       platform = #{record.platform,jdbcType=TINYINT},
       page_id = #{record.pageId,jdbcType=INTEGER},
+      category_id = #{record.categoryId,jdbcType=INTEGER},
       project_id = #{record.projectId,jdbcType=INTEGER},
       test_suite_id = #{record.testSuiteId,jdbcType=INTEGER},
       params = #{record.params,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.ParamListTypeHandler},
@@ -389,6 +403,7 @@
       update_time = #{record.updateTime,jdbcType=TIMESTAMP},
       platform = #{record.platform,jdbcType=TINYINT},
       page_id = #{record.pageId,jdbcType=INTEGER},
+      category_id = #{record.categoryId,jdbcType=INTEGER},
       project_id = #{record.projectId,jdbcType=INTEGER},
       test_suite_id = #{record.testSuiteId,jdbcType=INTEGER}
     <if test="_parameter != null">
@@ -434,6 +449,9 @@
       <if test="pageId != null">
         page_id = #{pageId,jdbcType=INTEGER},
       </if>
+      <if test="categoryId != null">
+        category_id = #{categoryId,jdbcType=INTEGER},
+      </if>
       <if test="projectId != null">
         project_id = #{projectId,jdbcType=INTEGER},
       </if>
@@ -469,6 +487,7 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       platform = #{platform,jdbcType=TINYINT},
       page_id = #{pageId,jdbcType=INTEGER},
+      category_id = #{categoryId,jdbcType=INTEGER},
       project_id = #{projectId,jdbcType=INTEGER},
       test_suite_id = #{testSuiteId,jdbcType=INTEGER},
       params = #{params,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.ParamListTypeHandler},
@@ -491,6 +510,7 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       platform = #{platform,jdbcType=TINYINT},
       page_id = #{pageId,jdbcType=INTEGER},
+      category_id = #{categoryId,jdbcType=INTEGER},
       project_id = #{projectId,jdbcType=INTEGER},
       test_suite_id = #{testSuiteId,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}

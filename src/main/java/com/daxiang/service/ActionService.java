@@ -150,6 +150,9 @@ public class ActionService extends BaseService {
         if (action.getTestSuiteId() != null) {
             criteria.andTestSuiteIdEqualTo(action.getTestSuiteId());
         }
+        if (action.getCategoryId() != null) {
+            criteria.andCategoryIdEqualTo(action.getCategoryId());
+        }
 
         actionExample.setOrderByClause("create_time desc");
         return actionMapper.selectByExampleWithBLOBs(actionExample);
