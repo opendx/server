@@ -130,8 +130,11 @@ public class TestTaskService extends BaseService {
      * @return
      */
     private Map<String, List<Action>> allocateTestcaseToDevice(List<String> deviceIds, List<Action> testcases, Integer runMode) {
-        if (CollectionUtils.isEmpty(deviceIds) || CollectionUtils.isEmpty(testcases)) {
-            throw new BusinessException("设备或用例为空，无法分配");
+        if (CollectionUtils.isEmpty(deviceIds)) {
+            throw new BusinessException("设备不能为空");
+        }
+        if (CollectionUtils.isEmpty(testcases)) {
+            throw new BusinessException("测试用例不能为空");
         }
 
         Map<String, List<Action>> result = new HashMap<>(); // deviceId : List<Action>
