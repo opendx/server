@@ -306,4 +306,41 @@ public class TestTaskService extends BaseService {
 
         return Response.success(progresss);
     }
+
+    @Transactional
+    public Response delete(Integer testTaskId) {
+        if (testTaskId == null) {
+            return Response.fail("testTaskId不能为空");
+        }
+
+        TestTask testTask = testTaskMapper.selectByPrimaryKey(testTaskId);
+        if (testTask == null) {
+            return Response.fail("testTask不存在");
+        }
+
+        List<DeviceTestTask> deviceTestTasks = deviceTestTaskService.findByTestTaskId(testTaskId);
+
+        if (!CollectionUtils.isEmpty(deviceTestTasks)) {
+            List<DeviceTestTask> alreadyStartedDeviceTestTasks = deviceTestTasks.stream().filter(deviceTestTask -> deviceTestTask.getStatus() != DeviceTestTask.UNSTART_STATUS).collect(Collectors.toList());
+            if (!CollectionUtils.isEmpty(alreadyStartedDeviceTestTasks)) {
+                // 有设备已经运行过测试任务，不让删除整个testTask
+                String alreadyStartedDeviceIds = alreadyStartedDeviceTestTasks.stream().map(DeviceTestTask::getDeviceId).collect(Collectors.joining("、"));
+                return Response.fail(alreadyStartedDeviceIds + "运行过测试任务，无法删除");
+            } else {
+                // 批量删除deviceTestTask
+                int deleteRow = deviceTestTaskService.deleteInBatch(deviceTestTasks.stream().map(DeviceTestTask::getId).collect(Collectors.toList()));
+                if (deleteRow != deviceTestTasks.size()) {
+                    throw new BusinessException(String.format("删除deviceTestTask失败，deviceTestTasks: %d, deleteRow: %d", deviceTestTasks.size(), deleteRow));
+                }
+            }
+        }
+
+        // 删除testTask
+        int deleteTestTaskRow = testTaskMapper.deleteByPrimaryKey(testTaskId);
+        if (deleteTestTaskRow == 1) {
+            return Response.success("删除成功");
+        } else {
+            throw new BusinessException("删除失败，请稍后重试");
+        }
+    }
 }

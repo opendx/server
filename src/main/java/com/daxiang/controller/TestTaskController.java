@@ -33,6 +33,7 @@ public class TestTaskController {
 
     /**
      * 测试任务列表
+     *
      * @param testTask
      * @param pageRequest
      * @return
@@ -44,6 +45,7 @@ public class TestTaskController {
 
     /**
      * 测试任务概要
+     *
      * @param testTaskId
      * @return
      */
@@ -54,11 +56,17 @@ public class TestTaskController {
 
     /**
      * 测试任务进度
+     *
      * @param testTaskId
      * @return
      */
     @GetMapping("/{testTaskId}/progress")
     public Response getTestTaskProgress(@PathVariable Integer testTaskId) {
         return testTaskService.getTestTaskProgress(testTaskId);
+    }
+
+    @DeleteMapping("/{testTaskId}")
+    public Response delete(@PathVariable Integer testTaskId) {
+        return testTaskService.delete(testTaskId);
     }
 }

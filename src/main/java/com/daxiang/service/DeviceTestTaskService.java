@@ -1,5 +1,7 @@
 package com.daxiang.service;
 
+import com.daxiang.dao.DeviceTestTaskDao;
+import com.daxiang.exception.BusinessException;
 import com.daxiang.mbg.mapper.DeviceTestTaskMapper;
 import com.daxiang.mbg.po.DeviceTestTaskExample;
 import com.daxiang.model.PageRequest;
@@ -26,6 +28,8 @@ public class DeviceTestTaskService {
 
     @Autowired
     private DeviceTestTaskMapper deviceTestTaskMapper;
+    @Autowired
+    private DeviceTestTaskDao deviceTestTaskDao;
 
     public Response update(DeviceTestTask deviceTestTask) {
         if (deviceTestTask.getId() == null) {
@@ -162,5 +166,13 @@ public class DeviceTestTaskService {
         DeviceTestTask deviceTestTask = new DeviceTestTask();
         deviceTestTask.setTestTaskId(testTaskId);
         return selectByDeviceTestTask(deviceTestTask);
+    }
+
+    public int deleteInBatch(List<Integer> ids) {
+        if (CollectionUtils.isEmpty(ids)) {
+            throw new BusinessException("批量删除deviceTestTask, ids不能为空");
+        }
+
+        return deviceTestTaskDao.deleteInBatch(ids);
     }
 }
