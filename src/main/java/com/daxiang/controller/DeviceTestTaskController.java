@@ -50,4 +50,9 @@ public class DeviceTestTaskController {
         return deviceTestTaskService.findFirstUnStartDeviceTestTask(deviceId);
     }
 
+    @DeleteMapping("/{deviceTestTaskId}")
+    public Response delete(@PathVariable Integer deviceTestTaskId) {
+        return deviceTestTaskService.delete(deviceTestTaskId);
+    }
+
 }

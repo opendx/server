@@ -175,4 +175,22 @@ public class DeviceTestTaskService {
 
         return deviceTestTaskDao.deleteInBatch(ids);
     }
+
+    public Response delete(Integer deviceTestTaskId) {
+        if (deviceTestTaskId == null) {
+            return Response.fail("deviceTestTaskId不能为空");
+        }
+
+        DeviceTestTask deviceTestTask = deviceTestTaskMapper.selectByPrimaryKey(deviceTestTaskId);
+        if (deviceTestTask == null) {
+            return Response.fail("设备测试任务不存在");
+        }
+
+        if (deviceTestTask.getStatus() != DeviceTestTask.UNSTART_STATUS) {
+            return Response.fail("只能删除未开始的测试任务");
+        }
+
+        int deleteRow = deviceTestTaskMapper.deleteByPrimaryKey(deviceTestTaskId);
+        return deleteRow == 1 ? Response.success("删除成功") : Response.fail("删除失败，请稍后重试");
+    }
 }
