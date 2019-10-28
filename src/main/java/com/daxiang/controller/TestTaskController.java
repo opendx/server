@@ -54,17 +54,6 @@ public class TestTaskController {
         return testTaskService.getTestTaskSummary(testTaskId);
     }
 
-    /**
-     * 测试任务进度
-     *
-     * @param testTaskId
-     * @return
-     */
-    @GetMapping("/{testTaskId}/progress")
-    public Response getTestTaskProgress(@PathVariable Integer testTaskId) {
-        return testTaskService.getTestTaskProgress(testTaskId);
-    }
-
     @DeleteMapping("/{testTaskId}")
     public Response delete(@PathVariable Integer testTaskId) {
         return testTaskService.delete(testTaskId);
