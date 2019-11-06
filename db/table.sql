@@ -247,3 +247,19 @@ CREATE TABLE `user`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `uniq_username`(`username`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '用户表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for driver
+-- ----------------------------
+DROP TABLE IF EXISTS `driver`;
+CREATE TABLE `driver`  (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `version` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '版本号',
+  `type` tinyint(4) NOT NULL COMMENT '1. chromedriver',
+  `urls` json NOT NULL COMMENT '各平台下载地址，1.windows 2.linux 3.macos',
+  `device_ids` json NULL COMMENT '设备ids',
+  `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
+  `creator_uid` int(11) NULL DEFAULT NULL COMMENT '创建人',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `uniq_type_version`(`version`, `type`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = 'driver表' ROW_FORMAT = Dynamic;
