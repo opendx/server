@@ -19,29 +19,29 @@
 -- ----------------------------
 DROP TABLE IF EXISTS `action`;
 CREATE TABLE `action` (
-	`id` INT ( 11 ) NOT NULL AUTO_INCREMENT,
-	`name` VARCHAR ( 100 ) NOT NULL COMMENT 'action名',
-	`description` VARCHAR ( 255 ) DEFAULT NULL COMMENT '描述',
-	`type` TINYINT ( 4 ) NOT NULL DEFAULT '1' COMMENT '类型：1.基础action（代码形式的） 2.用户在网页前端封装的action 3.测试用例',
-	`invoke` VARCHAR ( 255 ) DEFAULT NULL COMMENT '基础action专用：调用',
-	`return_value` VARCHAR ( 255 ) NOT NULL COMMENT '返回值: void / 其他',
-	`return_value_desc` VARCHAR ( 255 ) DEFAULT NULL COMMENT '返回值描述',
-	`params` json DEFAULT NULL COMMENT '方法参数',
-	`local_vars` json DEFAULT NULL COMMENT '局部变量',
-	`steps` json DEFAULT NULL COMMENT '步骤',
-	`java_imports` json DEFAULT NULL COMMENT 'java imports',
-	`creator_uid` INT ( 11 ) DEFAULT NULL COMMENT '创建人id',
-	`create_time` datetime DEFAULT NULL COMMENT '创建时间',
-	`updator_uid` INT ( 11 ) DEFAULT NULL COMMENT '更新人id',
-	`update_time` datetime DEFAULT NULL COMMENT '更新时间',
-	`platform` TINYINT ( 4 ) DEFAULT NULL COMMENT '1.android 2.ios',
-	`page_id` INT ( 11 ) DEFAULT NULL COMMENT '所属的page id',
-	`category_id` INT ( 11 ) DEFAULT NULL COMMENT '所属的分类id',
-	`project_id` INT ( 11 ) DEFAULT NULL COMMENT '所属的项目id',
-	`test_suite_id` INT ( 11 ) DEFAULT NULL COMMENT '所属的测试集',
-	PRIMARY KEY ( `id` ) USING BTREE,
-  UNIQUE KEY `uniq_name_projectId_type` ( `name`, `project_id`, `type` ) USING BTREE
-) ENGINE = INNODB AUTO_INCREMENT = 10000 DEFAULT CHARSET = utf8mb4 COMMENT = 'action表';
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL COMMENT 'action名',
+  `description` varchar(255) DEFAULT NULL COMMENT '描述',
+  `type` tinyint(4) NOT NULL DEFAULT '1' COMMENT '类型：1.基础action（代码形式的） 2.用户在网页前端封装的action 3.测试用例',
+  `invoke` varchar(255) DEFAULT NULL COMMENT '基础action专用：调用',
+  `return_value` varchar(255) NOT NULL COMMENT '返回值: void / 其他',
+  `return_value_desc` varchar(255) DEFAULT NULL COMMENT '返回值描述',
+  `params` json DEFAULT NULL COMMENT '方法参数',
+  `local_vars` json DEFAULT NULL COMMENT '局部变量',
+  `steps` json DEFAULT NULL COMMENT '步骤',
+  `java_imports` json DEFAULT NULL COMMENT 'java imports',
+  `creator_uid` int(11) DEFAULT NULL COMMENT '创建人id',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `updator_uid` int(11) DEFAULT NULL COMMENT '更新人id',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `platform` tinyint(4) DEFAULT NULL COMMENT '1.android 2.ios',
+  `page_id` int(11) DEFAULT NULL COMMENT '所属的page id',
+  `category_id` int(11) DEFAULT NULL COMMENT '所属的分类id',
+  `project_id` int(11) DEFAULT NULL COMMENT '所属的项目id',
+  `test_suite_id` int(11) DEFAULT NULL COMMENT '所属的测试集',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `uniq_name_projectId_type` (`name`,`project_id`,`type`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8mb4 COMMENT='action表';
 
 -- ----------------------------
 -- Table structure for app
