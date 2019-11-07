@@ -1,19 +1,24 @@
 package com.daxiang.service;
 
+import com.daxiang.dao.DriverDao;
 import com.daxiang.mbg.mapper.DriverMapper;
 import com.daxiang.mbg.po.Driver;
 import com.daxiang.mbg.po.DriverExample;
 import com.daxiang.model.Page;
 import com.daxiang.model.Response;
 import com.daxiang.model.UserCache;
+import com.daxiang.model.vo.DriverUrl;
 import com.daxiang.model.vo.DriverVo;
+import com.google.common.collect.ImmutableMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -24,6 +29,8 @@ public class DriverService extends BaseService {
 
     @Autowired
     private DriverMapper driverMapper;
+    @Autowired
+    private DriverDao driverDao;
 
     public Response add(Driver driver) {
         driver.setCreateTime(new Date());
@@ -93,5 +100,29 @@ public class DriverService extends BaseService {
 
         example.setOrderByClause("create_time desc");
         return driverMapper.selectByExampleWithBLOBs(example);
+    }
+
+    public Response getDownloadUrl(Integer type, String deviceId, Integer platform) {
+        if (type == null || StringUtils.isEmpty(deviceId) || platform == null) {
+            return Response.fail("非法参数");
+        }
+
+        List<Driver> drivers = driverDao.selectByTypeAndDeviceId(type, deviceId);
+        if (!CollectionUtils.isEmpty(drivers)) {
+            // 如果同一个手机对应了多个driver，取第一个
+            Driver driver = drivers.get(0);
+            List<DriverUrl> urls = driver.getUrls();
+            if (!CollectionUtils.isEmpty(urls)) {
+                Optional<DriverUrl> driverUrl = urls.stream().filter(url -> url.getPlatform() == platform).findFirst();
+                if (driverUrl.isPresent()) {
+                    String downloadUrl = driverUrl.get().getDownloadUrl();
+                    if (!StringUtils.isEmpty(downloadUrl)) {
+                        return Response.success(ImmutableMap.of("downloadUrl", downloadUrl));
+                    }
+                }
+            }
+        }
+
+        return Response.success();
     }
 }

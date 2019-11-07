@@ -37,4 +37,9 @@ public class DriverController {
     public Response list(Driver driver) {
         return driverService.list(driver);
     }
+
+    @GetMapping("/downloadUrl")
+    public Response getDownloadUrl(Integer type, String deviceId, Integer platform) {
+        return driverService.getDownloadUrl(type, deviceId, platform);
+    }
 }

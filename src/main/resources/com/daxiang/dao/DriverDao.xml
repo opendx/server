@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.daxiang.dao.DriverDao">
+    <resultMap id="ResultMapWithBLOBs" type="com.daxiang.mbg.po.Driver" extends="com.daxiang.mbg.mapper.DriverMapper.ResultMapWithBLOBs"/>
+
+    <select id="selectByTypeAndDeviceId" resultMap="ResultMapWithBLOBs">
+        select * from driver where type = #{type} and JSON_CONTAINS(device_ids->'$[*]', '"${deviceId}"','$')
+    </select>
+</mapper>
