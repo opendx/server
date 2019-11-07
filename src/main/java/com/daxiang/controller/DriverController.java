@@ -38,7 +38,7 @@ public class DriverController {
         return driverService.list(driver);
     }
 
-    @GetMapping("/downloadUrl")
+    @PostMapping("/downloadUrl")
     public Response getDownloadUrl(Integer type, String deviceId, Integer platform) {
         return driverService.getDownloadUrl(type, deviceId, platform);
     }
