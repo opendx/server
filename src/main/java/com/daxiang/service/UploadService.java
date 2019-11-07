@@ -28,6 +28,8 @@ public class UploadService {
     private String uploadApkPath;
     @Value("${web.upload-ipa-path}")
     private String uploadIpaPath;
+    @Value("${web.upload-other-path}")
+    private String uploadOtherPath;
 
     public Response uploadFile(MultipartFile file, HttpServletRequest request) {
         if (file == null) {
@@ -46,7 +48,7 @@ public class UploadService {
             } else if (newFileName.endsWith(".ipa")) {
                 file.transferTo(new File(new File(uploadIpaPath).getAbsolutePath() + File.separator + newFileName));
             } else {
-                return Response.fail("暂不支持该格式文件上传");
+                file.transferTo(new File(new File(uploadOtherPath).getAbsolutePath() + File.separator + newFileName));
             }
         } catch (IOException e) {
             log.error("transfer err", e);
