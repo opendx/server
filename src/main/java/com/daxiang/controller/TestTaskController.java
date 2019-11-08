@@ -23,7 +23,7 @@ public class TestTaskController {
      *
      * @return
      */
-    @PostMapping("/commit")
+    @GetMapping("/commit")
     public Response commit(Integer testPlanId) {
         return testTaskService.commit(testPlanId);
     }
