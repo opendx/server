@@ -10,11 +10,9 @@ import com.daxiang.exception.BusinessException;
 import com.daxiang.model.Page;
 import com.daxiang.model.PageRequest;
 import com.daxiang.model.Response;
-import com.daxiang.model.request.CommitTestTaskRequest;
 import com.daxiang.model.vo.Testcase;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -46,19 +44,29 @@ public class TestTaskService extends BaseService {
     /**
      * 提交测试任务
      *
-     * @param commitTestTaskRequest
      * @return
      */
     @Transactional
-    public Response commit(CommitTestTaskRequest commitTestTaskRequest) {
-        TestTask testTask = saveTestTask(commitTestTaskRequest);
-        TestPlan testPlan = testPlanService.selectByPrimaryKey(testTask.getTestPlanId());
+    public Response commit(Integer testPlanId) {
+        if (testPlanId == null) {
+            return Response.fail("testPlanId不能为空");
+        }
+        TestPlan testPlan = testPlanService.selectByPrimaryKey(testPlanId);
+        if (testPlan == null) {
+            return Response.fail("测试计划不存在");
+        }
 
+        // 待测试的测试用例
+        List<Action> testcases = actionService.findByTestSuitIds(testPlan.getTestSuites());
+        if (CollectionUtils.isEmpty(testcases)) {
+            return Response.fail("测试集内无测试用例");
+        }
+
+        // build acion tree
         Action beforeClass = testPlan.getBeforeClass() != null ? actionService.selectByPrimaryKey(testPlan.getBeforeClass()) : null;
         Action beforeMethod = testPlan.getBeforeMethod() != null ? actionService.selectByPrimaryKey(testPlan.getBeforeMethod()) : null;
         Action afterClass = testPlan.getAfterClass() != null ? actionService.selectByPrimaryKey(testPlan.getAfterClass()) : null;
         Action afterMethod = testPlan.getAfterMethod() != null ? actionService.selectByPrimaryKey(testPlan.getAfterMethod()) : null;
-        List<Action> testcases = actionService.findByTestSuitIds(testPlan.getTestSuites());
 
         List<Action> needBuildActions = new ArrayList<>(testcases);
         if (beforeClass != null) {
@@ -76,19 +84,21 @@ public class TestTaskService extends BaseService {
 
         actionService.buildActionTree(needBuildActions);
 
+        // 保存测试任务
+        TestTask testTask = saveTestTask(testPlan);
+
         // 同一项目下的全局变量
         GlobalVar globalVar = new GlobalVar();
         globalVar.setProjectId(testTask.getProjectId());
         List<GlobalVar> globalVars = globalVarService.selectByGlobalVar(globalVar);
 
-        //根据不同用例分发策略，给设备分配用例
-        Map<String, List<Action>> deviceTestcases = allocateTestcaseToDevice(commitTestTaskRequest.getDeviceIds(), testcases, testTask.getRunMode());
+        // 根据不同用例分发策略，给设备分配用例
+        Map<String, List<Action>> deviceTestcases = allocateTestcaseToDevice(testPlan.getDeviceIds(), testcases, testPlan.getRunMode());
 
         deviceTestcases.forEach((deviceId, actions) -> {
             DeviceTestTask deviceTestTask = new DeviceTestTask();
             deviceTestTask.setProjectId(testTask.getProjectId());
             deviceTestTask.setTestTaskId(testTask.getId());
-            deviceTestTask.setTestTaskName(testTask.getName());
             deviceTestTask.setDeviceId(deviceId);
             deviceTestTask.setGlobalVars(globalVars);
             if (beforeClass != null) {
@@ -117,7 +127,7 @@ public class TestTaskService extends BaseService {
             }
         });
 
-        return Response.success("提交测试任务成功");
+        return Response.success("提交测试成功");
     }
 
     /**
@@ -129,18 +139,11 @@ public class TestTaskService extends BaseService {
      * @return
      */
     private Map<String, List<Action>> allocateTestcaseToDevice(List<String> deviceIds, List<Action> testcases, Integer runMode) {
-        if (CollectionUtils.isEmpty(deviceIds)) {
-            throw new BusinessException("设备不能为空");
-        }
-        if (CollectionUtils.isEmpty(testcases)) {
-            throw new BusinessException("测试用例不能为空");
-        }
-
         Map<String, List<Action>> result = new HashMap<>(); // deviceId : List<Action>
 
-        if (runMode == TestTask.RUN_MODE_COMPATIBLE) { // 兼容模式： 所有设备都运行同一份用例
+        if (runMode == TestPlan.RUN_MODE_COMPATIBLE) { // 兼容模式： 所有设备都运行同一份用例
             result = deviceIds.stream().collect(Collectors.toMap(deviceId -> deviceId, v -> testcases));
-        } else if (runMode == TestTask.RUN_MODE_EFFICIENCY) { // 高效模式：平均分配用例给设备
+        } else if (runMode == TestPlan.RUN_MODE_EFFICIENCY) { // 高效模式：平均分配用例给设备
             int deviceIndex = 0; //当前分配到第几个设备
             for (int i = 0; i < testcases.size(); i++) {
                 List<Action> actions = result.get(deviceIds.get(deviceIndex));
@@ -163,28 +166,23 @@ public class TestTaskService extends BaseService {
     /**
      * 保存测试任务
      *
-     * @param commitTestTaskRequest
      * @return
      */
-    private TestTask saveTestTask(CommitTestTaskRequest commitTestTaskRequest) {
+    private TestTask saveTestTask(TestPlan testPlan) {
         TestTask testTask = new TestTask();
-        BeanUtils.copyProperties(commitTestTaskRequest, testTask);
 
-        testTask.setCommitTime(new Date());
-        testTask.setCreatorUid(getUid());
+        testTask.setProjectId(testPlan.getProjectId());
+        testTask.setTestPlanId(testPlan.getId());
+        testTask.setTestPlanName(testPlan.getName());
         testTask.setStatus(TestTask.UNFINISHED_STATUS);
+        testTask.setCreatorUid(getUid());
+        testTask.setCommitTime(new Date());
 
-        int insertRow;
-        try {
-            insertRow = testTaskMapper.insertSelective(testTask);
-        } catch (DuplicateKeyException e) {
-            throw new BusinessException("命名冲突");
-        }
-
+        int insertRow = testTaskMapper.insertSelective(testTask);
         if (insertRow == 1) {
             return testTask;
         } else {
-            throw new BusinessException("任务提交失败，请稍后重试");
+            throw new BusinessException("保存TestTask失败");
         }
     }
 

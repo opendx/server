@@ -605,6 +605,66 @@ public class TestPlanExample {
             return (Criteria) this;
         }
 
+        public Criteria andRunModeIsNull() {
+            addCriterion("run_mode is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andRunModeIsNotNull() {
+            addCriterion("run_mode is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andRunModeEqualTo(Integer value) {
+            addCriterion("run_mode =", value, "runMode");
+            return (Criteria) this;
+        }
+
+        public Criteria andRunModeNotEqualTo(Integer value) {
+            addCriterion("run_mode <>", value, "runMode");
+            return (Criteria) this;
+        }
+
+        public Criteria andRunModeGreaterThan(Integer value) {
+            addCriterion("run_mode >", value, "runMode");
+            return (Criteria) this;
+        }
+
+        public Criteria andRunModeGreaterThanOrEqualTo(Integer value) {
+            addCriterion("run_mode >=", value, "runMode");
+            return (Criteria) this;
+        }
+
+        public Criteria andRunModeLessThan(Integer value) {
+            addCriterion("run_mode <", value, "runMode");
+            return (Criteria) this;
+        }
+
+        public Criteria andRunModeLessThanOrEqualTo(Integer value) {
+            addCriterion("run_mode <=", value, "runMode");
+            return (Criteria) this;
+        }
+
+        public Criteria andRunModeIn(List<Integer> values) {
+            addCriterion("run_mode in", values, "runMode");
+            return (Criteria) this;
+        }
+
+        public Criteria andRunModeNotIn(List<Integer> values) {
+            addCriterion("run_mode not in", values, "runMode");
+            return (Criteria) this;
+        }
+
+        public Criteria andRunModeBetween(Integer value1, Integer value2) {
+            addCriterion("run_mode between", value1, value2, "runMode");
+            return (Criteria) this;
+        }
+
+        public Criteria andRunModeNotBetween(Integer value1, Integer value2) {
+            addCriterion("run_mode not between", value1, value2, "runMode");
+            return (Criteria) this;
+        }
+
         public Criteria andCreatorUidIsNull() {
             addCriterion("creator_uid is null");
             return (Criteria) this;

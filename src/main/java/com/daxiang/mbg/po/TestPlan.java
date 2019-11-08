@@ -8,11 +8,12 @@ import java.util.Date;
 import java.util.List;
 
 public class TestPlan implements Serializable {
-    /**
-     * 主键
-     *
-     * @mbg.generated
-     */
+
+    /** 兼容模式 */
+    public static final int RUN_MODE_COMPATIBLE = 1;
+    /** 高效模式 */
+    public static final int RUN_MODE_EFFICIENCY = 2;
+
     private Integer id;
 
     /**
@@ -67,6 +68,14 @@ public class TestPlan implements Serializable {
     private Integer afterMethod;
 
     /**
+     * 运行模式 1:兼容模式 2:高效模式
+     *
+     * @mbg.generated
+     */
+    @NotNull(message = "运行模式不能为空")
+    private Integer runMode;
+
+    /**
      * 创建人
      *
      * @mbg.generated
@@ -85,8 +94,16 @@ public class TestPlan implements Serializable {
      *
      * @mbg.generated
      */
-    @NotEmpty(message = "至少有要一个测试集")
-    private List<Integer> testSuites;
+    @NotEmpty(message = "测试集不能为空")
+    private java.util.List<Integer> testSuites;
+
+    /**
+     * 设备ids
+     *
+     * @mbg.generated
+     */
+    @NotEmpty(message = "设备不能为空")
+    private java.util.List<String> deviceIds;
 
     private static final long serialVersionUID = 1L;
 
@@ -154,6 +171,14 @@ public class TestPlan implements Serializable {
         this.afterMethod = afterMethod;
     }
 
+    public Integer getRunMode() {
+        return runMode;
+    }
+
+    public void setRunMode(Integer runMode) {
+        this.runMode = runMode;
+    }
+
     public Integer getCreatorUid() {
         return creatorUid;
     }
@@ -178,6 +203,14 @@ public class TestPlan implements Serializable {
         this.testSuites = testSuites;
     }
 
+    public java.util.List<String> getDeviceIds() {
+        return deviceIds;
+    }
+
+    public void setDeviceIds(java.util.List<String> deviceIds) {
+        this.deviceIds = deviceIds;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -192,9 +225,11 @@ public class TestPlan implements Serializable {
         sb.append(", beforeMethod=").append(beforeMethod);
         sb.append(", afterClass=").append(afterClass);
         sb.append(", afterMethod=").append(afterMethod);
+        sb.append(", runMode=").append(runMode);
         sb.append(", creatorUid=").append(creatorUid);
         sb.append(", createTime=").append(createTime);
         sb.append(", testSuites=").append(testSuites);
+        sb.append(", deviceIds=").append(deviceIds);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

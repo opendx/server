@@ -3,12 +3,10 @@ package com.daxiang.controller;
 import com.daxiang.mbg.po.TestTask;
 import com.daxiang.model.PageRequest;
 import com.daxiang.model.Response;
-import com.daxiang.model.request.CommitTestTaskRequest;
 import com.daxiang.service.TestTaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 
 /**
  * Created by jiangyitao.
@@ -23,12 +21,11 @@ public class TestTaskController {
     /**
      * 提交测试任务
      *
-     * @param commitTestTaskRequest
      * @return
      */
     @PostMapping("/commit")
-    public Response commit(@RequestBody @Valid CommitTestTaskRequest commitTestTaskRequest) {
-        return testTaskService.commit(commitTestTaskRequest);
+    public Response commit(Integer testPlanId) {
+        return testTaskService.commit(testPlanId);
     }
 
     /**

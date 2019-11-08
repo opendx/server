@@ -102,6 +102,9 @@ public class TestPlanService extends BaseService {
         if (!StringUtils.isEmpty(testPlan.getName())) {
             criteria.andNameEqualTo(testPlan.getName());
         }
+        if (testPlan.getRunMode() != null) {
+            criteria.andRunModeEqualTo(testPlan.getRunMode());
+        }
         testPlanExample.setOrderByClause("create_time desc");
 
         return testPlanMapper.selectByExampleWithBLOBs(testPlanExample);

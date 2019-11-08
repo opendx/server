@@ -6,9 +6,6 @@
     <result column="project_id" jdbcType="INTEGER" property="projectId" />
     <result column="test_plan_id" jdbcType="INTEGER" property="testPlanId" />
     <result column="test_plan_name" jdbcType="VARCHAR" property="testPlanName" />
-    <result column="name" jdbcType="VARCHAR" property="name" />
-    <result column="description" jdbcType="VARCHAR" property="description" />
-    <result column="run_mode" jdbcType="TINYINT" property="runMode" />
     <result column="status" jdbcType="TINYINT" property="status" />
     <result column="creator_uid" jdbcType="INTEGER" property="creatorUid" />
     <result column="pass_case_count" jdbcType="INTEGER" property="passCaseCount" />
@@ -76,8 +73,8 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, project_id, test_plan_id, test_plan_name, name, description, run_mode, status, 
-    creator_uid, pass_case_count, fail_case_count, skip_case_count, commit_time, finish_time
+    id, project_id, test_plan_id, test_plan_name, status, creator_uid, pass_case_count, 
+    fail_case_count, skip_case_count, commit_time, finish_time
   </sql>
   <select id="selectByExample" parameterType="com.daxiang.mbg.po.TestTaskExample" resultMap="BaseResultMap">
     select
@@ -114,12 +111,10 @@
       SELECT LAST_INSERT_ID()
     </selectKey>
     insert into test_task (project_id, test_plan_id, test_plan_name, 
-      name, description, run_mode, 
       status, creator_uid, pass_case_count, 
       fail_case_count, skip_case_count, commit_time, 
       finish_time)
     values (#{projectId,jdbcType=INTEGER}, #{testPlanId,jdbcType=INTEGER}, #{testPlanName,jdbcType=VARCHAR}, 
-      #{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{runMode,jdbcType=TINYINT}, 
       #{status,jdbcType=TINYINT}, #{creatorUid,jdbcType=INTEGER}, #{passCaseCount,jdbcType=INTEGER}, 
       #{failCaseCount,jdbcType=INTEGER}, #{skipCaseCount,jdbcType=INTEGER}, #{commitTime,jdbcType=TIMESTAMP}, 
       #{finishTime,jdbcType=TIMESTAMP})
@@ -138,15 +133,6 @@
       </if>
       <if test="testPlanName != null">
         test_plan_name,
-      </if>
-      <if test="name != null">
-        name,
-      </if>
-      <if test="description != null">
-        description,
-      </if>
-      <if test="runMode != null">
-        run_mode,
       </if>
       <if test="status != null">
         status,
@@ -179,15 +165,6 @@
       </if>
       <if test="testPlanName != null">
         #{testPlanName,jdbcType=VARCHAR},
-      </if>
-      <if test="name != null">
-        #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="description != null">
-        #{description,jdbcType=VARCHAR},
-      </if>
-      <if test="runMode != null">
-        #{runMode,jdbcType=TINYINT},
       </if>
       <if test="status != null">
         #{status,jdbcType=TINYINT},
@@ -233,15 +210,6 @@
       <if test="record.testPlanName != null">
         test_plan_name = #{record.testPlanName,jdbcType=VARCHAR},
       </if>
-      <if test="record.name != null">
-        name = #{record.name,jdbcType=VARCHAR},
-      </if>
-      <if test="record.description != null">
-        description = #{record.description,jdbcType=VARCHAR},
-      </if>
-      <if test="record.runMode != null">
-        run_mode = #{record.runMode,jdbcType=TINYINT},
-      </if>
       <if test="record.status != null">
         status = #{record.status,jdbcType=TINYINT},
       </if>
@@ -274,9 +242,6 @@
       project_id = #{record.projectId,jdbcType=INTEGER},
       test_plan_id = #{record.testPlanId,jdbcType=INTEGER},
       test_plan_name = #{record.testPlanName,jdbcType=VARCHAR},
-      name = #{record.name,jdbcType=VARCHAR},
-      description = #{record.description,jdbcType=VARCHAR},
-      run_mode = #{record.runMode,jdbcType=TINYINT},
       status = #{record.status,jdbcType=TINYINT},
       creator_uid = #{record.creatorUid,jdbcType=INTEGER},
       pass_case_count = #{record.passCaseCount,jdbcType=INTEGER},
@@ -299,15 +264,6 @@
       </if>
       <if test="testPlanName != null">
         test_plan_name = #{testPlanName,jdbcType=VARCHAR},
-      </if>
-      <if test="name != null">
-        name = #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="description != null">
-        description = #{description,jdbcType=VARCHAR},
-      </if>
-      <if test="runMode != null">
-        run_mode = #{runMode,jdbcType=TINYINT},
       </if>
       <if test="status != null">
         status = #{status,jdbcType=TINYINT},
@@ -338,9 +294,6 @@
     set project_id = #{projectId,jdbcType=INTEGER},
       test_plan_id = #{testPlanId,jdbcType=INTEGER},
       test_plan_name = #{testPlanName,jdbcType=VARCHAR},
-      name = #{name,jdbcType=VARCHAR},
-      description = #{description,jdbcType=VARCHAR},
-      run_mode = #{runMode,jdbcType=TINYINT},
       status = #{status,jdbcType=TINYINT},
       creator_uid = #{creatorUid,jdbcType=INTEGER},
       pass_case_count = #{passCaseCount,jdbcType=INTEGER},

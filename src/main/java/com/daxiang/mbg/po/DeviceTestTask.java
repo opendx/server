@@ -1,7 +1,7 @@
 package com.daxiang.mbg.po;
 
+import com.daxiang.mbg.po.GlobalVar;
 import com.daxiang.model.vo.Testcase;
-
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -37,13 +37,6 @@ public class DeviceTestTask implements Serializable {
     private Integer testTaskId;
 
     /**
-     * 测试任务名
-     *
-     * @mbg.generated
-     */
-    private String testTaskName;
-
-    /**
      * 设备id
      *
      * @mbg.generated
@@ -76,7 +69,7 @@ public class DeviceTestTask implements Serializable {
      *
      * @mbg.generated
      */
-    private List<GlobalVar> globalVars;
+    private java.util.List<GlobalVar> globalVars;
 
     /**
      * BeforeClass
@@ -111,7 +104,7 @@ public class DeviceTestTask implements Serializable {
      *
      * @mbg.generated
      */
-    private List<Testcase> testcases;
+    private java.util.List<com.daxiang.model.vo.Testcase> testcases;
 
     private static final long serialVersionUID = 1L;
 
@@ -137,14 +130,6 @@ public class DeviceTestTask implements Serializable {
 
     public void setTestTaskId(Integer testTaskId) {
         this.testTaskId = testTaskId;
-    }
-
-    public String getTestTaskName() {
-        return testTaskName;
-    }
-
-    public void setTestTaskName(String testTaskName) {
-        this.testTaskName = testTaskName;
     }
 
     public String getDeviceId() {
@@ -219,11 +204,11 @@ public class DeviceTestTask implements Serializable {
         this.afterMethod = afterMethod;
     }
 
-    public java.util.List<Testcase> getTestcases() {
+    public java.util.List<com.daxiang.model.vo.Testcase> getTestcases() {
         return testcases;
     }
 
-    public void setTestcases(java.util.List<Testcase> testcases) {
+    public void setTestcases(java.util.List<com.daxiang.model.vo.Testcase> testcases) {
         this.testcases = testcases;
     }
 
@@ -236,7 +221,6 @@ public class DeviceTestTask implements Serializable {
         sb.append(", id=").append(id);
         sb.append(", projectId=").append(projectId);
         sb.append(", testTaskId=").append(testTaskId);
-        sb.append(", testTaskName=").append(testTaskName);
         sb.append(", deviceId=").append(deviceId);
         sb.append(", status=").append(status);
         sb.append(", startTime=").append(startTime);

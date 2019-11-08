@@ -108,7 +108,6 @@ CREATE TABLE `device_test_task` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `project_id` int(11) NOT NULL COMMENT '项目id',
   `test_task_id` int(11) NOT NULL COMMENT '测试任务id',
-  `test_task_name` varchar(100) NOT NULL COMMENT '测试任务名',
   `device_id` varchar(100) NOT NULL COMMENT '设备id',
   `global_vars` json DEFAULT NULL COMMENT '全局变量',
   `before_class` json DEFAULT NULL COMMENT 'BeforeClass',
@@ -190,6 +189,8 @@ CREATE TABLE `test_plan` (
   `after_class` int(11) DEFAULT NULL COMMENT 'AfterClass',
   `after_method` int(11) DEFAULT NULL COMMENT 'AfterMethod',
   `test_suites` json NOT NULL COMMENT '测试集',
+  `device_ids` json NOT NULL COMMENT '设备ids',
+  `run_mode` tinyint(4) NOT NULL COMMENT '运行模式 1:兼容模式 2:高效模式',
   `creator_uid` int(11) DEFAULT NULL COMMENT '创建人',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE,
@@ -220,9 +221,6 @@ CREATE TABLE `test_task` (
   `project_id` int(11) NOT NULL COMMENT '所属项目',
   `test_plan_id` int(11) NOT NULL COMMENT '所属测试计划',
   `test_plan_name` varchar(100) NOT NULL COMMENT '测试计划名',
-  `name` varchar(100) NOT NULL COMMENT '任务名',
-  `description` varchar(255) DEFAULT NULL COMMENT '任务描述',
-  `run_mode` tinyint(4) NOT NULL COMMENT '运行模式 1:兼容模式 2:高效模式',
   `status` tinyint(4) DEFAULT NULL COMMENT '任务状态 0:未完成 1:已完成',
   `creator_uid` int(11) DEFAULT NULL COMMENT '任务创建人',
   `pass_case_count` int(11) DEFAULT '0' COMMENT '测试通过用例数',
@@ -231,7 +229,6 @@ CREATE TABLE `test_task` (
   `commit_time` datetime DEFAULT NULL COMMENT '任务提交时间',
   `finish_time` datetime DEFAULT NULL COMMENT '任务完成时间',
   PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE KEY `uniq_projectId_name` (`project_id`,`name`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='测试任务表';
 
 -- ----------------------------

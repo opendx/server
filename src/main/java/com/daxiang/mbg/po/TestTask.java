@@ -8,19 +8,10 @@ import java.util.Date;
 public class TestTask implements Serializable {
 
     /** 未完成 */
-    public static final Integer UNFINISHED_STATUS = 0;
+    public static final int UNFINISHED_STATUS = 0;
     /** 完成*/
-    public static final Integer FINISHED_STATUS = 1;
-    /** 兼容模式 */
-    public static final Integer RUN_MODE_COMPATIBLE = 1;
-    /** 高效模式 */
-    public static final Integer RUN_MODE_EFFICIENCY = 2;
+    public static final int FINISHED_STATUS = 1;
 
-    /**
-     * 主键id
-     *
-     * @mbg.generated
-     */
     private Integer id;
 
     /**
@@ -46,29 +37,6 @@ public class TestTask implements Serializable {
      */
     @NotBlank(message = "测试计划名不能为空")
     private String testPlanName;
-
-    /**
-     * 任务名
-     *
-     * @mbg.generated
-     */
-    @NotBlank(message = "测试任务名不能为空")
-    private String name;
-
-    /**
-     * 任务描述
-     *
-     * @mbg.generated
-     */
-    private String description;
-
-    /**
-     * 运行模式 1:兼容模式 2:高效模式
-     *
-     * @mbg.generated
-     */
-    @NotNull(message = "用例分发策划不能为空")
-    private Integer runMode;
 
     /**
      * 任务状态 0:未完成 1:已完成
@@ -153,30 +121,6 @@ public class TestTask implements Serializable {
         this.testPlanName = testPlanName;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Integer getRunMode() {
-        return runMode;
-    }
-
-    public void setRunMode(Integer runMode) {
-        this.runMode = runMode;
-    }
-
     public Integer getStatus() {
         return status;
     }
@@ -243,9 +187,6 @@ public class TestTask implements Serializable {
         sb.append(", projectId=").append(projectId);
         sb.append(", testPlanId=").append(testPlanId);
         sb.append(", testPlanName=").append(testPlanName);
-        sb.append(", name=").append(name);
-        sb.append(", description=").append(description);
-        sb.append(", runMode=").append(runMode);
         sb.append(", status=").append(status);
         sb.append(", creatorUid=").append(creatorUid);
         sb.append(", passCaseCount=").append(passCaseCount);
