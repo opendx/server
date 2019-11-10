@@ -105,6 +105,9 @@ public class TestPlanService extends BaseService {
         if (testPlan.getRunMode() != null) {
             criteria.andRunModeEqualTo(testPlan.getRunMode());
         }
+        if (testPlan.getEnableSchedule() != null) {
+            criteria.andEnableScheduleEqualTo(testPlan.getEnableSchedule());
+        }
         testPlanExample.setOrderByClause("create_time desc");
 
         return testPlanMapper.selectByExampleWithBLOBs(testPlanExample);

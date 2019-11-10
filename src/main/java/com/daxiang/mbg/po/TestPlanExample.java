@@ -665,6 +665,136 @@ public class TestPlanExample {
             return (Criteria) this;
         }
 
+        public Criteria andCronExpressionIsNull() {
+            addCriterion("cron_expression is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andCronExpressionIsNotNull() {
+            addCriterion("cron_expression is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andCronExpressionEqualTo(String value) {
+            addCriterion("cron_expression =", value, "cronExpression");
+            return (Criteria) this;
+        }
+
+        public Criteria andCronExpressionNotEqualTo(String value) {
+            addCriterion("cron_expression <>", value, "cronExpression");
+            return (Criteria) this;
+        }
+
+        public Criteria andCronExpressionGreaterThan(String value) {
+            addCriterion("cron_expression >", value, "cronExpression");
+            return (Criteria) this;
+        }
+
+        public Criteria andCronExpressionGreaterThanOrEqualTo(String value) {
+            addCriterion("cron_expression >=", value, "cronExpression");
+            return (Criteria) this;
+        }
+
+        public Criteria andCronExpressionLessThan(String value) {
+            addCriterion("cron_expression <", value, "cronExpression");
+            return (Criteria) this;
+        }
+
+        public Criteria andCronExpressionLessThanOrEqualTo(String value) {
+            addCriterion("cron_expression <=", value, "cronExpression");
+            return (Criteria) this;
+        }
+
+        public Criteria andCronExpressionLike(String value) {
+            addCriterion("cron_expression like", value, "cronExpression");
+            return (Criteria) this;
+        }
+
+        public Criteria andCronExpressionNotLike(String value) {
+            addCriterion("cron_expression not like", value, "cronExpression");
+            return (Criteria) this;
+        }
+
+        public Criteria andCronExpressionIn(List<String> values) {
+            addCriterion("cron_expression in", values, "cronExpression");
+            return (Criteria) this;
+        }
+
+        public Criteria andCronExpressionNotIn(List<String> values) {
+            addCriterion("cron_expression not in", values, "cronExpression");
+            return (Criteria) this;
+        }
+
+        public Criteria andCronExpressionBetween(String value1, String value2) {
+            addCriterion("cron_expression between", value1, value2, "cronExpression");
+            return (Criteria) this;
+        }
+
+        public Criteria andCronExpressionNotBetween(String value1, String value2) {
+            addCriterion("cron_expression not between", value1, value2, "cronExpression");
+            return (Criteria) this;
+        }
+
+        public Criteria andEnableScheduleIsNull() {
+            addCriterion("enable_schedule is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andEnableScheduleIsNotNull() {
+            addCriterion("enable_schedule is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andEnableScheduleEqualTo(Integer value) {
+            addCriterion("enable_schedule =", value, "enableSchedule");
+            return (Criteria) this;
+        }
+
+        public Criteria andEnableScheduleNotEqualTo(Integer value) {
+            addCriterion("enable_schedule <>", value, "enableSchedule");
+            return (Criteria) this;
+        }
+
+        public Criteria andEnableScheduleGreaterThan(Integer value) {
+            addCriterion("enable_schedule >", value, "enableSchedule");
+            return (Criteria) this;
+        }
+
+        public Criteria andEnableScheduleGreaterThanOrEqualTo(Integer value) {
+            addCriterion("enable_schedule >=", value, "enableSchedule");
+            return (Criteria) this;
+        }
+
+        public Criteria andEnableScheduleLessThan(Integer value) {
+            addCriterion("enable_schedule <", value, "enableSchedule");
+            return (Criteria) this;
+        }
+
+        public Criteria andEnableScheduleLessThanOrEqualTo(Integer value) {
+            addCriterion("enable_schedule <=", value, "enableSchedule");
+            return (Criteria) this;
+        }
+
+        public Criteria andEnableScheduleIn(List<Integer> values) {
+            addCriterion("enable_schedule in", values, "enableSchedule");
+            return (Criteria) this;
+        }
+
+        public Criteria andEnableScheduleNotIn(List<Integer> values) {
+            addCriterion("enable_schedule not in", values, "enableSchedule");
+            return (Criteria) this;
+        }
+
+        public Criteria andEnableScheduleBetween(Integer value1, Integer value2) {
+            addCriterion("enable_schedule between", value1, value2, "enableSchedule");
+            return (Criteria) this;
+        }
+
+        public Criteria andEnableScheduleNotBetween(Integer value1, Integer value2) {
+            addCriterion("enable_schedule not between", value1, value2, "enableSchedule");
+            return (Criteria) this;
+        }
+
         public Criteria andCreatorUidIsNull() {
             addCriterion("creator_uid is null");
             return (Criteria) this;

@@ -11,6 +11,8 @@
     <result column="after_class" jdbcType="INTEGER" property="afterClass" />
     <result column="after_method" jdbcType="INTEGER" property="afterMethod" />
     <result column="run_mode" jdbcType="TINYINT" property="runMode" />
+    <result column="cron_expression" jdbcType="VARCHAR" property="cronExpression" />
+    <result column="enable_schedule" jdbcType="TINYINT" property="enableSchedule" />
     <result column="creator_uid" jdbcType="INTEGER" property="creatorUid" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
@@ -78,7 +80,7 @@
   </sql>
   <sql id="Base_Column_List">
     id, name, description, project_id, before_class, before_method, after_class, after_method, 
-    run_mode, creator_uid, create_time
+    run_mode, cron_expression, enable_schedule, creator_uid, create_time
   </sql>
   <sql id="Blob_Column_List">
     test_suites, device_ids
@@ -137,14 +139,16 @@
     </selectKey>
     insert into test_plan (name, description, project_id, 
       before_class, before_method, after_class, 
-      after_method, run_mode, creator_uid, 
-      create_time, test_suites, 
+      after_method, run_mode, cron_expression, 
+      enable_schedule, creator_uid, create_time, 
+      test_suites, 
       device_ids
       )
     values (#{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{projectId,jdbcType=INTEGER}, 
       #{beforeClass,jdbcType=INTEGER}, #{beforeMethod,jdbcType=INTEGER}, #{afterClass,jdbcType=INTEGER}, 
-      #{afterMethod,jdbcType=INTEGER}, #{runMode,jdbcType=TINYINT}, #{creatorUid,jdbcType=INTEGER}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{testSuites,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.IntegerListTypeHandler}, 
+      #{afterMethod,jdbcType=INTEGER}, #{runMode,jdbcType=TINYINT}, #{cronExpression,jdbcType=VARCHAR}, 
+      #{enableSchedule,jdbcType=TINYINT}, #{creatorUid,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{testSuites,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.IntegerListTypeHandler}, 
       #{deviceIds,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.StringListTypeHandler}
       )
   </insert>
@@ -177,6 +181,12 @@
       </if>
       <if test="runMode != null">
         run_mode,
+      </if>
+      <if test="cronExpression != null">
+        cron_expression,
+      </if>
+      <if test="enableSchedule != null">
+        enable_schedule,
       </if>
       <if test="creatorUid != null">
         creator_uid,
@@ -215,6 +225,12 @@
       </if>
       <if test="runMode != null">
         #{runMode,jdbcType=TINYINT},
+      </if>
+      <if test="cronExpression != null">
+        #{cronExpression,jdbcType=VARCHAR},
+      </if>
+      <if test="enableSchedule != null">
+        #{enableSchedule,jdbcType=TINYINT},
       </if>
       <if test="creatorUid != null">
         #{creatorUid,jdbcType=INTEGER},
@@ -266,6 +282,12 @@
       <if test="record.runMode != null">
         run_mode = #{record.runMode,jdbcType=TINYINT},
       </if>
+      <if test="record.cronExpression != null">
+        cron_expression = #{record.cronExpression,jdbcType=VARCHAR},
+      </if>
+      <if test="record.enableSchedule != null">
+        enable_schedule = #{record.enableSchedule,jdbcType=TINYINT},
+      </if>
       <if test="record.creatorUid != null">
         creator_uid = #{record.creatorUid,jdbcType=INTEGER},
       </if>
@@ -294,6 +316,8 @@
       after_class = #{record.afterClass,jdbcType=INTEGER},
       after_method = #{record.afterMethod,jdbcType=INTEGER},
       run_mode = #{record.runMode,jdbcType=TINYINT},
+      cron_expression = #{record.cronExpression,jdbcType=VARCHAR},
+      enable_schedule = #{record.enableSchedule,jdbcType=TINYINT},
       creator_uid = #{record.creatorUid,jdbcType=INTEGER},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       test_suites = #{record.testSuites,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.IntegerListTypeHandler},
@@ -313,6 +337,8 @@
       after_class = #{record.afterClass,jdbcType=INTEGER},
       after_method = #{record.afterMethod,jdbcType=INTEGER},
       run_mode = #{record.runMode,jdbcType=TINYINT},
+      cron_expression = #{record.cronExpression,jdbcType=VARCHAR},
+      enable_schedule = #{record.enableSchedule,jdbcType=TINYINT},
       creator_uid = #{record.creatorUid,jdbcType=INTEGER},
       create_time = #{record.createTime,jdbcType=TIMESTAMP}
     <if test="_parameter != null">
@@ -346,6 +372,12 @@
       <if test="runMode != null">
         run_mode = #{runMode,jdbcType=TINYINT},
       </if>
+      <if test="cronExpression != null">
+        cron_expression = #{cronExpression,jdbcType=VARCHAR},
+      </if>
+      <if test="enableSchedule != null">
+        enable_schedule = #{enableSchedule,jdbcType=TINYINT},
+      </if>
       <if test="creatorUid != null">
         creator_uid = #{creatorUid,jdbcType=INTEGER},
       </if>
@@ -371,6 +403,8 @@
       after_class = #{afterClass,jdbcType=INTEGER},
       after_method = #{afterMethod,jdbcType=INTEGER},
       run_mode = #{runMode,jdbcType=TINYINT},
+      cron_expression = #{cronExpression,jdbcType=VARCHAR},
+      enable_schedule = #{enableSchedule,jdbcType=TINYINT},
       creator_uid = #{creatorUid,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       test_suites = #{testSuites,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.IntegerListTypeHandler},
@@ -387,6 +421,8 @@
       after_class = #{afterClass,jdbcType=INTEGER},
       after_method = #{afterMethod,jdbcType=INTEGER},
       run_mode = #{runMode,jdbcType=TINYINT},
+      cron_expression = #{cronExpression,jdbcType=VARCHAR},
+      enable_schedule = #{enableSchedule,jdbcType=TINYINT},
       creator_uid = #{creatorUid,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}

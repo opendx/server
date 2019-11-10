@@ -191,6 +191,8 @@ CREATE TABLE `test_plan` (
   `test_suites` json NOT NULL COMMENT '测试集',
   `device_ids` json NOT NULL COMMENT '设备ids',
   `run_mode` tinyint(4) NOT NULL COMMENT '运行模式 1:兼容模式 2:高效模式',
+  `cron_expression` varchar(255) DEFAULT NULL COMMENT 'cron表达式',
+  `enable_schedule` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否开启定时任务，0: 关闭 1: 开启',
   `creator_uid` int(11) DEFAULT NULL COMMENT '创建人',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE,
