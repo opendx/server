@@ -228,7 +228,7 @@ CREATE TABLE `test_task` (
   `skip_case_count` int(11) DEFAULT '0' COMMENT '测试跳过用例数',
   `commit_time` datetime DEFAULT NULL COMMENT '任务提交时间',
   `finish_time` datetime DEFAULT NULL COMMENT '任务完成时间',
-  PRIMARY KEY (`id`) USING BTREE,
+  PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='测试任务表';
 
 -- ----------------------------
