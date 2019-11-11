@@ -1,5 +1,6 @@
 package com.daxiang.init;
 
+import com.daxiang.service.TestPlanService;
 import com.daxiang.service.UserService;
 import com.daxiang.mbg.po.User;
 import com.daxiang.model.UserCache;
@@ -29,8 +30,11 @@ public class StartupRunner implements ApplicationRunner {
     private String uploadIpaPath;
     @Value("${web.upload-other-path}")
     private String uploadOtherPath;
+
     @Autowired
     private UserService userService;
+    @Autowired
+    private TestPlanService testPlanService;
 
     @Override
     public void run(ApplicationArguments args) {
@@ -64,7 +68,9 @@ public class StartupRunner implements ApplicationRunner {
             uploadOtherDir.mkdirs();
         }
 
-        // 首次启动将所有用户放入单机缓存，以后有集群需求再用redis
+        // 启动server时，将所有用户放入单机缓存，以后有集群需求再用redis
         UserCache.set(userService.selectAll().stream().collect(Collectors.toMap(User::getId, user -> user)));
+        // 启动server时，按cron表达式执行所有开启的定时任务
+        testPlanService.scheduleEnabledTasks();
     }
 }

@@ -25,7 +25,7 @@ public class TestTaskController {
      */
     @GetMapping("/commit")
     public Response commit(Integer testPlanId) {
-        return testTaskService.commit(testPlanId);
+        return testTaskService.commit(testPlanId, null);
     }
 
     /**

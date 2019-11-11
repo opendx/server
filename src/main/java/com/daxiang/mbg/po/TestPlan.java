@@ -14,6 +14,8 @@ public class TestPlan implements Serializable {
     /** 高效模式 */
     public static final int RUN_MODE_EFFICIENCY = 2;
 
+    public static final int ENABLE_SCHEDULE = 1;
+
     private Integer id;
 
     /**

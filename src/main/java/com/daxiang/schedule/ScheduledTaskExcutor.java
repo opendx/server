@@ -43,7 +43,7 @@ public class ScheduledTaskExcutor {
                 long finishedCount = deviceTestTasks.stream().filter(task -> task.getStatus() == DeviceTestTask.FINISHED_STATUS).count();
                 // 所有手机都测试完成
                 if (deviceTestTasks.size() == finishedCount) {
-                    log.info("开始统计测试任务结果: {}", unFinishedTestTask.getId());
+                    log.info("开始统计测试结果, testTaskId: {}", unFinishedTestTask.getId());
                     List<Testcase> testcases = deviceTestTasks.stream().flatMap(task -> task.getTestcases().stream()).collect(Collectors.toList());
 
                     long passCount = testcases.stream().filter(testcase -> testcase.getStatus() == Testcase.PASS_STATUS).count();
@@ -59,7 +59,7 @@ public class ScheduledTaskExcutor {
                     testTask.setSkipCaseCount((int) skipCount);
 
                     testTaskService.updateByPrimaryKeySelective(testTask);
-                    log.info("测试任务结果统计完成: {}", unFinishedTestTask.getId());
+                    log.info("测试结果统计完成, testTaskId: {}", unFinishedTestTask.getId());
                 }
             }
         });

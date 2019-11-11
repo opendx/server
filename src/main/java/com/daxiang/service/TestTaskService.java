@@ -47,7 +47,7 @@ public class TestTaskService extends BaseService {
      * @return
      */
     @Transactional
-    public Response commit(Integer testPlanId) {
+    public Response commit(Integer testPlanId, Integer commitorUid) {
         if (testPlanId == null) {
             return Response.fail("testPlanId不能为空");
         }
@@ -85,7 +85,7 @@ public class TestTaskService extends BaseService {
         actionService.buildActionTree(needBuildActions);
 
         // 保存测试任务
-        TestTask testTask = saveTestTask(testPlan);
+        TestTask testTask = saveTestTask(testPlan, commitorUid);
 
         // 同一项目下的全局变量
         GlobalVar globalVar = new GlobalVar();
@@ -168,14 +168,17 @@ public class TestTaskService extends BaseService {
      *
      * @return
      */
-    private TestTask saveTestTask(TestPlan testPlan) {
+    private TestTask saveTestTask(TestPlan testPlan, Integer commitorUid) {
         TestTask testTask = new TestTask();
 
         testTask.setProjectId(testPlan.getProjectId());
         testTask.setTestPlanId(testPlan.getId());
         testTask.setTestPlanName(testPlan.getName());
         testTask.setStatus(TestTask.UNFINISHED_STATUS);
-        testTask.setCreatorUid(getUid());
+        if (commitorUid == null) {
+            commitorUid = getUid();
+        }
+        testTask.setCreatorUid(commitorUid);
         testTask.setCommitTime(new Date());
 
         int insertRow = testTaskMapper.insertSelective(testTask);
