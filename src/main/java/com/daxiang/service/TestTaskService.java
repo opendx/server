@@ -296,7 +296,7 @@ public class TestTaskService extends BaseService {
         List<DeviceTestTask> deviceTestTasks = deviceTestTaskService.findByTestTaskId(testTaskId);
 
         if (!CollectionUtils.isEmpty(deviceTestTasks)) {
-            List<DeviceTestTask> alreadyStartedDeviceTestTasks = deviceTestTasks.stream().filter(deviceTestTask -> deviceTestTask.getStatus() != DeviceTestTask.UNSTART_STATUS).collect(Collectors.toList());
+            List<DeviceTestTask> alreadyStartedDeviceTestTasks = deviceTestTasks.stream().filter(deviceTestTask -> !deviceTestTaskService.canDelete(deviceTestTask.getStatus())).collect(Collectors.toList());
             if (!CollectionUtils.isEmpty(alreadyStartedDeviceTestTasks)) {
                 // 有设备已经运行过测试任务，不让删除整个testTask
                 String alreadyStartedDeviceIds = alreadyStartedDeviceTestTasks.stream().map(DeviceTestTask::getDeviceId).collect(Collectors.joining("、"));
