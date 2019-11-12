@@ -8,6 +8,8 @@ import java.util.List;
 
 public class DeviceTestTask implements Serializable {
 
+    /** 出错，无法运行 */
+    public static final int ERROR_STATUS = -1;
     /** 未开始 */
     public static final int UNSTART_STATUS = 0;
     /** 运行中 */
@@ -15,11 +17,6 @@ public class DeviceTestTask implements Serializable {
     /** 完成 */
     public static final int FINISHED_STATUS = 2;
 
-    /**
-     * 主键id
-     *
-     * @mbg.generated
-     */
     private Integer id;
 
     /**
@@ -44,7 +41,7 @@ public class DeviceTestTask implements Serializable {
     private String deviceId;
 
     /**
-     * 状态： 0:未开始 1:运行中 2:已完成
+     * 状态：-1:无法运行 0:未开始 1:运行中 2:已完成
      *
      * @mbg.generated
      */
@@ -105,6 +102,20 @@ public class DeviceTestTask implements Serializable {
      * @mbg.generated
      */
     private java.util.List<com.daxiang.model.vo.Testcase> testcases;
+
+    /**
+     * agent转换后的代码
+     *
+     * @mbg.generated
+     */
+    private String code;
+
+    /**
+     * status: -1, 错误信息
+     *
+     * @mbg.generated
+     */
+    private String errMsg;
 
     private static final long serialVersionUID = 1L;
 
@@ -212,6 +223,22 @@ public class DeviceTestTask implements Serializable {
         this.testcases = testcases;
     }
 
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getErrMsg() {
+        return errMsg;
+    }
+
+    public void setErrMsg(String errMsg) {
+        this.errMsg = errMsg;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -231,6 +258,8 @@ public class DeviceTestTask implements Serializable {
         sb.append(", afterClass=").append(afterClass);
         sb.append(", afterMethod=").append(afterMethod);
         sb.append(", testcases=").append(testcases);
+        sb.append(", code=").append(code);
+        sb.append(", errMsg=").append(errMsg);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

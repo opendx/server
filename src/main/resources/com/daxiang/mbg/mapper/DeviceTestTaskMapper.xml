@@ -17,6 +17,8 @@
     <result column="after_class" jdbcType="LONGVARCHAR" property="afterClass" typeHandler="com.daxiang.typehandler.ActionTypeHandler" />
     <result column="after_method" jdbcType="LONGVARCHAR" property="afterMethod" typeHandler="com.daxiang.typehandler.ActionTypeHandler" />
     <result column="testcases" jdbcType="LONGVARCHAR" property="testcases" typeHandler="com.daxiang.typehandler.TestcaseListTypeHandler" />
+    <result column="code" jdbcType="LONGVARCHAR" property="code" />
+    <result column="err_msg" jdbcType="LONGVARCHAR" property="errMsg" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -80,7 +82,8 @@
     id, project_id, test_task_id, device_id, status, start_time, end_time
   </sql>
   <sql id="Blob_Column_List">
-    global_vars, before_class, before_method, after_class, after_method, testcases
+    global_vars, before_class, before_method, after_class, after_method, testcases, code, 
+    err_msg
   </sql>
   <select id="selectByExampleWithBLOBs" parameterType="com.daxiang.mbg.po.DeviceTestTaskExample" resultMap="ResultMapWithBLOBs">
     select
@@ -141,8 +144,8 @@
       before_method, 
       after_class, 
       after_method, 
-      testcases
-      )
+      testcases, 
+      code, err_msg)
     values (#{projectId,jdbcType=INTEGER}, #{testTaskId,jdbcType=INTEGER}, #{deviceId,jdbcType=VARCHAR}, 
       #{status,jdbcType=TINYINT}, #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, 
       #{globalVars,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.GlobalVarListTypeHandler}, 
@@ -150,8 +153,8 @@
       #{beforeMethod,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.ActionTypeHandler}, 
       #{afterClass,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.ActionTypeHandler}, 
       #{afterMethod,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.ActionTypeHandler}, 
-      #{testcases,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.TestcaseListTypeHandler}
-      )
+      #{testcases,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.TestcaseListTypeHandler}, 
+      #{code,jdbcType=LONGVARCHAR}, #{errMsg,jdbcType=LONGVARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.daxiang.mbg.po.DeviceTestTask">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
@@ -195,6 +198,12 @@
       <if test="testcases != null">
         testcases,
       </if>
+      <if test="code != null">
+        code,
+      </if>
+      <if test="errMsg != null">
+        err_msg,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="projectId != null">
@@ -232,6 +241,12 @@
       </if>
       <if test="testcases != null">
         #{testcases,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.TestcaseListTypeHandler},
+      </if>
+      <if test="code != null">
+        #{code,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="errMsg != null">
+        #{errMsg,jdbcType=LONGVARCHAR},
       </if>
     </trim>
   </insert>
@@ -283,6 +298,12 @@
       <if test="record.testcases != null">
         testcases = #{record.testcases,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.TestcaseListTypeHandler},
       </if>
+      <if test="record.code != null">
+        code = #{record.code,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="record.errMsg != null">
+        err_msg = #{record.errMsg,jdbcType=LONGVARCHAR},
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -302,7 +323,9 @@
       before_method = #{record.beforeMethod,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.ActionTypeHandler},
       after_class = #{record.afterClass,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.ActionTypeHandler},
       after_method = #{record.afterMethod,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.ActionTypeHandler},
-      testcases = #{record.testcases,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.TestcaseListTypeHandler}
+      testcases = #{record.testcases,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.TestcaseListTypeHandler},
+      code = #{record.code,jdbcType=LONGVARCHAR},
+      err_msg = #{record.errMsg,jdbcType=LONGVARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -359,6 +382,12 @@
       <if test="testcases != null">
         testcases = #{testcases,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.TestcaseListTypeHandler},
       </if>
+      <if test="code != null">
+        code = #{code,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="errMsg != null">
+        err_msg = #{errMsg,jdbcType=LONGVARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -375,7 +404,9 @@
       before_method = #{beforeMethod,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.ActionTypeHandler},
       after_class = #{afterClass,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.ActionTypeHandler},
       after_method = #{afterMethod,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.ActionTypeHandler},
-      testcases = #{testcases,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.TestcaseListTypeHandler}
+      testcases = #{testcases,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.TestcaseListTypeHandler},
+      code = #{code,jdbcType=LONGVARCHAR},
+      err_msg = #{errMsg,jdbcType=LONGVARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.daxiang.mbg.po.DeviceTestTask">
