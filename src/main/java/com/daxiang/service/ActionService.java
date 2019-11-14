@@ -3,14 +3,13 @@ package com.daxiang.service;
 import com.alibaba.fastjson.JSONObject;
 import com.daxiang.agent.AgentApi;
 import com.daxiang.mbg.mapper.ActionMapper;
-import com.daxiang.mbg.po.Action;
-import com.daxiang.mbg.po.ActionExample;
-import com.daxiang.mbg.po.GlobalVar;
+import com.daxiang.mbg.po.*;
 import com.daxiang.model.Page;
 import com.daxiang.model.PageRequest;
 import com.daxiang.model.Response;
 import com.daxiang.model.action.Step;
 import com.daxiang.model.request.ActionDebugRequest;
+import com.daxiang.model.vo.ActionCascaderVo;
 import com.daxiang.model.vo.ActionVo;
 import com.daxiang.model.UserCache;
 import com.github.pagehelper.PageHelper;
@@ -39,6 +38,10 @@ public class ActionService extends BaseService {
     private GlobalVarService globalVarService;
     @Autowired
     private AgentApi agentApi;
+    @Autowired
+    private TestSuiteService testSuiteService;
+    @Autowired
+    private CategoryService categoryService;
 
     public Response add(Action action) {
         action.setCreatorUid(getUid());
@@ -187,7 +190,74 @@ public class ActionService extends BaseService {
         actionExample.or(criteria3);
         actionExample.setOrderByClause("create_time desc");
 
-        return Response.success(actionMapper.selectByExampleWithBLOBs(actionExample));
+        List<Action> actions = actionMapper.selectByExampleWithBLOBs(actionExample);
+        List<ActionCascaderVo> result = new ArrayList<>();
+
+        Map<Integer, List<Action>> groupByActionTypeMap = actions.stream().collect(Collectors.groupingBy(Action::getType));
+        groupByActionTypeMap.forEach((type,actionList) -> {
+            ActionCascaderVo root = new ActionCascaderVo();
+            root.setName(type == Action.TYPE_BASE ? "基础组件" : type == Action.TYPE_TESTCASE ? "测试用例" : "封装组件");
+            List<ActionCascaderVo> rootChildren = new ArrayList<>();
+            root.setChildren(rootChildren);
+            if (type == Action.TYPE_TESTCASE) {
+                handleTestcases(actionList, rootChildren);
+            } else {
+                handleNonTestcases(actionList, rootChildren);
+            }
+            result.add(root);
+        });
+
+        return Response.success(result);
+    }
+
+    private void handleNonTestcases(List<Action> actionList, List<ActionCascaderVo> rootChildren) {
+        // 分类
+        List<Integer> categoryIds = actionList.stream().filter(action -> Objects.nonNull(action.getCategoryId())).map(Action::getCategoryId).collect(Collectors.toList());
+        List<Category> categories = categoryService.selectByPrimaryKeys(categoryIds).stream().collect(Collectors.toList());
+
+        // 有分类的action
+        categories.forEach(category -> {
+            // 第二级
+            ActionCascaderVo categoryCascaderVo = new ActionCascaderVo();
+            categoryCascaderVo.setName(category.getName());
+            // 有分类的actions
+            List<ActionCascaderVo> actionCascaderVosInCategory = actionList.stream()
+                    .filter(action -> action.getCategoryId() == category.getId())
+                    .map(action -> ActionCascaderVo.convert(action)).collect(Collectors.toList());
+            categoryCascaderVo.setChildren(actionCascaderVosInCategory);
+            rootChildren.add(categoryCascaderVo);
+        });
+
+        // 没有分类的actions
+        List<ActionCascaderVo> actionCascaderVosNotInCategory = actionList.stream()
+                .filter(action -> Objects.isNull(action.getCategoryId()))
+                .map(action -> ActionCascaderVo.convert(action)).collect(Collectors.toList());
+        rootChildren.addAll(actionCascaderVosNotInCategory);
+    }
+
+    private void handleTestcases(List<Action> testcaseList, List<ActionCascaderVo> rootChildren) {
+        // 测试集
+        List<Integer> testSuiteIds = testcaseList.stream().filter(action -> Objects.nonNull(action.getTestSuiteId())).map(Action::getTestSuiteId).collect(Collectors.toList());
+        List<TestSuite> testSuites = testSuiteService.selectByPrimaryKeys(testSuiteIds).stream().collect(Collectors.toList());
+
+        // 有测试集的testcases
+        testSuites.forEach(testSuite -> {
+            // 第二级
+            ActionCascaderVo testSuiteCascaderVo = new ActionCascaderVo();
+            testSuiteCascaderVo.setName(testSuite.getName());
+            // 有测试集的actions
+            List<ActionCascaderVo> actionCascaderVosInTestSuite = testcaseList.stream()
+                    .filter(action -> action.getTestSuiteId() == testSuite.getId())
+                    .map(action -> ActionCascaderVo.convert(action)).collect(Collectors.toList());
+            testSuiteCascaderVo.setChildren(actionCascaderVosInTestSuite);
+            rootChildren.add(testSuiteCascaderVo);
+        });
+
+        // 没有测试集的testcases
+        List<ActionCascaderVo> actionCascaderVosNotInTestSuite = testcaseList.stream()
+                .filter(action -> Objects.isNull(action.getTestSuiteId()))
+                .map(action -> ActionCascaderVo.convert(action)).collect(Collectors.toList());
+        rootChildren.addAll(actionCascaderVosNotInTestSuite);
     }
 
     /**

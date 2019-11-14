@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -109,6 +110,18 @@ public class TestSuiteService extends BaseService {
         testSuiteExample.setOrderByClause("create_time desc");
 
         return testSuiteMapper.selectByExample(testSuiteExample);
+    }
+
+    public List<TestSuite> selectByPrimaryKeys(List<Integer> ids) {
+        if (CollectionUtils.isEmpty(ids)) {
+            return Collections.EMPTY_LIST;
+        }
+
+        TestSuiteExample example = new TestSuiteExample();
+        TestSuiteExample.Criteria criteria = example.createCriteria();
+
+        criteria.andIdIn(ids);
+        return testSuiteMapper.selectByExample(example);
     }
 
 }

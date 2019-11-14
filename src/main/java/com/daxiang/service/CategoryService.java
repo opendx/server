@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -137,6 +138,18 @@ public class CategoryService extends BaseService {
         categoryExample.setOrderByClause("create_time asc");
 
         return categoryMapper.selectByExample(categoryExample);
+    }
+
+    public List<Category> selectByPrimaryKeys(List<Integer> ids) {
+        if (CollectionUtils.isEmpty(ids)) {
+            return Collections.EMPTY_LIST;
+        }
+
+        CategoryExample example = new CategoryExample();
+        CategoryExample.Criteria criteria = example.createCriteria();
+
+        criteria.andIdIn(ids);
+        return categoryMapper.selectByExample(example);
     }
 
 }
