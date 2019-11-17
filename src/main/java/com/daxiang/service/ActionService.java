@@ -230,8 +230,7 @@ public class ActionService extends BaseService {
         requestBody.put("deviceId", debugInfo.getDeviceId());
 
         // 发送到agent执行
-        Response agentResponse = agentApi.debugAction(debugInfo.getAgentIp(), debugInfo.getAgentPort(), requestBody);
-        return agentResponse.isSuccess() ? Response.success(agentResponse.getMsg()) : Response.fail(agentResponse.getMsg());
+        return agentApi.debugAction(debugInfo.getAgentIp(), debugInfo.getAgentPort(), requestBody);
     }
 
     /**
