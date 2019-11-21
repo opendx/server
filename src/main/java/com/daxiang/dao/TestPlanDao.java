@@ -10,4 +10,5 @@ import java.util.List;
  */
 public interface TestPlanDao {
     List<TestPlan> selectByTestSuiteId(@Param("testSuiteId") Integer testSuiteId);
+    List<TestPlan> selectByActionId(@Param("actionId") Integer actionId);
 }

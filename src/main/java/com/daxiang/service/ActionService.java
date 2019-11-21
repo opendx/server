@@ -42,6 +42,8 @@ public class ActionService extends BaseService {
     private TestSuiteService testSuiteService;
     @Autowired
     private CategoryService categoryService;
+    @Autowired
+    private TestPlanService testPlanService;
 
     public Response add(Action action) {
         action.setCreatorUid(getUid());
@@ -61,12 +63,19 @@ public class ActionService extends BaseService {
             return Response.fail("actionId不能为空");
         }
 
-        // 检查action是否被其他step使用
+        // 检查action是否被其他action step使用
         List<Action> actions = actionDao.selectByStepActionId(actionId);
         if (!CollectionUtils.isEmpty(actions)) {
             // 正在使用该action的actionNames
             String usingActionNames = actions.stream().map(Action::getName).collect(Collectors.joining("、"));
             return Response.fail(usingActionNames + "正在使用此action，无法删除");
+        }
+
+        // 检查action是否被testplan使用
+        List<TestPlan> testPlans = testPlanService.findByActionId(actionId);
+        if (!CollectionUtils.isEmpty(testPlans)) {
+            String usingTestPlanNames = testPlans.stream().map(TestPlan::getName).collect(Collectors.joining("、"));
+            return Response.fail(usingTestPlanNames + "正在使用此action，无法删除");
         }
 
         int deleteRow = actionMapper.deleteByPrimaryKey(actionId);

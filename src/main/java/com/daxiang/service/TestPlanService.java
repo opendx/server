@@ -204,4 +204,8 @@ public class TestPlanService extends BaseService {
             testPlanFutureMap.remove(testPlanId);
         }
     }
+
+    public List<TestPlan> findByActionId(Integer actionId) {
+        return testPlanDao.selectByActionId(actionId);
+    }
 }

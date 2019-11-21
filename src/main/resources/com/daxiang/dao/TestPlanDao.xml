@@ -6,4 +6,7 @@
     <select id="selectByTestSuiteId" resultMap="ResultMapWithBLOBs">
         select * from test_plan where JSON_CONTAINS(test_suites->'$[*]', '${testSuiteId}','$')
     </select>
+    <select id="selectByActionId" resultMap="ResultMapWithBLOBs">
+        select * from test_plan where before_class = #{actionId} or before_method = #{actionId} or after_class = #{actionId} or after_method = #{actionId}
+    </select>
 </mapper>
