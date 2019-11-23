@@ -203,7 +203,7 @@ public class ActionService extends BaseService {
         List<ActionCascaderVo> result = new ArrayList<>();
 
         Map<Integer, List<Action>> groupByActionTypeMap = actions.stream().collect(Collectors.groupingBy(Action::getType));
-        groupByActionTypeMap.forEach((type,actionList) -> {
+        groupByActionTypeMap.forEach((type, actionList) -> {
             ActionCascaderVo root = new ActionCascaderVo();
             root.setName(type == Action.TYPE_BASE ? "基础组件" : type == Action.TYPE_TESTCASE ? "测试用例" : "封装组件");
             List<ActionCascaderVo> rootChildren = new ArrayList<>();
@@ -289,9 +289,14 @@ public class ActionService extends BaseService {
             return Response.fail("至少选择一个步骤");
         }
 
+        long enabledStepCount = steps.stream().filter(step -> step.getStatus() == Step.ENABLE_STATUS).count();
+        if (enabledStepCount == 0) {
+            return Response.fail("至少选择一个启用的步骤");
+        }
+
         for (Step step : steps) {
             if (step.getActionId() == null) {
-                return Response.fail("step action不能为空");
+                return Response.fail("步骤" + step.getNumber() + " action不能为空");
             }
         }
 

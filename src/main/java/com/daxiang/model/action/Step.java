@@ -17,6 +17,10 @@ import java.util.List;
  */
 @Data
 public class Step {
+
+    public static final int DISABLE_STATUS = 0;
+    public static final int ENABLE_STATUS = 1;
+
     /**
      * 调用的action id
      */
@@ -50,4 +54,7 @@ public class Step {
      * 调用action传入的值
      */
     private List<ParamValue> paramValues;
+
+    @NotNull(message = "步骤status不能为空")
+    private Integer status;
 }

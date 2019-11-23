@@ -6,6 +6,7 @@ import com.daxiang.model.action.Step;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 /**
@@ -33,6 +34,8 @@ public class ActionTreeBuilder {
         for (Action action : actions) {
             List<Step> steps = action.getSteps();
             if (!CollectionUtils.isEmpty(steps)) {
+                steps = steps.stream().filter(step -> step.getStatus() == Step.ENABLE_STATUS).collect(Collectors.toList());
+                action.setSteps(steps);
                 for (Step step : steps) {
                     Action stepAction = cachedActions.get(step.getActionId());
                     if (stepAction == null) {
