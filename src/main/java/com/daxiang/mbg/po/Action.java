@@ -14,6 +14,13 @@ import java.util.List;
 
 public class Action implements Serializable {
 
+    /** 禁用 */
+    public static final int DISABLE_STATUS = 0;
+    /** 草稿 */
+    public static final int DRAFT_STATUS = 1;
+    /** 发布 */
+    public static final int RELEASE_STATUS = 2;
+
     /**
      * 基础action(代码形式的)
      */
@@ -151,6 +158,14 @@ public class Action implements Serializable {
      * @mbg.generated
      */
     private Integer testSuiteId;
+
+    /**
+     * 禁用: 0  草稿: 1  发布: 2
+     *
+     * @mbg.generated
+     */
+    @NotNull(message = "status不能为空")
+    private Integer status;
 
     /**
      * 方法参数
@@ -314,6 +329,14 @@ public class Action implements Serializable {
         this.testSuiteId = testSuiteId;
     }
 
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
     public java.util.List<com.daxiang.model.action.Param> getParams() {
         return params;
     }
@@ -368,6 +391,7 @@ public class Action implements Serializable {
         sb.append(", categoryId=").append(categoryId);
         sb.append(", projectId=").append(projectId);
         sb.append(", testSuiteId=").append(testSuiteId);
+        sb.append(", status=").append(status);
         sb.append(", params=").append(params);
         sb.append(", localVars=").append(localVars);
         sb.append(", steps=").append(steps);

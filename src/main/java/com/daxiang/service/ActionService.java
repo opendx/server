@@ -2,6 +2,7 @@ package com.daxiang.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.daxiang.agent.AgentApi;
+import com.daxiang.exception.BusinessException;
 import com.daxiang.mbg.mapper.ActionMapper;
 import com.daxiang.mbg.po.*;
 import com.daxiang.model.Page;
@@ -59,24 +60,7 @@ public class ActionService extends BaseService {
     }
 
     public Response delete(Integer actionId) {
-        if (actionId == null) {
-            return Response.fail("actionId不能为空");
-        }
-
-        // 检查action是否被其他action step使用
-        List<Action> actions = actionDao.selectByStepActionId(actionId);
-        if (!CollectionUtils.isEmpty(actions)) {
-            // 正在使用该action的actionNames
-            String usingActionNames = actions.stream().map(Action::getName).collect(Collectors.joining("、"));
-            return Response.fail(usingActionNames + "正在使用此action，无法删除");
-        }
-
-        // 检查action是否被testplan使用
-        List<TestPlan> testPlans = testPlanService.findByActionId(actionId);
-        if (!CollectionUtils.isEmpty(testPlans)) {
-            String usingTestPlanNames = testPlans.stream().map(TestPlan::getName).collect(Collectors.joining("、"));
-            return Response.fail(usingTestPlanNames + "正在使用此action，无法删除");
-        }
+        checkActionIsNotUsingByActionStepsOrTestPlans(actionId);
 
         int deleteRow = actionMapper.deleteByPrimaryKey(actionId);
         return deleteRow == 1 ? Response.success("删除成功") : Response.fail("删除失败，请稍后重试");
@@ -89,8 +73,13 @@ public class ActionService extends BaseService {
      * @return
      */
     public Response update(Action action) {
-        if (action.getId() == null) {
-            return Response.fail("actionId不能为空");
+        // action状态变为草稿或者禁用，需要检查该action没有被其他action steps或testplans使用
+        if (action.getStatus() == Action.DRAFT_STATUS || action.getStatus() == Action.DISABLE_STATUS) {
+            checkActionIsNotUsingByActionStepsOrTestPlans(action.getId());
+        } else {
+            if (action.getId() == null) {
+                return Response.fail("actionId不能为空");
+            }
         }
 
         action.setUpdateTime(new Date());
@@ -165,6 +154,9 @@ public class ActionService extends BaseService {
         if (action.getCategoryId() != null) {
             criteria.andCategoryIdEqualTo(action.getCategoryId());
         }
+        if (action.getStatus() != null) {
+            criteria.andStatusEqualTo(action.getStatus());
+        }
 
         actionExample.setOrderByClause("create_time desc");
         return actionMapper.selectByExampleWithBLOBs(actionExample);
@@ -199,7 +191,8 @@ public class ActionService extends BaseService {
         actionExample.or(criteria3);
         actionExample.setOrderByClause("create_time desc");
 
-        List<Action> actions = actionMapper.selectByExampleWithBLOBs(actionExample);
+        List<Action> actions = actionMapper.selectByExampleWithBLOBs(actionExample).stream()
+                .filter(action -> action.getStatus() == Action.RELEASE_STATUS).collect(Collectors.toList());
         List<ActionCascaderVo> result = new ArrayList<>();
 
         Map<Integer, List<Action>> groupByActionTypeMap = actions.stream().collect(Collectors.groupingBy(Action::getType));
@@ -343,6 +336,31 @@ public class ActionService extends BaseService {
      */
     public void buildActionTree(List<Action> actions) {
         new ActionTreeBuilder(actionMapper).build(actions);
+    }
+
+    /**
+     * 检查action没有被action step或testplan使用
+     * @param actionId
+     */
+    private void checkActionIsNotUsingByActionStepsOrTestPlans(Integer actionId) {
+        if (actionId == null) {
+            throw new BusinessException("actionId不能为空");
+        }
+
+        // 检查action是否被其他action step使用
+        List<Action> actions = actionDao.selectByStepActionId(actionId);
+        if (!CollectionUtils.isEmpty(actions)) {
+            // 正在使用该action的actionNames
+            String usingActionNames = actions.stream().map(Action::getName).collect(Collectors.joining("、"));
+            throw new BusinessException(usingActionNames + "正在使用此action");
+        }
+
+        // 检查action是否被testplan使用
+        List<TestPlan> testPlans = testPlanService.findByActionId(actionId);
+        if (!CollectionUtils.isEmpty(testPlans)) {
+            String usingTestPlanNames = testPlans.stream().map(TestPlan::getName).collect(Collectors.joining("、"));
+            throw new BusinessException(usingTestPlanNames + "正在使用此action");
+        }
     }
 
 }
