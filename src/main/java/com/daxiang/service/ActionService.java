@@ -74,7 +74,7 @@ public class ActionService extends BaseService {
      */
     public Response update(Action action) {
         // action状态变为草稿或者禁用，需要检查该action没有被其他action steps或testplans使用
-        if (action.getStatus() == Action.DRAFT_STATUS || action.getStatus() == Action.DISABLE_STATUS) {
+        if (action.getState() == Action.DRAFT_STATE || action.getState() == Action.DISABLE_STATE) {
             checkActionIsNotUsingByActionStepsOrTestPlans(action.getId());
         } else {
             if (action.getId() == null) {
@@ -154,8 +154,8 @@ public class ActionService extends BaseService {
         if (action.getCategoryId() != null) {
             criteria.andCategoryIdEqualTo(action.getCategoryId());
         }
-        if (action.getStatus() != null) {
-            criteria.andStatusEqualTo(action.getStatus());
+        if (action.getState() != null) {
+            criteria.andStateEqualTo(action.getState());
         }
 
         actionExample.setOrderByClause("create_time desc");
@@ -192,7 +192,7 @@ public class ActionService extends BaseService {
         actionExample.setOrderByClause("create_time desc");
 
         List<Action> actions = actionMapper.selectByExampleWithBLOBs(actionExample).stream()
-                .filter(action -> action.getStatus() == Action.RELEASE_STATUS).collect(Collectors.toList());
+                .filter(action -> action.getState() == Action.RELEASE_STATE).collect(Collectors.toList());
         List<ActionCascaderVo> result = new ArrayList<>();
 
         Map<Integer, List<Action>> groupByActionTypeMap = actions.stream().collect(Collectors.groupingBy(Action::getType));

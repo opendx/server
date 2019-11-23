@@ -5,4 +5,4 @@ ALTER TABLE test_plan ADD `enable_schedule` tinyint(4) NOT NULL DEFAULT '0' COMM
 ALTER TABLE device_test_task ADD `code` mediumtext COMMENT 'agent转换后的代码';
 ALTER TABLE device_test_task ADD `err_msg` text COMMENT 'status: -1, 错误信息';
 -- 0.2.7
-ALTER TABLE action ADD COLUMN `status` tinyint(4) NOT NULL DEFAULT 2 COMMENT '禁用: 0  草稿: 1  发布: 2' AFTER `test_suite_id`;
+ALTER TABLE action ADD COLUMN `state` tinyint(4) NOT NULL DEFAULT 2 COMMENT '禁用: 0  草稿: 1  发布: 2' AFTER `test_suite_id`;

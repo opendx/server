@@ -58,7 +58,7 @@ public class TestTaskService extends BaseService {
 
         // 待测试的测试用例
         List<Action> testcases = actionService.findByTestSuitIds(testPlan.getTestSuites()).stream()
-                .filter(action -> action.getStatus() == Action.RELEASE_STATUS).collect(Collectors.toList());
+                .filter(action -> action.getState() == Action.RELEASE_STATE).collect(Collectors.toList());
         if (CollectionUtils.isEmpty(testcases)) {
             return Response.fail("测试集内没有已发布的测试用例");
         }
