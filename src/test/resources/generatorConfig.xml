@@ -80,10 +80,13 @@
         <!--<table tableName="user">-->
             <!--<generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
         <!--</table>-->
-        <table tableName="driver">
+        <!--<table tableName="driver">-->
+            <!--<generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
+            <!--<columnOverride column="urls" typeHandler="com.daxiang.typehandler.DriverUrlListTypeHandler" javaType="java.util.List&lt;com.daxiang.model.vo.DriverUrl&gt;" jdbcType="LONGVARCHAR"/>-->
+            <!--<columnOverride column="device_ids" typeHandler="com.daxiang.typehandler.StringListTypeHandler" javaType="java.util.List&lt;String&gt;" jdbcType="LONGVARCHAR"/>-->
+        <!--</table>-->
+        <table tableName="environment">
             <generatedKey column="id" sqlStatement="MySql" identity="true"/>
-            <columnOverride column="urls" typeHandler="com.daxiang.typehandler.DriverUrlListTypeHandler" javaType="java.util.List&lt;com.daxiang.model.vo.DriverUrl&gt;" jdbcType="LONGVARCHAR"/>
-            <columnOverride column="device_ids" typeHandler="com.daxiang.typehandler.StringListTypeHandler" javaType="java.util.List&lt;String&gt;" jdbcType="LONGVARCHAR"/>
         </table>
     </context>
 </generatorConfiguration>

@@ -32,3 +32,14 @@ $$
 DELIMITER ;
 CALL handle_action_steps_status(); -- 每个action step加上status: 1
 DROP PROCEDURE handle_action_steps_status;
+-- 0.2.8
+CREATE TABLE `environment` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL COMMENT '环境名',
+  `description` varchar(255) DEFAULT NULL COMMENT '描述',
+  `project_id` int(11) NOT NULL COMMENT '项目id',
+  `creator_uid` int(11) DEFAULT NULL COMMENT '创建人',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uniq_name_projectId` (`name`,`project_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='环境表';
