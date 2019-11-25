@@ -56,6 +56,7 @@ public class GlobalVarService extends BaseService {
             return Response.fail("globalVarId不能为空");
         }
 
+        // todo 检查全局变量是否被action使用
         int deleteRow = globalVarMapper.deleteByPrimaryKey(globalVarId);
         return deleteRow == 1 ? Response.success("删除成功") : Response.fail("删除失败,请稍后重试");
     }
@@ -119,9 +120,6 @@ public class GlobalVarService extends BaseService {
         }
         if (!StringUtils.isEmpty(globalVar.getName())) {
             criteria.andNameEqualTo(globalVar.getName());
-        }
-        if (!StringUtils.isEmpty(globalVar.getValue())) {
-            criteria.andValueEqualTo(globalVar.getValue());
         }
         globalVarExample.setOrderByClause("create_time desc");
 

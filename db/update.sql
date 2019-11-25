@@ -43,3 +43,5 @@ CREATE TABLE `environment` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `uniq_name_projectId` (`name`,`project_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='环境表';
+
+ALTER TABLE global_var CHANGE COLUMN `value` `environment_values` json NOT NULL COMMENT '变量值' AFTER `type`;

@@ -57,9 +57,10 @@
             <!--<columnOverride column="after_method" typeHandler="com.daxiang.typehandler.ActionTypeHandler" javaType="com.daxiang.mbg.po.Action" jdbcType="LONGVARCHAR"/>-->
             <!--<columnOverride column="testcases" typeHandler="com.daxiang.typehandler.TestcaseListTypeHandler" javaType="java.util.List&lt;com.daxiang.model.vo.Testcase&gt;" jdbcType="LONGVARCHAR"/>-->
         <!--</table>-->
-        <!--<table tableName="global_var">-->
-            <!--<generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
-        <!--</table>-->
+        <table tableName="global_var">
+            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
+            <columnOverride column="environment_values" typeHandler="com.daxiang.typehandler.EnvironmentValueListTypeHandler" javaType="java.util.List&lt;com.daxiang.model.environment.EnvironmentValue&gt;" jdbcType="LONGVARCHAR"/>
+        </table>
         <!--<table tableName="page">-->
             <!--<generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
         <!--</table>-->
@@ -85,8 +86,8 @@
             <!--<columnOverride column="urls" typeHandler="com.daxiang.typehandler.DriverUrlListTypeHandler" javaType="java.util.List&lt;com.daxiang.model.vo.DriverUrl&gt;" jdbcType="LONGVARCHAR"/>-->
             <!--<columnOverride column="device_ids" typeHandler="com.daxiang.typehandler.StringListTypeHandler" javaType="java.util.List&lt;String&gt;" jdbcType="LONGVARCHAR"/>-->
         <!--</table>-->
-        <table tableName="environment">
-            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
-        </table>
+        <!--<table tableName="environment">-->
+            <!--<generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
+        <!--</table>-->
     </context>
 </generatorConfiguration>

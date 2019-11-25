@@ -5,11 +5,13 @@
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="type" jdbcType="VARCHAR" property="type" />
-    <result column="value" jdbcType="VARCHAR" property="value" />
     <result column="description" jdbcType="VARCHAR" property="description" />
     <result column="project_id" jdbcType="INTEGER" property="projectId" />
     <result column="creator_uid" jdbcType="INTEGER" property="creatorUid" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.daxiang.mbg.po.GlobalVar">
+    <result column="environment_values" jdbcType="LONGVARCHAR" property="environmentValues" typeHandler="com.daxiang.typehandler.EnvironmentValueListTypeHandler" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -70,8 +72,27 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, name, type, value, description, project_id, creator_uid, create_time
+    id, name, type, description, project_id, creator_uid, create_time
   </sql>
+  <sql id="Blob_Column_List">
+    environment_values
+  </sql>
+  <select id="selectByExampleWithBLOBs" parameterType="com.daxiang.mbg.po.GlobalVarExample" resultMap="ResultMapWithBLOBs">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from global_var
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
   <select id="selectByExample" parameterType="com.daxiang.mbg.po.GlobalVarExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
@@ -86,9 +107,11 @@
       order by ${orderByClause}
     </if>
   </select>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
     select 
     <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
     from global_var
     where id = #{id,jdbcType=INTEGER}
   </select>
@@ -106,12 +129,14 @@
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into global_var (name, type, value, 
-      description, project_id, creator_uid, 
-      create_time)
-    values (#{name,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, #{value,jdbcType=VARCHAR}, 
-      #{description,jdbcType=VARCHAR}, #{projectId,jdbcType=INTEGER}, #{creatorUid,jdbcType=INTEGER}, 
-      #{createTime,jdbcType=TIMESTAMP})
+    insert into global_var (name, type, description, 
+      project_id, creator_uid, create_time, 
+      environment_values
+      )
+    values (#{name,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
+      #{projectId,jdbcType=INTEGER}, #{creatorUid,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{environmentValues,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.EnvironmentValueListTypeHandler}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.daxiang.mbg.po.GlobalVar">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
@@ -125,9 +150,6 @@
       <if test="type != null">
         type,
       </if>
-      <if test="value != null">
-        value,
-      </if>
       <if test="description != null">
         description,
       </if>
@@ -140,6 +162,9 @@
       <if test="createTime != null">
         create_time,
       </if>
+      <if test="environmentValues != null">
+        environment_values,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="name != null">
@@ -147,9 +172,6 @@
       </if>
       <if test="type != null">
         #{type,jdbcType=VARCHAR},
-      </if>
-      <if test="value != null">
-        #{value,jdbcType=VARCHAR},
       </if>
       <if test="description != null">
         #{description,jdbcType=VARCHAR},
@@ -162,6 +184,9 @@
       </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="environmentValues != null">
+        #{environmentValues,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.EnvironmentValueListTypeHandler},
       </if>
     </trim>
   </insert>
@@ -183,9 +208,6 @@
       <if test="record.type != null">
         type = #{record.type,jdbcType=VARCHAR},
       </if>
-      <if test="record.value != null">
-        value = #{record.value,jdbcType=VARCHAR},
-      </if>
       <if test="record.description != null">
         description = #{record.description,jdbcType=VARCHAR},
       </if>
@@ -198,7 +220,24 @@
       <if test="record.createTime != null">
         create_time = #{record.createTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="record.environmentValues != null">
+        environment_values = #{record.environmentValues,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.EnvironmentValueListTypeHandler},
+      </if>
     </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map">
+    update global_var
+    set id = #{record.id,jdbcType=INTEGER},
+      name = #{record.name,jdbcType=VARCHAR},
+      type = #{record.type,jdbcType=VARCHAR},
+      description = #{record.description,jdbcType=VARCHAR},
+      project_id = #{record.projectId,jdbcType=INTEGER},
+      creator_uid = #{record.creatorUid,jdbcType=INTEGER},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      environment_values = #{record.environmentValues,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.EnvironmentValueListTypeHandler}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -208,7 +247,6 @@
     set id = #{record.id,jdbcType=INTEGER},
       name = #{record.name,jdbcType=VARCHAR},
       type = #{record.type,jdbcType=VARCHAR},
-      value = #{record.value,jdbcType=VARCHAR},
       description = #{record.description,jdbcType=VARCHAR},
       project_id = #{record.projectId,jdbcType=INTEGER},
       creator_uid = #{record.creatorUid,jdbcType=INTEGER},
@@ -226,9 +264,6 @@
       <if test="type != null">
         type = #{type,jdbcType=VARCHAR},
       </if>
-      <if test="value != null">
-        value = #{value,jdbcType=VARCHAR},
-      </if>
       <if test="description != null">
         description = #{description,jdbcType=VARCHAR},
       </if>
@@ -241,14 +276,27 @@
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="environmentValues != null">
+        environment_values = #{environmentValues,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.EnvironmentValueListTypeHandler},
+      </if>
     </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.daxiang.mbg.po.GlobalVar">
+    update global_var
+    set name = #{name,jdbcType=VARCHAR},
+      type = #{type,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
+      project_id = #{projectId,jdbcType=INTEGER},
+      creator_uid = #{creatorUid,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      environment_values = #{environmentValues,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.EnvironmentValueListTypeHandler}
     where id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.daxiang.mbg.po.GlobalVar">
     update global_var
     set name = #{name,jdbcType=VARCHAR},
       type = #{type,jdbcType=VARCHAR},
-      value = #{value,jdbcType=VARCHAR},
       description = #{description,jdbcType=VARCHAR},
       project_id = #{projectId,jdbcType=INTEGER},
       creator_uid = #{creatorUid,jdbcType=INTEGER},

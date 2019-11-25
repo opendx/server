@@ -133,7 +133,7 @@ CREATE TABLE `global_var` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL COMMENT '变量名',
   `type` varchar(255) NOT NULL COMMENT '变量类型',
-  `value` varchar(255) NOT NULL COMMENT '变量值',
+  `environment_values` json NOT NULL COMMENT '变量值',
   `description` varchar(255) DEFAULT NULL COMMENT '描述',
   `project_id` int(11) NOT NULL COMMENT '所属的项目id',
   `creator_uid` int(11) DEFAULT NULL COMMENT '创建人id',

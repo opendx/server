@@ -1,16 +1,16 @@
 package com.daxiang.mbg.po;
 
+import com.daxiang.model.environment.EnvironmentValue;
+
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 public class GlobalVar implements Serializable {
-    /**
-     * 全局变量id
-     *
-     * @mbg.generated
-     */
     private Integer id;
 
     /**
@@ -28,14 +28,6 @@ public class GlobalVar implements Serializable {
      */
     @NotBlank(message = "变量类型不能为空")
     private String type;
-
-    /**
-     * 变量值
-     *
-     * @mbg.generated
-     */
-    @NotBlank(message = "变量值不能为空")
-    private String value;
 
     /**
      * 描述
@@ -66,6 +58,15 @@ public class GlobalVar implements Serializable {
      */
     private Date createTime;
 
+    /**
+     * 变量值
+     *
+     * @mbg.generated
+     */
+    @NotEmpty(message = "变量值不能为空")
+    @Valid
+    private java.util.List<com.daxiang.model.environment.EnvironmentValue> environmentValues;
+
     private static final long serialVersionUID = 1L;
 
     public Integer getId() {
@@ -90,14 +91,6 @@ public class GlobalVar implements Serializable {
 
     public void setType(String type) {
         this.type = type;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
     }
 
     public String getDescription() {
@@ -132,6 +125,14 @@ public class GlobalVar implements Serializable {
         this.createTime = createTime;
     }
 
+    public java.util.List<com.daxiang.model.environment.EnvironmentValue> getEnvironmentValues() {
+        return environmentValues;
+    }
+
+    public void setEnvironmentValues(java.util.List<com.daxiang.model.environment.EnvironmentValue> environmentValues) {
+        this.environmentValues = environmentValues;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -141,11 +142,11 @@ public class GlobalVar implements Serializable {
         sb.append(", id=").append(id);
         sb.append(", name=").append(name);
         sb.append(", type=").append(type);
-        sb.append(", value=").append(value);
         sb.append(", description=").append(description);
         sb.append(", projectId=").append(projectId);
         sb.append(", creatorUid=").append(creatorUid);
         sb.append(", createTime=").append(createTime);
+        sb.append(", environmentValues=").append(environmentValues);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();
