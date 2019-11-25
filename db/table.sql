@@ -39,6 +39,7 @@ CREATE TABLE `action` (
   `category_id` int(11) DEFAULT NULL COMMENT '所属的分类id',
   `project_id` int(11) DEFAULT NULL COMMENT '所属的项目id',
   `test_suite_id` int(11) DEFAULT NULL COMMENT '所属的测试集',
+  `state` tinyint(4) NOT NULL DEFAULT 2 COMMENT '禁用: 0  草稿: 1  发布: 2',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `uniq_name_projectId_type` (`name`,`project_id`,`type`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8mb4 COMMENT='action表';
