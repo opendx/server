@@ -1,7 +1,9 @@
 package com.daxiang.service;
 
+import com.daxiang.exception.BusinessException;
 import com.daxiang.mbg.po.GlobalVarExample;
 import com.daxiang.model.UserCache;
+import com.daxiang.model.environment.EnvironmentValue;
 import com.github.pagehelper.PageHelper;
 import com.daxiang.mbg.mapper.GlobalVarMapper;
 import com.daxiang.mbg.po.GlobalVar;
@@ -16,6 +18,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -34,6 +37,8 @@ public class GlobalVarService extends BaseService {
      * @return
      */
     public Response add(GlobalVar globalVar) {
+        checkEnvironmentValues(globalVar.getEnvironmentValues());
+
         globalVar.setCreateTime(new Date());
         globalVar.setCreatorUid(getUid());
 
@@ -70,12 +75,18 @@ public class GlobalVarService extends BaseService {
         if (globalVar.getId() == null) {
             return Response.fail("globalVarId不能为空");
         }
+
+        // todo 检查全局变量是否被action使用，目前是通过前端限制修改name
+
+        checkEnvironmentValues(globalVar.getEnvironmentValues());
+
         int updateRow;
         try {
             updateRow = globalVarMapper.updateByPrimaryKeySelective(globalVar);
         } catch (DuplicateKeyException e) {
             return Response.fail("命名冲突");
         }
+
         return updateRow == 1 ? Response.success("更新GlobalVar成功") : Response.fail("更新GlobalVar失败,请稍后重试");
     }
 
@@ -123,6 +134,21 @@ public class GlobalVarService extends BaseService {
         }
         globalVarExample.setOrderByClause("create_time desc");
 
-        return globalVarMapper.selectByExample(globalVarExample);
+        return globalVarMapper.selectByExampleWithBLOBs(globalVarExample);
+    }
+
+    /**
+     * Valid 已经检测过environmentValues，这里主要检测环境是否重复
+     *
+     * @param environmentValues
+     */
+    private void checkEnvironmentValues(List<EnvironmentValue> environmentValues) {
+        Map<Integer, Long> environmentIdCountMap = environmentValues.stream()
+                .collect(Collectors.groupingBy(EnvironmentValue::getEnvironmentId, Collectors.counting()));
+        environmentIdCountMap.forEach((envId, count) -> {
+            if (count > 1) {
+                throw new BusinessException("变量值环境重复");
+            }
+        });
     }
 }
