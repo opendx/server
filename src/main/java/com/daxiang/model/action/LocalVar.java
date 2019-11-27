@@ -1,8 +1,10 @@
 package com.daxiang.model.action;
 
+import com.daxiang.model.environment.EnvironmentValue;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
+import java.util.List;
 
 /**
  * Created by jiangyitao.
@@ -23,7 +25,7 @@ public class LocalVar {
     /**
      * 局部变量值
      */
-    private String value;
+    private List<EnvironmentValue> environmentValues;
     /**
      * 变量描述
      */

@@ -45,3 +45,5 @@ CREATE TABLE `environment` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='环境表';
 
 ALTER TABLE global_var CHANGE COLUMN `value` `environment_values` json NOT NULL COMMENT '变量值' AFTER `type`;
+
+-- todo global_var | action local_var数据迁移
