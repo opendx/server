@@ -1,6 +1,7 @@
 package com.daxiang.mbg.po;
 
 import com.daxiang.model.environment.EnvironmentValue;
+import com.daxiang.validator.annotation.NoDuplicateEnvironment;
 import com.daxiang.validator.group.UpdateGroup;
 
 import javax.validation.Valid;
@@ -66,6 +67,7 @@ public class GlobalVar implements Serializable {
      * @mbg.generated
      */
     @NotEmpty(message = "变量值不能为空")
+    @NoDuplicateEnvironment(message = "环境不能重复")
     @Valid
     private java.util.List<com.daxiang.model.environment.EnvironmentValue> environmentValues;
 

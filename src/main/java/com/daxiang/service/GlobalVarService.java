@@ -37,8 +37,6 @@ public class GlobalVarService extends BaseService {
      * @return
      */
     public Response add(GlobalVar globalVar) {
-        checkEnvironmentValues(globalVar.getEnvironmentValues());
-
         globalVar.setCreateTime(new Date());
         globalVar.setCreatorUid(getUid());
 
@@ -72,8 +70,6 @@ public class GlobalVarService extends BaseService {
      * @param globalVar
      */
     public Response update(GlobalVar globalVar) {
-        checkEnvironmentValues(globalVar.getEnvironmentValues());
-
         // todo 检查全局变量是否被action使用，目前是通过前端限制修改name
 
         int updateRow;
@@ -132,20 +128,5 @@ public class GlobalVarService extends BaseService {
         example.setOrderByClause("create_time desc");
 
         return globalVarMapper.selectByExampleWithBLOBs(example);
-    }
-
-    /**
-     * Valid 已经检测过environmentValues，这里主要检测环境是否重复
-     *
-     * @param environmentValues
-     */
-    private void checkEnvironmentValues(List<EnvironmentValue> environmentValues) {
-        Map<Integer, Long> environmentIdCountMap = environmentValues.stream()
-                .collect(Collectors.groupingBy(EnvironmentValue::getEnvironmentId, Collectors.counting()));
-        environmentIdCountMap.forEach((envId, count) -> {
-            if (count > 1) {
-                throw new BusinessException("变量值环境重复");
-            }
-        });
     }
 }
