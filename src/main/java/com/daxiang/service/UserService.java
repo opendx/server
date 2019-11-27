@@ -48,9 +48,6 @@ public class UserService extends BaseService {
     }
 
     public Response register(User user) {
-        if (StringUtils.isEmpty(user.getNickName())) {
-            return Response.fail("昵称不能为空");
-        }
         user.setPassword(DigestUtils.md5DigestAsHex(user.getPassword().getBytes()));
         user.setCreateTime(new Date());
 

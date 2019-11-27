@@ -1,5 +1,6 @@
 package com.daxiang.mbg.po;
 
+import com.daxiang.validator.group.UserRegisterGroup;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -36,6 +37,7 @@ public class User implements Serializable {
      *
      * @mbg.generated
      */
+    @NotBlank(message = "昵称不能为空", groups = {UserRegisterGroup.class})
     private String nickName;
 
     /**
