@@ -1,6 +1,7 @@
 package com.daxiang.mbg.po;
 
 import com.daxiang.model.environment.EnvironmentValue;
+import com.daxiang.validator.group.UpdateGroup;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -11,6 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 public class GlobalVar implements Serializable {
+    @NotNull(message = "id不能为空", groups = {UpdateGroup.class})
     private Integer id;
 
     /**

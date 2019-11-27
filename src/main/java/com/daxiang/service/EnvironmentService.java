@@ -51,10 +51,6 @@ public class EnvironmentService extends BaseService {
     }
 
     public Response update(Environment environment) {
-        if (environment.getId() == null) {
-            return Response.fail("环境id不能为空");
-        }
-
         int updateRow;
         try {
             updateRow = environmentMapper.updateByPrimaryKeySelective(environment);

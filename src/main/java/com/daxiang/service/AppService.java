@@ -160,10 +160,6 @@ public class AppService extends BaseService {
     }
 
     public Response update(App app) {
-        if (app.getId() == null) {
-            return Response.fail("appId不能为空");
-        }
-
         int updateRow = appMapper.updateByPrimaryKey(app);
         return updateRow == 1 ? Response.success("更新成功") : Response.fail("更新失败，请稍后重试");
     }

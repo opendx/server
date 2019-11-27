@@ -76,10 +76,6 @@ public class PageService extends BaseService {
      * @param page
      */
     public Response update(Page page) {
-        if (page.getId() == null) {
-            return Response.fail("pageId不能为空");
-        }
-
         int updateRow;
         try {
             updateRow = pageMapper.updateByPrimaryKeyWithBLOBs(page);

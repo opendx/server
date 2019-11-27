@@ -72,10 +72,6 @@ public class GlobalVarService extends BaseService {
      * @param globalVar
      */
     public Response update(GlobalVar globalVar) {
-        if (globalVar.getId() == null) {
-            return Response.fail("globalVarId不能为空");
-        }
-
         checkEnvironmentValues(globalVar.getEnvironmentValues());
 
         // todo 检查全局变量是否被action使用，目前是通过前端限制修改name

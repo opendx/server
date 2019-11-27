@@ -1,5 +1,7 @@
 package com.daxiang.mbg.po;
 
+import com.daxiang.validator.group.UpdateGroup;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -16,6 +18,7 @@ public class TestPlan implements Serializable {
 
     public static final int ENABLE_SCHEDULE = 1;
 
+    @NotNull(message = "id不能为空", groups = {UpdateGroup.class})
     private Integer id;
 
     /**

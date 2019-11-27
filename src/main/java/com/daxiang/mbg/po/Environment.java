@@ -1,11 +1,14 @@
 package com.daxiang.mbg.po;
 
+import com.daxiang.validator.group.UpdateGroup;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
 public class Environment implements Serializable {
+    @NotNull(message = "id不能为空", groups = {UpdateGroup.class})
     private Integer id;
 
     /**

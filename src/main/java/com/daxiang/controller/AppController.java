@@ -4,7 +4,9 @@ import com.daxiang.mbg.po.App;
 import com.daxiang.model.PageRequest;
 import com.daxiang.model.Response;
 import com.daxiang.service.AppService;
+import com.daxiang.validator.group.UpdateGroup;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,7 +34,7 @@ public class AppController {
     }
 
     @PostMapping("/update")
-    public Response update(@Valid @RequestBody App app) {
+    public Response update(@Validated({UpdateGroup.class}) @RequestBody App app) {
         return appService.update(app);
     }
 

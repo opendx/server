@@ -4,8 +4,10 @@ import com.daxiang.mbg.po.Page;
 import com.daxiang.model.PageRequest;
 import com.daxiang.model.Response;
 import com.daxiang.service.PageService;
+import com.daxiang.validator.group.UpdateGroup;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -50,7 +52,7 @@ public class PageController {
      * @return
      */
     @PostMapping("/update")
-    public Response update(@Valid @RequestBody Page page) {
+    public Response update(@Validated({UpdateGroup.class}) @RequestBody Page page) {
         return pageService.update(page);
     }
 

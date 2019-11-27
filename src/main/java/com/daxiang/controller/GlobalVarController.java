@@ -4,8 +4,10 @@ import com.daxiang.mbg.po.GlobalVar;
 import com.daxiang.model.PageRequest;
 import com.daxiang.model.Response;
 import com.daxiang.service.GlobalVarService;
+import com.daxiang.validator.group.UpdateGroup;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -50,7 +52,7 @@ public class GlobalVarController {
      * @return
      */
     @PostMapping("/update")
-    public Response update(@RequestBody @Valid GlobalVar globalVar) {
+    public Response update(@RequestBody @Validated({UpdateGroup.class}) GlobalVar globalVar) {
         return globalVarService.update(globalVar);
     }
 

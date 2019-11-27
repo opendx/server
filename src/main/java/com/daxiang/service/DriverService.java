@@ -56,10 +56,6 @@ public class DriverService extends BaseService {
     }
 
     public Response update(Driver driver) {
-        if (driver.getId() == null) {
-            return Response.fail("driverId不能为空");
-        }
-
         int updateRow;
         try {
             updateRow = driverMapper.updateByPrimaryKeyWithBLOBs(driver);

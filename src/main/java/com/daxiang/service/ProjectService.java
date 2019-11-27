@@ -66,10 +66,6 @@ public class ProjectService extends BaseService {
      * @param project
      */
     public Response update(Project project) {
-        if (project.getId() == null) {
-            return Response.fail("项目id不能为空");
-        }
-
         int updateRow;
         try {
             updateRow = projectMapper.updateByPrimaryKeySelective(project);

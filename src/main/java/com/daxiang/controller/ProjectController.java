@@ -4,8 +4,10 @@ import com.daxiang.model.PageRequest;
 import com.daxiang.model.Response;
 import com.daxiang.service.ProjectService;
 import com.daxiang.mbg.po.Project;
+import com.daxiang.validator.group.UpdateGroup;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -46,7 +48,7 @@ public class ProjectController {
      * 修改项目
      */
     @PostMapping("/update")
-    public Response update(@Valid @RequestBody Project project) {
+    public Response update(@Validated({UpdateGroup.class}) @RequestBody Project project) {
         return projectService.update(project);
     }
 

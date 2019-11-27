@@ -1,6 +1,7 @@
 package com.daxiang.mbg.po;
 
 import com.daxiang.model.vo.DriverUrl;
+import com.daxiang.validator.group.UpdateGroup;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
@@ -10,6 +11,7 @@ import java.util.Date;
 import java.util.List;
 
 public class Driver implements Serializable {
+    @NotNull(message = "id不能为空", groups = {UpdateGroup.class})
     private Integer id;
 
     /**

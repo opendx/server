@@ -1,5 +1,7 @@
 package com.daxiang.mbg.po;
 
+import com.daxiang.validator.group.UpdateGroup;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -11,6 +13,7 @@ public class Page implements Serializable {
      *
      * @mbg.generated
      */
+    @NotNull(message = "id不能为空", groups = {UpdateGroup.class})
     private Integer id;
 
     /**

@@ -4,7 +4,9 @@ import com.daxiang.mbg.po.TestPlan;
 import com.daxiang.model.PageRequest;
 import com.daxiang.model.Response;
 import com.daxiang.service.TestPlanService;
+import com.daxiang.validator.group.UpdateGroup;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -48,7 +50,7 @@ public class TestPlanController {
      * @return
      */
     @PostMapping("/update")
-    public Response updateTestPlan(@RequestBody @Valid TestPlan testPlan) {
+    public Response updateTestPlan(@RequestBody @Validated({UpdateGroup.class}) TestPlan testPlan) {
         return testPlanService.update(testPlan);
     }
 

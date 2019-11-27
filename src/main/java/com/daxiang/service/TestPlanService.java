@@ -85,10 +85,6 @@ public class TestPlanService extends BaseService {
 
     @Transactional
     public Response update(TestPlan testPlan) {
-        if (testPlan.getId() == null) {
-            return Response.fail("测试计划id不能为空");
-        }
-
         if (testPlan.getEnableSchedule() == TestPlan.ENABLE_SCHEDULE && StringUtils.isEmpty(testPlan.getCronExpression())) {
             // 开启定时任务，表达式不能为空
             return Response.fail("cron表达式不能为空");

@@ -3,7 +3,9 @@ package com.daxiang.controller;
 import com.daxiang.mbg.po.Driver;
 import com.daxiang.model.Response;
 import com.daxiang.service.DriverService;
+import com.daxiang.validator.group.UpdateGroup;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -29,7 +31,7 @@ public class DriverController {
     }
 
     @PostMapping("/update")
-    public Response update(@Valid @RequestBody Driver driver) {
+    public Response update(@Validated({UpdateGroup.class}) @RequestBody Driver driver) {
         return driverService.update(driver);
     }
 
