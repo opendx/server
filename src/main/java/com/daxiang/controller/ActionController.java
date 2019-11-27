@@ -5,7 +5,9 @@ import com.daxiang.model.PageRequest;
 import com.daxiang.model.Response;
 import com.daxiang.model.request.ActionDebugRequest;
 import com.daxiang.service.ActionService;
+import com.daxiang.validator.group.UpdateGroup;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -47,7 +49,7 @@ public class ActionController {
      * 更新action
      */
     @PostMapping("/update")
-    public Response update(@RequestBody @Valid Action action) {
+    public Response update(@RequestBody @Validated({UpdateGroup.class}) Action action) {
         return actionService.update(action);
     }
 

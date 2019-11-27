@@ -64,6 +64,10 @@ public class ActionService extends BaseService {
     }
 
     public Response delete(Integer actionId) {
+        if (actionId == null) {
+            return Response.fail("actionId不能为空");
+        }
+
         checkActionIsNotUsingByActionStepsOrTestPlans(actionId);
 
         int deleteRow = actionMapper.deleteByPrimaryKey(actionId);
@@ -82,10 +86,6 @@ public class ActionService extends BaseService {
         // action状态变为草稿或者禁用，需要检查该action没有被其他action steps或testplans使用
         if (action.getState() == Action.DRAFT_STATE || action.getState() == Action.DISABLE_STATE) {
             checkActionIsNotUsingByActionStepsOrTestPlans(action.getId());
-        } else {
-            if (action.getId() == null) {
-                return Response.fail("actionId不能为空");
-            }
         }
 
         action.setUpdateTime(new Date());
@@ -348,10 +348,6 @@ public class ActionService extends BaseService {
      * @param actionId
      */
     private void checkActionIsNotUsingByActionStepsOrTestPlans(Integer actionId) {
-        if (actionId == null) {
-            throw new BusinessException("actionId不能为空");
-        }
-
         // 检查action是否被其他action step使用
         List<Action> actions = actionDao.selectByStepActionId(actionId);
         if (!CollectionUtils.isEmpty(actions)) {
