@@ -112,25 +112,23 @@ public class PageService extends BaseService {
     }
 
     public List<Page> selectByPage(Page page) {
-        if (page == null) {
-            page = new Page();
-        }
+        PageExample example = new PageExample();
+        PageExample.Criteria criteria = example.createCriteria();
 
-        PageExample pageExample = new PageExample();
-        PageExample.Criteria criteria = pageExample.createCriteria();
+        if (page != null) {
+            if (page.getId() != null) {
+                criteria.andIdEqualTo(page.getId());
+            }
+            if (page.getCategoryId() != null) {
+                criteria.andCategoryIdEqualTo(page.getCategoryId());
+            }
+            if (page.getProjectId() != null) {
+                criteria.andProjectIdEqualTo(page.getProjectId());
+            }
+        }
+        example.setOrderByClause("create_time desc");
 
-        if (page.getId() != null) {
-            criteria.andIdEqualTo(page.getId());
-        }
-        if (page.getCategoryId() != null) {
-            criteria.andCategoryIdEqualTo(page.getCategoryId());
-        }
-        if (page.getProjectId() != null) {
-            criteria.andProjectIdEqualTo(page.getProjectId());
-        }
-        pageExample.setOrderByClause("create_time desc");
-
-        return pageMapper.selectByExampleWithBLOBs(pageExample);
+        return pageMapper.selectByExampleWithBLOBs(example);
     }
 
 }

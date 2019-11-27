@@ -80,21 +80,19 @@ public class EnvironmentService extends BaseService {
     }
 
     public List<Environment> selectByEnvironment(Environment environment) {
-        if (environment == null) {
-            environment = new Environment();
-        }
-
         EnvironmentExample example = new EnvironmentExample();
         EnvironmentExample.Criteria criteria = example.createCriteria();
 
-        if (environment.getId() != null) {
-            criteria.andIdEqualTo(environment.getId());
-        }
-        if (!StringUtils.isEmpty(environment.getName())) {
-            criteria.andNameEqualTo(environment.getName());
-        }
-        if (environment.getProjectId() != null) {
-            criteria.andProjectIdEqualTo(environment.getProjectId());
+        if (environment != null) {
+            if (environment.getId() != null) {
+                criteria.andIdEqualTo(environment.getId());
+            }
+            if (!StringUtils.isEmpty(environment.getName())) {
+                criteria.andNameEqualTo(environment.getName());
+            }
+            if (environment.getProjectId() != null) {
+                criteria.andProjectIdEqualTo(environment.getProjectId());
+            }
         }
         example.setOrderByClause("create_time desc");
 

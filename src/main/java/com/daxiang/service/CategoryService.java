@@ -116,28 +116,26 @@ public class CategoryService extends BaseService {
     }
 
     public List<Category> selectByCategory(Category category) {
-        if (category == null) {
-            category = new Category();
-        }
+        CategoryExample example = new CategoryExample();
+        CategoryExample.Criteria criteria = example.createCriteria();
 
-        CategoryExample categoryExample = new CategoryExample();
-        CategoryExample.Criteria criteria = categoryExample.createCriteria();
+        if (category != null) {
+            if (category.getId() != null) {
+                criteria.andIdEqualTo(category.getId());
+            }
+            if (category.getProjectId() != null) {
+                criteria.andProjectIdEqualTo(category.getProjectId());
+            }
+            if (category.getType() != null) {
+                criteria.andTypeEqualTo(category.getType());
+            }
+            if (!StringUtils.isEmpty(category.getName())) {
+                criteria.andNameEqualTo(category.getName());
+            }
+        }
+        example.setOrderByClause("create_time asc");
 
-        if (category.getId() != null) {
-            criteria.andIdEqualTo(category.getId());
-        }
-        if (category.getProjectId() != null) {
-            criteria.andProjectIdEqualTo(category.getProjectId());
-        }
-        if (category.getType() != null) {
-            criteria.andTypeEqualTo(category.getType());
-        }
-        if (!StringUtils.isEmpty(category.getName())) {
-            criteria.andNameEqualTo(category.getName());
-        }
-        categoryExample.setOrderByClause("create_time asc");
-
-        return categoryMapper.selectByExample(categoryExample);
+        return categoryMapper.selectByExample(example);
     }
 
     public List<Category> selectByPrimaryKeys(List<Integer> ids) {

@@ -67,34 +67,32 @@ public class DeviceService extends BaseService {
     }
 
     public List<Device> selectByDevice(Device device) {
-        if (device == null) {
-            device = new Device();
-        }
+        DeviceExample example = new DeviceExample();
+        DeviceExample.Criteria criteria = example.createCriteria();
 
-        DeviceExample deviceExample = new DeviceExample();
-        DeviceExample.Criteria criteria = deviceExample.createCriteria();
+        if (device != null) {
+            if (!StringUtils.isEmpty(device.getId())) {
+                criteria.andIdEqualTo(device.getId());
+            }
+            if (!StringUtils.isEmpty(device.getName())) {
+                criteria.andNameEqualTo(device.getName());
+            }
+            if (!StringUtils.isEmpty(device.getAgentIp())) {
+                criteria.andAgentIpEqualTo(device.getAgentIp());
+            }
+            if (device.getAgentPort() != null) {
+                criteria.andAgentPortEqualTo(device.getAgentPort());
+            }
+            if (device.getPlatform() != null) {
+                criteria.andPlatformEqualTo(device.getPlatform());
+            }
+            if (device.getStatus() != null) {
+                criteria.andStatusEqualTo(device.getStatus());
+            }
+        }
+        example.setOrderByClause("status desc,create_time desc");
 
-        if (!StringUtils.isEmpty(device.getId())) {
-            criteria.andIdEqualTo(device.getId());
-        }
-        if (!StringUtils.isEmpty(device.getName())) {
-            criteria.andNameEqualTo(device.getName());
-        }
-        if (!StringUtils.isEmpty(device.getAgentIp())) {
-            criteria.andAgentIpEqualTo(device.getAgentIp());
-        }
-        if (device.getAgentPort() != null) {
-            criteria.andAgentPortEqualTo(device.getAgentPort());
-        }
-        if (device.getPlatform() != null) {
-            criteria.andPlatformEqualTo(device.getPlatform());
-        }
-        if (device.getStatus() != null) {
-            criteria.andStatusEqualTo(device.getStatus());
-        }
-        deviceExample.setOrderByClause("status desc,create_time desc");
-
-        return deviceMapper.selectByExample(deviceExample);
+        return deviceMapper.selectByExample(example);
     }
 
     /**

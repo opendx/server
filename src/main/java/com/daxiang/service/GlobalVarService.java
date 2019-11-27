@@ -112,25 +112,26 @@ public class GlobalVarService extends BaseService {
     }
 
     public List<GlobalVar> selectByGlobalVar(GlobalVar globalVar) {
-        if (globalVar == null) {
-            globalVar = new GlobalVar();
-        }
+        GlobalVarExample example = new GlobalVarExample();
+        GlobalVarExample.Criteria criteria = example.createCriteria();
 
-        GlobalVarExample globalVarExample = new GlobalVarExample();
-        GlobalVarExample.Criteria criteria = globalVarExample.createCriteria();
+        if (globalVar != null) {
+            if (globalVar.getId() != null) {
+                criteria.andIdEqualTo(globalVar.getId());
+            }
+            if (globalVar.getType() != null) {
+                criteria.andTypeEqualTo(globalVar.getType());
+            }
+            if (globalVar.getProjectId() != null) {
+                criteria.andProjectIdEqualTo(globalVar.getProjectId());
+            }
+            if (!StringUtils.isEmpty(globalVar.getName())) {
+                criteria.andNameEqualTo(globalVar.getName());
+            }
+        }
+        example.setOrderByClause("create_time desc");
 
-        if (globalVar.getId() != null) {
-            criteria.andIdEqualTo(globalVar.getId());
-        }
-        if (globalVar.getProjectId() != null) {
-            criteria.andProjectIdEqualTo(globalVar.getProjectId());
-        }
-        if (!StringUtils.isEmpty(globalVar.getName())) {
-            criteria.andNameEqualTo(globalVar.getName());
-        }
-        globalVarExample.setOrderByClause("create_time desc");
-
-        return globalVarMapper.selectByExampleWithBLOBs(globalVarExample);
+        return globalVarMapper.selectByExampleWithBLOBs(example);
     }
 
     /**

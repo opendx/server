@@ -103,24 +103,22 @@ public class ProjectService extends BaseService {
     }
 
     public List<Project> selectByProject(Project project) {
-        if (project == null) {
-            project = new Project();
-        }
+        ProjectExample example = new ProjectExample();
+        ProjectExample.Criteria criteria = example.createCriteria();
 
-        ProjectExample projectExample = new ProjectExample();
-        ProjectExample.Criteria criteria = projectExample.createCriteria();
+        if (project != null) {
+            if (project.getId() != null) {
+                criteria.andIdEqualTo(project.getId());
+            }
+            if (!StringUtils.isEmpty(project.getName())) {
+                criteria.andNameEqualTo(project.getName());
+            }
+            if (project.getPlatform() != null) {
+                criteria.andPlatformEqualTo(project.getPlatform());
+            }
+        }
+        example.setOrderByClause("create_time desc");
 
-        if (project.getId() != null) {
-            criteria.andIdEqualTo(project.getId());
-        }
-        if (!StringUtils.isEmpty(project.getName())) {
-            criteria.andNameEqualTo(project.getName());
-        }
-        if (project.getPlatform() != null) {
-            criteria.andPlatformEqualTo(project.getPlatform());
-        }
-        projectExample.setOrderByClause("create_time desc");
-
-        return projectMapper.selectByExample(projectExample);
+        return projectMapper.selectByExample(example);
     }
 }

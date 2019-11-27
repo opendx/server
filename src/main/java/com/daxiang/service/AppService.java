@@ -91,25 +91,23 @@ public class AppService extends BaseService {
     }
 
     public List<App> selectByApp(App app) {
-        if (app == null) {
-            app = new App();
-        }
+        AppExample example = new AppExample();
+        AppExample.Criteria criteria = example.createCriteria();
 
-        AppExample appExample = new AppExample();
-        AppExample.Criteria criteria = appExample.createCriteria();
+        if (app != null) {
+            if (app.getId() != null) {
+                criteria.andIdEqualTo(app.getId());
+            }
+            if (app.getPlatform() != null) {
+                criteria.andPlatformEqualTo(app.getPlatform());
+            }
+            if (app.getProjectId() != null) {
+                criteria.andProjectIdEqualTo(app.getProjectId());
+            }
+        }
+        example.setOrderByClause("upload_time desc");
 
-        if (app.getId() != null) {
-            criteria.andIdEqualTo(app.getId());
-        }
-        if (app.getPlatform() != null) {
-            criteria.andPlatformEqualTo(app.getPlatform());
-        }
-        if (app.getProjectId() != null) {
-            criteria.andProjectIdEqualTo(app.getProjectId());
-        }
-        appExample.setOrderByClause("upload_time desc");
-
-        return appMapper.selectByExample(appExample);
+        return appMapper.selectByExample(example);
     }
 
     public Response aaptDumpBadging(Integer appId) {

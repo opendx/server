@@ -81,25 +81,24 @@ public class UserService extends BaseService {
     }
 
     public List<User> selectByUser(User user) {
-        if (user == null) {
-            user = new User();
-        }
-        UserExample userExample = new UserExample();
-        UserExample.Criteria criteria = userExample.createCriteria();
+        UserExample example = new UserExample();
+        UserExample.Criteria criteria = example.createCriteria();
 
-        if (user.getId() != null) {
-            criteria.andIdEqualTo(user.getId());
-        }
-        if (!StringUtils.isEmpty(user.getUsername())) {
-            criteria.andUsernameEqualTo(user.getUsername());
-        }
-        if (!StringUtils.isEmpty(user.getPassword())) {
-            criteria.andPasswordEqualTo(user.getPassword());
-        }
-        if (!StringUtils.isEmpty(user.getNickName())) {
-            criteria.andNickNameEqualTo(user.getNickName());
+        if (user != null) {
+            if (user.getId() != null) {
+                criteria.andIdEqualTo(user.getId());
+            }
+            if (!StringUtils.isEmpty(user.getUsername())) {
+                criteria.andUsernameEqualTo(user.getUsername());
+            }
+            if (!StringUtils.isEmpty(user.getPassword())) {
+                criteria.andPasswordEqualTo(user.getPassword());
+            }
+            if (!StringUtils.isEmpty(user.getNickName())) {
+                criteria.andNickNameEqualTo(user.getNickName());
+            }
         }
 
-        return userMapper.selectByExample(userExample);
+        return userMapper.selectByExample(example);
     }
 }

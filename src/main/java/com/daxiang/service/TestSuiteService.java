@@ -91,25 +91,23 @@ public class TestSuiteService extends BaseService {
     }
 
     public List<TestSuite> selectByTestSuite(TestSuite testSuite) {
-        if (testSuite == null) {
-            testSuite = new TestSuite();
-        }
+        TestSuiteExample example = new TestSuiteExample();
+        TestSuiteExample.Criteria criteria = example.createCriteria();
 
-        TestSuiteExample testSuiteExample = new TestSuiteExample();
-        TestSuiteExample.Criteria criteria = testSuiteExample.createCriteria();
+        if (testSuite != null) {
+            if (testSuite.getId() != null) {
+                criteria.andIdEqualTo(testSuite.getId());
+            }
+            if (testSuite.getProjectId() != null) {
+                criteria.andProjectIdEqualTo(testSuite.getProjectId());
+            }
+            if (!StringUtils.isEmpty(testSuite.getName())) {
+                criteria.andNameEqualTo(testSuite.getName());
+            }
+        }
+        example.setOrderByClause("create_time desc");
 
-        if (testSuite.getId() != null) {
-            criteria.andIdEqualTo(testSuite.getId());
-        }
-        if (testSuite.getProjectId() != null) {
-            criteria.andProjectIdEqualTo(testSuite.getProjectId());
-        }
-        if (!StringUtils.isEmpty(testSuite.getName())) {
-            criteria.andNameEqualTo(testSuite.getName());
-        }
-        testSuiteExample.setOrderByClause("create_time desc");
-
-        return testSuiteMapper.selectByExample(testSuiteExample);
+        return testSuiteMapper.selectByExample(example);
     }
 
     public List<TestSuite> selectByPrimaryKeys(List<Integer> ids) {

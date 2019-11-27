@@ -77,24 +77,22 @@ public class DriverService extends BaseService {
     }
 
     public List<Driver> selectByDriver(Driver driver) {
-        if (driver == null) {
-            driver = new Driver();
-        }
-
         DriverExample example = new DriverExample();
         DriverExample.Criteria criteria = example.createCriteria();
 
-        if (driver.getId() != null) {
-            criteria.andIdEqualTo(driver.getId());
+        if (driver != null) {
+            if (driver.getId() != null) {
+                criteria.andIdEqualTo(driver.getId());
+            }
+            if (driver.getType() != null) {
+                criteria.andTypeEqualTo(driver.getType());
+            }
+            if (!StringUtils.isEmpty(driver.getVersion())) {
+                criteria.andVersionEqualTo(driver.getVersion());
+            }
         }
-        if (driver.getType() != null) {
-            criteria.andTypeEqualTo(driver.getType());
-        }
-        if (!StringUtils.isEmpty(driver.getVersion())) {
-            criteria.andVersionEqualTo(driver.getVersion());
-        }
-
         example.setOrderByClause("create_time desc");
+
         return driverMapper.selectByExampleWithBLOBs(example);
     }
 

@@ -217,28 +217,26 @@ public class TestTaskService extends BaseService {
     }
 
     public List<TestTask> selectByTestTask(TestTask testTask) {
-        if (testTask == null) {
-            testTask = new TestTask();
-        }
+        TestTaskExample example = new TestTaskExample();
+        TestTaskExample.Criteria criteria = example.createCriteria();
 
-        TestTaskExample testTaskExample = new TestTaskExample();
-        TestTaskExample.Criteria criteria = testTaskExample.createCriteria();
+        if (testTask != null) {
+            if (testTask.getId() != null) {
+                criteria.andIdEqualTo(testTask.getId());
+            }
+            if (testTask.getProjectId() != null) {
+                criteria.andProjectIdEqualTo(testTask.getProjectId());
+            }
+            if (testTask.getTestPlanId() != null) {
+                criteria.andTestPlanIdEqualTo(testTask.getTestPlanId());
+            }
+            if (testTask.getStatus() != null) {
+                criteria.andStatusEqualTo(testTask.getStatus());
+            }
+        }
+        example.setOrderByClause("commit_time desc");
 
-        if (testTask.getId() != null) {
-            criteria.andIdEqualTo(testTask.getId());
-        }
-        if (testTask.getProjectId() != null) {
-            criteria.andProjectIdEqualTo(testTask.getProjectId());
-        }
-        if (testTask.getTestPlanId() != null) {
-            criteria.andTestPlanIdEqualTo(testTask.getTestPlanId());
-        }
-        if (testTask.getStatus() != null) {
-            criteria.andStatusEqualTo(testTask.getStatus());
-        }
-        testTaskExample.setOrderByClause("commit_time desc");
-
-        return testTaskMapper.selectByExample(testTaskExample);
+        return testTaskMapper.selectByExample(example);
     }
 
     public List<TestTask> findUnFinishedTestTask() {

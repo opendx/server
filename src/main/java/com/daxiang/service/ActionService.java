@@ -132,40 +132,38 @@ public class ActionService extends BaseService {
     }
 
     public List<Action> selectByAction(Action action) {
-        if (action == null) {
-            action = new Action();
-        }
+        ActionExample example = new ActionExample();
+        ActionExample.Criteria criteria = example.createCriteria();
 
-        ActionExample actionExample = new ActionExample();
-        ActionExample.Criteria criteria = actionExample.createCriteria();
+        if (action != null) {
+            if (action.getId() != null) {
+                criteria.andIdEqualTo(action.getId());
+            }
+            if (action.getProjectId() != null) {
+                criteria.andProjectIdEqualTo(action.getProjectId());
+            }
+            if (action.getType() != null) {
+                criteria.andTypeEqualTo(action.getType());
+            }
+            if (action.getPlatform() != null) {
+                criteria.andPlatformEqualTo(action.getPlatform());
+            }
+            if (action.getPageId() != null) {
+                criteria.andPageIdEqualTo(action.getPageId());
+            }
+            if (action.getTestSuiteId() != null) {
+                criteria.andTestSuiteIdEqualTo(action.getTestSuiteId());
+            }
+            if (action.getCategoryId() != null) {
+                criteria.andCategoryIdEqualTo(action.getCategoryId());
+            }
+            if (action.getState() != null) {
+                criteria.andStateEqualTo(action.getState());
+            }
+        }
+        example.setOrderByClause("create_time desc");
 
-        if (action.getId() != null) {
-            criteria.andIdEqualTo(action.getId());
-        }
-        if (action.getProjectId() != null) {
-            criteria.andProjectIdEqualTo(action.getProjectId());
-        }
-        if (action.getType() != null) {
-            criteria.andTypeEqualTo(action.getType());
-        }
-        if (action.getPlatform() != null) {
-            criteria.andPlatformEqualTo(action.getPlatform());
-        }
-        if (action.getPageId() != null) {
-            criteria.andPageIdEqualTo(action.getPageId());
-        }
-        if (action.getTestSuiteId() != null) {
-            criteria.andTestSuiteIdEqualTo(action.getTestSuiteId());
-        }
-        if (action.getCategoryId() != null) {
-            criteria.andCategoryIdEqualTo(action.getCategoryId());
-        }
-        if (action.getState() != null) {
-            criteria.andStateEqualTo(action.getState());
-        }
-
-        actionExample.setOrderByClause("create_time desc");
-        return actionMapper.selectByExampleWithBLOBs(actionExample);
+        return actionMapper.selectByExampleWithBLOBs(example);
     }
 
     /**

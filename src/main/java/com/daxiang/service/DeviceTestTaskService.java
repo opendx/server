@@ -57,24 +57,22 @@ public class DeviceTestTaskService {
     }
 
     public List<DeviceTestTask> selectByDeviceTestTask(DeviceTestTask deviceTestTask) {
-        if (deviceTestTask == null) {
-            deviceTestTask = new DeviceTestTask();
-        }
-
         DeviceTestTaskExample deviceTestTaskExample = new DeviceTestTaskExample();
         DeviceTestTaskExample.Criteria criteria = deviceTestTaskExample.createCriteria();
 
-        if (deviceTestTask.getId() != null) {
-            criteria.andIdEqualTo(deviceTestTask.getId());
-        }
-        if (deviceTestTask.getTestTaskId() != null) {
-            criteria.andTestTaskIdEqualTo(deviceTestTask.getTestTaskId());
-        }
-        if (!StringUtils.isEmpty(deviceTestTask.getDeviceId())) {
-            criteria.andDeviceIdEqualTo(deviceTestTask.getDeviceId());
-        }
-        if (deviceTestTask.getStatus() != null) {
-            criteria.andStatusEqualTo(deviceTestTask.getStatus());
+        if (deviceTestTask != null) {
+            if (deviceTestTask.getId() != null) {
+                criteria.andIdEqualTo(deviceTestTask.getId());
+            }
+            if (deviceTestTask.getTestTaskId() != null) {
+                criteria.andTestTaskIdEqualTo(deviceTestTask.getTestTaskId());
+            }
+            if (!StringUtils.isEmpty(deviceTestTask.getDeviceId())) {
+                criteria.andDeviceIdEqualTo(deviceTestTask.getDeviceId());
+            }
+            if (deviceTestTask.getStatus() != null) {
+                criteria.andStatusEqualTo(deviceTestTask.getStatus());
+            }
         }
 
         return deviceTestTaskMapper.selectByExampleWithBLOBs(deviceTestTaskExample);

@@ -126,31 +126,29 @@ public class TestPlanService extends BaseService {
     }
 
     public List<TestPlan> selectByTestPlan(TestPlan testPlan) {
-        if (testPlan == null) {
-            testPlan = new TestPlan();
-        }
+        TestPlanExample example = new TestPlanExample();
+        TestPlanExample.Criteria criteria = example.createCriteria();
 
-        TestPlanExample testPlanExample = new TestPlanExample();
-        TestPlanExample.Criteria criteria = testPlanExample.createCriteria();
+        if (testPlan != null) {
+            if (testPlan.getId() != null) {
+                criteria.andIdEqualTo(testPlan.getId());
+            }
+            if (testPlan.getProjectId() != null) {
+                criteria.andProjectIdEqualTo(testPlan.getProjectId());
+            }
+            if (!StringUtils.isEmpty(testPlan.getName())) {
+                criteria.andNameEqualTo(testPlan.getName());
+            }
+            if (testPlan.getRunMode() != null) {
+                criteria.andRunModeEqualTo(testPlan.getRunMode());
+            }
+            if (testPlan.getEnableSchedule() != null) {
+                criteria.andEnableScheduleEqualTo(testPlan.getEnableSchedule());
+            }
+        }
+        example.setOrderByClause("create_time desc");
 
-        if (testPlan.getId() != null) {
-            criteria.andIdEqualTo(testPlan.getId());
-        }
-        if (testPlan.getProjectId() != null) {
-            criteria.andProjectIdEqualTo(testPlan.getProjectId());
-        }
-        if (!StringUtils.isEmpty(testPlan.getName())) {
-            criteria.andNameEqualTo(testPlan.getName());
-        }
-        if (testPlan.getRunMode() != null) {
-            criteria.andRunModeEqualTo(testPlan.getRunMode());
-        }
-        if (testPlan.getEnableSchedule() != null) {
-            criteria.andEnableScheduleEqualTo(testPlan.getEnableSchedule());
-        }
-        testPlanExample.setOrderByClause("create_time desc");
-
-        return testPlanMapper.selectByExampleWithBLOBs(testPlanExample);
+        return testPlanMapper.selectByExampleWithBLOBs(example);
     }
 
     public TestPlan selectByPrimaryKey(Integer testPlanId) {
