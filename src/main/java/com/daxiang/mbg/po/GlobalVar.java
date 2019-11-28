@@ -3,6 +3,7 @@ package com.daxiang.mbg.po;
 import com.daxiang.model.environment.EnvironmentValue;
 import com.daxiang.validator.annotation.NoDuplicateEnvironment;
 import com.daxiang.validator.group.UpdateGroup;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -70,6 +71,20 @@ public class GlobalVar implements Serializable {
     @NoDuplicateEnvironment(message = "环境不能重复")
     @Valid
     private java.util.List<com.daxiang.model.environment.EnvironmentValue> environmentValues;
+
+    /**
+     * 专门给agent用的
+     */
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String value;
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
 
     private static final long serialVersionUID = 1L;
 

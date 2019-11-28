@@ -8,7 +8,9 @@ import com.daxiang.mbg.po.*;
 import com.daxiang.model.Page;
 import com.daxiang.model.PageRequest;
 import com.daxiang.model.Response;
+import com.daxiang.model.action.LocalVar;
 import com.daxiang.model.action.Step;
+import com.daxiang.model.environment.EnvironmentValue;
 import com.daxiang.model.request.ActionDebugRequest;
 import com.daxiang.model.vo.ActionCascaderVo;
 import com.daxiang.model.vo.ActionVo;
@@ -20,7 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -269,6 +270,7 @@ public class ActionService extends BaseService {
     public Response debug(ActionDebugRequest actionDebugRequest) {
         Action action = actionDebugRequest.getAction();
         ActionDebugRequest.DebugInfo debugInfo = actionDebugRequest.getDebugInfo();
+        Integer env = debugInfo.getEnv();
 
         // 没保存过的action设置个默认的actionId
         if (action.getId() == null) {
@@ -280,13 +282,24 @@ public class ActionService extends BaseService {
             return Response.fail("至少选择一个启用的步骤");
         }
 
+        // 处理action局部变量
+        List<LocalVar> localVars = action.getLocalVars();
+        if (!CollectionUtils.isEmpty(localVars)) {
+            localVars.forEach(localVar -> localVar.setValue(getValueInEnvironmentValues(localVar.getEnvironmentValues(), env)));
+        }
+
         // 构建action树
         buildActionTree(Arrays.asList(action));
 
         // 该项目下的全局变量
-        GlobalVar globalVar = new GlobalVar();
-        globalVar.setProjectId(action.getProjectId());
-        List<GlobalVar> globalVars = globalVarService.selectByGlobalVar(globalVar);
+        GlobalVar query = new GlobalVar();
+        query.setProjectId(action.getProjectId());
+        List<GlobalVar> globalVars = globalVarService.selectByGlobalVar(query);
+
+        // 处理全局变量
+        if (!CollectionUtils.isEmpty(globalVars)) {
+            globalVars.forEach(globalVar -> globalVar.setValue(getValueInEnvironmentValues(globalVar.getEnvironmentValues(), env)));
+        }
 
         JSONObject requestBody = new JSONObject();
         requestBody.put("action", action);
@@ -344,6 +357,30 @@ public class ActionService extends BaseService {
         if (!CollectionUtils.isEmpty(testPlans)) {
             String usingTestPlanNames = testPlans.stream().map(TestPlan::getName).collect(Collectors.joining("、"));
             throw new BusinessException(usingTestPlanNames + "正在使用此action");
+        }
+    }
+
+    /**
+     * 在environmentValues中找到与env匹配的value
+     * @param environmentValues
+     * @param env
+     * @return
+     */
+    private String getValueInEnvironmentValues(List<EnvironmentValue> environmentValues, Integer env) {
+        // 与env匹配的environmentValue
+        EnvironmentValue environmentValue = environmentValues.stream()
+                .filter(ev -> env.equals(ev.getEnvironmentId())).findFirst().orElse(null);
+        if (environmentValue != null) {
+            return environmentValue.getValue();
+        } else {
+            // 没有与env匹配的，用默认的
+            EnvironmentValue defaultEnvironmentValue = environmentValues.stream()
+                    .filter(ev -> EnvironmentValue.DEFAULT_ENVIRONMENT_ID == ev.getEnvironmentId()).findFirst().orElse(null);
+            if (defaultEnvironmentValue != null) {
+                return defaultEnvironmentValue.getValue();
+            } else {
+                return null;
+            }
         }
     }
 
