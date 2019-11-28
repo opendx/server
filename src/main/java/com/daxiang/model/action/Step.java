@@ -1,6 +1,7 @@
 package com.daxiang.model.action;
 
 import com.daxiang.mbg.po.Action;
+import com.daxiang.validator.group.SaveActionGroup;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
@@ -38,7 +39,7 @@ public class Step {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS")
     private Date endTime;
 
-    @NotBlank(message = "步骤名不能为空")
+    @NotBlank(message = "步骤名不能为空", groups = {SaveActionGroup.class})
     private String name;
     /**
      * 步骤赋值

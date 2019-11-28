@@ -8,9 +8,7 @@ import com.daxiang.mbg.po.*;
 import com.daxiang.model.Page;
 import com.daxiang.model.PageRequest;
 import com.daxiang.model.Response;
-import com.daxiang.model.action.LocalVar;
 import com.daxiang.model.action.Step;
-import com.daxiang.model.environment.EnvironmentValue;
 import com.daxiang.model.request.ActionDebugRequest;
 import com.daxiang.model.vo.ActionCascaderVo;
 import com.daxiang.model.vo.ActionVo;
@@ -277,20 +275,9 @@ public class ActionService extends BaseService {
             action.setId(0);
         }
 
-        List<Step> steps = action.getSteps();
-        if (CollectionUtils.isEmpty(steps)) {
-            return Response.fail("至少选择一个步骤");
-        }
-
-        long enabledStepCount = steps.stream().filter(step -> step.getStatus() == Step.ENABLE_STATUS).count();
+        long enabledStepCount = action.getSteps().stream().filter(step -> step.getStatus() == Step.ENABLE_STATUS).count();
         if (enabledStepCount == 0) {
             return Response.fail("至少选择一个启用的步骤");
-        }
-
-        for (Step step : steps) {
-            if (step.getActionId() == null) {
-                return Response.fail("步骤" + step.getNumber() + " action不能为空");
-            }
         }
 
         // 构建action树

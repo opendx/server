@@ -3,6 +3,7 @@ package com.daxiang.mbg.po;
 import com.daxiang.model.action.LocalVar;
 import com.daxiang.model.action.Param;
 import com.daxiang.model.action.Step;
+import com.daxiang.validator.group.SaveActionGroup;
 import com.daxiang.validator.group.UpdateGroup;
 
 import javax.validation.Valid;
@@ -56,7 +57,7 @@ public class Action implements Serializable {
      *
      * @mbg.generated
      */
-    @NotBlank(message = "action名不能为空")
+    @NotBlank(message = "action名不能为空", groups = {SaveActionGroup.class})
     private String name;
 
     /**
@@ -166,7 +167,7 @@ public class Action implements Serializable {
      *
      * @mbg.generated
      */
-    @NotNull(message = "status不能为空")
+    @NotNull(message = "status不能为空", groups = {SaveActionGroup.class})
     private Integer state;
 
     /**

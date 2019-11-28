@@ -14,6 +14,7 @@ import javax.validation.constraints.NotNull;
 public class ActionDebugRequest {
 
     @NotNull(message = "action不能为空")
+    @Valid
     private Action action;
     @Valid
     @NotNull(message = "缺少调试信息")

@@ -5,6 +5,7 @@ import com.daxiang.model.PageRequest;
 import com.daxiang.model.Response;
 import com.daxiang.model.request.ActionDebugRequest;
 import com.daxiang.service.ActionService;
+import com.daxiang.validator.group.SaveActionGroup;
 import com.daxiang.validator.group.UpdateGroup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -30,7 +31,7 @@ public class ActionController {
      * @return
      */
     @PostMapping("/add")
-    public Response add(@RequestBody @Valid Action action) {
+    public Response add(@RequestBody @Validated({SaveActionGroup.class}) Action action) {
         return actionService.add(action);
     }
 
@@ -49,7 +50,7 @@ public class ActionController {
      * 更新action
      */
     @PostMapping("/update")
-    public Response update(@RequestBody @Validated({UpdateGroup.class}) Action action) {
+    public Response update(@RequestBody @Validated({SaveActionGroup.class, UpdateGroup.class}) Action action) {
         return actionService.update(action);
     }
 
