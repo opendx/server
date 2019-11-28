@@ -8,6 +8,7 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -17,7 +18,7 @@ public class NoDuplicateEnvironmentValidator implements ConstraintValidator<NoDu
     @Override
     public boolean isValid(List<EnvironmentValue> environmentValueList, ConstraintValidatorContext context) {
         if (!CollectionUtils.isEmpty(environmentValueList)) {
-            Map<Integer, Long> environmentIdCountMap = environmentValueList.stream()
+            Map<Integer, Long> environmentIdCountMap = environmentValueList.stream().filter(ev -> Objects.nonNull(ev.getEnvironmentId()))
                     .collect(Collectors.groupingBy(EnvironmentValue::getEnvironmentId, Collectors.counting()));
             for (Map.Entry<Integer, Long> environmentIdCount : environmentIdCountMap.entrySet()) {
                 if (environmentIdCount.getValue() > 1) {
