@@ -6,6 +6,7 @@
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="description" jdbcType="VARCHAR" property="description" />
     <result column="project_id" jdbcType="INTEGER" property="projectId" />
+    <result column="environment_id" jdbcType="INTEGER" property="environmentId" />
     <result column="before_class" jdbcType="INTEGER" property="beforeClass" />
     <result column="before_method" jdbcType="INTEGER" property="beforeMethod" />
     <result column="after_class" jdbcType="INTEGER" property="afterClass" />
@@ -13,6 +14,8 @@
     <result column="run_mode" jdbcType="TINYINT" property="runMode" />
     <result column="cron_expression" jdbcType="VARCHAR" property="cronExpression" />
     <result column="enable_schedule" jdbcType="TINYINT" property="enableSchedule" />
+    <result column="enable_record_video" jdbcType="TINYINT" property="enableRecordVideo" />
+    <result column="fail_retry_count" jdbcType="INTEGER" property="failRetryCount" />
     <result column="creator_uid" jdbcType="INTEGER" property="creatorUid" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
@@ -79,8 +82,9 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, name, description, project_id, before_class, before_method, after_class, after_method, 
-    run_mode, cron_expression, enable_schedule, creator_uid, create_time
+    id, name, description, project_id, environment_id, before_class, before_method, after_class, 
+    after_method, run_mode, cron_expression, enable_schedule, enable_record_video, fail_retry_count, 
+    creator_uid, create_time
   </sql>
   <sql id="Blob_Column_List">
     test_suites, device_ids
@@ -138,16 +142,18 @@
       SELECT LAST_INSERT_ID()
     </selectKey>
     insert into test_plan (name, description, project_id, 
-      before_class, before_method, after_class, 
-      after_method, run_mode, cron_expression, 
-      enable_schedule, creator_uid, create_time, 
+      environment_id, before_class, before_method, 
+      after_class, after_method, run_mode, 
+      cron_expression, enable_schedule, enable_record_video, 
+      fail_retry_count, creator_uid, create_time, 
       test_suites, 
       device_ids
       )
     values (#{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{projectId,jdbcType=INTEGER}, 
-      #{beforeClass,jdbcType=INTEGER}, #{beforeMethod,jdbcType=INTEGER}, #{afterClass,jdbcType=INTEGER}, 
-      #{afterMethod,jdbcType=INTEGER}, #{runMode,jdbcType=TINYINT}, #{cronExpression,jdbcType=VARCHAR}, 
-      #{enableSchedule,jdbcType=TINYINT}, #{creatorUid,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{environmentId,jdbcType=INTEGER}, #{beforeClass,jdbcType=INTEGER}, #{beforeMethod,jdbcType=INTEGER}, 
+      #{afterClass,jdbcType=INTEGER}, #{afterMethod,jdbcType=INTEGER}, #{runMode,jdbcType=TINYINT}, 
+      #{cronExpression,jdbcType=VARCHAR}, #{enableSchedule,jdbcType=TINYINT}, #{enableRecordVideo,jdbcType=TINYINT}, 
+      #{failRetryCount,jdbcType=INTEGER}, #{creatorUid,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
       #{testSuites,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.IntegerListTypeHandler}, 
       #{deviceIds,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.StringListTypeHandler}
       )
@@ -166,6 +172,9 @@
       </if>
       <if test="projectId != null">
         project_id,
+      </if>
+      <if test="environmentId != null">
+        environment_id,
       </if>
       <if test="beforeClass != null">
         before_class,
@@ -187,6 +196,12 @@
       </if>
       <if test="enableSchedule != null">
         enable_schedule,
+      </if>
+      <if test="enableRecordVideo != null">
+        enable_record_video,
+      </if>
+      <if test="failRetryCount != null">
+        fail_retry_count,
       </if>
       <if test="creatorUid != null">
         creator_uid,
@@ -211,6 +226,9 @@
       <if test="projectId != null">
         #{projectId,jdbcType=INTEGER},
       </if>
+      <if test="environmentId != null">
+        #{environmentId,jdbcType=INTEGER},
+      </if>
       <if test="beforeClass != null">
         #{beforeClass,jdbcType=INTEGER},
       </if>
@@ -231,6 +249,12 @@
       </if>
       <if test="enableSchedule != null">
         #{enableSchedule,jdbcType=TINYINT},
+      </if>
+      <if test="enableRecordVideo != null">
+        #{enableRecordVideo,jdbcType=TINYINT},
+      </if>
+      <if test="failRetryCount != null">
+        #{failRetryCount,jdbcType=INTEGER},
       </if>
       <if test="creatorUid != null">
         #{creatorUid,jdbcType=INTEGER},
@@ -267,6 +291,9 @@
       <if test="record.projectId != null">
         project_id = #{record.projectId,jdbcType=INTEGER},
       </if>
+      <if test="record.environmentId != null">
+        environment_id = #{record.environmentId,jdbcType=INTEGER},
+      </if>
       <if test="record.beforeClass != null">
         before_class = #{record.beforeClass,jdbcType=INTEGER},
       </if>
@@ -287,6 +314,12 @@
       </if>
       <if test="record.enableSchedule != null">
         enable_schedule = #{record.enableSchedule,jdbcType=TINYINT},
+      </if>
+      <if test="record.enableRecordVideo != null">
+        enable_record_video = #{record.enableRecordVideo,jdbcType=TINYINT},
+      </if>
+      <if test="record.failRetryCount != null">
+        fail_retry_count = #{record.failRetryCount,jdbcType=INTEGER},
       </if>
       <if test="record.creatorUid != null">
         creator_uid = #{record.creatorUid,jdbcType=INTEGER},
@@ -311,6 +344,7 @@
       name = #{record.name,jdbcType=VARCHAR},
       description = #{record.description,jdbcType=VARCHAR},
       project_id = #{record.projectId,jdbcType=INTEGER},
+      environment_id = #{record.environmentId,jdbcType=INTEGER},
       before_class = #{record.beforeClass,jdbcType=INTEGER},
       before_method = #{record.beforeMethod,jdbcType=INTEGER},
       after_class = #{record.afterClass,jdbcType=INTEGER},
@@ -318,6 +352,8 @@
       run_mode = #{record.runMode,jdbcType=TINYINT},
       cron_expression = #{record.cronExpression,jdbcType=VARCHAR},
       enable_schedule = #{record.enableSchedule,jdbcType=TINYINT},
+      enable_record_video = #{record.enableRecordVideo,jdbcType=TINYINT},
+      fail_retry_count = #{record.failRetryCount,jdbcType=INTEGER},
       creator_uid = #{record.creatorUid,jdbcType=INTEGER},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       test_suites = #{record.testSuites,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.IntegerListTypeHandler},
@@ -332,6 +368,7 @@
       name = #{record.name,jdbcType=VARCHAR},
       description = #{record.description,jdbcType=VARCHAR},
       project_id = #{record.projectId,jdbcType=INTEGER},
+      environment_id = #{record.environmentId,jdbcType=INTEGER},
       before_class = #{record.beforeClass,jdbcType=INTEGER},
       before_method = #{record.beforeMethod,jdbcType=INTEGER},
       after_class = #{record.afterClass,jdbcType=INTEGER},
@@ -339,6 +376,8 @@
       run_mode = #{record.runMode,jdbcType=TINYINT},
       cron_expression = #{record.cronExpression,jdbcType=VARCHAR},
       enable_schedule = #{record.enableSchedule,jdbcType=TINYINT},
+      enable_record_video = #{record.enableRecordVideo,jdbcType=TINYINT},
+      fail_retry_count = #{record.failRetryCount,jdbcType=INTEGER},
       creator_uid = #{record.creatorUid,jdbcType=INTEGER},
       create_time = #{record.createTime,jdbcType=TIMESTAMP}
     <if test="_parameter != null">
@@ -356,6 +395,9 @@
       </if>
       <if test="projectId != null">
         project_id = #{projectId,jdbcType=INTEGER},
+      </if>
+      <if test="environmentId != null">
+        environment_id = #{environmentId,jdbcType=INTEGER},
       </if>
       <if test="beforeClass != null">
         before_class = #{beforeClass,jdbcType=INTEGER},
@@ -378,6 +420,12 @@
       <if test="enableSchedule != null">
         enable_schedule = #{enableSchedule,jdbcType=TINYINT},
       </if>
+      <if test="enableRecordVideo != null">
+        enable_record_video = #{enableRecordVideo,jdbcType=TINYINT},
+      </if>
+      <if test="failRetryCount != null">
+        fail_retry_count = #{failRetryCount,jdbcType=INTEGER},
+      </if>
       <if test="creatorUid != null">
         creator_uid = #{creatorUid,jdbcType=INTEGER},
       </if>
@@ -398,6 +446,7 @@
     set name = #{name,jdbcType=VARCHAR},
       description = #{description,jdbcType=VARCHAR},
       project_id = #{projectId,jdbcType=INTEGER},
+      environment_id = #{environmentId,jdbcType=INTEGER},
       before_class = #{beforeClass,jdbcType=INTEGER},
       before_method = #{beforeMethod,jdbcType=INTEGER},
       after_class = #{afterClass,jdbcType=INTEGER},
@@ -405,6 +454,8 @@
       run_mode = #{runMode,jdbcType=TINYINT},
       cron_expression = #{cronExpression,jdbcType=VARCHAR},
       enable_schedule = #{enableSchedule,jdbcType=TINYINT},
+      enable_record_video = #{enableRecordVideo,jdbcType=TINYINT},
+      fail_retry_count = #{failRetryCount,jdbcType=INTEGER},
       creator_uid = #{creatorUid,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       test_suites = #{testSuites,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.IntegerListTypeHandler},
@@ -416,6 +467,7 @@
     set name = #{name,jdbcType=VARCHAR},
       description = #{description,jdbcType=VARCHAR},
       project_id = #{projectId,jdbcType=INTEGER},
+      environment_id = #{environmentId,jdbcType=INTEGER},
       before_class = #{beforeClass,jdbcType=INTEGER},
       before_method = #{beforeMethod,jdbcType=INTEGER},
       after_class = #{afterClass,jdbcType=INTEGER},
@@ -423,6 +475,8 @@
       run_mode = #{runMode,jdbcType=TINYINT},
       cron_expression = #{cronExpression,jdbcType=VARCHAR},
       enable_schedule = #{enableSchedule,jdbcType=TINYINT},
+      enable_record_video = #{enableRecordVideo,jdbcType=TINYINT},
+      fail_retry_count = #{failRetryCount,jdbcType=INTEGER},
       creator_uid = #{creatorUid,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}

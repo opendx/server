@@ -47,3 +47,8 @@ CREATE TABLE `environment` (
 ALTER TABLE global_var CHANGE COLUMN `value` `environment_values` json NOT NULL COMMENT '变量值' AFTER `type`;
 
 -- todo global_var | action local_var数据迁移
+
+ALTER TABLE test_plan
+ADD COLUMN `environment_id` int(11) NOT NULL DEFAULT -1 COMMENT '环境，默认-1' AFTER `project_id`,
+ADD COLUMN `enable_record_video` tinyint(4) NOT NULL DEFAULT 1 COMMENT '是否录制视频，0: 不录制 1: 录制' AFTER `enable_schedule`,
+ADD COLUMN `fail_retry_count` int(11) NOT NULL DEFAULT 0 COMMENT '失败重试次数' AFTER `enable_record_video`;

@@ -145,6 +145,12 @@ public class TestPlanService extends BaseService {
             if (testPlan.getEnableSchedule() != null) {
                 criteria.andEnableScheduleEqualTo(testPlan.getEnableSchedule());
             }
+            if (testPlan.getEnvironmentId() != null) {
+                criteria.andEnvironmentIdEqualTo(testPlan.getEnvironmentId());
+            }
+            if (testPlan.getEnableRecordVideo() != null) {
+                criteria.andEnableRecordVideoEqualTo(testPlan.getEnableRecordVideo());
+            }
         }
         example.setOrderByClause("create_time desc");
 

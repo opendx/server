@@ -2,6 +2,7 @@ package com.daxiang.mbg.po;
 
 import com.daxiang.validator.group.UpdateGroup;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -43,6 +44,14 @@ public class TestPlan implements Serializable {
      */
     @NotNull(message = "项目id不能为空")
     private Integer projectId;
+
+    /**
+     * 环境，默认-1
+     *
+     * @mbg.generated
+     */
+    @NotNull(message = "环境不能为空")
+    private Integer environmentId;
 
     /**
      * BeforeClass
@@ -94,6 +103,22 @@ public class TestPlan implements Serializable {
      */
     @NotNull(message = "是否开启定时任务不能为空")
     private Integer enableSchedule;
+
+    /**
+     * 是否录制视频，0: 不录制 1: 录制
+     *
+     * @mbg.generated
+     */
+    @NotNull(message = "是否录制视频不能为空")
+    private Integer enableRecordVideo;
+
+    /**
+     * 失败重试次数
+     *
+     * @mbg.generated
+     */
+    @Min(value = 0, message = "失败重试次数必须>=0")
+    private Integer failRetryCount;
 
     /**
      * 创建人
@@ -159,6 +184,14 @@ public class TestPlan implements Serializable {
         this.projectId = projectId;
     }
 
+    public Integer getEnvironmentId() {
+        return environmentId;
+    }
+
+    public void setEnvironmentId(Integer environmentId) {
+        this.environmentId = environmentId;
+    }
+
     public Integer getBeforeClass() {
         return beforeClass;
     }
@@ -215,6 +248,22 @@ public class TestPlan implements Serializable {
         this.enableSchedule = enableSchedule;
     }
 
+    public Integer getEnableRecordVideo() {
+        return enableRecordVideo;
+    }
+
+    public void setEnableRecordVideo(Integer enableRecordVideo) {
+        this.enableRecordVideo = enableRecordVideo;
+    }
+
+    public Integer getFailRetryCount() {
+        return failRetryCount;
+    }
+
+    public void setFailRetryCount(Integer failRetryCount) {
+        this.failRetryCount = failRetryCount;
+    }
+
     public Integer getCreatorUid() {
         return creatorUid;
     }
@@ -257,6 +306,7 @@ public class TestPlan implements Serializable {
         sb.append(", name=").append(name);
         sb.append(", description=").append(description);
         sb.append(", projectId=").append(projectId);
+        sb.append(", environmentId=").append(environmentId);
         sb.append(", beforeClass=").append(beforeClass);
         sb.append(", beforeMethod=").append(beforeMethod);
         sb.append(", afterClass=").append(afterClass);
@@ -264,6 +314,8 @@ public class TestPlan implements Serializable {
         sb.append(", runMode=").append(runMode);
         sb.append(", cronExpression=").append(cronExpression);
         sb.append(", enableSchedule=").append(enableSchedule);
+        sb.append(", enableRecordVideo=").append(enableRecordVideo);
+        sb.append(", failRetryCount=").append(failRetryCount);
         sb.append(", creatorUid=").append(creatorUid);
         sb.append(", createTime=").append(createTime);
         sb.append(", testSuites=").append(testSuites);

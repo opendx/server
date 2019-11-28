@@ -365,6 +365,66 @@ public class TestPlanExample {
             return (Criteria) this;
         }
 
+        public Criteria andEnvironmentIdIsNull() {
+            addCriterion("environment_id is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andEnvironmentIdIsNotNull() {
+            addCriterion("environment_id is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andEnvironmentIdEqualTo(Integer value) {
+            addCriterion("environment_id =", value, "environmentId");
+            return (Criteria) this;
+        }
+
+        public Criteria andEnvironmentIdNotEqualTo(Integer value) {
+            addCriterion("environment_id <>", value, "environmentId");
+            return (Criteria) this;
+        }
+
+        public Criteria andEnvironmentIdGreaterThan(Integer value) {
+            addCriterion("environment_id >", value, "environmentId");
+            return (Criteria) this;
+        }
+
+        public Criteria andEnvironmentIdGreaterThanOrEqualTo(Integer value) {
+            addCriterion("environment_id >=", value, "environmentId");
+            return (Criteria) this;
+        }
+
+        public Criteria andEnvironmentIdLessThan(Integer value) {
+            addCriterion("environment_id <", value, "environmentId");
+            return (Criteria) this;
+        }
+
+        public Criteria andEnvironmentIdLessThanOrEqualTo(Integer value) {
+            addCriterion("environment_id <=", value, "environmentId");
+            return (Criteria) this;
+        }
+
+        public Criteria andEnvironmentIdIn(List<Integer> values) {
+            addCriterion("environment_id in", values, "environmentId");
+            return (Criteria) this;
+        }
+
+        public Criteria andEnvironmentIdNotIn(List<Integer> values) {
+            addCriterion("environment_id not in", values, "environmentId");
+            return (Criteria) this;
+        }
+
+        public Criteria andEnvironmentIdBetween(Integer value1, Integer value2) {
+            addCriterion("environment_id between", value1, value2, "environmentId");
+            return (Criteria) this;
+        }
+
+        public Criteria andEnvironmentIdNotBetween(Integer value1, Integer value2) {
+            addCriterion("environment_id not between", value1, value2, "environmentId");
+            return (Criteria) this;
+        }
+
         public Criteria andBeforeClassIsNull() {
             addCriterion("before_class is null");
             return (Criteria) this;
@@ -792,6 +852,126 @@ public class TestPlanExample {
 
         public Criteria andEnableScheduleNotBetween(Integer value1, Integer value2) {
             addCriterion("enable_schedule not between", value1, value2, "enableSchedule");
+            return (Criteria) this;
+        }
+
+        public Criteria andEnableRecordVideoIsNull() {
+            addCriterion("enable_record_video is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andEnableRecordVideoIsNotNull() {
+            addCriterion("enable_record_video is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andEnableRecordVideoEqualTo(Integer value) {
+            addCriterion("enable_record_video =", value, "enableRecordVideo");
+            return (Criteria) this;
+        }
+
+        public Criteria andEnableRecordVideoNotEqualTo(Integer value) {
+            addCriterion("enable_record_video <>", value, "enableRecordVideo");
+            return (Criteria) this;
+        }
+
+        public Criteria andEnableRecordVideoGreaterThan(Integer value) {
+            addCriterion("enable_record_video >", value, "enableRecordVideo");
+            return (Criteria) this;
+        }
+
+        public Criteria andEnableRecordVideoGreaterThanOrEqualTo(Integer value) {
+            addCriterion("enable_record_video >=", value, "enableRecordVideo");
+            return (Criteria) this;
+        }
+
+        public Criteria andEnableRecordVideoLessThan(Integer value) {
+            addCriterion("enable_record_video <", value, "enableRecordVideo");
+            return (Criteria) this;
+        }
+
+        public Criteria andEnableRecordVideoLessThanOrEqualTo(Integer value) {
+            addCriterion("enable_record_video <=", value, "enableRecordVideo");
+            return (Criteria) this;
+        }
+
+        public Criteria andEnableRecordVideoIn(List<Integer> values) {
+            addCriterion("enable_record_video in", values, "enableRecordVideo");
+            return (Criteria) this;
+        }
+
+        public Criteria andEnableRecordVideoNotIn(List<Integer> values) {
+            addCriterion("enable_record_video not in", values, "enableRecordVideo");
+            return (Criteria) this;
+        }
+
+        public Criteria andEnableRecordVideoBetween(Integer value1, Integer value2) {
+            addCriterion("enable_record_video between", value1, value2, "enableRecordVideo");
+            return (Criteria) this;
+        }
+
+        public Criteria andEnableRecordVideoNotBetween(Integer value1, Integer value2) {
+            addCriterion("enable_record_video not between", value1, value2, "enableRecordVideo");
+            return (Criteria) this;
+        }
+
+        public Criteria andFailRetryCountIsNull() {
+            addCriterion("fail_retry_count is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andFailRetryCountIsNotNull() {
+            addCriterion("fail_retry_count is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andFailRetryCountEqualTo(Integer value) {
+            addCriterion("fail_retry_count =", value, "failRetryCount");
+            return (Criteria) this;
+        }
+
+        public Criteria andFailRetryCountNotEqualTo(Integer value) {
+            addCriterion("fail_retry_count <>", value, "failRetryCount");
+            return (Criteria) this;
+        }
+
+        public Criteria andFailRetryCountGreaterThan(Integer value) {
+            addCriterion("fail_retry_count >", value, "failRetryCount");
+            return (Criteria) this;
+        }
+
+        public Criteria andFailRetryCountGreaterThanOrEqualTo(Integer value) {
+            addCriterion("fail_retry_count >=", value, "failRetryCount");
+            return (Criteria) this;
+        }
+
+        public Criteria andFailRetryCountLessThan(Integer value) {
+            addCriterion("fail_retry_count <", value, "failRetryCount");
+            return (Criteria) this;
+        }
+
+        public Criteria andFailRetryCountLessThanOrEqualTo(Integer value) {
+            addCriterion("fail_retry_count <=", value, "failRetryCount");
+            return (Criteria) this;
+        }
+
+        public Criteria andFailRetryCountIn(List<Integer> values) {
+            addCriterion("fail_retry_count in", values, "failRetryCount");
+            return (Criteria) this;
+        }
+
+        public Criteria andFailRetryCountNotIn(List<Integer> values) {
+            addCriterion("fail_retry_count not in", values, "failRetryCount");
+            return (Criteria) this;
+        }
+
+        public Criteria andFailRetryCountBetween(Integer value1, Integer value2) {
+            addCriterion("fail_retry_count between", value1, value2, "failRetryCount");
+            return (Criteria) this;
+        }
+
+        public Criteria andFailRetryCountNotBetween(Integer value1, Integer value2) {
+            addCriterion("fail_retry_count not between", value1, value2, "failRetryCount");
             return (Criteria) this;
         }
 
