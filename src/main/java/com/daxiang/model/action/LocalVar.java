@@ -28,7 +28,7 @@ public class LocalVar {
      * 局部变量值
      */
     @Valid
-    @NoDuplicateEnvironment(message = "环境不能重复")
+    @NoDuplicateEnvironment(message = "局部变量环境不能重复")
     private List<EnvironmentValue> environmentValues;
     /**
      * 变量描述
