@@ -1,5 +1,6 @@
 package com.daxiang.model.environment;
 
+import com.daxiang.validator.group.GlobalVarGroup;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
@@ -15,6 +16,6 @@ public class EnvironmentValue {
 
     @NotNull(message = "environmentId不能为空")
     private Integer environmentId;
-    @NotBlank(message = "环境值不能为空")
+    @NotBlank(message = "environmentValue不能为空", groups = {GlobalVarGroup.class})
     private String value;
 }

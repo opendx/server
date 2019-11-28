@@ -1,8 +1,10 @@
 package com.daxiang.model.action;
 
 import com.daxiang.model.environment.EnvironmentValue;
+import com.daxiang.validator.annotation.NoDuplicateEnvironment;
 import lombok.Data;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import java.util.List;
 
@@ -25,6 +27,8 @@ public class LocalVar {
     /**
      * 局部变量值
      */
+    @Valid
+    @NoDuplicateEnvironment(message = "环境不能重复")
     private List<EnvironmentValue> environmentValues;
     /**
      * 变量描述

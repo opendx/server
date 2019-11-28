@@ -49,8 +49,6 @@ public class ActionService extends BaseService {
     private TestPlanService testPlanService;
 
     public Response add(Action action) {
-        checkLocalVarEnvironmentValues(action.getLocalVars());
-
         action.setCreatorUid(getUid());
         action.setCreateTime(new Date());
 
@@ -81,8 +79,6 @@ public class ActionService extends BaseService {
      * @return
      */
     public Response update(Action action) {
-        checkLocalVarEnvironmentValues(action.getLocalVars());
-
         // action状态变为草稿或者禁用，需要检查该action没有被其他action steps或testplans使用
         if (action.getState() == Action.DRAFT_STATE || action.getState() == Action.DISABLE_STATE) {
             checkActionIsNotUsingByActionStepsOrTestPlans(action.getId());
@@ -362,36 +358,6 @@ public class ActionService extends BaseService {
             String usingTestPlanNames = testPlans.stream().map(TestPlan::getName).collect(Collectors.joining("、"));
             throw new BusinessException(usingTestPlanNames + "正在使用此action");
         }
-    }
-
-    /**
-     * 检测环境不能为空 且不能重复
-     *
-     * @param localVars
-     */
-    private void checkLocalVarEnvironmentValues(List<LocalVar> localVars) {
-        if (CollectionUtils.isEmpty(localVars)) {
-            return;
-        }
-
-        localVars.forEach(localVar -> {
-            List<EnvironmentValue> environmentValues = localVar.getEnvironmentValues();
-            if (!CollectionUtils.isEmpty(environmentValues)) {
-                environmentValues.forEach(environmentValue -> {
-                    if (environmentValue.getEnvironmentId() == null) {
-                        throw new BusinessException("局部变量值，环境不能为空");
-                    }
-                });
-
-                Map<Integer, Long> environmentIdCountMap = environmentValues.stream()
-                        .collect(Collectors.groupingBy(EnvironmentValue::getEnvironmentId, Collectors.counting()));
-                environmentIdCountMap.forEach((envId, count) -> {
-                    if (count > 1) {
-                        throw new BusinessException("局部变量值，环境重复");
-                    }
-                });
-            }
-        });
     }
 
 }
