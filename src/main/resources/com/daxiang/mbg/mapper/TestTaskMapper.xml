@@ -5,7 +5,6 @@
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="project_id" jdbcType="INTEGER" property="projectId" />
     <result column="test_plan_id" jdbcType="INTEGER" property="testPlanId" />
-    <result column="test_plan_name" jdbcType="VARCHAR" property="testPlanName" />
     <result column="status" jdbcType="TINYINT" property="status" />
     <result column="creator_uid" jdbcType="INTEGER" property="creatorUid" />
     <result column="pass_case_count" jdbcType="INTEGER" property="passCaseCount" />
@@ -13,6 +12,9 @@
     <result column="skip_case_count" jdbcType="INTEGER" property="skipCaseCount" />
     <result column="commit_time" jdbcType="TIMESTAMP" property="commitTime" />
     <result column="finish_time" jdbcType="TIMESTAMP" property="finishTime" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.daxiang.mbg.po.TestTask">
+    <result column="test_plan" jdbcType="LONGVARCHAR" property="testPlan" typeHandler="com.daxiang.typehandler.TestPlanTypeHandler" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -73,9 +75,28 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, project_id, test_plan_id, test_plan_name, status, creator_uid, pass_case_count, 
-    fail_case_count, skip_case_count, commit_time, finish_time
+    id, project_id, test_plan_id, status, creator_uid, pass_case_count, fail_case_count, 
+    skip_case_count, commit_time, finish_time
   </sql>
+  <sql id="Blob_Column_List">
+    test_plan
+  </sql>
+  <select id="selectByExampleWithBLOBs" parameterType="com.daxiang.mbg.po.TestTaskExample" resultMap="ResultMapWithBLOBs">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from test_task
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
   <select id="selectByExample" parameterType="com.daxiang.mbg.po.TestTaskExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
@@ -90,9 +111,11 @@
       order by ${orderByClause}
     </if>
   </select>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
     select 
     <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
     from test_task
     where id = #{id,jdbcType=INTEGER}
   </select>
@@ -110,14 +133,16 @@
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into test_task (project_id, test_plan_id, test_plan_name, 
-      status, creator_uid, pass_case_count, 
-      fail_case_count, skip_case_count, commit_time, 
-      finish_time)
-    values (#{projectId,jdbcType=INTEGER}, #{testPlanId,jdbcType=INTEGER}, #{testPlanName,jdbcType=VARCHAR}, 
-      #{status,jdbcType=TINYINT}, #{creatorUid,jdbcType=INTEGER}, #{passCaseCount,jdbcType=INTEGER}, 
-      #{failCaseCount,jdbcType=INTEGER}, #{skipCaseCount,jdbcType=INTEGER}, #{commitTime,jdbcType=TIMESTAMP}, 
-      #{finishTime,jdbcType=TIMESTAMP})
+    insert into test_task (project_id, test_plan_id, status, 
+      creator_uid, pass_case_count, fail_case_count, 
+      skip_case_count, commit_time, finish_time, 
+      test_plan
+      )
+    values (#{projectId,jdbcType=INTEGER}, #{testPlanId,jdbcType=INTEGER}, #{status,jdbcType=TINYINT}, 
+      #{creatorUid,jdbcType=INTEGER}, #{passCaseCount,jdbcType=INTEGER}, #{failCaseCount,jdbcType=INTEGER}, 
+      #{skipCaseCount,jdbcType=INTEGER}, #{commitTime,jdbcType=TIMESTAMP}, #{finishTime,jdbcType=TIMESTAMP}, 
+      #{testPlan,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.TestPlanTypeHandler}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.daxiang.mbg.po.TestTask">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
@@ -130,9 +155,6 @@
       </if>
       <if test="testPlanId != null">
         test_plan_id,
-      </if>
-      <if test="testPlanName != null">
-        test_plan_name,
       </if>
       <if test="status != null">
         status,
@@ -155,6 +177,9 @@
       <if test="finishTime != null">
         finish_time,
       </if>
+      <if test="testPlan != null">
+        test_plan,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="projectId != null">
@@ -162,9 +187,6 @@
       </if>
       <if test="testPlanId != null">
         #{testPlanId,jdbcType=INTEGER},
-      </if>
-      <if test="testPlanName != null">
-        #{testPlanName,jdbcType=VARCHAR},
       </if>
       <if test="status != null">
         #{status,jdbcType=TINYINT},
@@ -187,6 +209,9 @@
       <if test="finishTime != null">
         #{finishTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="testPlan != null">
+        #{testPlan,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.TestPlanTypeHandler},
+      </if>
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.daxiang.mbg.po.TestTaskExample" resultType="java.lang.Long">
@@ -206,9 +231,6 @@
       </if>
       <if test="record.testPlanId != null">
         test_plan_id = #{record.testPlanId,jdbcType=INTEGER},
-      </if>
-      <if test="record.testPlanName != null">
-        test_plan_name = #{record.testPlanName,jdbcType=VARCHAR},
       </if>
       <if test="record.status != null">
         status = #{record.status,jdbcType=TINYINT},
@@ -231,7 +253,27 @@
       <if test="record.finishTime != null">
         finish_time = #{record.finishTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="record.testPlan != null">
+        test_plan = #{record.testPlan,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.TestPlanTypeHandler},
+      </if>
     </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map">
+    update test_task
+    set id = #{record.id,jdbcType=INTEGER},
+      project_id = #{record.projectId,jdbcType=INTEGER},
+      test_plan_id = #{record.testPlanId,jdbcType=INTEGER},
+      status = #{record.status,jdbcType=TINYINT},
+      creator_uid = #{record.creatorUid,jdbcType=INTEGER},
+      pass_case_count = #{record.passCaseCount,jdbcType=INTEGER},
+      fail_case_count = #{record.failCaseCount,jdbcType=INTEGER},
+      skip_case_count = #{record.skipCaseCount,jdbcType=INTEGER},
+      commit_time = #{record.commitTime,jdbcType=TIMESTAMP},
+      finish_time = #{record.finishTime,jdbcType=TIMESTAMP},
+      test_plan = #{record.testPlan,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.TestPlanTypeHandler}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -241,7 +283,6 @@
     set id = #{record.id,jdbcType=INTEGER},
       project_id = #{record.projectId,jdbcType=INTEGER},
       test_plan_id = #{record.testPlanId,jdbcType=INTEGER},
-      test_plan_name = #{record.testPlanName,jdbcType=VARCHAR},
       status = #{record.status,jdbcType=TINYINT},
       creator_uid = #{record.creatorUid,jdbcType=INTEGER},
       pass_case_count = #{record.passCaseCount,jdbcType=INTEGER},
@@ -261,9 +302,6 @@
       </if>
       <if test="testPlanId != null">
         test_plan_id = #{testPlanId,jdbcType=INTEGER},
-      </if>
-      <if test="testPlanName != null">
-        test_plan_name = #{testPlanName,jdbcType=VARCHAR},
       </if>
       <if test="status != null">
         status = #{status,jdbcType=TINYINT},
@@ -286,14 +324,30 @@
       <if test="finishTime != null">
         finish_time = #{finishTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="testPlan != null">
+        test_plan = #{testPlan,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.TestPlanTypeHandler},
+      </if>
     </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.daxiang.mbg.po.TestTask">
+    update test_task
+    set project_id = #{projectId,jdbcType=INTEGER},
+      test_plan_id = #{testPlanId,jdbcType=INTEGER},
+      status = #{status,jdbcType=TINYINT},
+      creator_uid = #{creatorUid,jdbcType=INTEGER},
+      pass_case_count = #{passCaseCount,jdbcType=INTEGER},
+      fail_case_count = #{failCaseCount,jdbcType=INTEGER},
+      skip_case_count = #{skipCaseCount,jdbcType=INTEGER},
+      commit_time = #{commitTime,jdbcType=TIMESTAMP},
+      finish_time = #{finishTime,jdbcType=TIMESTAMP},
+      test_plan = #{testPlan,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.TestPlanTypeHandler}
     where id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.daxiang.mbg.po.TestTask">
     update test_task
     set project_id = #{projectId,jdbcType=INTEGER},
       test_plan_id = #{testPlanId,jdbcType=INTEGER},
-      test_plan_name = #{testPlanName,jdbcType=VARCHAR},
       status = #{status,jdbcType=TINYINT},
       creator_uid = #{creatorUid,jdbcType=INTEGER},
       pass_case_count = #{passCaseCount,jdbcType=INTEGER},

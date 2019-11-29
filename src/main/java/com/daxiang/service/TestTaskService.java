@@ -100,6 +100,7 @@ public class TestTaskService extends BaseService {
             DeviceTestTask deviceTestTask = new DeviceTestTask();
             deviceTestTask.setProjectId(testTask.getProjectId());
             deviceTestTask.setTestTaskId(testTask.getId());
+            deviceTestTask.setTestPlan(testPlan);
             deviceTestTask.setDeviceId(deviceId);
             deviceTestTask.setGlobalVars(globalVars);
             if (beforeClass != null) {
@@ -174,7 +175,7 @@ public class TestTaskService extends BaseService {
 
         testTask.setProjectId(testPlan.getProjectId());
         testTask.setTestPlanId(testPlan.getId());
-        testTask.setTestPlanName(testPlan.getName());
+        testTask.setTestPlan(testPlan);
         testTask.setStatus(TestTask.UNFINISHED_STATUS);
         if (commitorUid == null) {
             commitorUid = getUid();
@@ -259,9 +260,8 @@ public class TestTaskService extends BaseService {
             return Response.fail("测试任务不存在");
         }
 
-        Integer projectId = testTask.getProjectId();
         Project query = new Project();
-        query.setId(projectId);
+        query.setId(testTask.getProjectId());
         Project project = projectService.selectByProject(query).get(0);
 
         TestTaskSummary summary = new TestTaskSummary();

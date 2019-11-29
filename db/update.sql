@@ -52,3 +52,10 @@ ALTER TABLE test_plan
 ADD COLUMN `environment_id` int(11) NOT NULL DEFAULT -1 COMMENT '环境，默认-1' AFTER `project_id`,
 ADD COLUMN `enable_record_video` tinyint(4) NOT NULL DEFAULT 1 COMMENT '是否录制视频，0: 不录制 1: 录制' AFTER `enable_schedule`,
 ADD COLUMN `fail_retry_count` int(11) NOT NULL DEFAULT 0 COMMENT '失败重试次数' AFTER `enable_record_video`;
+
+ALTER TABLE test_task
+DROP COLUMN `test_plan_name`,
+ADD COLUMN `test_plan` json NOT NULL COMMENT '下发任务时的testplan' AFTER `test_plan_id`;
+
+ALTER TABLE device_test_task
+ADD COLUMN `test_plan` json NOT NULL COMMENT '下发任务时的testplan' AFTER `test_task_id`;

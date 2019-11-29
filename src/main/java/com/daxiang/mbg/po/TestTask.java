@@ -1,6 +1,5 @@
 package com.daxiang.mbg.po;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
@@ -29,14 +28,6 @@ public class TestTask implements Serializable {
      */
     @NotNull(message = "测试计划不能为空")
     private Integer testPlanId;
-
-    /**
-     * 测试计划名
-     *
-     * @mbg.generated
-     */
-    @NotBlank(message = "测试计划名不能为空")
-    private String testPlanName;
 
     /**
      * 任务状态 0:未完成 1:已完成
@@ -87,6 +78,14 @@ public class TestTask implements Serializable {
      */
     private Date finishTime;
 
+    /**
+     * 下发任务时的testplan
+     *
+     * @mbg.generated
+     */
+    @NotNull(message = "testPlan不能为空")
+    private TestPlan testPlan;
+
     private static final long serialVersionUID = 1L;
 
     public Integer getId() {
@@ -111,14 +110,6 @@ public class TestTask implements Serializable {
 
     public void setTestPlanId(Integer testPlanId) {
         this.testPlanId = testPlanId;
-    }
-
-    public String getTestPlanName() {
-        return testPlanName;
-    }
-
-    public void setTestPlanName(String testPlanName) {
-        this.testPlanName = testPlanName;
     }
 
     public Integer getStatus() {
@@ -177,6 +168,14 @@ public class TestTask implements Serializable {
         this.finishTime = finishTime;
     }
 
+    public TestPlan getTestPlan() {
+        return testPlan;
+    }
+
+    public void setTestPlan(TestPlan testPlan) {
+        this.testPlan = testPlan;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -186,7 +185,6 @@ public class TestTask implements Serializable {
         sb.append(", id=").append(id);
         sb.append(", projectId=").append(projectId);
         sb.append(", testPlanId=").append(testPlanId);
-        sb.append(", testPlanName=").append(testPlanName);
         sb.append(", status=").append(status);
         sb.append(", creatorUid=").append(creatorUid);
         sb.append(", passCaseCount=").append(passCaseCount);
@@ -194,6 +192,7 @@ public class TestTask implements Serializable {
         sb.append(", skipCaseCount=").append(skipCaseCount);
         sb.append(", commitTime=").append(commitTime);
         sb.append(", finishTime=").append(finishTime);
+        sb.append(", testPlan=").append(testPlan);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

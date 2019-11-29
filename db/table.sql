@@ -109,6 +109,7 @@ CREATE TABLE `device_test_task` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `project_id` int(11) NOT NULL COMMENT '项目id',
   `test_task_id` int(11) NOT NULL COMMENT '测试任务id',
+  `test_plan` json NOT NULL COMMENT '下发任务时的testplan'
   `device_id` varchar(100) NOT NULL COMMENT '设备id',
   `global_vars` json DEFAULT NULL COMMENT '全局变量',
   `before_class` json DEFAULT NULL COMMENT 'BeforeClass',
@@ -228,7 +229,7 @@ CREATE TABLE `test_task` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `project_id` int(11) NOT NULL COMMENT '所属项目',
   `test_plan_id` int(11) NOT NULL COMMENT '所属测试计划',
-  `test_plan_name` varchar(100) NOT NULL COMMENT '测试计划名',
+  `test_plan` json NOT NULL COMMENT '下发任务时的testplan',
   `status` tinyint(4) DEFAULT NULL COMMENT '任务状态 0:未完成 1:已完成',
   `creator_uid` int(11) DEFAULT NULL COMMENT '任务创建人',
   `pass_case_count` int(11) DEFAULT '0' COMMENT '测试通过用例数',

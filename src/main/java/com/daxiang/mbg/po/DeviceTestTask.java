@@ -62,6 +62,13 @@ public class DeviceTestTask implements Serializable {
     private Date endTime;
 
     /**
+     * 下发任务时的testplan
+     *
+     * @mbg.generated
+     */
+    private TestPlan testPlan;
+
+    /**
      * 全局变量
      *
      * @mbg.generated
@@ -175,6 +182,14 @@ public class DeviceTestTask implements Serializable {
         this.endTime = endTime;
     }
 
+    public TestPlan getTestPlan() {
+        return testPlan;
+    }
+
+    public void setTestPlan(TestPlan testPlan) {
+        this.testPlan = testPlan;
+    }
+
     public java.util.List<GlobalVar> getGlobalVars() {
         return globalVars;
     }
@@ -252,6 +267,7 @@ public class DeviceTestTask implements Serializable {
         sb.append(", status=").append(status);
         sb.append(", startTime=").append(startTime);
         sb.append(", endTime=").append(endTime);
+        sb.append(", testPlan=").append(testPlan);
         sb.append(", globalVars=").append(globalVars);
         sb.append(", beforeClass=").append(beforeClass);
         sb.append(", beforeMethod=").append(beforeMethod);
