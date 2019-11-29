@@ -347,16 +347,15 @@ public class ActionService extends BaseService {
         // 检查action是否被其他action step使用
         List<Action> actions = actionDao.selectByStepActionId(actionId);
         if (!CollectionUtils.isEmpty(actions)) {
-            // 正在使用该action的actionNames
-            String usingActionNames = actions.stream().map(Action::getName).collect(Collectors.joining("、"));
-            throw new BusinessException(usingActionNames + "正在使用此action");
+            String actionNames = actions.stream().map(Action::getName).collect(Collectors.joining("、"));
+            throw new BusinessException("actions: " + actionNames + ", 正在使用此action");
         }
 
         // 检查action是否被testplan使用
         List<TestPlan> testPlans = testPlanService.findByActionId(actionId);
         if (!CollectionUtils.isEmpty(testPlans)) {
-            String usingTestPlanNames = testPlans.stream().map(TestPlan::getName).collect(Collectors.joining("、"));
-            throw new BusinessException(usingTestPlanNames + "正在使用此action");
+            String testPlanNames = testPlans.stream().map(TestPlan::getName).collect(Collectors.joining("、"));
+            throw new BusinessException("testPlans: " + testPlanNames + ", 正在使用此action");
         }
     }
 

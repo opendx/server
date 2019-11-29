@@ -121,14 +121,14 @@ public class EnvironmentService extends BaseService {
         List<Action> actions = actionService.selectByLocalVarsEnvironmentId(envId);
         if (!CollectionUtils.isEmpty(actions)) {
             String actionNames = actions.stream().map(Action::getName).collect(Collectors.joining("、"));
-            throw new BusinessException(actionNames + "正在使用此环境");
+            throw new BusinessException("actions: " + actionNames + ", 正在使用此环境");
         }
 
         // 检查env是否被globalVar使用
         List<GlobalVar> globalVars = globalVarService.selectByEnvironmentId(envId);
         if (!CollectionUtils.isEmpty(globalVars)) {
             String globalVarNames = globalVars.stream().map(GlobalVar::getName).collect(Collectors.joining("、"));
-            throw new BusinessException(globalVarNames + "正在使用此环境");
+            throw new BusinessException("globalVars: " + globalVarNames + ", 正在使用此环境");
         }
 
         // 检查env是否被testplan使用
@@ -137,7 +137,7 @@ public class EnvironmentService extends BaseService {
         List<TestPlan> testPlans = testPlanService.selectByTestPlan(query);
         if (!CollectionUtils.isEmpty(testPlans)) {
             String testPlanNames = testPlans.stream().map(TestPlan::getName).collect(Collectors.joining("、"));
-            throw new BusinessException(testPlanNames + "正在使用此环境");
+            throw new BusinessException("testPlans: " + testPlanNames + ", 正在使用此环境");
         }
     }
 }
