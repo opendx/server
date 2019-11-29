@@ -109,7 +109,7 @@ CREATE TABLE `device_test_task` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `project_id` int(11) NOT NULL COMMENT '项目id',
   `test_task_id` int(11) NOT NULL COMMENT '测试任务id',
-  `test_plan` json NOT NULL COMMENT '下发任务时的testplan'
+  `test_plan` json NOT NULL COMMENT '下发任务时的testplan',
   `device_id` varchar(100) NOT NULL COMMENT '设备id',
   `global_vars` json DEFAULT NULL COMMENT '全局变量',
   `before_class` json DEFAULT NULL COMMENT 'BeforeClass',
