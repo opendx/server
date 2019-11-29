@@ -98,4 +98,8 @@ public class EnvironmentService extends BaseService {
 
         return environmentMapper.selectByExample(example);
     }
+
+    public Environment selectByPrimaryKey(Integer id) {
+        return environmentMapper.selectByPrimaryKey(id);
+    }
 }

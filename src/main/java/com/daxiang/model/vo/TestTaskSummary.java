@@ -12,4 +12,5 @@ public class TestTaskSummary extends TestTask {
     private String projectName;
     private String commitorNickName;
     private String passPercent;
+    private String environmentName;
 }

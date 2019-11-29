@@ -3,6 +3,7 @@ package com.daxiang.service;
 import com.daxiang.mbg.mapper.TestTaskMapper;
 import com.daxiang.mbg.po.*;
 import com.daxiang.model.action.LocalVar;
+import com.daxiang.model.environment.EnvironmentValue;
 import com.daxiang.model.vo.TestTaskVo;
 import com.daxiang.model.UserCache;
 import com.daxiang.model.vo.TestTaskSummary;
@@ -41,6 +42,8 @@ public class TestTaskService extends BaseService {
     private ActionService actionService;
     @Autowired
     private ProjectService projectService;
+    @Autowired
+    private EnvironmentService environmentService;
 
     /**
      * 提交测试任务
@@ -251,7 +254,7 @@ public class TestTaskService extends BaseService {
         }
         example.setOrderByClause("commit_time desc");
 
-        return testTaskMapper.selectByExample(example);
+        return testTaskMapper.selectByExampleWithBLOBs(example);
     }
 
     public List<TestTask> findUnFinishedTestTask() {
@@ -291,6 +294,18 @@ public class TestTaskService extends BaseService {
         numberFormat.setMaximumFractionDigits(2); // 精确到小数点2位
 
         summary.setPassPercent(numberFormat.format(passCaseCount.floatValue() * 100 / totalCaseCount) + "%");
+
+        if (testTask.getTestPlan() != null) {
+            Integer environmentId = testTask.getTestPlan().getEnvironmentId();
+            if (environmentId == EnvironmentValue.DEFAULT_ENVIRONMENT_ID) {
+                summary.setEnvironmentName("默认");
+            } else {
+                Environment environment = environmentService.selectByPrimaryKey(environmentId);
+                if (environment != null) {
+                    summary.setEnvironmentName(environment.getName());
+                }
+            }
+        }
 
         return Response.success(summary);
     }
