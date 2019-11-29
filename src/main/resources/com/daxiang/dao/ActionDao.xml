@@ -6,4 +6,8 @@
     <select id="selectByStepActionId" resultMap="ResultMapWithBLOBs">
         select * from action where JSON_CONTAINS(steps->'$[*].actionId', '${stepActionId}', '$')
     </select>
+
+    <select id="selectByLocalVarsEnvironmentId" resultMap="ResultMapWithBLOBs">
+        select * from action where JSON_CONTAINS(local_vars->'$[*].environmentValues[*].environmentId', '${envId}', '$')
+    </select>
 </mapper>

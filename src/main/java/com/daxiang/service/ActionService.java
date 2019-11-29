@@ -384,4 +384,11 @@ public class ActionService extends BaseService {
         }
     }
 
+    public List<Action> selectByLocalVarsEnvironmentId(Integer envId) {
+        if (envId == null) {
+            return Collections.EMPTY_LIST;
+        }
+        return actionDao.selectByLocalVarsEnvironmentId(envId);
+    }
+
 }

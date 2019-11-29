@@ -1,8 +1,8 @@
 package com.daxiang.service;
 
+import com.daxiang.exception.BusinessException;
 import com.daxiang.mbg.mapper.EnvironmentMapper;
-import com.daxiang.mbg.po.Environment;
-import com.daxiang.mbg.po.EnvironmentExample;
+import com.daxiang.mbg.po.*;
 import com.daxiang.model.Page;
 import com.daxiang.model.PageRequest;
 import com.daxiang.model.Response;
@@ -12,6 +12,7 @@ import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.Date;
@@ -26,6 +27,12 @@ public class EnvironmentService extends BaseService {
 
     @Autowired
     private EnvironmentMapper environmentMapper;
+    @Autowired
+    private ActionService actionService;
+    @Autowired
+    private GlobalVarService globalVarService;
+    @Autowired
+    private TestPlanService testPlanService;
 
     public Response add(Environment environment) {
         environment.setCreateTime(new Date());
@@ -44,7 +51,8 @@ public class EnvironmentService extends BaseService {
         if (environmentId == null) {
             return Response.fail("环境id不能为空");
         }
-        // todo 被使用不能删除
+
+        checkEnvIsNotUsingByActionLocalVarsAndGlobalVarsAndTestPlans(environmentId);
 
         int deleteRow = environmentMapper.deleteByPrimaryKey(environmentId);
         return deleteRow == 1 ? Response.success("删除成功") : Response.fail("删除失败，请稍后重试");
@@ -101,5 +109,35 @@ public class EnvironmentService extends BaseService {
 
     public Environment selectByPrimaryKey(Integer id) {
         return environmentMapper.selectByPrimaryKey(id);
+    }
+
+    /**
+     * 检查env没有被action.localVar globalVar testplan使用
+     *
+     * @param envId
+     */
+    private void checkEnvIsNotUsingByActionLocalVarsAndGlobalVarsAndTestPlans(Integer envId) {
+        // 检查env是否被action localVars使用
+        List<Action> actions = actionService.selectByLocalVarsEnvironmentId(envId);
+        if (!CollectionUtils.isEmpty(actions)) {
+            String actionNames = actions.stream().map(Action::getName).collect(Collectors.joining("、"));
+            throw new BusinessException(actionNames + "正在使用此环境");
+        }
+
+        // 检查env是否被globalVar使用
+        List<GlobalVar> globalVars = globalVarService.selectByEnvironmentId(envId);
+        if (!CollectionUtils.isEmpty(globalVars)) {
+            String globalVarNames = globalVars.stream().map(GlobalVar::getName).collect(Collectors.joining("、"));
+            throw new BusinessException(globalVarNames + "正在使用此环境");
+        }
+
+        // 检查env是否被testplan使用
+        TestPlan query = new TestPlan();
+        query.setEnvironmentId(envId);
+        List<TestPlan> testPlans = testPlanService.selectByTestPlan(query);
+        if (!CollectionUtils.isEmpty(testPlans)) {
+            String testPlanNames = testPlans.stream().map(TestPlan::getName).collect(Collectors.joining("、"));
+            throw new BusinessException(testPlanNames + "正在使用此环境");
+        }
     }
 }

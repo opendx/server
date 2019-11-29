@@ -1,5 +1,6 @@
 package com.daxiang.service;
 
+import com.daxiang.dao.GlobalVarDao;
 import com.daxiang.mbg.po.GlobalVarExample;
 import com.daxiang.model.UserCache;
 import com.github.pagehelper.PageHelper;
@@ -14,6 +15,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,6 +28,8 @@ public class GlobalVarService extends BaseService {
 
     @Autowired
     private GlobalVarMapper globalVarMapper;
+    @Autowired
+    private GlobalVarDao globalVarDao;
 
     /**
      * 添加全局变量
@@ -125,5 +129,12 @@ public class GlobalVarService extends BaseService {
         example.setOrderByClause("create_time desc");
 
         return globalVarMapper.selectByExampleWithBLOBs(example);
+    }
+
+    public List<GlobalVar> selectByEnvironmentId(Integer envId) {
+        if (envId == null) {
+            return Collections.EMPTY_LIST;
+        }
+        return globalVarDao.selectByEnvironmentId(envId);
     }
 }
