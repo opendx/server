@@ -282,7 +282,7 @@ public class ActionService extends BaseService {
             return Response.fail("至少选择一个启用的步骤");
         }
 
-        // 处理action局部变量
+        // 根据环境处理action局部变量
         List<LocalVar> localVars = action.getLocalVars();
         if (!CollectionUtils.isEmpty(localVars)) {
             localVars.forEach(localVar -> localVar.setValue(getValueInEnvironmentValues(localVar.getEnvironmentValues(), env)));
@@ -296,7 +296,7 @@ public class ActionService extends BaseService {
         query.setProjectId(action.getProjectId());
         List<GlobalVar> globalVars = globalVarService.selectByGlobalVar(query);
 
-        // 处理全局变量
+        // 根据环境处理全局变量
         if (!CollectionUtils.isEmpty(globalVars)) {
             globalVars.forEach(globalVar -> globalVar.setValue(getValueInEnvironmentValues(globalVar.getEnvironmentValues(), env)));
         }
@@ -366,7 +366,7 @@ public class ActionService extends BaseService {
      * @param env
      * @return
      */
-    private String getValueInEnvironmentValues(List<EnvironmentValue> environmentValues, Integer env) {
+    public String getValueInEnvironmentValues(List<EnvironmentValue> environmentValues, Integer env) {
         // 与env匹配的environmentValue
         EnvironmentValue environmentValue = environmentValues.stream()
                 .filter(ev -> env.equals(ev.getEnvironmentId())).findFirst().orElse(null);

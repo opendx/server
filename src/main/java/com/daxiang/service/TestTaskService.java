@@ -2,6 +2,7 @@ package com.daxiang.service;
 
 import com.daxiang.mbg.mapper.TestTaskMapper;
 import com.daxiang.mbg.po.*;
+import com.daxiang.model.action.LocalVar;
 import com.daxiang.model.vo.TestTaskVo;
 import com.daxiang.model.UserCache;
 import com.daxiang.model.vo.TestTaskSummary;
@@ -83,15 +84,28 @@ public class TestTaskService extends BaseService {
             needBuildActions.add(afterMethod);
         }
 
+        // 根据环境处理局部变量
+        needBuildActions.forEach(action -> {
+            List<LocalVar> localVars = action.getLocalVars();
+            if (!CollectionUtils.isEmpty(localVars)) {
+                localVars.forEach(localVar -> localVar.setValue(actionService.getValueInEnvironmentValues(localVar.getEnvironmentValues(), testPlan.getEnvironmentId())));
+            }
+        });
+
         actionService.buildActionTree(needBuildActions);
 
         // 保存测试任务
         TestTask testTask = saveTestTask(testPlan, commitorUid);
 
         // 同一项目下的全局变量
-        GlobalVar globalVar = new GlobalVar();
-        globalVar.setProjectId(testTask.getProjectId());
-        List<GlobalVar> globalVars = globalVarService.selectByGlobalVar(globalVar);
+        GlobalVar query = new GlobalVar();
+        query.setProjectId(testTask.getProjectId());
+        List<GlobalVar> globalVars = globalVarService.selectByGlobalVar(query);
+
+        // 根据环境处理全局变量
+        if (!CollectionUtils.isEmpty(globalVars)) {
+            globalVars.forEach(globalVar -> globalVar.setValue(actionService.getValueInEnvironmentValues(globalVar.getEnvironmentValues(), testPlan.getEnvironmentId())));
+        }
 
         // 根据不同用例分发策略，给设备分配用例
         Map<String, List<Action>> deviceTestcases = allocateTestcaseToDevice(testPlan.getDeviceIds(), testcases, testPlan.getRunMode());
