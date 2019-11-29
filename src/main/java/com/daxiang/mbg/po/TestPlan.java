@@ -19,6 +19,8 @@ public class TestPlan implements Serializable {
 
     public static final int ENABLE_SCHEDULE = 1;
 
+    public static final int ENABLE_RECORD_VIDEO = 1;
+
     @NotNull(message = "id不能为空", groups = {UpdateGroup.class})
     private Integer id;
 
