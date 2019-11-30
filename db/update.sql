@@ -71,7 +71,33 @@ DROP PROCEDURE handle_global_var_value;
 
 ALTER TABLE global_var DROP COLUMN `value`;
 
--- todo action local_var数据迁移
+DELIMITER $$
+CREATE PROCEDURE handle_action_local_vars_value()
+  BEGIN
+    DECLARE done int default FALSE;
+    DECLARE action_id int;
+    DECLARE local_vars_length int;
+
+    DECLARE cur CURSOR FOR select id, JSON_LENGTH(local_vars) from action where JSON_LENGTH(local_vars) > 0;
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+    OPEN cur;
+    repeat
+      FETCH cur into action_id, local_vars_length;
+      while local_vars_length > 0 do
+        set local_vars_length = local_vars_length - 1;
+        update action set local_vars = JSON_INSERT(local_vars, REPLACE('$[!].environmentValues','!',local_vars_length),
+                                                   JSON_ARRAY(JSON_OBJECT("environmentId", -1, "value", JSON_EXTRACT(local_vars, REPLACE('$[!].value','!',local_vars_length))))) where id = action_id;
+        update action set local_vars = JSON_REMOVE(local_vars, REPLACE('$[!].value','!',local_vars_length)) where id = action_id;
+      end while;
+    until done
+    end repeat;
+    CLOSE cur;
+  END;
+$$
+DELIMITER ;
+CALL handle_action_local_vars_value(); -- action.local_vars.value -> environment_values
+DROP PROCEDURE handle_action_local_vars_value;
 
 ALTER TABLE test_plan
 ADD COLUMN `environment_id` int(11) NOT NULL DEFAULT -1 COMMENT '环境，默认-1' AFTER `project_id`,
