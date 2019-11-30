@@ -44,9 +44,34 @@ CREATE TABLE `environment` (
   UNIQUE KEY `uniq_name_projectId` (`name`,`project_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='环境表';
 
-ALTER TABLE global_var CHANGE COLUMN `value` `environment_values` json NOT NULL COMMENT '变量值' AFTER `type`;
+ALTER TABLE global_var ADD COLUMN `environment_values` json NOT NULL COMMENT '变量值' AFTER `type`;
 
--- todo global_var | action local_var数据迁移
+DELIMITER $$
+CREATE PROCEDURE handle_global_var_value()
+  BEGIN
+    DECLARE done int default FALSE;
+    DECLARE global_var_id int;
+    DECLARE global_var_value varchar(255);
+
+    DECLARE cur CURSOR FOR SELECT id, value from global_var;
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+    OPEN cur;
+    repeat
+      FETCH cur into global_var_id, global_var_value;
+      update global_var set environment_values = JSON_ARRAY(JSON_OBJECT("environmentId", -1, "value", global_var_value)) where id = global_var_id;
+    until done
+    end repeat;
+    CLOSE cur;
+  END;
+$$
+DELIMITER ;
+CALL handle_global_var_value(); -- global_var.value -> environment_values
+DROP PROCEDURE handle_global_var_value;
+
+ALTER TABLE global_var DROP COLUMN `value`;
+
+-- todo action local_var数据迁移
 
 ALTER TABLE test_plan
 ADD COLUMN `environment_id` int(11) NOT NULL DEFAULT -1 COMMENT '环境，默认-1' AFTER `project_id`,
