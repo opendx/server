@@ -110,3 +110,6 @@ ADD COLUMN `test_plan` json NOT NULL COMMENT '下发任务时的testplan' AFTER 
 
 ALTER TABLE device_test_task
 ADD COLUMN `test_plan` json NOT NULL COMMENT '下发任务时的testplan' AFTER `test_task_id`;
+
+-- 0.2.9
+ALTER TABLE page ADD COLUMN `elements` json NULL COMMENT '元素' AFTER `device_id`;
