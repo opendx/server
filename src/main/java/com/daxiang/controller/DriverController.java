@@ -1,6 +1,7 @@
 package com.daxiang.controller;
 
 import com.daxiang.mbg.po.Driver;
+import com.daxiang.model.PageRequest;
 import com.daxiang.model.Response;
 import com.daxiang.service.DriverService;
 import com.daxiang.validator.group.UpdateGroup;
@@ -36,8 +37,8 @@ public class DriverController {
     }
 
     @PostMapping("/list")
-    public Response list(Driver driver) {
-        return driverService.list(driver);
+    public Response list(Driver driver, PageRequest pageRequest) {
+        return driverService.list(driver, pageRequest);
     }
 
     @PostMapping("/downloadUrl")

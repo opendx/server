@@ -5,10 +5,12 @@ import com.daxiang.mbg.mapper.DriverMapper;
 import com.daxiang.mbg.po.Driver;
 import com.daxiang.mbg.po.DriverExample;
 import com.daxiang.model.Page;
+import com.daxiang.model.PageRequest;
 import com.daxiang.model.Response;
 import com.daxiang.model.UserCache;
 import com.daxiang.model.vo.DriverUrl;
 import com.daxiang.model.vo.DriverVo;
+import com.github.pagehelper.PageHelper;
 import com.google.common.collect.ImmutableMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -66,14 +68,24 @@ public class DriverService extends BaseService {
         return updateRow == 1 ? Response.success("更新成功") : Response.fail("更新失败,请稍后重试");
     }
 
-    public Response list(Driver driver) {
+    public Response list(Driver driver, PageRequest pageRequest) {
+        boolean needPaging = pageRequest.needPaging();
+        if (needPaging) {
+            PageHelper.startPage(pageRequest.getPageNum(), pageRequest.getPageSize());
+        }
+
         List<Driver> drivers = selectByDriver(driver);
         List<DriverVo> driverVos = drivers.stream()
                 .map(d -> DriverVo.convert(d, UserCache.getNickNameById(d.getCreatorUid()))).collect(Collectors.toList());
-        // java8 stream会导致PageHelper total计算错误
-        // 所以这里用drivers计算total
-        long total = Page.getTotal(drivers);
-        return Response.success(Page.build(driverVos, total));
+
+        if (needPaging) {
+            // java8 stream会导致PageHelper total计算错误
+            // 所以这里用drivers计算total
+            long total = Page.getTotal(drivers);
+            return Response.success(Page.build(driverVos, total));
+        } else {
+            return Response.success(driverVos);
+        }
     }
 
     public List<Driver> selectByDriver(Driver driver) {
