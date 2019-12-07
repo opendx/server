@@ -16,6 +16,7 @@
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.daxiang.mbg.po.Page">
     <result column="window_hierarchy" jdbcType="LONGVARCHAR" property="windowHierarchy" />
+    <result column="elements" jdbcType="LONGVARCHAR" property="elements" typeHandler="com.daxiang.typehandler.ElementListTypeHandler" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -80,7 +81,7 @@
     creator_uid, create_time
   </sql>
   <sql id="Blob_Column_List">
-    window_hierarchy
+    window_hierarchy, elements
   </sql>
   <select id="selectByExampleWithBLOBs" parameterType="com.daxiang.mbg.po.PageExample" resultMap="ResultMapWithBLOBs">
     select
@@ -137,11 +138,13 @@
     insert into page (name, project_id, category_id, 
       description, img_url, img_height, 
       img_width, device_id, creator_uid, 
-      create_time, window_hierarchy)
+      create_time, window_hierarchy, elements
+      )
     values (#{name,jdbcType=VARCHAR}, #{projectId,jdbcType=INTEGER}, #{categoryId,jdbcType=INTEGER}, 
       #{description,jdbcType=VARCHAR}, #{imgUrl,jdbcType=VARCHAR}, #{imgHeight,jdbcType=INTEGER}, 
       #{imgWidth,jdbcType=INTEGER}, #{deviceId,jdbcType=VARCHAR}, #{creatorUid,jdbcType=INTEGER}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{windowHierarchy,jdbcType=LONGVARCHAR})
+      #{createTime,jdbcType=TIMESTAMP}, #{windowHierarchy,jdbcType=LONGVARCHAR}, #{elements,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.ElementListTypeHandler}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.daxiang.mbg.po.Page">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
@@ -182,6 +185,9 @@
       <if test="windowHierarchy != null">
         window_hierarchy,
       </if>
+      <if test="elements != null">
+        elements,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="name != null">
@@ -216,6 +222,9 @@
       </if>
       <if test="windowHierarchy != null">
         #{windowHierarchy,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="elements != null">
+        #{elements,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.ElementListTypeHandler},
       </if>
     </trim>
   </insert>
@@ -264,6 +273,9 @@
       <if test="record.windowHierarchy != null">
         window_hierarchy = #{record.windowHierarchy,jdbcType=LONGVARCHAR},
       </if>
+      <if test="record.elements != null">
+        elements = #{record.elements,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.ElementListTypeHandler},
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -282,7 +294,8 @@
       device_id = #{record.deviceId,jdbcType=VARCHAR},
       creator_uid = #{record.creatorUid,jdbcType=INTEGER},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
-      window_hierarchy = #{record.windowHierarchy,jdbcType=LONGVARCHAR}
+      window_hierarchy = #{record.windowHierarchy,jdbcType=LONGVARCHAR},
+      elements = #{record.elements,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.ElementListTypeHandler}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -340,6 +353,9 @@
       <if test="windowHierarchy != null">
         window_hierarchy = #{windowHierarchy,jdbcType=LONGVARCHAR},
       </if>
+      <if test="elements != null">
+        elements = #{elements,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.ElementListTypeHandler},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -355,7 +371,8 @@
       device_id = #{deviceId,jdbcType=VARCHAR},
       creator_uid = #{creatorUid,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
-      window_hierarchy = #{windowHierarchy,jdbcType=LONGVARCHAR}
+      window_hierarchy = #{windowHierarchy,jdbcType=LONGVARCHAR},
+      elements = #{elements,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.ElementListTypeHandler}
     where id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.daxiang.mbg.po.Page">

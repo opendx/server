@@ -1,18 +1,15 @@
 package com.daxiang.mbg.po;
 
+import com.daxiang.validator.annotation.NoDuplicateElement;
 import com.daxiang.validator.group.UpdateGroup;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
 public class Page implements Serializable {
-    /**
-     * page id
-     *
-     * @mbg.generated
-     */
     @NotNull(message = "id不能为空", groups = {UpdateGroup.class})
     private Integer id;
 
@@ -94,6 +91,15 @@ public class Page implements Serializable {
      * @mbg.generated
      */
     private String windowHierarchy;
+
+    /**
+     * 元素
+     *
+     * @mbg.generated
+     */
+    @Valid
+    @NoDuplicateElement(message = "元素名不能重复")
+    private java.util.List<com.daxiang.model.page.Element> elements;
 
     private static final long serialVersionUID = 1L;
 
@@ -193,6 +199,14 @@ public class Page implements Serializable {
         this.windowHierarchy = windowHierarchy;
     }
 
+    public java.util.List<com.daxiang.model.page.Element> getElements() {
+        return elements;
+    }
+
+    public void setElements(java.util.List<com.daxiang.model.page.Element> elements) {
+        this.elements = elements;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -211,6 +225,7 @@ public class Page implements Serializable {
         sb.append(", creatorUid=").append(creatorUid);
         sb.append(", createTime=").append(createTime);
         sb.append(", windowHierarchy=").append(windowHierarchy);
+        sb.append(", elements=").append(elements);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

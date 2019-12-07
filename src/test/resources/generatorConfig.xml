@@ -22,16 +22,16 @@
         <jdbcConnection driverClass="com.mysql.jdbc.Driver"
                         connectionURL="jdbc:mysql://localhost:3306/daxiang"
                         userId="root"
-                        password="root">
+                        password="rootroot">
         </jdbcConnection>
 
         <javaTypeResolver type="test.MyJavaTypeResolver">
             <property name="forceBigDecimals" value="false"></property>
         </javaTypeResolver>
 
-        <javaModelGenerator targetPackage="com.daxiang.mbg.po" targetProject="C:\Users\jyt\Downloads\server\src\main\java"/>
-        <sqlMapGenerator targetPackage="com.daxiang.mbg.mapper" targetProject="C:\Users\jyt\Downloads\server\src\main\resources"/>
-        <javaClientGenerator type="XMLMAPPER" targetPackage="com.daxiang.mbg.mapper" targetProject="C:\Users\jyt\Downloads\server\src\main\java"/>
+        <javaModelGenerator targetPackage="com.daxiang.mbg.po" targetProject="/Users/jiangyitao/IdeaProjects/opendx/server/src/main/java"/>
+        <sqlMapGenerator targetPackage="com.daxiang.mbg.mapper" targetProject="/Users/jiangyitao/IdeaProjects/opendx/server/src/main/resources"/>
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.daxiang.mbg.mapper" targetProject="/Users/jiangyitao/IdeaProjects/opendx/server/src/main/java"/>
 
         <!--<table tableName="action">-->
             <!--<generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
@@ -48,23 +48,24 @@
         <!--</table>-->
         <!--<table tableName="device">-->
         <!--</table>-->
-        <table tableName="device_test_task">
-            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
-            <columnOverride column="test_plan" typeHandler="com.daxiang.typehandler.TestPlanTypeHandler" javaType="com.daxiang.mbg.po.TestPlan" jdbcType="LONGVARCHAR" />
-            <columnOverride column="global_vars" typeHandler="com.daxiang.typehandler.GlobalVarListTypeHandler" javaType="java.util.List&lt;com.daxiang.mbg.po.GlobalVar&gt;" jdbcType="LONGVARCHAR"/>
-            <columnOverride column="before_class" typeHandler="com.daxiang.typehandler.ActionTypeHandler" javaType="com.daxiang.mbg.po.Action" jdbcType="LONGVARCHAR"/>
-            <columnOverride column="before_method" typeHandler="com.daxiang.typehandler.ActionTypeHandler" javaType="com.daxiang.mbg.po.Action" jdbcType="LONGVARCHAR"/>
-            <columnOverride column="after_class" typeHandler="com.daxiang.typehandler.ActionTypeHandler" javaType="com.daxiang.mbg.po.Action" jdbcType="LONGVARCHAR"/>
-            <columnOverride column="after_method" typeHandler="com.daxiang.typehandler.ActionTypeHandler" javaType="com.daxiang.mbg.po.Action" jdbcType="LONGVARCHAR"/>
-            <columnOverride column="testcases" typeHandler="com.daxiang.typehandler.TestcaseListTypeHandler" javaType="java.util.List&lt;com.daxiang.model.vo.Testcase&gt;" jdbcType="LONGVARCHAR"/>
-        </table>
+        <!--<table tableName="device_test_task">-->
+            <!--<generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
+            <!--<columnOverride column="test_plan" typeHandler="com.daxiang.typehandler.TestPlanTypeHandler" javaType="com.daxiang.mbg.po.TestPlan" jdbcType="LONGVARCHAR" />-->
+            <!--<columnOverride column="global_vars" typeHandler="com.daxiang.typehandler.GlobalVarListTypeHandler" javaType="java.util.List&lt;com.daxiang.mbg.po.GlobalVar&gt;" jdbcType="LONGVARCHAR"/>-->
+            <!--<columnOverride column="before_class" typeHandler="com.daxiang.typehandler.ActionTypeHandler" javaType="com.daxiang.mbg.po.Action" jdbcType="LONGVARCHAR"/>-->
+            <!--<columnOverride column="before_method" typeHandler="com.daxiang.typehandler.ActionTypeHandler" javaType="com.daxiang.mbg.po.Action" jdbcType="LONGVARCHAR"/>-->
+            <!--<columnOverride column="after_class" typeHandler="com.daxiang.typehandler.ActionTypeHandler" javaType="com.daxiang.mbg.po.Action" jdbcType="LONGVARCHAR"/>-->
+            <!--<columnOverride column="after_method" typeHandler="com.daxiang.typehandler.ActionTypeHandler" javaType="com.daxiang.mbg.po.Action" jdbcType="LONGVARCHAR"/>-->
+            <!--<columnOverride column="testcases" typeHandler="com.daxiang.typehandler.TestcaseListTypeHandler" javaType="java.util.List&lt;com.daxiang.model.vo.Testcase&gt;" jdbcType="LONGVARCHAR"/>-->
+        <!--</table>-->
         <!--<table tableName="global_var">-->
             <!--<generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
             <!--<columnOverride column="environment_values" typeHandler="com.daxiang.typehandler.EnvironmentValueListTypeHandler" javaType="java.util.List&lt;com.daxiang.model.environment.EnvironmentValue&gt;" jdbcType="LONGVARCHAR"/>-->
         <!--</table>-->
-        <!--<table tableName="page">-->
-            <!--<generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
-        <!--</table>-->
+        <table tableName="page">
+            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
+            <columnOverride column="elements" typeHandler="com.daxiang.typehandler.ElementListTypeHandler" javaType="java.util.List&lt;com.daxiang.model.page.Element&gt;" jdbcType="LONGVARCHAR"/>
+        </table>
         <!--<table tableName="project">-->
             <!--<generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
         <!--</table>-->
