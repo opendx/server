@@ -12,6 +12,7 @@ import com.daxiang.model.vo.PageVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Date;
@@ -129,6 +130,14 @@ public class PageService extends BaseService {
         example.setOrderByClause("create_time desc");
 
         return pageMapper.selectByExampleWithBLOBs(example);
+    }
+
+    public List<Page> findByProjectId(Integer projectId) {
+        Assert.notNull(projectId, "projectId cannot be null");
+
+        Page query = new Page();
+        query.setProjectId(projectId);
+        return selectByPage(query);
     }
 
 }

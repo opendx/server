@@ -1,6 +1,7 @@
 package com.daxiang.mbg.po;
 
 import com.daxiang.mbg.po.GlobalVar;
+import com.daxiang.mbg.po.Page;
 import com.daxiang.model.vo.Testcase;
 import java.io.Serializable;
 import java.util.Date;
@@ -74,6 +75,13 @@ public class DeviceTestTask implements Serializable {
      * @mbg.generated
      */
     private java.util.List<GlobalVar> globalVars;
+
+    /**
+     * pages
+     *
+     * @mbg.generated
+     */
+    private java.util.List<Page> pages;
 
     /**
      * BeforeClass
@@ -198,6 +206,14 @@ public class DeviceTestTask implements Serializable {
         this.globalVars = globalVars;
     }
 
+    public java.util.List<Page> getPages() {
+        return pages;
+    }
+
+    public void setPages(java.util.List<Page> pages) {
+        this.pages = pages;
+    }
+
     public Action getBeforeClass() {
         return beforeClass;
     }
@@ -269,6 +285,7 @@ public class DeviceTestTask implements Serializable {
         sb.append(", endTime=").append(endTime);
         sb.append(", testPlan=").append(testPlan);
         sb.append(", globalVars=").append(globalVars);
+        sb.append(", pages=").append(pages);
         sb.append(", beforeClass=").append(beforeClass);
         sb.append(", beforeMethod=").append(beforeMethod);
         sb.append(", afterClass=").append(afterClass);

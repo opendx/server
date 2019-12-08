@@ -112,6 +112,7 @@ CREATE TABLE `device_test_task` (
   `test_plan` json NOT NULL COMMENT '下发任务时的testplan',
   `device_id` varchar(100) NOT NULL COMMENT '设备id',
   `global_vars` json DEFAULT NULL COMMENT '全局变量',
+  `pages` json DEFAULT NULL COMMENT 'pages',
   `before_class` json DEFAULT NULL COMMENT 'BeforeClass',
   `before_method` json DEFAULT NULL COMMENT 'BeforeMethod',
   `after_class` json DEFAULT NULL COMMENT 'AfterClass',

@@ -113,3 +113,6 @@ ADD COLUMN `test_plan` json NOT NULL COMMENT '下发任务时的testplan' AFTER 
 
 -- 0.2.9
 ALTER TABLE page ADD COLUMN `elements` json NULL COMMENT '元素' AFTER `device_id`;
+UPDATE page SET elements = '[]';
+ALTER TABLE device_test_task
+ADD COLUMN `pages` json NULL COMMENT 'pages' AFTER `global_vars`;

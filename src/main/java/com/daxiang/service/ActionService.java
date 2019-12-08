@@ -46,6 +46,8 @@ public class ActionService extends BaseService {
     private CategoryService categoryService;
     @Autowired
     private TestPlanService testPlanService;
+    @Autowired
+    private PageService pageService;
 
     public Response add(Action action) {
         action.setCreatorUid(getUid());
@@ -301,9 +303,13 @@ public class ActionService extends BaseService {
             globalVars.forEach(globalVar -> globalVar.setValue(getValueInEnvironmentValues(globalVar.getEnvironmentValues(), env)));
         }
 
+        // 该项目下的Pages
+        List<com.daxiang.mbg.po.Page> pages = pageService.findByProjectId(action.getProjectId());
+
         JSONObject requestBody = new JSONObject();
         requestBody.put("action", action);
         requestBody.put("globalVars", globalVars);
+        requestBody.put("pages", pages);
         requestBody.put("deviceId", debugInfo.getDeviceId());
 
         // 发送到agent执行

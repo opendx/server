@@ -44,6 +44,8 @@ public class TestTaskService extends BaseService {
     private ProjectService projectService;
     @Autowired
     private EnvironmentService environmentService;
+    @Autowired
+    private PageService pageService;
 
     /**
      * 提交测试任务
@@ -110,6 +112,9 @@ public class TestTaskService extends BaseService {
             globalVars.forEach(globalVar -> globalVar.setValue(actionService.getValueInEnvironmentValues(globalVar.getEnvironmentValues(), testPlan.getEnvironmentId())));
         }
 
+        // 该项目下的Pages
+        List<com.daxiang.mbg.po.Page> pages = pageService.findByProjectId(testTask.getProjectId());
+
         // 根据不同用例分发策略，给设备分配用例
         Map<String, List<Action>> deviceTestcases = allocateTestcaseToDevice(testPlan.getDeviceIds(), testcases, testPlan.getRunMode());
 
@@ -120,6 +125,7 @@ public class TestTaskService extends BaseService {
             deviceTestTask.setTestPlan(testPlan);
             deviceTestTask.setDeviceId(deviceId);
             deviceTestTask.setGlobalVars(globalVars);
+            deviceTestTask.setPages(pages);
             if (beforeClass != null) {
                 deviceTestTask.setBeforeClass(beforeClass);
             }
