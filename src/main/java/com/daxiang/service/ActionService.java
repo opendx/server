@@ -163,13 +163,7 @@ public class ActionService extends BaseService {
         return actionMapper.selectByExampleWithBLOBs(example);
     }
 
-    /**
-     * action步骤选择action，可供选择的action
-     *
-     * @param projectId
-     * @return
-     */
-    public Response getSelectableActions(Integer projectId, Integer platform) {
+    public Response cascader(Integer projectId, Integer platform) {
         if (projectId == null || platform == null) {
             return Response.fail("projectId || platform不能为空");
         }

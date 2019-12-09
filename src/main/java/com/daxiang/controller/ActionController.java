@@ -67,14 +67,14 @@ public class ActionController {
     }
 
     /**
-     * action步骤选择action，可供选择的action
+     * action cascader
      *
      * @param projectId
      * @return
      */
-    @GetMapping("/selectable/project/{projectId}/platform/{platform}")
-    public Response getSelectableActions(@PathVariable Integer projectId, @PathVariable Integer platform) {
-        return actionService.getSelectableActions(projectId, platform);
+    @GetMapping("/cascader")
+    public Response cascader(Integer projectId, Integer platform) {
+        return actionService.cascader(projectId, platform);
     }
 
     /**
