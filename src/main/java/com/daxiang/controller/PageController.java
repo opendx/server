@@ -67,4 +67,9 @@ public class PageController {
         return pageService.list(page, pageRequest);
     }
 
+    @GetMapping("/cascader")
+    public Response cascader(Integer projectId) {
+        return pageService.cascader(projectId);
+    }
+
 }

@@ -1,8 +1,10 @@
 package com.daxiang.service;
 
 import com.daxiang.mbg.po.Action;
+import com.daxiang.mbg.po.Category;
 import com.daxiang.mbg.po.PageExample;
 import com.daxiang.model.UserCache;
+import com.daxiang.model.vo.PageCascaderVo;
 import com.github.pagehelper.PageHelper;
 import com.daxiang.mbg.mapper.PageMapper;
 import com.daxiang.mbg.po.Page;
@@ -17,6 +19,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -29,6 +32,8 @@ public class PageService extends BaseService {
     private PageMapper pageMapper;
     @Autowired
     private ActionService actionService;
+    @Autowired
+    private CategoryService categoryService;
 
     /**
      * 添加page
@@ -140,4 +145,38 @@ public class PageService extends BaseService {
         return selectByPage(query);
     }
 
+    public Response cascader(Integer projectId) {
+        if (projectId == null) {
+            return Response.fail("projectId不能为空");
+        }
+
+        Page query = new Page();
+        query.setProjectId(projectId);
+        List<Page> pages = selectByPage(query);
+
+        List<Integer> categoryIds = pages.stream().filter(p -> Objects.nonNull(p.getCategoryId())).map(Page::getCategoryId).collect(Collectors.toList());
+        List<Category> categories = categoryService.selectByPrimaryKeys(categoryIds);
+
+        // 带分类的page
+        List<PageCascaderVo> result = categories.stream().map(category -> {
+            PageCascaderVo root = new PageCascaderVo();
+            root.setName(category.getName());
+
+            List<PageCascaderVo> children = pages.stream()
+                    .filter(p -> category.getId().equals(p.getCategoryId()))
+                    .map(p -> PageCascaderVo.convert(p)).collect(Collectors.toList());
+            root.setChildren(children);
+
+            return root;
+        }).collect(Collectors.toList());
+
+        // 不带分类的page
+        List<PageCascaderVo> pageCascaderVosWithoutCategory = pages.stream()
+                .filter(p -> Objects.isNull(p.getCategoryId()))
+                .map(p -> PageCascaderVo.convert(p)).collect(Collectors.toList());
+
+        result.addAll(pageCascaderVosWithoutCategory);
+
+        return Response.success(result);
+    }
 }
