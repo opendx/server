@@ -3,8 +3,9 @@
 * mysql5.7
 
 ## 数据库
-* 创建数据库（配置文件配置的数据库名为daxiang）
-* 创建表（db/table.sql）
+* 数据库（db/database.sql）
+* 表（db/table.sql）
+* sql更新（db/update.sql）
 
 ## ide运行
 运行src/main/java/com/daxiang/Application.java main方法即可
