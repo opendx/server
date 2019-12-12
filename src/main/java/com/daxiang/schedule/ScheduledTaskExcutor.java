@@ -13,6 +13,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -29,7 +30,7 @@ public class ScheduledTaskExcutor {
     /**
      * 统计已完成的测试任务
      */
-    @Scheduled(fixedRate = 30000)
+    @Scheduled(fixedRate = 15000)
     public void statisticsFinishedTestTask() {
         // 未完成的测试任务
         List<TestTask> unFinishedTestTasks = testTaskService.findUnFinishedTestTask();
@@ -45,19 +46,21 @@ public class ScheduledTaskExcutor {
                 if (deviceTestTasks.size() == finishedCount) {
                     log.info("开始统计测试结果, testTaskId: {}", unFinishedTestTask.getId());
                     List<Testcase> testcases = deviceTestTasks.stream().flatMap(task -> task.getTestcases().stream()).collect(Collectors.toList());
-
-                    long passCount = testcases.stream().filter(testcase -> testcase.getStatus() == Testcase.PASS_STATUS).count();
-                    long failCount = testcases.stream().filter(testcase -> testcase.getStatus() == Testcase.FAIL_STATUS).count();
-                    long skipCount = testcases.stream().filter(testcase -> testcase.getStatus() == Testcase.SKIP_STATUS).count();
+                    Map<Integer, Long> result = testcases.stream().collect(Collectors.groupingBy(Testcase::getStatus, Collectors.counting()));
 
                     TestTask testTask = new TestTask();
                     testTask.setId(unFinishedTestTask.getId());
                     testTask.setStatus(TestTask.FINISHED_STATUS);
-                    testTask.setFinishTime(testcases.stream().map(Testcase::getEndTime).sorted(Comparator.reverseOrder()).findFirst().get()); //所有用例结束时间最晚的作为完成时间
-                    testTask.setPassCaseCount((int) passCount);
-                    testTask.setFailCaseCount((int) failCount);
-                    testTask.setSkipCaseCount((int) skipCount);
-
+                    testTask.setFinishTime(testcases.stream().map(Testcase::getEndTime).sorted(Comparator.reverseOrder()).findFirst().get()); // 所有用例结束时间最晚的作为完成时间
+                    if (result.get(Testcase.PASS_STATUS) != null) {
+                        testTask.setPassCaseCount(Math.toIntExact(result.get(Testcase.PASS_STATUS)));
+                    }
+                    if (result.get(Testcase.FAIL_STATUS) != null) {
+                        testTask.setFailCaseCount(Math.toIntExact(result.get(Testcase.FAIL_STATUS)));
+                    }
+                    if (result.get(Testcase.SKIP_STATUS) != null) {
+                        testTask.setSkipCaseCount(Math.toIntExact(result.get(Testcase.SKIP_STATUS)));
+                    }
                     testTaskService.updateByPrimaryKeySelective(testTask);
                     log.info("测试结果统计完成, testTaskId: {}", unFinishedTestTask.getId());
                 }
