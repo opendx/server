@@ -126,14 +126,6 @@ public class Action implements Serializable {
     private Date updateTime;
 
     /**
-     * 1.android 2.ios
-     *
-     * @mbg.generated
-     */
-    @NotNull(message = "平台不能为空")
-    private Integer platform;
-
-    /**
      * 所属的page id
      *
      * @mbg.generated
@@ -201,6 +193,14 @@ public class Action implements Serializable {
      * @mbg.generated
      */
     private java.util.List<String> javaImports;
+
+    /**
+     * 1.android 2.ios null.通用
+     *
+     * @mbg.generated
+     */
+    @NotEmpty(message = "platforms不能为空")
+    private java.util.List<Integer> platforms;
 
     private static final long serialVersionUID = 1L;
 
@@ -292,14 +292,6 @@ public class Action implements Serializable {
         this.updateTime = updateTime;
     }
 
-    public Integer getPlatform() {
-        return platform;
-    }
-
-    public void setPlatform(Integer platform) {
-        this.platform = platform;
-    }
-
     public Integer getPageId() {
         return pageId;
     }
@@ -372,6 +364,14 @@ public class Action implements Serializable {
         this.javaImports = javaImports;
     }
 
+    public java.util.List<Integer> getPlatforms() {
+        return platforms;
+    }
+
+    public void setPlatforms(java.util.List<Integer> platforms) {
+        this.platforms = platforms;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -389,7 +389,6 @@ public class Action implements Serializable {
         sb.append(", createTime=").append(createTime);
         sb.append(", updatorUid=").append(updatorUid);
         sb.append(", updateTime=").append(updateTime);
-        sb.append(", platform=").append(platform);
         sb.append(", pageId=").append(pageId);
         sb.append(", categoryId=").append(categoryId);
         sb.append(", projectId=").append(projectId);
@@ -399,6 +398,7 @@ public class Action implements Serializable {
         sb.append(", localVars=").append(localVars);
         sb.append(", steps=").append(steps);
         sb.append(", javaImports=").append(javaImports);
+        sb.append(", platforms=").append(platforms);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

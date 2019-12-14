@@ -13,7 +13,6 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="updator_uid" jdbcType="INTEGER" property="updatorUid" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-    <result column="platform" jdbcType="TINYINT" property="platform" />
     <result column="page_id" jdbcType="INTEGER" property="pageId" />
     <result column="category_id" jdbcType="INTEGER" property="categoryId" />
     <result column="project_id" jdbcType="INTEGER" property="projectId" />
@@ -25,6 +24,7 @@
     <result column="local_vars" jdbcType="LONGVARCHAR" property="localVars" typeHandler="com.daxiang.typehandler.LocalVarListTypeHandler" />
     <result column="steps" jdbcType="LONGVARCHAR" property="steps" typeHandler="com.daxiang.typehandler.StepListTypeHandler" />
     <result column="java_imports" jdbcType="LONGVARCHAR" property="javaImports" typeHandler="com.daxiang.typehandler.StringListTypeHandler" />
+    <result column="platforms" jdbcType="LONGVARCHAR" property="platforms" typeHandler="com.daxiang.typehandler.IntegerListTypeHandler" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -86,11 +86,11 @@
   </sql>
   <sql id="Base_Column_List">
     id, name, description, type, invoke, return_value, return_value_desc, creator_uid, 
-    create_time, updator_uid, update_time, platform, page_id, category_id, project_id, 
-    test_suite_id, state
+    create_time, updator_uid, update_time, page_id, category_id, project_id, test_suite_id, 
+    state
   </sql>
   <sql id="Blob_Column_List">
-    params, local_vars, steps, java_imports
+    params, local_vars, steps, java_imports, platforms
   </sql>
   <select id="selectByExampleWithBLOBs" parameterType="com.daxiang.mbg.po.ActionExample" resultMap="ResultMapWithBLOBs">
     select
@@ -147,22 +147,24 @@
     insert into action (name, description, type, 
       invoke, return_value, return_value_desc, 
       creator_uid, create_time, updator_uid, 
-      update_time, platform, page_id, 
-      category_id, project_id, test_suite_id, 
-      state, params, 
+      update_time, page_id, category_id, 
+      project_id, test_suite_id, state, 
+      params, 
       local_vars, 
       steps, 
-      java_imports
+      java_imports, 
+      platforms
       )
     values (#{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{type,jdbcType=TINYINT}, 
       #{invoke,jdbcType=VARCHAR}, #{returnValue,jdbcType=VARCHAR}, #{returnValueDesc,jdbcType=VARCHAR}, 
       #{creatorUid,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updatorUid,jdbcType=INTEGER}, 
-      #{updateTime,jdbcType=TIMESTAMP}, #{platform,jdbcType=TINYINT}, #{pageId,jdbcType=INTEGER}, 
-      #{categoryId,jdbcType=INTEGER}, #{projectId,jdbcType=INTEGER}, #{testSuiteId,jdbcType=INTEGER}, 
-      #{state,jdbcType=TINYINT}, #{params,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.ParamListTypeHandler}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{pageId,jdbcType=INTEGER}, #{categoryId,jdbcType=INTEGER}, 
+      #{projectId,jdbcType=INTEGER}, #{testSuiteId,jdbcType=INTEGER}, #{state,jdbcType=TINYINT}, 
+      #{params,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.ParamListTypeHandler}, 
       #{localVars,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.LocalVarListTypeHandler}, 
       #{steps,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.StepListTypeHandler}, 
-      #{javaImports,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.StringListTypeHandler}
+      #{javaImports,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.StringListTypeHandler}, 
+      #{platforms,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.IntegerListTypeHandler}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.daxiang.mbg.po.Action">
@@ -201,9 +203,6 @@
       <if test="updateTime != null">
         update_time,
       </if>
-      <if test="platform != null">
-        platform,
-      </if>
       <if test="pageId != null">
         page_id,
       </if>
@@ -230,6 +229,9 @@
       </if>
       <if test="javaImports != null">
         java_imports,
+      </if>
+      <if test="platforms != null">
+        platforms,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -263,9 +265,6 @@
       <if test="updateTime != null">
         #{updateTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="platform != null">
-        #{platform,jdbcType=TINYINT},
-      </if>
       <if test="pageId != null">
         #{pageId,jdbcType=INTEGER},
       </if>
@@ -292,6 +291,9 @@
       </if>
       <if test="javaImports != null">
         #{javaImports,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.StringListTypeHandler},
+      </if>
+      <if test="platforms != null">
+        #{platforms,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.IntegerListTypeHandler},
       </if>
     </trim>
   </insert>
@@ -337,9 +339,6 @@
       <if test="record.updateTime != null">
         update_time = #{record.updateTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="record.platform != null">
-        platform = #{record.platform,jdbcType=TINYINT},
-      </if>
       <if test="record.pageId != null">
         page_id = #{record.pageId,jdbcType=INTEGER},
       </if>
@@ -367,6 +366,9 @@
       <if test="record.javaImports != null">
         java_imports = #{record.javaImports,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.StringListTypeHandler},
       </if>
+      <if test="record.platforms != null">
+        platforms = #{record.platforms,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.IntegerListTypeHandler},
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -385,7 +387,6 @@
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       updator_uid = #{record.updatorUid,jdbcType=INTEGER},
       update_time = #{record.updateTime,jdbcType=TIMESTAMP},
-      platform = #{record.platform,jdbcType=TINYINT},
       page_id = #{record.pageId,jdbcType=INTEGER},
       category_id = #{record.categoryId,jdbcType=INTEGER},
       project_id = #{record.projectId,jdbcType=INTEGER},
@@ -394,7 +395,8 @@
       params = #{record.params,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.ParamListTypeHandler},
       local_vars = #{record.localVars,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.LocalVarListTypeHandler},
       steps = #{record.steps,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.StepListTypeHandler},
-      java_imports = #{record.javaImports,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.StringListTypeHandler}
+      java_imports = #{record.javaImports,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.StringListTypeHandler},
+      platforms = #{record.platforms,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.IntegerListTypeHandler}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -412,7 +414,6 @@
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       updator_uid = #{record.updatorUid,jdbcType=INTEGER},
       update_time = #{record.updateTime,jdbcType=TIMESTAMP},
-      platform = #{record.platform,jdbcType=TINYINT},
       page_id = #{record.pageId,jdbcType=INTEGER},
       category_id = #{record.categoryId,jdbcType=INTEGER},
       project_id = #{record.projectId,jdbcType=INTEGER},
@@ -455,9 +456,6 @@
       <if test="updateTime != null">
         update_time = #{updateTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="platform != null">
-        platform = #{platform,jdbcType=TINYINT},
-      </if>
       <if test="pageId != null">
         page_id = #{pageId,jdbcType=INTEGER},
       </if>
@@ -485,6 +483,9 @@
       <if test="javaImports != null">
         java_imports = #{javaImports,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.StringListTypeHandler},
       </if>
+      <if test="platforms != null">
+        platforms = #{platforms,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.IntegerListTypeHandler},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -500,7 +501,6 @@
       create_time = #{createTime,jdbcType=TIMESTAMP},
       updator_uid = #{updatorUid,jdbcType=INTEGER},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
-      platform = #{platform,jdbcType=TINYINT},
       page_id = #{pageId,jdbcType=INTEGER},
       category_id = #{categoryId,jdbcType=INTEGER},
       project_id = #{projectId,jdbcType=INTEGER},
@@ -509,7 +509,8 @@
       params = #{params,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.ParamListTypeHandler},
       local_vars = #{localVars,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.LocalVarListTypeHandler},
       steps = #{steps,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.StepListTypeHandler},
-      java_imports = #{javaImports,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.StringListTypeHandler}
+      java_imports = #{javaImports,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.StringListTypeHandler},
+      platforms = #{platforms,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.IntegerListTypeHandler}
     where id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.daxiang.mbg.po.Action">
@@ -524,7 +525,6 @@
       create_time = #{createTime,jdbcType=TIMESTAMP},
       updator_uid = #{updatorUid,jdbcType=INTEGER},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
-      platform = #{platform,jdbcType=TINYINT},
       page_id = #{pageId,jdbcType=INTEGER},
       category_id = #{categoryId,jdbcType=INTEGER},
       project_id = #{projectId,jdbcType=INTEGER},

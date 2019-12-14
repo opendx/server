@@ -10,4 +10,11 @@
     <select id="selectByLocalVarsEnvironmentId" resultMap="ResultMapWithBLOBs">
         select * from action where JSON_CONTAINS(local_vars->'$[*].environmentValues[*].environmentId', '${envId}', '$')
     </select>
+
+    <select id="selectByProjectIdAndPlatform" resultMap="ResultMapWithBLOBs">
+        select * from action where
+        project_id = #{projectId}
+        or (project_Id is null and (platforms is null or JSON_CONTAINS(platforms->'$[*]', '${platform}', '$')))
+        order by id desc
+    </select>
 </mapper>

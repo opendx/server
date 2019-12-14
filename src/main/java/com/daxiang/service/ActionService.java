@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -142,9 +143,6 @@ public class ActionService extends BaseService {
             if (action.getType() != null) {
                 criteria.andTypeEqualTo(action.getType());
             }
-            if (action.getPlatform() != null) {
-                criteria.andPlatformEqualTo(action.getPlatform());
-            }
             if (action.getPageId() != null) {
                 criteria.andPageIdEqualTo(action.getPageId());
             }
@@ -168,25 +166,7 @@ public class ActionService extends BaseService {
             return Response.fail("projectId || platform不能为空");
         }
 
-        ActionExample actionExample = new ActionExample();
-
-        // 同一个项目下的action
-        ActionExample.Criteria criteria1 = actionExample.createCriteria();
-        criteria1.andProjectIdEqualTo(projectId);
-
-        // 所有项目公用的基础action
-        ActionExample.Criteria criteria2 = actionExample.createCriteria();
-        criteria2.andProjectIdIsNull().andTypeEqualTo(Action.TYPE_BASE).andPlatformIsNull();
-
-        // 所有项目公用的同一平台的基础action
-        ActionExample.Criteria criteria3 = actionExample.createCriteria();
-        criteria3.andProjectIdIsNull().andTypeEqualTo(Action.TYPE_BASE).andPlatformEqualTo(platform);
-
-        actionExample.or(criteria2);
-        actionExample.or(criteria3);
-        actionExample.setOrderByClause("create_time desc");
-
-        List<Action> actions = actionMapper.selectByExampleWithBLOBs(actionExample).stream()
+        List<Action> actions = actionDao.selectByProjectIdAndPlatform(projectId, platform).stream()
                 .filter(action -> action.getState() == Action.RELEASE_STATE).collect(Collectors.toList());
         List<ActionCascaderVo> result = new ArrayList<>();
 
@@ -361,6 +341,7 @@ public class ActionService extends BaseService {
 
     /**
      * 在environmentValues中找到与env匹配的value
+     *
      * @param environmentValues
      * @param env
      * @return
