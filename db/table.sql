@@ -34,7 +34,7 @@ CREATE TABLE `action` (
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
   `updator_uid` int(11) DEFAULT NULL COMMENT '更新人id',
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
-  `platform` tinyint(4) DEFAULT NULL COMMENT '1.android 2.ios',
+  `platforms` json DEFAULT NULL COMMENT '1.android 2.ios 3.android微信web 4.android微信小程序 null.通用',
   `page_id` int(11) DEFAULT NULL COMMENT '所属的page id',
   `category_id` int(11) DEFAULT NULL COMMENT '所属的分类id',
   `project_id` int(11) DEFAULT NULL COMMENT '所属的项目id',
@@ -108,6 +108,7 @@ DROP TABLE IF EXISTS `device_test_task`;
 CREATE TABLE `device_test_task` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `project_id` int(11) NOT NULL COMMENT '项目id',
+  `platform` tinyint(4) NOT NULL COMMENT '平台',
   `test_task_id` int(11) NOT NULL COMMENT '测试任务id',
   `test_plan` json NOT NULL COMMENT '下发任务时的testplan',
   `device_id` varchar(100) NOT NULL COMMENT '设备id',

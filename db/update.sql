@@ -116,3 +116,14 @@ ALTER TABLE page ADD COLUMN `elements` json NULL COMMENT '元素' AFTER `device_
 UPDATE page SET elements = '[]';
 ALTER TABLE device_test_task
 ADD COLUMN `pages` json NULL COMMENT 'pages' AFTER `global_vars`;
+
+-- 0.3.0
+ALTER TABLE device_test_task ADD COLUMN `platform` tinyint(4) NOT NULL COMMENT '平台' AFTER `project_id`;
+
+DELETE FROM action WHERE id <= 20; -- 注意！！！ 重新导入基础action https://github.com/opendx/agent/blob/master/src/main/java/com/daxiang/action/sql/basic_action.sql
+
+ALTER TABLE action ADD COLUMN `platforms` json null COMMENT '1.android 2.ios 3.android微信web 4.android微信小程序 null.通用' AFTER `update_time`;
+
+UPDATE action SET platforms = REPLACE('[p]','p',platform) where type in (2,3);
+
+ALTER TABLE action DROP COLUMN `platform`;
