@@ -115,12 +115,15 @@ public class TestTaskService extends BaseService {
         // 该项目下的Pages
         List<com.daxiang.mbg.po.Page> pages = pageService.findByProjectId(testTask.getProjectId());
 
+        Project project = projectService.selectByPrimaryKey(testTask.getProjectId());
+
         // 根据不同用例分发策略，给设备分配用例
         Map<String, List<Action>> deviceTestcases = allocateTestcaseToDevice(testPlan.getDeviceIds(), testcases, testPlan.getRunMode());
 
         deviceTestcases.forEach((deviceId, actions) -> {
             DeviceTestTask deviceTestTask = new DeviceTestTask();
             deviceTestTask.setProjectId(testTask.getProjectId());
+            deviceTestTask.setPlatform(project.getPlatform());
             deviceTestTask.setTestTaskId(testTask.getId());
             deviceTestTask.setTestPlan(testPlan);
             deviceTestTask.setDeviceId(deviceId);
@@ -283,9 +286,7 @@ public class TestTaskService extends BaseService {
             return Response.fail("测试任务不存在");
         }
 
-        Project query = new Project();
-        query.setId(testTask.getProjectId());
-        Project project = projectService.selectByProject(query).get(0);
+        Project project = projectService.selectByPrimaryKey(testTask.getProjectId());
 
         TestTaskSummary summary = new TestTaskSummary();
         BeanUtils.copyProperties(testTask, summary);

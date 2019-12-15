@@ -4,6 +4,7 @@
   <resultMap id="BaseResultMap" type="com.daxiang.mbg.po.DeviceTestTask">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="project_id" jdbcType="INTEGER" property="projectId" />
+    <result column="platform" jdbcType="TINYINT" property="platform" />
     <result column="test_task_id" jdbcType="INTEGER" property="testTaskId" />
     <result column="device_id" jdbcType="VARCHAR" property="deviceId" />
     <result column="status" jdbcType="TINYINT" property="status" />
@@ -81,7 +82,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, project_id, test_task_id, device_id, status, start_time, end_time
+    id, project_id, platform, test_task_id, device_id, status, start_time, end_time
   </sql>
   <sql id="Blob_Column_List">
     test_plan, global_vars, pages, before_class, before_method, after_class, after_method, 
@@ -139,9 +140,9 @@
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into device_test_task (project_id, test_task_id, device_id, 
-      status, start_time, end_time, 
-      test_plan, 
+    insert into device_test_task (project_id, platform, test_task_id, 
+      device_id, status, start_time, 
+      end_time, test_plan, 
       global_vars, 
       pages, 
       before_class, 
@@ -150,9 +151,9 @@
       after_method, 
       testcases, 
       code, err_msg)
-    values (#{projectId,jdbcType=INTEGER}, #{testTaskId,jdbcType=INTEGER}, #{deviceId,jdbcType=VARCHAR}, 
-      #{status,jdbcType=TINYINT}, #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, 
-      #{testPlan,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.TestPlanTypeHandler}, 
+    values (#{projectId,jdbcType=INTEGER}, #{platform,jdbcType=TINYINT}, #{testTaskId,jdbcType=INTEGER}, 
+      #{deviceId,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT}, #{startTime,jdbcType=TIMESTAMP}, 
+      #{endTime,jdbcType=TIMESTAMP}, #{testPlan,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.TestPlanTypeHandler}, 
       #{globalVars,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.GlobalVarListTypeHandler}, 
       #{pages,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.PageListTypeHandler}, 
       #{beforeClass,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.ActionTypeHandler}, 
@@ -170,6 +171,9 @@
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="projectId != null">
         project_id,
+      </if>
+      <if test="platform != null">
+        platform,
       </if>
       <if test="testTaskId != null">
         test_task_id,
@@ -220,6 +224,9 @@
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="projectId != null">
         #{projectId,jdbcType=INTEGER},
+      </if>
+      <if test="platform != null">
+        #{platform,jdbcType=TINYINT},
       </if>
       <if test="testTaskId != null">
         #{testTaskId,jdbcType=INTEGER},
@@ -283,6 +290,9 @@
       <if test="record.projectId != null">
         project_id = #{record.projectId,jdbcType=INTEGER},
       </if>
+      <if test="record.platform != null">
+        platform = #{record.platform,jdbcType=TINYINT},
+      </if>
       <if test="record.testTaskId != null">
         test_task_id = #{record.testTaskId,jdbcType=INTEGER},
       </if>
@@ -337,6 +347,7 @@
     update device_test_task
     set id = #{record.id,jdbcType=INTEGER},
       project_id = #{record.projectId,jdbcType=INTEGER},
+      platform = #{record.platform,jdbcType=TINYINT},
       test_task_id = #{record.testTaskId,jdbcType=INTEGER},
       device_id = #{record.deviceId,jdbcType=VARCHAR},
       status = #{record.status,jdbcType=TINYINT},
@@ -360,6 +371,7 @@
     update device_test_task
     set id = #{record.id,jdbcType=INTEGER},
       project_id = #{record.projectId,jdbcType=INTEGER},
+      platform = #{record.platform,jdbcType=TINYINT},
       test_task_id = #{record.testTaskId,jdbcType=INTEGER},
       device_id = #{record.deviceId,jdbcType=VARCHAR},
       status = #{record.status,jdbcType=TINYINT},
@@ -374,6 +386,9 @@
     <set>
       <if test="projectId != null">
         project_id = #{projectId,jdbcType=INTEGER},
+      </if>
+      <if test="platform != null">
+        platform = #{platform,jdbcType=TINYINT},
       </if>
       <if test="testTaskId != null">
         test_task_id = #{testTaskId,jdbcType=INTEGER},
@@ -426,6 +441,7 @@
   <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.daxiang.mbg.po.DeviceTestTask">
     update device_test_task
     set project_id = #{projectId,jdbcType=INTEGER},
+      platform = #{platform,jdbcType=TINYINT},
       test_task_id = #{testTaskId,jdbcType=INTEGER},
       device_id = #{deviceId,jdbcType=VARCHAR},
       status = #{status,jdbcType=TINYINT},
@@ -446,6 +462,7 @@
   <update id="updateByPrimaryKey" parameterType="com.daxiang.mbg.po.DeviceTestTask">
     update device_test_task
     set project_id = #{projectId,jdbcType=INTEGER},
+      platform = #{platform,jdbcType=TINYINT},
       test_task_id = #{testTaskId,jdbcType=INTEGER},
       device_id = #{deviceId,jdbcType=VARCHAR},
       status = #{status,jdbcType=TINYINT},

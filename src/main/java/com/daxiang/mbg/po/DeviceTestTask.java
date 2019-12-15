@@ -28,6 +28,13 @@ public class DeviceTestTask implements Serializable {
     private Integer projectId;
 
     /**
+     * 平台
+     *
+     * @mbg.generated
+     */
+    private Integer platform;
+
+    /**
      * 测试任务id
      *
      * @mbg.generated
@@ -148,6 +155,14 @@ public class DeviceTestTask implements Serializable {
 
     public void setProjectId(Integer projectId) {
         this.projectId = projectId;
+    }
+
+    public Integer getPlatform() {
+        return platform;
+    }
+
+    public void setPlatform(Integer platform) {
+        this.platform = platform;
     }
 
     public Integer getTestTaskId() {
@@ -278,6 +293,7 @@ public class DeviceTestTask implements Serializable {
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
         sb.append(", projectId=").append(projectId);
+        sb.append(", platform=").append(platform);
         sb.append(", testTaskId=").append(testTaskId);
         sb.append(", deviceId=").append(deviceId);
         sb.append(", status=").append(status);

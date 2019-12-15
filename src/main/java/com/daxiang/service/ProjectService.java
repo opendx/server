@@ -121,4 +121,8 @@ public class ProjectService extends BaseService {
 
         return projectMapper.selectByExample(example);
     }
+
+    public Project selectByPrimaryKey(Integer id) {
+        return projectMapper.selectByPrimaryKey(id);
+    }
 }
