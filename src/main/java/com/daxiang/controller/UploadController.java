@@ -9,8 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
-
 /**
  * Created by jiangyitao.
  */
@@ -23,7 +21,7 @@ public class UploadController {
     private UploadService uploadService;
 
     @PostMapping("/file")
-    public Response uploadFile(MultipartFile file, HttpServletRequest request) {
-       return uploadService.uploadFile(file, request);
+    public Response uploadFile(MultipartFile file, Integer fileType) {
+       return uploadService.uploadFile(file, fileType);
     }
 }

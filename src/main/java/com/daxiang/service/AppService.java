@@ -38,17 +38,8 @@ public class AppService extends BaseService {
     @Autowired
     private AgentApi agentApi;
 
-    public Response upload(App app, MultipartFile file, HttpServletRequest request) {
-        if (file == null) {
-            return Response.fail("上传文件不能为空");
-        }
-        if (app.getPlatform() == Platform.ANDROID) {
-            if (!file.getOriginalFilename().endsWith(".apk")) {
-                return Response.fail("Android必须为apk文件");
-            }
-        }
-
-        Response response = uploadService.uploadFile(file, request);
+    public Response upload(App app, MultipartFile file) {
+        Response response = uploadService.uploadFile(file, FileType.APP);
         if (!response.isSuccess()) {
             return response;
         }

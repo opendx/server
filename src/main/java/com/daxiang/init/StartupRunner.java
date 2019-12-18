@@ -24,10 +24,10 @@ public class StartupRunner implements ApplicationRunner {
     private String uploadImgPath;
     @Value("${web.upload-video-path}")
     private String uploadVideoPath;
-    @Value("${web.upload-apk-path}")
-    private String uploadApkPath;
-    @Value("${web.upload-ipa-path}")
-    private String uploadIpaPath;
+    @Value("${web.upload-app-path}")
+    private String uploadAppPath;
+    @Value("${web.upload-driver-path}")
+    private String uploadDriverPath;
     @Value("${web.upload-other-path}")
     private String uploadOtherPath;
 
@@ -50,16 +50,16 @@ public class StartupRunner implements ApplicationRunner {
             uploadVideoDir.mkdirs();
         }
 
-        File uploadApkDir = new File(uploadApkPath);
-        if (!uploadApkDir.exists()) {
-            log.info("创建apk上传存放目录 -> {}", uploadApkPath);
-            uploadApkDir.mkdirs();
+        File uploadAppDir = new File(uploadAppPath);
+        if (!uploadAppDir.exists()) {
+            log.info("创建app上传存放目录 -> {}", uploadAppPath);
+            uploadAppDir.mkdirs();
         }
 
-        File uploadIpaDir = new File(uploadIpaPath);
-        if (!uploadIpaDir.exists()) {
-            log.info("创建ipa上传存放目录 -> {}", uploadIpaPath);
-            uploadIpaDir.mkdirs();
+        File uploadDriverDir = new File(uploadDriverPath);
+        if (!uploadDriverDir.exists()) {
+            log.info("创建driver上传存放目录 -> {}", uploadDriverPath);
+            uploadDriverDir.mkdirs();
         }
 
         File uploadOtherDir = new File(uploadOtherPath);
