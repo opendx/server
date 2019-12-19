@@ -68,7 +68,7 @@ public class ActionService extends BaseService {
             return Response.fail("actionId不能为空");
         }
 
-        checkActionIsNotUsingByActionStepsOrTestPlans(actionId);
+        checkActionIsNotUsingByActionOrTestPlan(actionId);
 
         int deleteRow = actionMapper.deleteByPrimaryKey(actionId);
         return deleteRow == 1 ? Response.success("删除成功") : Response.fail("删除失败，请稍后重试");
@@ -81,9 +81,9 @@ public class ActionService extends BaseService {
      * @return
      */
     public Response update(Action action) {
-        // action状态变为草稿或者禁用，需要检查该action没有被其他action steps或testplans使用
+        // action状态变为草稿或者禁用，需要检查该action没有被其他action或testplan使用
         if (action.getState() == Action.DRAFT_STATE || action.getState() == Action.DISABLE_STATE) {
-            checkActionIsNotUsingByActionStepsOrTestPlans(action.getId());
+            checkActionIsNotUsingByActionOrTestPlan(action.getId());
         }
 
         action.setUpdateTime(new Date());
@@ -319,13 +319,13 @@ public class ActionService extends BaseService {
     }
 
     /**
-     * 检查action没有被action step或testplan使用
+     * 检查action没有被action或testplan使用
      *
      * @param actionId
      */
-    private void checkActionIsNotUsingByActionStepsOrTestPlans(Integer actionId) {
-        // 检查action是否被其他action step使用
-        List<Action> actions = actionDao.selectByStepActionId(actionId);
+    private void checkActionIsNotUsingByActionOrTestPlan(Integer actionId) {
+        // 检查action是否被steps或depends使用
+        List<Action> actions = actionDao.selectByActionIdInStepsOrDepends(actionId);
         if (!CollectionUtils.isEmpty(actions)) {
             String actionNames = actions.stream().map(Action::getName).collect(Collectors.joining("、"));
             throw new BusinessException("actions: " + actionNames + ", 正在使用此action");

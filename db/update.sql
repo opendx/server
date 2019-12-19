@@ -127,3 +127,6 @@ ALTER TABLE action ADD COLUMN `platforms` json null COMMENT '1.android 2.ios 3.a
 UPDATE action SET platforms = REPLACE('[p]','p',platform) where type in (2,3);
 
 ALTER TABLE action DROP COLUMN `platform`;
+
+-- 0.3.1
+ALTER TABLE action ADD COLUMN `depends` json null COMMENT '依赖的测试用例id' AFTER `state`;

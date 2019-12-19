@@ -25,6 +25,7 @@
     <result column="steps" jdbcType="LONGVARCHAR" property="steps" typeHandler="com.daxiang.typehandler.StepListTypeHandler" />
     <result column="java_imports" jdbcType="LONGVARCHAR" property="javaImports" typeHandler="com.daxiang.typehandler.StringListTypeHandler" />
     <result column="platforms" jdbcType="LONGVARCHAR" property="platforms" typeHandler="com.daxiang.typehandler.IntegerListTypeHandler" />
+    <result column="depends" jdbcType="LONGVARCHAR" property="depends" typeHandler="com.daxiang.typehandler.IntegerListTypeHandler" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -90,7 +91,7 @@
     state
   </sql>
   <sql id="Blob_Column_List">
-    params, local_vars, steps, java_imports, platforms
+    params, local_vars, steps, java_imports, platforms, depends
   </sql>
   <select id="selectByExampleWithBLOBs" parameterType="com.daxiang.mbg.po.ActionExample" resultMap="ResultMapWithBLOBs">
     select
@@ -153,7 +154,8 @@
       local_vars, 
       steps, 
       java_imports, 
-      platforms
+      platforms, 
+      depends
       )
     values (#{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{type,jdbcType=TINYINT}, 
       #{invoke,jdbcType=VARCHAR}, #{returnValue,jdbcType=VARCHAR}, #{returnValueDesc,jdbcType=VARCHAR}, 
@@ -164,7 +166,8 @@
       #{localVars,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.LocalVarListTypeHandler}, 
       #{steps,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.StepListTypeHandler}, 
       #{javaImports,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.StringListTypeHandler}, 
-      #{platforms,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.IntegerListTypeHandler}
+      #{platforms,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.IntegerListTypeHandler}, 
+      #{depends,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.IntegerListTypeHandler}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.daxiang.mbg.po.Action">
@@ -233,6 +236,9 @@
       <if test="platforms != null">
         platforms,
       </if>
+      <if test="depends != null">
+        depends,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="name != null">
@@ -294,6 +300,9 @@
       </if>
       <if test="platforms != null">
         #{platforms,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.IntegerListTypeHandler},
+      </if>
+      <if test="depends != null">
+        #{depends,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.IntegerListTypeHandler},
       </if>
     </trim>
   </insert>
@@ -369,6 +378,9 @@
       <if test="record.platforms != null">
         platforms = #{record.platforms,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.IntegerListTypeHandler},
       </if>
+      <if test="record.depends != null">
+        depends = #{record.depends,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.IntegerListTypeHandler},
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -396,7 +408,8 @@
       local_vars = #{record.localVars,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.LocalVarListTypeHandler},
       steps = #{record.steps,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.StepListTypeHandler},
       java_imports = #{record.javaImports,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.StringListTypeHandler},
-      platforms = #{record.platforms,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.IntegerListTypeHandler}
+      platforms = #{record.platforms,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.IntegerListTypeHandler},
+      depends = #{record.depends,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.IntegerListTypeHandler}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -486,6 +499,9 @@
       <if test="platforms != null">
         platforms = #{platforms,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.IntegerListTypeHandler},
       </if>
+      <if test="depends != null">
+        depends = #{depends,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.IntegerListTypeHandler},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -510,7 +526,8 @@
       local_vars = #{localVars,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.LocalVarListTypeHandler},
       steps = #{steps,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.StepListTypeHandler},
       java_imports = #{javaImports,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.StringListTypeHandler},
-      platforms = #{platforms,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.IntegerListTypeHandler}
+      platforms = #{platforms,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.IntegerListTypeHandler},
+      depends = #{depends,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.IntegerListTypeHandler}
     where id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.daxiang.mbg.po.Action">

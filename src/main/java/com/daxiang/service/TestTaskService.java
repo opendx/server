@@ -69,6 +69,19 @@ public class TestTaskService extends BaseService {
             return Response.fail("测试集内没有已发布的测试用例");
         }
 
+        // 检查testcase依赖的testcase是否存在
+        for (Action testcase : testcases) {
+            List<Integer> depends = testcase.getDepends();
+            if (!CollectionUtils.isEmpty(depends)) {
+                for (Integer id : depends) {
+                    Optional<Action> any = testcases.stream().filter(tc -> tc.getId().equals(id)).findAny();
+                    if (!any.isPresent()) {
+                        return Response.fail("测试用例: " + testcase.getName() + ", 依赖的用例不在当前提测的所有用例中");
+                    }
+                }
+            }
+        }
+
         // build acion tree
         Action beforeClass = testPlan.getBeforeClass() != null ? actionService.selectByPrimaryKey(testPlan.getBeforeClass()) : null;
         Action beforeMethod = testPlan.getBeforeMethod() != null ? actionService.selectByPrimaryKey(testPlan.getBeforeMethod()) : null;

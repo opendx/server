@@ -202,6 +202,13 @@ public class Action implements Serializable {
     @NotEmpty(message = "platforms不能为空")
     private java.util.List<Integer> platforms;
 
+    /**
+     * 依赖的测试用例id
+     *
+     * @mbg.generated
+     */
+    private java.util.List<Integer> depends;
+
     private static final long serialVersionUID = 1L;
 
     public Integer getId() {
@@ -372,6 +379,14 @@ public class Action implements Serializable {
         this.platforms = platforms;
     }
 
+    public java.util.List<Integer> getDepends() {
+        return depends;
+    }
+
+    public void setDepends(java.util.List<Integer> depends) {
+        this.depends = depends;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -399,6 +414,7 @@ public class Action implements Serializable {
         sb.append(", steps=").append(steps);
         sb.append(", javaImports=").append(javaImports);
         sb.append(", platforms=").append(platforms);
+        sb.append(", depends=").append(depends);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();
