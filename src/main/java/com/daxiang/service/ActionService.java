@@ -81,6 +81,9 @@ public class ActionService extends BaseService {
      * @return
      */
     public Response update(Action action) {
+        // 用例依赖不能依赖自己
+        checkDepensNotSelf(action);
+
         // action状态变为草稿或者禁用，需要检查该action没有被其他action或testplan使用
         if (action.getState() == Action.DRAFT_STATE || action.getState() == Action.DISABLE_STATE) {
             checkActionIsNotUsingByActionOrTestPlan(action.getId());
@@ -96,6 +99,13 @@ public class ActionService extends BaseService {
             return Response.fail("命名冲突");
         }
         return updateRow == 1 ? Response.success("更新Action成功") : Response.fail("更新Action失败，请稍后重试");
+    }
+
+    private void checkDepensNotSelf(Action action) {
+        List<Integer> depends = action.getDepends();
+        if (!CollectionUtils.isEmpty(depends) && depends.contains(action.getId())) {
+            throw new BusinessException("依赖用例不能包含自身");
+        }
     }
 
     /**
