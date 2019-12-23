@@ -130,3 +130,4 @@ ALTER TABLE action DROP COLUMN `platform`;
 
 -- 0.3.1
 ALTER TABLE action ADD COLUMN `depends` json null COMMENT '依赖的测试用例id' AFTER `state`;
+DELETE FROM action WHERE id <= 23; -- 注意！！！ 重新导入基础action https://github.com/opendx/agent/blob/master/src/main/java/com/daxiang/action/sql/basic_action.sql
