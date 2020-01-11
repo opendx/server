@@ -495,123 +495,193 @@ public class PageExample {
             return (Criteria) this;
         }
 
-        public Criteria andImgHeightIsNull() {
-            addCriterion("img_height is null");
+        public Criteria andWindowHeightIsNull() {
+            addCriterion("window_height is null");
             return (Criteria) this;
         }
 
-        public Criteria andImgHeightIsNotNull() {
-            addCriterion("img_height is not null");
+        public Criteria andWindowHeightIsNotNull() {
+            addCriterion("window_height is not null");
             return (Criteria) this;
         }
 
-        public Criteria andImgHeightEqualTo(Integer value) {
-            addCriterion("img_height =", value, "imgHeight");
+        public Criteria andWindowHeightEqualTo(Integer value) {
+            addCriterion("window_height =", value, "windowHeight");
             return (Criteria) this;
         }
 
-        public Criteria andImgHeightNotEqualTo(Integer value) {
-            addCriterion("img_height <>", value, "imgHeight");
+        public Criteria andWindowHeightNotEqualTo(Integer value) {
+            addCriterion("window_height <>", value, "windowHeight");
             return (Criteria) this;
         }
 
-        public Criteria andImgHeightGreaterThan(Integer value) {
-            addCriterion("img_height >", value, "imgHeight");
+        public Criteria andWindowHeightGreaterThan(Integer value) {
+            addCriterion("window_height >", value, "windowHeight");
             return (Criteria) this;
         }
 
-        public Criteria andImgHeightGreaterThanOrEqualTo(Integer value) {
-            addCriterion("img_height >=", value, "imgHeight");
+        public Criteria andWindowHeightGreaterThanOrEqualTo(Integer value) {
+            addCriterion("window_height >=", value, "windowHeight");
             return (Criteria) this;
         }
 
-        public Criteria andImgHeightLessThan(Integer value) {
-            addCriterion("img_height <", value, "imgHeight");
+        public Criteria andWindowHeightLessThan(Integer value) {
+            addCriterion("window_height <", value, "windowHeight");
             return (Criteria) this;
         }
 
-        public Criteria andImgHeightLessThanOrEqualTo(Integer value) {
-            addCriterion("img_height <=", value, "imgHeight");
+        public Criteria andWindowHeightLessThanOrEqualTo(Integer value) {
+            addCriterion("window_height <=", value, "windowHeight");
             return (Criteria) this;
         }
 
-        public Criteria andImgHeightIn(List<Integer> values) {
-            addCriterion("img_height in", values, "imgHeight");
+        public Criteria andWindowHeightIn(List<Integer> values) {
+            addCriterion("window_height in", values, "windowHeight");
             return (Criteria) this;
         }
 
-        public Criteria andImgHeightNotIn(List<Integer> values) {
-            addCriterion("img_height not in", values, "imgHeight");
+        public Criteria andWindowHeightNotIn(List<Integer> values) {
+            addCriterion("window_height not in", values, "windowHeight");
             return (Criteria) this;
         }
 
-        public Criteria andImgHeightBetween(Integer value1, Integer value2) {
-            addCriterion("img_height between", value1, value2, "imgHeight");
+        public Criteria andWindowHeightBetween(Integer value1, Integer value2) {
+            addCriterion("window_height between", value1, value2, "windowHeight");
             return (Criteria) this;
         }
 
-        public Criteria andImgHeightNotBetween(Integer value1, Integer value2) {
-            addCriterion("img_height not between", value1, value2, "imgHeight");
+        public Criteria andWindowHeightNotBetween(Integer value1, Integer value2) {
+            addCriterion("window_height not between", value1, value2, "windowHeight");
             return (Criteria) this;
         }
 
-        public Criteria andImgWidthIsNull() {
-            addCriterion("img_width is null");
+        public Criteria andWindowWidthIsNull() {
+            addCriterion("window_width is null");
             return (Criteria) this;
         }
 
-        public Criteria andImgWidthIsNotNull() {
-            addCriterion("img_width is not null");
+        public Criteria andWindowWidthIsNotNull() {
+            addCriterion("window_width is not null");
             return (Criteria) this;
         }
 
-        public Criteria andImgWidthEqualTo(Integer value) {
-            addCriterion("img_width =", value, "imgWidth");
+        public Criteria andWindowWidthEqualTo(Integer value) {
+            addCriterion("window_width =", value, "windowWidth");
             return (Criteria) this;
         }
 
-        public Criteria andImgWidthNotEqualTo(Integer value) {
-            addCriterion("img_width <>", value, "imgWidth");
+        public Criteria andWindowWidthNotEqualTo(Integer value) {
+            addCriterion("window_width <>", value, "windowWidth");
             return (Criteria) this;
         }
 
-        public Criteria andImgWidthGreaterThan(Integer value) {
-            addCriterion("img_width >", value, "imgWidth");
+        public Criteria andWindowWidthGreaterThan(Integer value) {
+            addCriterion("window_width >", value, "windowWidth");
             return (Criteria) this;
         }
 
-        public Criteria andImgWidthGreaterThanOrEqualTo(Integer value) {
-            addCriterion("img_width >=", value, "imgWidth");
+        public Criteria andWindowWidthGreaterThanOrEqualTo(Integer value) {
+            addCriterion("window_width >=", value, "windowWidth");
             return (Criteria) this;
         }
 
-        public Criteria andImgWidthLessThan(Integer value) {
-            addCriterion("img_width <", value, "imgWidth");
+        public Criteria andWindowWidthLessThan(Integer value) {
+            addCriterion("window_width <", value, "windowWidth");
             return (Criteria) this;
         }
 
-        public Criteria andImgWidthLessThanOrEqualTo(Integer value) {
-            addCriterion("img_width <=", value, "imgWidth");
+        public Criteria andWindowWidthLessThanOrEqualTo(Integer value) {
+            addCriterion("window_width <=", value, "windowWidth");
             return (Criteria) this;
         }
 
-        public Criteria andImgWidthIn(List<Integer> values) {
-            addCriterion("img_width in", values, "imgWidth");
+        public Criteria andWindowWidthIn(List<Integer> values) {
+            addCriterion("window_width in", values, "windowWidth");
             return (Criteria) this;
         }
 
-        public Criteria andImgWidthNotIn(List<Integer> values) {
-            addCriterion("img_width not in", values, "imgWidth");
+        public Criteria andWindowWidthNotIn(List<Integer> values) {
+            addCriterion("window_width not in", values, "windowWidth");
             return (Criteria) this;
         }
 
-        public Criteria andImgWidthBetween(Integer value1, Integer value2) {
-            addCriterion("img_width between", value1, value2, "imgWidth");
+        public Criteria andWindowWidthBetween(Integer value1, Integer value2) {
+            addCriterion("window_width between", value1, value2, "windowWidth");
             return (Criteria) this;
         }
 
-        public Criteria andImgWidthNotBetween(Integer value1, Integer value2) {
-            addCriterion("img_width not between", value1, value2, "imgWidth");
+        public Criteria andWindowWidthNotBetween(Integer value1, Integer value2) {
+            addCriterion("window_width not between", value1, value2, "windowWidth");
+            return (Criteria) this;
+        }
+
+        public Criteria andWindowOrientationIsNull() {
+            addCriterion("window_orientation is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andWindowOrientationIsNotNull() {
+            addCriterion("window_orientation is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andWindowOrientationEqualTo(String value) {
+            addCriterion("window_orientation =", value, "windowOrientation");
+            return (Criteria) this;
+        }
+
+        public Criteria andWindowOrientationNotEqualTo(String value) {
+            addCriterion("window_orientation <>", value, "windowOrientation");
+            return (Criteria) this;
+        }
+
+        public Criteria andWindowOrientationGreaterThan(String value) {
+            addCriterion("window_orientation >", value, "windowOrientation");
+            return (Criteria) this;
+        }
+
+        public Criteria andWindowOrientationGreaterThanOrEqualTo(String value) {
+            addCriterion("window_orientation >=", value, "windowOrientation");
+            return (Criteria) this;
+        }
+
+        public Criteria andWindowOrientationLessThan(String value) {
+            addCriterion("window_orientation <", value, "windowOrientation");
+            return (Criteria) this;
+        }
+
+        public Criteria andWindowOrientationLessThanOrEqualTo(String value) {
+            addCriterion("window_orientation <=", value, "windowOrientation");
+            return (Criteria) this;
+        }
+
+        public Criteria andWindowOrientationLike(String value) {
+            addCriterion("window_orientation like", value, "windowOrientation");
+            return (Criteria) this;
+        }
+
+        public Criteria andWindowOrientationNotLike(String value) {
+            addCriterion("window_orientation not like", value, "windowOrientation");
+            return (Criteria) this;
+        }
+
+        public Criteria andWindowOrientationIn(List<String> values) {
+            addCriterion("window_orientation in", values, "windowOrientation");
+            return (Criteria) this;
+        }
+
+        public Criteria andWindowOrientationNotIn(List<String> values) {
+            addCriterion("window_orientation not in", values, "windowOrientation");
+            return (Criteria) this;
+        }
+
+        public Criteria andWindowOrientationBetween(String value1, String value2) {
+            addCriterion("window_orientation between", value1, value2, "windowOrientation");
+            return (Criteria) this;
+        }
+
+        public Criteria andWindowOrientationNotBetween(String value1, String value2) {
+            addCriterion("window_orientation not between", value1, value2, "windowOrientation");
             return (Criteria) this;
         }
 

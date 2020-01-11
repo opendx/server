@@ -51,18 +51,25 @@ public class Page implements Serializable {
     private String imgUrl;
 
     /**
-     * 截图高度
+     * window高度
      *
      * @mbg.generated
      */
-    private Integer imgHeight;
+    private Integer windowHeight;
 
     /**
-     * 截图宽度
+     * window宽度
      *
      * @mbg.generated
      */
-    private Integer imgWidth;
+    private Integer windowWidth;
+
+    /**
+     * 屏幕方向
+     *
+     * @mbg.generated
+     */
+    private String windowOrientation;
 
     /**
      * 图片所属的设备id
@@ -151,20 +158,28 @@ public class Page implements Serializable {
         this.imgUrl = imgUrl;
     }
 
-    public Integer getImgHeight() {
-        return imgHeight;
+    public Integer getWindowHeight() {
+        return windowHeight;
     }
 
-    public void setImgHeight(Integer imgHeight) {
-        this.imgHeight = imgHeight;
+    public void setWindowHeight(Integer windowHeight) {
+        this.windowHeight = windowHeight;
     }
 
-    public Integer getImgWidth() {
-        return imgWidth;
+    public Integer getWindowWidth() {
+        return windowWidth;
     }
 
-    public void setImgWidth(Integer imgWidth) {
-        this.imgWidth = imgWidth;
+    public void setWindowWidth(Integer windowWidth) {
+        this.windowWidth = windowWidth;
+    }
+
+    public String getWindowOrientation() {
+        return windowOrientation;
+    }
+
+    public void setWindowOrientation(String windowOrientation) {
+        this.windowOrientation = windowOrientation;
     }
 
     public String getDeviceId() {
@@ -219,8 +234,9 @@ public class Page implements Serializable {
         sb.append(", categoryId=").append(categoryId);
         sb.append(", description=").append(description);
         sb.append(", imgUrl=").append(imgUrl);
-        sb.append(", imgHeight=").append(imgHeight);
-        sb.append(", imgWidth=").append(imgWidth);
+        sb.append(", windowHeight=").append(windowHeight);
+        sb.append(", windowWidth=").append(windowWidth);
+        sb.append(", windowOrientation=").append(windowOrientation);
         sb.append(", deviceId=").append(deviceId);
         sb.append(", creatorUid=").append(creatorUid);
         sb.append(", createTime=").append(createTime);

@@ -8,8 +8,9 @@
     <result column="category_id" jdbcType="INTEGER" property="categoryId" />
     <result column="description" jdbcType="VARCHAR" property="description" />
     <result column="img_url" jdbcType="VARCHAR" property="imgUrl" />
-    <result column="img_height" jdbcType="INTEGER" property="imgHeight" />
-    <result column="img_width" jdbcType="INTEGER" property="imgWidth" />
+    <result column="window_height" jdbcType="INTEGER" property="windowHeight" />
+    <result column="window_width" jdbcType="INTEGER" property="windowWidth" />
+    <result column="window_orientation" jdbcType="VARCHAR" property="windowOrientation" />
     <result column="device_id" jdbcType="VARCHAR" property="deviceId" />
     <result column="creator_uid" jdbcType="INTEGER" property="creatorUid" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
@@ -77,8 +78,8 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, name, project_id, category_id, description, img_url, img_height, img_width, device_id, 
-    creator_uid, create_time
+    id, name, project_id, category_id, description, img_url, window_height, window_width, 
+    window_orientation, device_id, creator_uid, create_time
   </sql>
   <sql id="Blob_Column_List">
     window_hierarchy, elements
@@ -136,14 +137,16 @@
       SELECT LAST_INSERT_ID()
     </selectKey>
     insert into page (name, project_id, category_id, 
-      description, img_url, img_height, 
-      img_width, device_id, creator_uid, 
-      create_time, window_hierarchy, elements
+      description, img_url, window_height, 
+      window_width, window_orientation, device_id, 
+      creator_uid, create_time, window_hierarchy, 
+      elements
       )
     values (#{name,jdbcType=VARCHAR}, #{projectId,jdbcType=INTEGER}, #{categoryId,jdbcType=INTEGER}, 
-      #{description,jdbcType=VARCHAR}, #{imgUrl,jdbcType=VARCHAR}, #{imgHeight,jdbcType=INTEGER}, 
-      #{imgWidth,jdbcType=INTEGER}, #{deviceId,jdbcType=VARCHAR}, #{creatorUid,jdbcType=INTEGER}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{windowHierarchy,jdbcType=LONGVARCHAR}, #{elements,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.ElementListTypeHandler}
+      #{description,jdbcType=VARCHAR}, #{imgUrl,jdbcType=VARCHAR}, #{windowHeight,jdbcType=INTEGER}, 
+      #{windowWidth,jdbcType=INTEGER}, #{windowOrientation,jdbcType=VARCHAR}, #{deviceId,jdbcType=VARCHAR}, 
+      #{creatorUid,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{windowHierarchy,jdbcType=LONGVARCHAR}, 
+      #{elements,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.ElementListTypeHandler}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.daxiang.mbg.po.Page">
@@ -167,11 +170,14 @@
       <if test="imgUrl != null">
         img_url,
       </if>
-      <if test="imgHeight != null">
-        img_height,
+      <if test="windowHeight != null">
+        window_height,
       </if>
-      <if test="imgWidth != null">
-        img_width,
+      <if test="windowWidth != null">
+        window_width,
+      </if>
+      <if test="windowOrientation != null">
+        window_orientation,
       </if>
       <if test="deviceId != null">
         device_id,
@@ -205,11 +211,14 @@
       <if test="imgUrl != null">
         #{imgUrl,jdbcType=VARCHAR},
       </if>
-      <if test="imgHeight != null">
-        #{imgHeight,jdbcType=INTEGER},
+      <if test="windowHeight != null">
+        #{windowHeight,jdbcType=INTEGER},
       </if>
-      <if test="imgWidth != null">
-        #{imgWidth,jdbcType=INTEGER},
+      <if test="windowWidth != null">
+        #{windowWidth,jdbcType=INTEGER},
+      </if>
+      <if test="windowOrientation != null">
+        #{windowOrientation,jdbcType=VARCHAR},
       </if>
       <if test="deviceId != null">
         #{deviceId,jdbcType=VARCHAR},
@@ -255,11 +264,14 @@
       <if test="record.imgUrl != null">
         img_url = #{record.imgUrl,jdbcType=VARCHAR},
       </if>
-      <if test="record.imgHeight != null">
-        img_height = #{record.imgHeight,jdbcType=INTEGER},
+      <if test="record.windowHeight != null">
+        window_height = #{record.windowHeight,jdbcType=INTEGER},
       </if>
-      <if test="record.imgWidth != null">
-        img_width = #{record.imgWidth,jdbcType=INTEGER},
+      <if test="record.windowWidth != null">
+        window_width = #{record.windowWidth,jdbcType=INTEGER},
+      </if>
+      <if test="record.windowOrientation != null">
+        window_orientation = #{record.windowOrientation,jdbcType=VARCHAR},
       </if>
       <if test="record.deviceId != null">
         device_id = #{record.deviceId,jdbcType=VARCHAR},
@@ -289,8 +301,9 @@
       category_id = #{record.categoryId,jdbcType=INTEGER},
       description = #{record.description,jdbcType=VARCHAR},
       img_url = #{record.imgUrl,jdbcType=VARCHAR},
-      img_height = #{record.imgHeight,jdbcType=INTEGER},
-      img_width = #{record.imgWidth,jdbcType=INTEGER},
+      window_height = #{record.windowHeight,jdbcType=INTEGER},
+      window_width = #{record.windowWidth,jdbcType=INTEGER},
+      window_orientation = #{record.windowOrientation,jdbcType=VARCHAR},
       device_id = #{record.deviceId,jdbcType=VARCHAR},
       creator_uid = #{record.creatorUid,jdbcType=INTEGER},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
@@ -308,8 +321,9 @@
       category_id = #{record.categoryId,jdbcType=INTEGER},
       description = #{record.description,jdbcType=VARCHAR},
       img_url = #{record.imgUrl,jdbcType=VARCHAR},
-      img_height = #{record.imgHeight,jdbcType=INTEGER},
-      img_width = #{record.imgWidth,jdbcType=INTEGER},
+      window_height = #{record.windowHeight,jdbcType=INTEGER},
+      window_width = #{record.windowWidth,jdbcType=INTEGER},
+      window_orientation = #{record.windowOrientation,jdbcType=VARCHAR},
       device_id = #{record.deviceId,jdbcType=VARCHAR},
       creator_uid = #{record.creatorUid,jdbcType=INTEGER},
       create_time = #{record.createTime,jdbcType=TIMESTAMP}
@@ -335,11 +349,14 @@
       <if test="imgUrl != null">
         img_url = #{imgUrl,jdbcType=VARCHAR},
       </if>
-      <if test="imgHeight != null">
-        img_height = #{imgHeight,jdbcType=INTEGER},
+      <if test="windowHeight != null">
+        window_height = #{windowHeight,jdbcType=INTEGER},
       </if>
-      <if test="imgWidth != null">
-        img_width = #{imgWidth,jdbcType=INTEGER},
+      <if test="windowWidth != null">
+        window_width = #{windowWidth,jdbcType=INTEGER},
+      </if>
+      <if test="windowOrientation != null">
+        window_orientation = #{windowOrientation,jdbcType=VARCHAR},
       </if>
       <if test="deviceId != null">
         device_id = #{deviceId,jdbcType=VARCHAR},
@@ -366,8 +383,9 @@
       category_id = #{categoryId,jdbcType=INTEGER},
       description = #{description,jdbcType=VARCHAR},
       img_url = #{imgUrl,jdbcType=VARCHAR},
-      img_height = #{imgHeight,jdbcType=INTEGER},
-      img_width = #{imgWidth,jdbcType=INTEGER},
+      window_height = #{windowHeight,jdbcType=INTEGER},
+      window_width = #{windowWidth,jdbcType=INTEGER},
+      window_orientation = #{windowOrientation,jdbcType=VARCHAR},
       device_id = #{deviceId,jdbcType=VARCHAR},
       creator_uid = #{creatorUid,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
@@ -382,8 +400,9 @@
       category_id = #{categoryId,jdbcType=INTEGER},
       description = #{description,jdbcType=VARCHAR},
       img_url = #{imgUrl,jdbcType=VARCHAR},
-      img_height = #{imgHeight,jdbcType=INTEGER},
-      img_width = #{imgWidth,jdbcType=INTEGER},
+      window_height = #{windowHeight,jdbcType=INTEGER},
+      window_width = #{windowWidth,jdbcType=INTEGER},
+      window_orientation = #{windowOrientation,jdbcType=VARCHAR},
       device_id = #{deviceId,jdbcType=VARCHAR},
       creator_uid = #{creatorUid,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP}
