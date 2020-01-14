@@ -137,3 +137,5 @@ ALTER TABLE page
 CHANGE COLUMN `img_height` `window_height` int(11) NULL DEFAULT NULL COMMENT 'window高度' AFTER `img_url`,
 CHANGE COLUMN `img_width` `window_width` int(11) NULL DEFAULT NULL COMMENT 'window宽度' AFTER `window_height`,
 ADD COLUMN `window_orientation` varchar(11) DEFAULT 'portrait' COMMENT '屏幕方向' AFTER `window_width`;
+
+DELETE FROM action WHERE id <= 23; -- 注意！！！ 重新导入基础action https://github.com/opendx/agent/blob/master/src/main/java/com/daxiang/action/sql/basic_action.sql
