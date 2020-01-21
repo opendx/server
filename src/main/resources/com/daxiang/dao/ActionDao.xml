@@ -3,8 +3,8 @@
 <mapper namespace="com.daxiang.dao.ActionDao">
     <resultMap id="ResultMapWithBLOBs" type="com.daxiang.mbg.po.Action" extends="com.daxiang.mbg.mapper.ActionMapper.ResultMapWithBLOBs"/>
 
-    <select id="selectByActionIdInStepsOrDepends" resultMap="ResultMapWithBLOBs">
-        select * from action where JSON_CONTAINS(steps->'$[*].actionId', '${actionId}', '$') or JSON_CONTAINS(depends->'$[*]', '${actionId}', '$')
+    <select id="selectByActionIdInStepsOrDependsOrActionImports" resultMap="ResultMapWithBLOBs">
+        select * from action where JSON_CONTAINS(steps->'$[*].actionId', '${actionId}', '$') or JSON_CONTAINS(depends->'$[*]', '${actionId}', '$') or JSON_CONTAINS(action_imports->'$[*]', '${actionId}', '$')
     </select>
 
     <select id="selectByLocalVarsEnvironmentId" resultMap="ResultMapWithBLOBs">
