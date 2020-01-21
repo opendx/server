@@ -334,7 +334,7 @@ public class ActionService extends BaseService {
      * @param actionId
      */
     private void checkActionIsNotUsingByActionOrTestPlan(Integer actionId) {
-        // 检查action是否被steps或depends使用
+        // 检查action是否被steps或depends或actionImports使用
         List<Action> actions = actionDao.selectByActionIdInStepsOrDependsOrActionImports(actionId);
         if (!CollectionUtils.isEmpty(actions)) {
             String actionNames = actions.stream().map(Action::getName).collect(Collectors.joining("、"));
