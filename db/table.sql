@@ -30,6 +30,7 @@ CREATE TABLE `action` (
   `local_vars` json DEFAULT NULL COMMENT '局部变量',
   `steps` json DEFAULT NULL COMMENT '步骤',
   `java_imports` json DEFAULT NULL COMMENT 'java imports',
+  `action_imports` json DEFAULT NULL COMMENT 'action imports',
   `creator_uid` int(11) DEFAULT NULL COMMENT '创建人id',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
   `updator_uid` int(11) DEFAULT NULL COMMENT '更新人id',

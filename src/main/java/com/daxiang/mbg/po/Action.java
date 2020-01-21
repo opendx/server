@@ -195,6 +195,13 @@ public class Action implements Serializable {
     private java.util.List<String> javaImports;
 
     /**
+     * action imports
+     *
+     * @mbg.generated
+     */
+    private java.util.List<Integer> actionImports;
+
+    /**
      * 1.android 2.ios null.通用
      *
      * @mbg.generated
@@ -371,6 +378,14 @@ public class Action implements Serializable {
         this.javaImports = javaImports;
     }
 
+    public java.util.List<Integer> getActionImports() {
+        return actionImports;
+    }
+
+    public void setActionImports(java.util.List<Integer> actionImports) {
+        this.actionImports = actionImports;
+    }
+
     public java.util.List<Integer> getPlatforms() {
         return platforms;
     }
@@ -413,6 +428,7 @@ public class Action implements Serializable {
         sb.append(", localVars=").append(localVars);
         sb.append(", steps=").append(steps);
         sb.append(", javaImports=").append(javaImports);
+        sb.append(", actionImports=").append(actionImports);
         sb.append(", platforms=").append(platforms);
         sb.append(", depends=").append(depends);
         sb.append(", serialVersionUID=").append(serialVersionUID);

@@ -39,6 +39,7 @@
             <columnOverride column="params" typeHandler="com.daxiang.typehandler.ParamListTypeHandler" javaType="java.util.List&lt;com.daxiang.model.action.Param&gt;" jdbcType="LONGVARCHAR"/>
             <columnOverride column="local_vars" typeHandler="com.daxiang.typehandler.LocalVarListTypeHandler" javaType="java.util.List&lt;com.daxiang.model.action.LocalVar&gt;" jdbcType="LONGVARCHAR"/>
             <columnOverride column="java_imports" typeHandler="com.daxiang.typehandler.StringListTypeHandler" javaType="java.util.List&lt;String&gt;" jdbcType="LONGVARCHAR"/>
+            <columnOverride column="action_imports" typeHandler="com.daxiang.typehandler.IntegerListTypeHandler" javaType="java.util.List&lt;Integer&gt;" jdbcType="LONGVARCHAR"/>
             <columnOverride column="platforms" typeHandler="com.daxiang.typehandler.IntegerListTypeHandler" javaType="java.util.List&lt;Integer&gt;" jdbcType="LONGVARCHAR"/>
             <columnOverride column="depends" typeHandler="com.daxiang.typehandler.IntegerListTypeHandler" javaType="java.util.List&lt;Integer&gt;" jdbcType="LONGVARCHAR"/>
         </table>

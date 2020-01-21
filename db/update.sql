@@ -139,3 +139,7 @@ CHANGE COLUMN `img_width` `window_width` int(11) NULL DEFAULT NULL COMMENT 'wind
 ADD COLUMN `window_orientation` varchar(11) DEFAULT 'portrait' COMMENT '屏幕方向' AFTER `window_width`;
 
 DELETE FROM action WHERE id <= 23; -- 注意！！！ 重新导入基础action https://github.com/opendx/agent/blob/master/src/main/java/com/daxiang/action/sql/basic_action.sql
+
+-- 0.3.3
+ALTER TABLE action
+ADD COLUMN `action_imports` json NULL COMMENT 'action imports' AFTER `java_imports`;
