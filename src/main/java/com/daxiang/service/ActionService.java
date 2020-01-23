@@ -325,7 +325,7 @@ public class ActionService extends BaseService {
      * @param actions
      */
     public void buildActionTree(List<Action> actions) {
-        new ActionTreeBuilder(actionMapper).build(actions);
+        new ActionTreeBuilder(actions, actionMapper).build();
     }
 
     /**

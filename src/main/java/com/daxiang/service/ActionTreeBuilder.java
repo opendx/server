@@ -3,6 +3,7 @@ package com.daxiang.service;
 import com.daxiang.mbg.mapper.ActionMapper;
 import com.daxiang.mbg.po.Action;
 import com.daxiang.model.action.Step;
+import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
  */
 public class ActionTreeBuilder {
 
+    private final List<Action> actions;
     private final ActionMapper actionMapper;
 
     /**
@@ -21,20 +23,26 @@ public class ActionTreeBuilder {
      */
     private final Map<Integer, Action> cachedActions = new HashMap<>();
 
-    public ActionTreeBuilder(ActionMapper actionMapper) {
+    public ActionTreeBuilder(List<Action> actions, ActionMapper actionMapper) {
+        Assert.notNull(actions, "actions cannot be null");
+        Assert.notNull(actionMapper, "actionMapper cannot be null");
+
+        this.actions = actions;
         this.actionMapper = actionMapper;
     }
 
-    /**
-     * 构建action树
-     *
-     * @return
-     */
-    public void build(List<Action> actions) {
+    public void build() {
+        actions.forEach(action -> cachedActions.put(action.getId(), action));
+        build(this.actions);
+    }
+
+    private void build(List<Action> actions) {
         for (Action action : actions) {
             List<Step> steps = action.getSteps();
             if (!CollectionUtils.isEmpty(steps)) {
-                steps = steps.stream().filter(step -> step.getStatus() == Step.ENABLE_STATUS).collect(Collectors.toList());
+                steps = steps.stream()
+                        .filter(step -> step.getStatus() == Step.ENABLE_STATUS)
+                        .collect(Collectors.toList());
                 action.setSteps(steps);
                 for (Step step : steps) {
                     Action stepAction = cachedActions.get(step.getActionId());
