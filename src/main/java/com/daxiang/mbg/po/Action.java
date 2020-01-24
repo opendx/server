@@ -5,6 +5,7 @@ import com.daxiang.model.action.Param;
 import com.daxiang.model.action.Step;
 import com.daxiang.validator.group.SaveActionGroup;
 import com.daxiang.validator.group.UpdateGroup;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -200,6 +201,17 @@ public class Action implements Serializable {
      * @mbg.generated
      */
     private java.util.List<Integer> actionImports;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private List<Action> importActions;
+
+    public List<Action> getImportActions() {
+        return importActions;
+    }
+
+    public void setImportActions(List<Action> importActions) {
+        this.importActions = importActions;
+    }
 
     /**
      * 1.android 2.ios null.通用

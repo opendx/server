@@ -38,22 +38,38 @@ public class ActionTreeBuilder {
 
     private void build(List<Action> actions) {
         for (Action action : actions) {
+            // steps
             List<Step> steps = action.getSteps();
             if (!CollectionUtils.isEmpty(steps)) {
                 steps = steps.stream()
-                        .filter(step -> step.getStatus() == Step.ENABLE_STATUS)
+                        .filter(step -> step.getStatus() == Step.ENABLE_STATUS) // 过滤掉未开启的步骤
                         .collect(Collectors.toList());
                 action.setSteps(steps);
                 for (Step step : steps) {
-                    Action stepAction = cachedActions.get(step.getActionId());
-                    if (stepAction == null) {
-                        stepAction = actionMapper.selectByPrimaryKey(step.getActionId());
-                        cachedActions.put(stepAction.getId(), stepAction);
-                    }
+                    Action stepAction = getActionById(step.getActionId());
                     step.setAction(stepAction);
                     build(Arrays.asList(stepAction));
                 }
             }
+
+            // actionImports
+            List<Integer> actionImports = action.getActionImports();
+            if (!CollectionUtils.isEmpty(actionImports)) {
+                List<Action> importActions = actionImports.stream()
+                        .map(actionId -> getActionById(actionId))
+                        .collect(Collectors.toList());
+                action.setImportActions(importActions);
+                build(importActions);
+            }
         }
+    }
+
+    private Action getActionById(Integer actionId) {
+        Action action = cachedActions.get(actionId);
+        if (action == null) {
+            action = actionMapper.selectByPrimaryKey(actionId);
+            cachedActions.put(actionId, action);
+        }
+        return action;
     }
 }
