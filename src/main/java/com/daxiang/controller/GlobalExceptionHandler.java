@@ -3,13 +3,15 @@ package com.daxiang.controller;
 import com.daxiang.exception.BusinessException;
 import com.daxiang.model.Response;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * Created by jiangyitao.
@@ -19,7 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 public class GlobalExceptionHandler {
 
     /**
-     * 没处理到的异常
+     * 未处理的异常
      *
      * @param e
      * @return
@@ -32,13 +34,24 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * 权限不足
+     * @return
+     */
+    @ResponseBody
+    @ExceptionHandler(AccessDeniedException.class)
+    public Response handleAccessDeniedException() {
+        return Response.accessDenied();
+    }
+
+    /**
      * BusinessException
+     *
      * @param e
      * @return
      */
     @ResponseBody
     @ExceptionHandler(BusinessException.class)
-    public Response handleBusinessException(BusinessException e){
+    public Response handleBusinessException(BusinessException e) {
         return Response.fail(e.getMessage());
     }
 
@@ -46,13 +59,11 @@ public class GlobalExceptionHandler {
      * 参数校验不通过，非@RequestBody
      *
      * @param e
-     * @param req
      * @return
      */
-    @ExceptionHandler({BindException.class})
+    @ExceptionHandler(BindException.class)
     @ResponseBody
-    public Response handleBindException(BindException e, HttpServletRequest req) {
-        log.info("[{}]参数校验失败:{}", req.getServletPath(), e.getFieldError().getDefaultMessage());
+    public Response handleBindException(BindException e) {
         return Response.fail(e.getFieldError().getDefaultMessage());
     }
 
@@ -60,13 +71,11 @@ public class GlobalExceptionHandler {
      * 参数校验不通过，@RequestBody
      *
      * @param e
-     * @param req
      * @return
      */
-    @ExceptionHandler({MethodArgumentNotValidException.class})
+    @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseBody
-    public Response handleMethodArgumentNotValidException(MethodArgumentNotValidException e, HttpServletRequest req) {
-        log.info("[{}]参数校验失败:{}", req.getServletPath(), e.getBindingResult().getFieldError().getDefaultMessage());
+    public Response handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         return Response.fail(e.getBindingResult().getFieldError().getDefaultMessage());
     }
 

@@ -5,5 +5,5 @@ import javax.validation.groups.Default;
 /**
  * Created by jiangyitao.
  */
-public interface UserRegisterGroup extends Default {
+public interface SaveUserGroup extends Default {
 }

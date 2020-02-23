@@ -2,7 +2,8 @@ package com.daxiang.service;
 
 import com.daxiang.dao.GlobalVarDao;
 import com.daxiang.mbg.po.GlobalVarExample;
-import com.daxiang.model.UserCache;
+import com.daxiang.mbg.po.User;
+import com.daxiang.security.SecurityUtil;
 import com.github.pagehelper.PageHelper;
 import com.daxiang.mbg.mapper.GlobalVarMapper;
 import com.daxiang.mbg.po.GlobalVar;
@@ -10,26 +11,28 @@ import com.daxiang.model.PageRequest;
 import com.daxiang.model.Response;
 import com.daxiang.model.vo.GlobalVarVo;
 import com.daxiang.model.Page;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
  * Created by jiangyitao.
  */
 @Service
-public class GlobalVarService extends BaseService {
+public class GlobalVarService {
 
     @Autowired
     private GlobalVarMapper globalVarMapper;
     @Autowired
     private GlobalVarDao globalVarDao;
+    @Autowired
+    private UserService userService;
 
     /**
      * 添加全局变量
@@ -39,7 +42,7 @@ public class GlobalVarService extends BaseService {
      */
     public Response add(GlobalVar globalVar) {
         globalVar.setCreateTime(new Date());
-        globalVar.setCreatorUid(getUid());
+        globalVar.setCreatorUid(SecurityUtil.getCurrentUserId());
 
         int insertRow;
         try {
@@ -96,16 +99,41 @@ public class GlobalVarService extends BaseService {
         }
 
         List<GlobalVar> globalVars = selectByGlobalVar(globalVar);
-        List<GlobalVarVo> globalVarVos = globalVars.stream().map(g -> GlobalVarVo.convert(g, UserCache.getNickNameById(g.getCreatorUid()))).collect(Collectors.toList());
+        List<GlobalVarVo> globalVarVos = convertGlobalVarsToGlobalVarVos(globalVars);
 
         if (needPaging) {
-            // java8 stream会导致PageHelper total计算错误
-            // 所以这里用globalVars计算total
             long total = Page.getTotal(globalVars);
             return Response.success(Page.build(globalVarVos, total));
         } else {
             return Response.success(globalVarVos);
         }
+    }
+
+    private List<GlobalVarVo> convertGlobalVarsToGlobalVarVos(List<GlobalVar> globalVars) {
+        if (CollectionUtils.isEmpty(globalVars)) {
+            return Collections.EMPTY_LIST;
+        }
+
+        List<Integer> creatorUids = globalVars.stream()
+                .map(GlobalVar::getCreatorUid)
+                .filter(Objects::nonNull)
+                .distinct()
+                .collect(Collectors.toList());
+        Map<Integer, User> userMap = userService.getUserMapByUserIds(creatorUids);
+
+        return globalVars.stream().map(globalVar -> {
+            GlobalVarVo globalVarVo = new GlobalVarVo();
+            BeanUtils.copyProperties(globalVar, globalVarVo);
+
+            if (globalVar.getCreatorUid() != null) {
+                User user = userMap.get(globalVar.getCreatorUid());
+                if (user != null) {
+                    globalVarVo.setCreatorNickName(user.getNickName());
+                }
+            }
+
+            return globalVarVo;
+        }).collect(Collectors.toList());
     }
 
     public List<GlobalVar> selectByGlobalVar(GlobalVar globalVar) {

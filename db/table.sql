@@ -255,10 +255,37 @@ CREATE TABLE `user` (
   `username` varchar(100) NOT NULL COMMENT '用户名',
   `password` varchar(255) NOT NULL COMMENT '用户密码',
   `nick_name` varchar(255) NOT NULL COMMENT '用户昵称',
+  `status` tinyint(4) NOT NULL DEFAULT 1 COMMENT '状态，0:禁用 1:正常',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `uniq_username` (`username`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户表';
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for role
+-- ----------------------------
+DROP TABLE IF EXISTS `role`;
+CREATE TABLE `role` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL COMMENT '角色名',
+  `alias` varchar(100) NOT NULL COMMENT '别名',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `uniq_name` (`name`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='角色表';
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for user_role
+-- ----------------------------
+DROP TABLE IF EXISTS `user_role`;
+CREATE TABLE `user_role` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `role_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `uniq_userId_roleId` (`user_id`, `role_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户角色表';
 -- ----------------------------
 
 -- Table structure for driver

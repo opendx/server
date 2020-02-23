@@ -1,75 +1,192 @@
 package com.daxiang.service;
 
-import com.alibaba.fastjson.JSONObject;
+import com.daxiang.dao.UserDao;
+import com.daxiang.exception.BusinessException;
 import com.daxiang.mbg.mapper.UserMapper;
-import com.daxiang.utils.TokenUtil;
+import com.daxiang.mbg.po.Role;
+import com.daxiang.model.Page;
+import com.daxiang.model.PageRequest;
+import com.daxiang.model.dto.UserDto;
+import com.daxiang.model.dto.UserRoleDto;
+import com.daxiang.security.JwtTokenUtil;
 import com.daxiang.mbg.po.User;
 import com.daxiang.mbg.po.UserExample;
 import com.daxiang.model.Response;
-import com.daxiang.model.UserCache;
-import com.daxiang.model.vo.UserVo;
+import com.daxiang.security.SecurityUtil;
+import com.github.pagehelper.PageHelper;
+import com.google.common.collect.ImmutableMap;
+import io.jsonwebtoken.lang.Assert;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.DigestUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 /**
  * Created by jiangyitao.
  */
 @Service
-public class UserService extends BaseService {
+public class UserService {
 
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private UserDao userDao;
 
-    public Response login(User user) {
-        user.setPassword(DigestUtils.md5DigestAsHex(user.getPassword().getBytes()));
+    @Autowired
+    private UserRoleService userRoleService;
 
-        User query = new User();
-        query.setUsername(user.getUsername());
-        query.setPassword(user.getPassword());
-        List<User> users = selectByUser(query);
+    @Autowired
+    private AuthenticationManager authenticationManager;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
-        if (CollectionUtils.isEmpty(users)) {
-            return Response.fail("账号或密码错误");
-        } else {
-            user = users.get(0);
-            UserVo userVo = UserVo.convert(user, TokenUtil.create(user.getId() + ""));
-            UserCache.add(user.getId(), user);
-            return Response.success("登录成功", userVo);
-        }
-    }
+    @Transactional
+    public Response add(UserDto userDto) {
+        User user = new User();
+        BeanUtils.copyProperties(userDto, user);
 
-    public Response register(User user) {
-        user.setPassword(DigestUtils.md5DigestAsHex(user.getPassword().getBytes()));
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setCreateTime(new Date());
 
+        // 用户
         int insertRow;
         try {
             insertRow = userMapper.insertSelective(user);
         } catch (DuplicateKeyException e) {
             return Response.fail("用户名已存在");
         }
-        return insertRow == 1 ? Response.success("注册成功") : Response.fail("注册失败，请稍后重试");
+        if (insertRow != 1) {
+            return Response.fail("添加用户失败，请稍后重试");
+        }
+
+        // 用户角色
+        insertRow = userRoleService.insert(user.getId(), userDto.getRoles());
+        if (insertRow != userDto.getRoles().size()) {
+            throw new BusinessException("添加角色失败，请稍后重试");
+        }
+
+        return Response.success("添加用户成功");
+    }
+
+
+    @Transactional
+    public Response delete(Integer userId) {
+        Assert.notNull(userId, "userId不能为空");
+
+        // 删除用户角色
+        userRoleService.deleteByUserId(userId);
+        // 删除用户
+        userMapper.deleteByPrimaryKey(userId);
+
+        return Response.success("删除成功");
+    }
+
+    @Transactional
+    public Response update(UserDto userDto) {
+        User user = new User();
+        BeanUtils.copyProperties(userDto, user);
+
+        User originalUser = userMapper.selectByPrimaryKey(user.getId());
+        if (originalUser == null) {
+            return Response.fail("用户不存在");
+        }
+
+        if (!originalUser.getPassword().equals(user.getPassword())) { // 修改了密码，需要重新encode
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
+
+        int updateRow;
+        try {
+            updateRow = userMapper.updateByPrimaryKeySelective(user);
+        } catch (DuplicateKeyException e) {
+            return Response.fail("命名冲突");
+        }
+        if (updateRow != 1) {
+            return Response.fail("更新用户失败，请稍后重试");
+        }
+
+        // 删除用户角色
+        userRoleService.deleteByUserId(user.getId());
+
+        // 添加用户角色
+        int insertRow = userRoleService.insert(user.getId(), userDto.getRoles());
+        if (insertRow != userDto.getRoles().size()) {
+            throw new BusinessException("添加用户角色失败");
+        }
+
+        return Response.success("更新用户成功");
+    }
+
+    public Response list(User user, PageRequest pageRequest) {
+        boolean needPaging = pageRequest.needPaging();
+        if (needPaging) {
+            PageHelper.startPage(pageRequest.getPageNum(), pageRequest.getPageSize());
+        }
+
+        List<User> users = selectByUser(user);
+        List<UserDto> userDtos = convertUsersToUserDtos(users);
+
+        if (needPaging) {
+            return Response.success(Page.build(userDtos, Page.getTotal(users)));
+        } else {
+            return Response.success(userDtos);
+        }
+    }
+
+    private List<UserDto> convertUsersToUserDtos(List<User> users) {
+        if (CollectionUtils.isEmpty(users)) {
+            return Collections.EMPTY_LIST;
+        }
+
+        List<Integer> userIds = users.stream().map(User::getId).collect(Collectors.toList());
+        // 按用户id分组
+        Map<Integer, List<UserRoleDto>> userRoleDtosMap = userRoleService.selectUserRoleDtosByUserIds(userIds).stream()
+                .collect(Collectors.groupingBy(UserRoleDto::getUserId));
+
+        return users.stream().map(user -> {
+            UserDto userDto = new UserDto();
+            BeanUtils.copyProperties(user, userDto);
+
+            List<UserRoleDto> userRoleDtos = userRoleDtosMap.get(user.getId());
+            if (userRoleDtos == null) {
+                userDto.setRoles(Collections.EMPTY_LIST);
+            } else {
+                List<Role> roles = userRoleDtos.stream().map(UserRoleDto::getRole).collect(Collectors.toList());
+                userDto.setRoles(roles);
+            }
+
+            return userDto;
+        }).collect(Collectors.toList());
+    }
+
+    public Response login(User user) {
+        try {
+            authenticationManager
+                    .authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
+        } catch (DisabledException e) {
+            return Response.fail("账户已禁用");
+        } catch (AuthenticationException e) {
+            return Response.fail("用户名或密码错误");
+        }
+
+        String token = JwtTokenUtil.createToken(user.getUsername());
+        return Response.success("登陆成功", ImmutableMap.of("token", token));
     }
 
     public Response getInfo() {
-        User user = UserCache.getById(getUid());
-
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("name", user.getNickName());
-        jsonObject.put("avatar", "");
-        jsonObject.put("introduction", "");
-        jsonObject.put("roles", Arrays.asList("admin"));
-
-        return Response.success(jsonObject);
+        return Response.success(SecurityUtil.getCurrentUserDto());
     }
 
     public Response logout() {
@@ -77,7 +194,7 @@ public class UserService extends BaseService {
     }
 
     public List<User> selectAll() {
-        return selectByUser(null);
+        return userMapper.selectByExample(null);
     }
 
     public List<User> selectByUser(User user) {
@@ -89,16 +206,46 @@ public class UserService extends BaseService {
                 criteria.andIdEqualTo(user.getId());
             }
             if (!StringUtils.isEmpty(user.getUsername())) {
-                criteria.andUsernameEqualTo(user.getUsername());
-            }
-            if (!StringUtils.isEmpty(user.getPassword())) {
-                criteria.andPasswordEqualTo(user.getPassword());
+                criteria.andUsernameLike("%" + user.getUsername() + "%");
             }
             if (!StringUtils.isEmpty(user.getNickName())) {
                 criteria.andNickNameEqualTo(user.getNickName());
             }
+            if (user.getStatus() != null) {
+                criteria.andStatusEqualTo(user.getStatus());
+            }
         }
+        example.setOrderByClause("create_time desc");
 
         return userMapper.selectByExample(example);
     }
+
+    public UserDto selectUserDtoByUsername(String useranme) {
+        return userDao.selectUserDtoByUsername(useranme);
+    }
+
+    public List<User> selectByUserIds(List<Integer> userIds) {
+        if (CollectionUtils.isEmpty(userIds)) {
+            return Collections.EMPTY_LIST;
+        }
+
+        UserExample example = new UserExample();
+        UserExample.Criteria criteria = example.createCriteria();
+        criteria.andIdIn(userIds);
+        return userMapper.selectByExample(example);
+    }
+
+    public Map<Integer, User> getUserMapByUserIds(List<Integer> userIds) {
+        List<User> users = selectByUserIds(userIds);
+        if (CollectionUtils.isEmpty(users)) {
+            return Collections.EMPTY_MAP;
+        }
+
+        return users.stream().collect(Collectors.toMap(User::getId, u -> u, (k1, k2) -> k1));
+    }
+
+    public User selectByPrimaryKey(Integer userId) {
+        return userMapper.selectByPrimaryKey(userId);
+    }
+
 }

@@ -5,8 +5,8 @@ import com.daxiang.mbg.po.*;
 import com.daxiang.model.action.LocalVar;
 import com.daxiang.model.environment.EnvironmentValue;
 import com.daxiang.model.vo.TestTaskVo;
-import com.daxiang.model.UserCache;
 import com.daxiang.model.vo.TestTaskSummary;
+import com.daxiang.security.SecurityUtil;
 import com.github.pagehelper.PageHelper;
 import com.daxiang.exception.BusinessException;
 import com.daxiang.model.Page;
@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
  * Created by jiangyitao.
  */
 @Service
-public class TestTaskService extends BaseService {
+public class TestTaskService {
 
     @Autowired
     private TestTaskMapper testTaskMapper;
@@ -46,6 +46,8 @@ public class TestTaskService extends BaseService {
     private EnvironmentService environmentService;
     @Autowired
     private PageService pageService;
+    @Autowired
+    private UserService userService;
 
     /**
      * 提交测试任务
@@ -217,7 +219,7 @@ public class TestTaskService extends BaseService {
         testTask.setTestPlan(testPlan);
         testTask.setStatus(TestTask.UNFINISHED_STATUS);
         if (commitorUid == null) {
-            commitorUid = getUid();
+            commitorUid = SecurityUtil.getCurrentUserId();
         }
         testTask.setCreatorUid(commitorUid);
         testTask.setCommitTime(new Date());
@@ -244,16 +246,41 @@ public class TestTaskService extends BaseService {
         }
 
         List<TestTask> testTasks = selectByTestTask(testTask);
-        List<TestTaskVo> testTaskVos = testTasks.stream().map(t -> TestTaskVo.convert(t, UserCache.getNickNameById(t.getCreatorUid()))).collect(Collectors.toList());
+        List<TestTaskVo> testTaskVos = convertTestTasksToTestTaskVos(testTasks);
 
         if (needPaging) {
-            // java8 stream会导致PageHelper total计算错误
-            // 所以这里用testTasks计算total
             long total = Page.getTotal(testTasks);
             return Response.success(Page.build(testTaskVos, total));
         } else {
             return Response.success(testTaskVos);
         }
+    }
+
+    private List<TestTaskVo> convertTestTasksToTestTaskVos(List<TestTask> testTasks) {
+        if (CollectionUtils.isEmpty(testTasks)) {
+            return Collections.EMPTY_LIST;
+        }
+
+        List<Integer> creatorUids = testTasks.stream()
+                .map(TestTask::getCreatorUid)
+                .filter(Objects::nonNull)
+                .distinct()
+                .collect(Collectors.toList());
+        Map<Integer, User> userMap = userService.getUserMapByUserIds(creatorUids);
+
+        return testTasks.stream().map(testTask -> {
+            TestTaskVo testTaskVo = new TestTaskVo();
+            BeanUtils.copyProperties(testTask, testTaskVo);
+
+            if (testTask.getCreatorUid() != null) {
+                User user = userMap.get(testTask.getCreatorUid());
+                if (user != null) {
+                    testTaskVo.setCreatorNickName(user.getNickName());
+                }
+            }
+
+            return testTaskVo;
+        }).collect(Collectors.toList());
     }
 
     public List<TestTask> selectByTestTask(TestTask testTask) {
@@ -300,12 +327,19 @@ public class TestTaskService extends BaseService {
         }
 
         Project project = projectService.selectByPrimaryKey(testTask.getProjectId());
+        if (project == null) {
+            return Response.fail("项目不存在");
+        }
 
         TestTaskSummary summary = new TestTaskSummary();
         BeanUtils.copyProperties(testTask, summary);
         summary.setPlatform(project.getPlatform());
         summary.setProjectName(project.getName());
-        summary.setCommitorNickName(UserCache.getNickNameById(testTask.getCreatorUid()));
+
+        User user = userService.selectByPrimaryKey(testTask.getCreatorUid());
+        if (user != null) {
+            summary.setCommitorNickName(user.getNickName());
+        }
 
         Integer passCaseCount = testTask.getPassCaseCount();
         Integer totalCaseCount = testTask.getPassCaseCount() + testTask.getFailCaseCount() + testTask.getSkipCaseCount();

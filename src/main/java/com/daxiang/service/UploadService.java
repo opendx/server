@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -58,18 +59,22 @@ public class UploadService {
                 uploadPath = uploadOtherPath;
         }
 
-        String destFileName = UUIDUtil.getUUID() + "_" + file.getOriginalFilename();
+        String destFileName = UUIDUtil.getUUID();
+        String originalFilename = file.getOriginalFilename();
+        if (originalFilename.contains(".")) {
+            destFileName = destFileName + "." + StringUtils.unqualify(originalFilename);
+        }
         String destFilePath = new File(uploadPath).getAbsolutePath() + File.separator + destFileName; // 不用绝对路径transferTo会报错
-        File destFile = new File(destFilePath);
+
         try {
-            log.info("upload fileType: {}, {} -> {}", fileType, file.getOriginalFilename(), destFilePath);
-            file.transferTo(destFile);
+            log.info("upload fileType: {}, {} -> {}", fileType, originalFilename, destFilePath);
+            file.transferTo(new File(destFilePath));
         } catch (IOException e) {
             log.error("transfer err", e);
             return Response.fail(e.getMessage());
         }
 
-        String downloadURL = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + "/" + destFileName;
+        String downloadURL = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + "/static/" + destFileName;
         return Response.success("上传成功", ImmutableMap.of("downloadURL", downloadURL));
     }
 }

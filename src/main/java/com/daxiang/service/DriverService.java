@@ -4,39 +4,41 @@ import com.daxiang.dao.DriverDao;
 import com.daxiang.mbg.mapper.DriverMapper;
 import com.daxiang.mbg.po.Driver;
 import com.daxiang.mbg.po.DriverExample;
+import com.daxiang.mbg.po.User;
 import com.daxiang.model.Page;
 import com.daxiang.model.PageRequest;
 import com.daxiang.model.Response;
-import com.daxiang.model.UserCache;
 import com.daxiang.model.vo.DriverUrl;
 import com.daxiang.model.vo.DriverVo;
+import com.daxiang.security.SecurityUtil;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.ImmutableMap;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
  * Created by jiangyitao.
  */
 @Service
-public class DriverService extends BaseService {
+public class DriverService {
 
     @Autowired
     private DriverMapper driverMapper;
     @Autowired
     private DriverDao driverDao;
+    @Autowired
+    private UserService userService;
 
     public Response add(Driver driver) {
         driver.setCreateTime(new Date());
-        driver.setCreatorUid(getUid());
+        driver.setCreatorUid(SecurityUtil.getCurrentUserId());
 
         int insertRow;
         try {
@@ -75,17 +77,41 @@ public class DriverService extends BaseService {
         }
 
         List<Driver> drivers = selectByDriver(driver);
-        List<DriverVo> driverVos = drivers.stream()
-                .map(d -> DriverVo.convert(d, UserCache.getNickNameById(d.getCreatorUid()))).collect(Collectors.toList());
+        List<DriverVo> driverVos = convertDriversToDriverVos(drivers);
 
         if (needPaging) {
-            // java8 stream会导致PageHelper total计算错误
-            // 所以这里用drivers计算total
             long total = Page.getTotal(drivers);
             return Response.success(Page.build(driverVos, total));
         } else {
             return Response.success(driverVos);
         }
+    }
+
+    private List<DriverVo> convertDriversToDriverVos(List<Driver> drivers) {
+        if (CollectionUtils.isEmpty(drivers)) {
+            return Collections.EMPTY_LIST;
+        }
+
+        List<Integer> creatorUids = drivers.stream()
+                .map(Driver::getCreatorUid)
+                .filter(Objects::nonNull)
+                .distinct()
+                .collect(Collectors.toList());
+        Map<Integer, User> userMap = userService.getUserMapByUserIds(creatorUids);
+
+        return drivers.stream().map(driver -> {
+            DriverVo driverVo = new DriverVo();
+            BeanUtils.copyProperties(driver, driverVo);
+
+            if (driver.getCreatorUid() != null) {
+                User user = userMap.get(driver.getCreatorUid());
+                if (user != null) {
+                    driverVo.setCreatorNickName(user.getNickName());
+                }
+            }
+
+            return driverVo;
+        }).collect(Collectors.toList());
     }
 
     public List<Driver> selectByDriver(Driver driver) {

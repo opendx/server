@@ -6,24 +6,24 @@ import com.daxiang.mbg.po.*;
 import com.daxiang.model.Page;
 import com.daxiang.model.PageRequest;
 import com.daxiang.model.Response;
-import com.daxiang.model.UserCache;
 import com.daxiang.model.vo.EnvironmentVo;
+import com.daxiang.security.SecurityUtil;
 import com.github.pagehelper.PageHelper;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
  * Created by jiangyitao.
  */
 @Service
-public class EnvironmentService extends BaseService {
+public class EnvironmentService {
 
     @Autowired
     private EnvironmentMapper environmentMapper;
@@ -33,10 +33,12 @@ public class EnvironmentService extends BaseService {
     private GlobalVarService globalVarService;
     @Autowired
     private TestPlanService testPlanService;
+    @Autowired
+    private UserService userService;
 
     public Response add(Environment environment) {
         environment.setCreateTime(new Date());
-        environment.setCreatorUid(getUid());
+        environment.setCreatorUid(SecurityUtil.getCurrentUserId());
 
         int insertRow;
         try {
@@ -75,16 +77,41 @@ public class EnvironmentService extends BaseService {
         }
 
         List<Environment> environments = selectByEnvironment(environment);
-        List<EnvironmentVo> environmentVos = environments.stream().map(e -> EnvironmentVo.convert(e, UserCache.getNickNameById(e.getCreatorUid()))).collect(Collectors.toList());
+        List<EnvironmentVo> environmentVos = convertEnvironmentsToEnvironmentVos(environments);
 
         if (needPaging) {
-            // java8 stream会导致PageHelper total计算错误
-            // 所以这里用environments计算total
             long total = Page.getTotal(environments);
             return Response.success(Page.build(environmentVos, total));
         } else {
             return Response.success(environmentVos);
         }
+    }
+
+    private List<EnvironmentVo> convertEnvironmentsToEnvironmentVos(List<Environment> environments) {
+        if (CollectionUtils.isEmpty(environments)) {
+            return Collections.EMPTY_LIST;
+        }
+
+        List<Integer> creatorUids = environments.stream()
+                .map(Environment::getCreatorUid)
+                .filter(Objects::nonNull)
+                .distinct()
+                .collect(Collectors.toList());
+        Map<Integer, User> userMap = userService.getUserMapByUserIds(creatorUids);
+
+        return environments.stream().map(env -> {
+            EnvironmentVo environmentVo = new EnvironmentVo();
+            BeanUtils.copyProperties(env, environmentVo);
+
+            if (env.getCreatorUid() != null) {
+                User user = userMap.get(env.getCreatorUid());
+                if (user != null) {
+                    environmentVo.setCreatorNickName(user.getNickName());
+                }
+            }
+
+            return environmentVo;
+        }).collect(Collectors.toList());
     }
 
     public List<Environment> selectByEnvironment(Environment environment) {

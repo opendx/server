@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.daxiang.dao.UserDao">
+    <resultMap id="UserDto" type="com.daxiang.model.dto.UserDto" extends="com.daxiang.mbg.mapper.UserMapper.BaseResultMap">
+        <collection property="roles" resultMap="com.daxiang.mbg.mapper.RoleMapper.BaseResultMap" columnPrefix="r_" />
+    </resultMap>
+
+    <select id="selectUserDtoByUsername" resultMap="UserDto">
+        select u.*,r.id r_id,r.name r_name,r.alias r_alias from (select * from user where username = #{username}) u
+          left join user_role ur on u.id = ur.user_id
+          left join role r on ur.role_id = r.id
+    </select>
+
+</mapper>

@@ -1,31 +1,35 @@
 package com.daxiang.service;
 
 import com.daxiang.mbg.mapper.ProjectMapper;
+import com.daxiang.mbg.po.User;
 import com.daxiang.model.PageRequest;
 import com.daxiang.model.Response;
 import com.daxiang.mbg.po.ProjectExample;
-import com.daxiang.model.UserCache;
+import com.daxiang.security.SecurityUtil;
 import com.github.pagehelper.PageHelper;
 import com.daxiang.mbg.po.Project;
 import com.daxiang.model.Page;
 import com.daxiang.model.vo.ProjectVo;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
  * Created by jiangyitao.
  */
 @Service
-public class ProjectService extends BaseService {
+public class ProjectService {
 
     @Autowired
     private ProjectMapper projectMapper;
+    @Autowired
+    private UserService userService;
 
     /**
      * 新增项目
@@ -35,7 +39,7 @@ public class ProjectService extends BaseService {
      */
     public Response add(Project project) {
         project.setCreateTime(new Date());
-        project.setCreatorUid(getUid());
+        project.setCreatorUid(SecurityUtil.getCurrentUserId());
 
         int insertRow;
         try {
@@ -90,16 +94,41 @@ public class ProjectService extends BaseService {
         }
 
         List<Project> projects = selectByProject(project);
-        List<ProjectVo> projectVos = projects.stream().map(p -> ProjectVo.convert(p, UserCache.getNickNameById(p.getCreatorUid()))).collect(Collectors.toList());
+        List<ProjectVo> projectVos = convertProjectsToProjectVos(projects);
 
         if (needPaging) {
-            // java8 stream会导致PageHelper total计算错误
-            // 所以这里用projects计算total
             long total = Page.getTotal(projects);
             return Response.success(Page.build(projectVos, total));
         } else {
             return Response.success(projectVos);
         }
+    }
+
+    public List<ProjectVo> convertProjectsToProjectVos(List<Project> projects) {
+        if (CollectionUtils.isEmpty(projects)) {
+            return Collections.EMPTY_LIST;
+        }
+
+        List<Integer> creatorUids = projects.stream()
+                .map(Project::getCreatorUid)
+                .filter(Objects::nonNull)
+                .distinct()
+                .collect(Collectors.toList());
+        Map<Integer, User> userMap = userService.getUserMapByUserIds(creatorUids);
+
+        return projects.stream().map(project -> {
+            ProjectVo projectVo = new ProjectVo();
+            BeanUtils.copyProperties(project, projectVo);
+
+            if (project.getCreatorUid() != null) {
+                User user = userMap.get(project.getCreatorUid());
+                if (user != null) {
+                    projectVo.setCreatorNickName(user.getNickName());
+                }
+            }
+
+            return projectVo;
+        }).collect(Collectors.toList());
     }
 
     public List<Project> selectByProject(Project project) {

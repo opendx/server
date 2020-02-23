@@ -4,22 +4,21 @@ import com.daxiang.agent.AgentApi;
 import com.daxiang.mbg.mapper.AppMapper;
 import com.daxiang.mbg.po.App;
 import com.daxiang.mbg.po.AppExample;
+import com.daxiang.mbg.po.User;
 import com.daxiang.model.*;
 import com.daxiang.model.vo.AgentVo;
 import com.daxiang.model.vo.AppVo;
+import com.daxiang.security.SecurityUtil;
 import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -27,7 +26,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @Slf4j
-public class AppService extends BaseService {
+public class AppService {
 
     @Autowired
     private UploadService uploadService;
@@ -37,6 +36,8 @@ public class AppService extends BaseService {
     private AgentService agentService;
     @Autowired
     private AgentApi agentApi;
+    @Autowired
+    private UserService userService;
 
     public Response upload(App app, MultipartFile file) {
         Response response = uploadService.uploadFile(file, FileType.APP);
@@ -47,7 +48,7 @@ public class AppService extends BaseService {
         String downloadUrl = ((Map<String, String>) (response.getData())).get("downloadURL");
         app.setDownloadUrl(downloadUrl);
         app.setUploadTime(new Date());
-        app.setUploadorUid(getUid());
+        app.setUploadorUid(SecurityUtil.getCurrentUserId());
 
         int insertRow = appMapper.insertSelective(app);
         return insertRow == 1 ? Response.success("上传成功") : Response.fail("上传失败");
@@ -69,16 +70,41 @@ public class AppService extends BaseService {
         }
 
         List<App> apps = selectByApp(app);
-        List<AppVo> appVos = apps.stream().map(a -> AppVo.convert(a, UserCache.getNickNameById(a.getUploadorUid()))).collect(Collectors.toList());
+        List<AppVo> appVos = convertAppsToAppVos(apps);
 
         if (needPaging) {
-            // java8 stream会导致PageHelper total计算错误
-            // 所以这里用apps计算total
             long total = Page.getTotal(apps);
             return Response.success(Page.build(appVos, total));
         } else {
             return Response.success(appVos);
         }
+    }
+
+    private List<AppVo> convertAppsToAppVos(List<App> apps) {
+        if (CollectionUtils.isEmpty(apps)) {
+            return Collections.EMPTY_LIST;
+        }
+
+        List<Integer> uploadorUids = apps.stream()
+                .map(App::getUploadorUid)
+                .filter(Objects::nonNull)
+                .distinct()
+                .collect(Collectors.toList());
+        Map<Integer, User> userMap = userService.getUserMapByUserIds(uploadorUids);
+
+        return apps.stream().map(app -> {
+            AppVo appVo = new AppVo();
+            BeanUtils.copyProperties(app, appVo);
+
+            if (app.getUploadorUid() != null) {
+                User user = userMap.get(app.getUploadorUid());
+                if (user != null) {
+                    appVo.setUploadorNickName(user.getNickName());
+                }
+            }
+
+            return appVo;
+        }).collect(Collectors.toList());
     }
 
     public List<App> selectByApp(App app) {

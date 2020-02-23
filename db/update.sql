@@ -143,3 +143,23 @@ DELETE FROM action WHERE id <= 23; -- 注意！！！ 重新导入基础action h
 -- 0.3.3
 ALTER TABLE action
 ADD COLUMN `action_imports` json NULL COMMENT 'action imports' AFTER `java_imports`;
+
+-- 0.3.5
+ALTER TABLE user
+ADD COLUMN `status` tinyint(4) NOT NULL DEFAULT 1 COMMENT '状态，0:禁用 1:正常' AFTER `nick_name`;
+
+CREATE TABLE `role` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL COMMENT '角色名',
+  `alias` varchar(100) NOT NULL COMMENT '别名',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `uniq_name` (`name`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='角色表';
+
+CREATE TABLE `user_role` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `role_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `uniq_userId_roleId` (`user_id`, `role_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户角色表';

@@ -1,32 +1,28 @@
 package com.daxiang.service;
 
-import com.daxiang.mbg.po.Action;
-import com.daxiang.mbg.po.Category;
-import com.daxiang.mbg.po.PageExample;
-import com.daxiang.model.UserCache;
+import com.daxiang.mbg.po.*;
 import com.daxiang.model.vo.PageCascaderVo;
+import com.daxiang.security.SecurityUtil;
 import com.github.pagehelper.PageHelper;
 import com.daxiang.mbg.mapper.PageMapper;
-import com.daxiang.mbg.po.Page;
 import com.daxiang.model.PageRequest;
 import com.daxiang.model.Response;
 import com.daxiang.model.vo.PageVo;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
  * Created by jiangyitao.
  */
 @Service
-public class PageService extends BaseService {
+public class PageService {
 
     @Autowired
     private PageMapper pageMapper;
@@ -34,6 +30,8 @@ public class PageService extends BaseService {
     private ActionService actionService;
     @Autowired
     private CategoryService categoryService;
+    @Autowired
+    private UserService userService;
 
     /**
      * 添加page
@@ -43,7 +41,7 @@ public class PageService extends BaseService {
      */
     public Response add(Page page) {
         page.setCreateTime(new Date());
-        page.setCreatorUid(getUid());
+        page.setCreatorUid(SecurityUtil.getCurrentUserId());
 
         int insertRow;
         try {
@@ -105,16 +103,41 @@ public class PageService extends BaseService {
         }
 
         List<Page> pages = selectByPage(page);
-        List<PageVo> pageVos = pages.stream().map(p -> PageVo.convert(p, UserCache.getNickNameById(p.getCreatorUid()))).collect(Collectors.toList());
+        List<PageVo> pageVos = convertPagesToPageVos(pages);
 
         if (needPaging) {
-            // java8 stream会导致PageHelper total计算错误
-            // 所以这里用pages计算total
             long total = com.daxiang.model.Page.getTotal(pages);
             return Response.success(com.daxiang.model.Page.build(pageVos, total));
         } else {
             return Response.success(pageVos);
         }
+    }
+
+    private List<PageVo> convertPagesToPageVos(List<Page> pages) {
+        if (CollectionUtils.isEmpty(pages)) {
+            return Collections.EMPTY_LIST;
+        }
+
+        List<Integer> creatorUids = pages.stream()
+                .map(Page::getCreatorUid)
+                .filter(Objects::nonNull)
+                .distinct()
+                .collect(Collectors.toList());
+        Map<Integer, User> userMap = userService.getUserMapByUserIds(creatorUids);
+
+        return pages.stream().map(page -> {
+            PageVo pageVo = new PageVo();
+            BeanUtils.copyProperties(page, pageVo);
+
+            if (page.getCreatorUid() != null) {
+                User user = userMap.get(page.getCreatorUid());
+                if (user != null) {
+                    pageVo.setCreatorNickName(user.getNickName());
+                }
+            }
+
+            return pageVo;
+        }).collect(Collectors.toList());
     }
 
     public List<Page> selectByPage(Page page) {

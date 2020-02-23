@@ -14,10 +14,11 @@ import com.daxiang.model.environment.EnvironmentValue;
 import com.daxiang.model.request.ActionDebugRequest;
 import com.daxiang.model.vo.ActionCascaderVo;
 import com.daxiang.model.vo.ActionVo;
-import com.daxiang.model.UserCache;
+import com.daxiang.security.SecurityUtil;
 import com.github.pagehelper.PageHelper;
 import com.daxiang.dao.ActionDao;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
@@ -25,13 +26,14 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Created by jiangyitao.
  */
 @Service
 @Slf4j
-public class ActionService extends BaseService {
+public class ActionService {
 
     @Autowired
     private ActionMapper actionMapper;
@@ -49,9 +51,11 @@ public class ActionService extends BaseService {
     private TestPlanService testPlanService;
     @Autowired
     private PageService pageService;
+    @Autowired
+    private UserService userService;
 
     public Response add(Action action) {
-        action.setCreatorUid(getUid());
+        action.setCreatorUid(SecurityUtil.getCurrentUserId());
         action.setCreateTime(new Date());
 
         int insertRow;
@@ -90,7 +94,7 @@ public class ActionService extends BaseService {
         }
 
         action.setUpdateTime(new Date());
-        action.setUpdatorUid(getUid());
+        action.setUpdatorUid(SecurityUtil.getCurrentUserId());
 
         int updateRow;
         try {
@@ -123,20 +127,48 @@ public class ActionService extends BaseService {
         }
 
         List<Action> actions = selectByAction(action);
-        List<ActionVo> actionVos = actions.stream()
-                .map(a -> {
-                    String creatorNickName = a.getCreatorUid() == null ? null : UserCache.getNickNameById(a.getCreatorUid());
-                    String updatorNickName = a.getUpdatorUid() == null ? null : UserCache.getNickNameById(a.getUpdatorUid());
-                    return ActionVo.convert(a, creatorNickName, updatorNickName);
-                }).collect(Collectors.toList());
+        List<ActionVo> actionVos = convertActionsToActionVos(actions);
+
         if (needPaging) {
-            // java8 stream会导致PageHelper total计算错误
-            // 所以这里用actions计算total
             long total = Page.getTotal(actions);
             return Response.success(Page.build(actionVos, total));
         } else {
             return Response.success(actionVos);
         }
+    }
+
+    private List<ActionVo> convertActionsToActionVos(List<Action> actions) {
+        if (CollectionUtils.isEmpty(actions)) {
+            return Collections.EMPTY_LIST;
+        }
+
+        List<Integer> creatorAndUpdatorUids = actions.stream()
+                .flatMap(action -> Stream.of(action.getCreatorUid(), action.getUpdatorUid()))
+                .filter(Objects::nonNull)
+                .distinct()
+                .collect(Collectors.toList());
+        Map<Integer, User> userMap = userService.getUserMapByUserIds(creatorAndUpdatorUids);
+
+        return actions.stream().map(action -> {
+            ActionVo actionVo = new ActionVo();
+            BeanUtils.copyProperties(action, actionVo);
+
+            if (action.getCreatorUid() != null) {
+                User user = userMap.get(action.getCreatorUid());
+                if (user != null) {
+                    actionVo.setCreatorNickName(user.getNickName());
+                }
+            }
+
+            if (action.getUpdatorUid() != null) {
+                User user = userMap.get(action.getUpdatorUid());
+                if (user != null) {
+                    actionVo.setUpdatorNickName(user.getNickName());
+                }
+            }
+
+            return actionVo;
+        }).collect(Collectors.toList());
     }
 
     public List<Action> selectByAction(Action action) {
@@ -308,7 +340,7 @@ public class ActionService extends BaseService {
      */
     public List<Action> findByTestSuitIds(List<Integer> testSuiteIds) {
         if (CollectionUtils.isEmpty(testSuiteIds)) {
-            return new ArrayList<>();
+            return Collections.EMPTY_LIST;
         }
         ActionExample actionExample = new ActionExample();
         actionExample.createCriteria().andTestSuiteIdIn(testSuiteIds);

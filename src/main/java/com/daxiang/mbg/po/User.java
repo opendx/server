@@ -1,19 +1,18 @@
 package com.daxiang.mbg.po;
 
-import com.daxiang.validator.group.UserRegisterGroup;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.daxiang.validator.group.SaveUserGroup;
+import com.daxiang.validator.group.UpdateGroup;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
 public class User implements Serializable {
-    /**
-     * 用户id
-     *
-     * @mbg.generated
-     */
+
+    public static final int ENABLE_STATUS = 1;
+
+    @NotNull(message = "用户id不能为空", groups = {UpdateGroup.class})
     private Integer id;
 
     /**
@@ -37,8 +36,16 @@ public class User implements Serializable {
      *
      * @mbg.generated
      */
-    @NotBlank(message = "昵称不能为空", groups = {UserRegisterGroup.class})
+    @NotBlank(message = "昵称不能为空", groups = {SaveUserGroup.class})
     private String nickName;
+
+    /**
+     * 状态，0:禁用 1:正常
+     *
+     * @mbg.generated
+     */
+    @NotNull(message = "账户状态不能为空", groups = {SaveUserGroup.class})
+    private Integer status;
 
     /**
      * 创建时间
@@ -65,12 +72,10 @@ public class User implements Serializable {
         this.username = username;
     }
 
-    @JsonProperty
     public void setPassword(String password) {
         this.password = password;
     }
 
-    @JsonIgnore
     public String getPassword() {
         return password;
     }
@@ -81,6 +86,14 @@ public class User implements Serializable {
 
     public void setNickName(String nickName) {
         this.nickName = nickName;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     public Date getCreateTime() {
@@ -101,6 +114,7 @@ public class User implements Serializable {
         sb.append(", username=").append(username);
         sb.append(", password=").append(password);
         sb.append(", nickName=").append(nickName);
+        sb.append(", status=").append(status);
         sb.append(", createTime=").append(createTime);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");

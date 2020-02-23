@@ -2,26 +2,27 @@ package com.daxiang.service;
 
 import com.daxiang.mbg.po.TestPlan;
 import com.daxiang.mbg.po.TestPlanExample;
+import com.daxiang.mbg.po.User;
 import com.daxiang.model.Page;
 import com.daxiang.model.PageRequest;
 import com.daxiang.dao.TestPlanDao;
-import com.daxiang.model.UserCache;
 import com.daxiang.model.vo.TestPlanVo;
+import com.daxiang.security.SecurityUtil;
 import com.github.pagehelper.PageHelper;
 import com.daxiang.mbg.mapper.TestPlanMapper;
 import com.daxiang.model.Response;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
 import java.util.stream.Collectors;
@@ -31,7 +32,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service
-public class TestPlanService extends BaseService {
+public class TestPlanService {
 
     private static final ThreadPoolTaskScheduler scheduler;
     private static final Map<Integer, ScheduledFuture> testPlanFutureMap = new ConcurrentHashMap<>();
@@ -47,6 +48,8 @@ public class TestPlanService extends BaseService {
     private TestPlanDao testPlanDao;
     @Autowired
     private TestTaskService testTaskService;
+    @Autowired
+    private UserService userService;
 
     @Transactional
     public Response add(TestPlan testPlan) {
@@ -56,7 +59,7 @@ public class TestPlanService extends BaseService {
         }
 
         testPlan.setCreateTime(new Date());
-        testPlan.setCreatorUid(getUid());
+        testPlan.setCreatorUid(SecurityUtil.getCurrentUserId());
 
         int insertRow;
         try {
@@ -113,16 +116,41 @@ public class TestPlanService extends BaseService {
         }
 
         List<TestPlan> testPlans = selectByTestPlan(testPlan);
-        List<TestPlanVo> testPlanVos = testPlans.stream().map(p -> TestPlanVo.convert(p, UserCache.getNickNameById(p.getCreatorUid()))).collect(Collectors.toList());
+        List<TestPlanVo> testPlanVos = convertTestPlansToTestPlanVos(testPlans);
 
         if (needPaging) {
-            // java8 stream会导致PageHelper total计算错误
-            // 所以这里用testPlans计算total
             long total = Page.getTotal(testPlans);
             return Response.success(Page.build(testPlanVos, total));
         } else {
             return Response.success(testPlanVos);
         }
+    }
+
+    public List<TestPlanVo> convertTestPlansToTestPlanVos(List<TestPlan> testPlans) {
+        if (CollectionUtils.isEmpty(testPlans)) {
+            return Collections.EMPTY_LIST;
+        }
+
+        List<Integer> creatorUids = testPlans.stream()
+                .map(TestPlan::getCreatorUid)
+                .filter(Objects::nonNull)
+                .distinct()
+                .collect(Collectors.toList());
+        Map<Integer, User> userMap = userService.getUserMapByUserIds(creatorUids);
+
+        return testPlans.stream().map(testPlan -> {
+            TestPlanVo testPlanVo = new TestPlanVo();
+            BeanUtils.copyProperties(testPlan, testPlanVo);
+
+            if (testPlan.getCreatorUid() != null) {
+                User user = userMap.get(testPlan.getCreatorUid());
+                if (user != null) {
+                    testPlanVo.setCreatorNickName(user.getNickName());
+                }
+            }
+
+            return testPlanVo;
+        }).collect(Collectors.toList());
     }
 
     public List<TestPlan> selectByTestPlan(TestPlan testPlan) {

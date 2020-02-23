@@ -1,5 +1,6 @@
 package com.daxiang.model;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
@@ -12,6 +13,9 @@ public class Response<T> {
     private static final Integer SUCCESS = 1;
     private static final Integer FAIL = 0;
     private static final Integer ERROR = -1;
+
+    private static final Integer UNAUTHORIZED = 401;
+    private static final Integer ACCESSDENIED = 403;
 
     private Integer status;
     private String msg;
@@ -26,6 +30,7 @@ public class Response<T> {
     }
 
     @JsonIgnore
+    @JSONField(serialize = false)
     public boolean isSuccess() {
         return status == SUCCESS;
     }
@@ -52,6 +57,14 @@ public class Response<T> {
 
     public static Response error(String msg) {
         return buildResponse(ERROR, msg, null);
+    }
+
+    public static Response unauthorized() {
+        return buildResponse(UNAUTHORIZED, "认证失败", null);
+    }
+
+    public static Response accessDenied() {
+        return buildResponse(ACCESSDENIED, "权限不足", null);
     }
 
 }

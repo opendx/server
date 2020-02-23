@@ -19,7 +19,7 @@ import java.util.List;
  */
 @Service
 @Slf4j
-public class DeviceService extends BaseService {
+public class DeviceService {
 
     @Autowired
     private DeviceMapper deviceMapper;

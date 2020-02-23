@@ -166,6 +166,14 @@ public class DeviceTestTaskService {
         return selectByDeviceTestTask(deviceTestTask);
     }
 
+    public List<DeviceTestTask> findByTestTaskIds(List<Integer> testTaskIds) {
+        DeviceTestTaskExample example = new DeviceTestTaskExample();
+        DeviceTestTaskExample.Criteria criteria = example.createCriteria();
+
+        criteria.andTestTaskIdIn(testTaskIds);
+        return deviceTestTaskMapper.selectByExampleWithBLOBs(example);
+    }
+
     public int deleteInBatch(List<Integer> ids) {
         if (CollectionUtils.isEmpty(ids)) {
             throw new BusinessException("批量删除deviceTestTask, ids不能为空");

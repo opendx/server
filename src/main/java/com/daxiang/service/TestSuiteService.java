@@ -1,32 +1,28 @@
 package com.daxiang.service;
 
-import com.daxiang.mbg.po.TestPlan;
-import com.daxiang.mbg.po.TestSuite;
+import com.daxiang.mbg.po.*;
 import com.daxiang.model.PageRequest;
 import com.daxiang.model.Response;
-import com.daxiang.mbg.po.Action;
-import com.daxiang.mbg.po.TestSuiteExample;
-import com.daxiang.model.UserCache;
+import com.daxiang.security.SecurityUtil;
 import com.github.pagehelper.PageHelper;
 import com.daxiang.mbg.mapper.TestSuiteMapper;
 import com.daxiang.model.Page;
 import com.daxiang.model.vo.TestSuiteVo;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
  * Created by jiangyitao.
  */
 @Service
-public class TestSuiteService extends BaseService {
+public class TestSuiteService {
 
     @Autowired
     private TestSuiteMapper testSuiteMapper;
@@ -34,10 +30,12 @@ public class TestSuiteService extends BaseService {
     private ActionService actionService;
     @Autowired
     private TestPlanService testPlanService;
+    @Autowired
+    private UserService userService;
 
     public Response add(TestSuite testSuite) {
         testSuite.setCreateTime(new Date());
-        testSuite.setCreatorUid(getUid());
+        testSuite.setCreatorUid(SecurityUtil.getCurrentUserId());
 
         int insertRow;
         try {
@@ -78,16 +76,41 @@ public class TestSuiteService extends BaseService {
         }
 
         List<TestSuite> testSuites = selectByTestSuite(testSuite);
-        List<TestSuiteVo> testSuiteVos = testSuites.stream().map(s -> TestSuiteVo.convert(s, UserCache.getNickNameById(s.getCreatorUid()))).collect(Collectors.toList());
+        List<TestSuiteVo> testSuiteVos = convertTestSuitesToTestSuiteVos(testSuites);
 
         if (needPaging) {
-            // java8 stream会导致PageHelper total计算错误
-            // 所以这里用testSuites计算total
             long total = Page.getTotal(testSuites);
             return Response.success(Page.build(testSuiteVos, total));
         } else {
             return Response.success(testSuiteVos);
         }
+    }
+
+    public List<TestSuiteVo> convertTestSuitesToTestSuiteVos(List<TestSuite> testSuites) {
+        if (CollectionUtils.isEmpty(testSuites)) {
+            return Collections.EMPTY_LIST;
+        }
+
+        List<Integer> creatorUids = testSuites.stream()
+                .map(TestSuite::getCreatorUid)
+                .filter(Objects::nonNull)
+                .distinct()
+                .collect(Collectors.toList());
+        Map<Integer, User> userMap = userService.getUserMapByUserIds(creatorUids);
+
+        return testSuites.stream().map(testSuite -> {
+            TestSuiteVo testSuiteVo = new TestSuiteVo();
+            BeanUtils.copyProperties(testSuite, testSuiteVo);
+
+            if (testSuite.getCreatorUid() != null) {
+                User user = userMap.get(testSuite.getCreatorUid());
+                if (user != null) {
+                    testSuiteVo.setCreatorNickName(user.getNickName());
+                }
+            }
+
+            return testSuiteVo;
+        }).collect(Collectors.toList());
     }
 
     public List<TestSuite> selectByTestSuite(TestSuite testSuite) {

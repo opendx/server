@@ -1,31 +1,27 @@
 package com.daxiang.service;
 
 import com.daxiang.mbg.mapper.CategoryMapper;
-import com.daxiang.mbg.po.Action;
-import com.daxiang.mbg.po.Category;
-import com.daxiang.mbg.po.Page;
+import com.daxiang.mbg.po.*;
 import com.daxiang.model.PageRequest;
 import com.daxiang.model.Response;
-import com.daxiang.mbg.po.CategoryExample;
-import com.daxiang.model.UserCache;
 import com.daxiang.model.vo.CategoryVo;
+import com.daxiang.security.SecurityUtil;
 import com.github.pagehelper.PageHelper;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
  * Created by jiangyitao.
  */
 @Service
-public class CategoryService extends BaseService {
+public class CategoryService {
 
     @Autowired
     private CategoryMapper categoryMapper;
@@ -33,6 +29,8 @@ public class CategoryService extends BaseService {
     private PageService pageService;
     @Autowired
     private ActionService actionService;
+    @Autowired
+    private UserService userService;
 
     /**
      * 添加分类
@@ -42,7 +40,7 @@ public class CategoryService extends BaseService {
      */
     public Response add(Category category) {
         category.setCreateTime(new Date());
-        category.setCreatorUid(getUid());
+        category.setCreatorUid(SecurityUtil.getCurrentUserId());
 
         int insertRow;
         try {
@@ -103,16 +101,41 @@ public class CategoryService extends BaseService {
         }
 
         List<Category> categories = selectByCategory(category);
-        List<CategoryVo> categoryVos = categories.stream().map(c -> CategoryVo.convert(c, UserCache.getNickNameById(c.getCreatorUid()))).collect(Collectors.toList());
+        List<CategoryVo> categoryVos = convertCategoriesToCategoryVos(categories);
 
         if (needPaging) {
-            // java8 stream会导致PageHelper total计算错误
-            // 所以这里用categories计算total
             long total = com.daxiang.model.Page.getTotal(categories);
             return Response.success(com.daxiang.model.Page.build(categoryVos, total));
         } else {
             return Response.success(categoryVos);
         }
+    }
+
+    private List<CategoryVo> convertCategoriesToCategoryVos(List<Category> categories) {
+        if (CollectionUtils.isEmpty(categories)) {
+            return Collections.EMPTY_LIST;
+        }
+
+        List<Integer> creatorUids = categories.stream()
+                .map(Category::getCreatorUid)
+                .filter(Objects::nonNull)
+                .distinct()
+                .collect(Collectors.toList());
+        Map<Integer, User> userMap = userService.getUserMapByUserIds(creatorUids);
+
+        return categories.stream().map(category -> {
+            CategoryVo categoryVo = new CategoryVo();
+            BeanUtils.copyProperties(category, categoryVo);
+
+            if (category.getCreatorUid() != null) {
+                User user = userMap.get(category.getCreatorUid());
+                if (user != null) {
+                    categoryVo.setCreatorNickName(user.getNickName());
+                }
+            }
+
+            return categoryVo;
+        }).collect(Collectors.toList());
     }
 
     public List<Category> selectByCategory(Category category) {

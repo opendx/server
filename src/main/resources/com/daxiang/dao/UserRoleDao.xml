@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.daxiang.dao.UserRoleDao">
+
+    <resultMap id="UserRoleDto" type="com.daxiang.model.dto.UserRoleDto" extends="com.daxiang.mbg.mapper.UserRoleMapper.BaseResultMap">
+        <association property="role" resultMap="com.daxiang.mbg.mapper.RoleMapper.BaseResultMap" columnPrefix="r_" />
+    </resultMap>
+
+    <insert id="insertInBatch">
+        insert into user_role(user_id, role_id) values
+        <foreach collection="userRoles" item="item" separator=",">
+            (#{item.userId}, #{item.roleId})
+        </foreach>
+    </insert>
+
+    <select id="selectUserRoleDtosByUserIds" resultMap="UserRoleDto">
+        select ur.*,r.id r_id,r.name r_name,r.alias r_alias from user_role ur join role r on ur.role_id = r.id where ur.user_id in
+        <foreach collection="userIds" item="userId" open="(" close=")" separator=",">
+            #{userId}
+        </foreach>
+    </select>
+
+</mapper>
