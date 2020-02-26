@@ -193,10 +193,6 @@ public class UserService {
         return Response.success();
     }
 
-    public List<User> selectAll() {
-        return userMapper.selectByExample(null);
-    }
-
     public List<User> selectByUser(User user) {
         UserExample example = new UserExample();
         UserExample.Criteria criteria = example.createCriteria();

@@ -86,7 +86,7 @@ public class TestSuiteService {
         }
     }
 
-    public List<TestSuiteVo> convertTestSuitesToTestSuiteVos(List<TestSuite> testSuites) {
+    private List<TestSuiteVo> convertTestSuitesToTestSuiteVos(List<TestSuite> testSuites) {
         if (CollectionUtils.isEmpty(testSuites)) {
             return Collections.EMPTY_LIST;
         }

@@ -126,7 +126,7 @@ public class TestPlanService {
         }
     }
 
-    public List<TestPlanVo> convertTestPlansToTestPlanVos(List<TestPlan> testPlans) {
+    private List<TestPlanVo> convertTestPlansToTestPlanVos(List<TestPlan> testPlans) {
         if (CollectionUtils.isEmpty(testPlans)) {
             return Collections.EMPTY_LIST;
         }

@@ -104,7 +104,7 @@ public class ProjectService {
         }
     }
 
-    public List<ProjectVo> convertProjectsToProjectVos(List<Project> projects) {
+    private List<ProjectVo> convertProjectsToProjectVos(List<Project> projects) {
         if (CollectionUtils.isEmpty(projects)) {
             return Collections.EMPTY_LIST;
         }

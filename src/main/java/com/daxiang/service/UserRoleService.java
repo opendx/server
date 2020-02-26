@@ -23,7 +23,6 @@ public class UserRoleService {
     @Autowired
     private UserRoleMapper userRoleMapper;
 
-
     public int insertInBatch(List<UserRole> userRoles) {
         return userRoleDao.insertInBatch(userRoles);
     }
