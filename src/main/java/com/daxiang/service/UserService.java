@@ -3,10 +3,12 @@ package com.daxiang.service;
 import com.daxiang.dao.UserDao;
 import com.daxiang.exception.BusinessException;
 import com.daxiang.mbg.mapper.UserMapper;
+import com.daxiang.mbg.po.Project;
 import com.daxiang.mbg.po.Role;
 import com.daxiang.model.Page;
 import com.daxiang.model.PageRequest;
 import com.daxiang.model.dto.UserDto;
+import com.daxiang.model.dto.UserProjectDto;
 import com.daxiang.model.dto.UserRoleDto;
 import com.daxiang.security.JwtTokenUtil;
 import com.daxiang.mbg.po.User;
@@ -46,6 +48,8 @@ public class UserService {
 
     @Autowired
     private UserRoleService userRoleService;
+    @Autowired
+    private UserProjectService userProjectService;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -77,6 +81,12 @@ public class UserService {
             throw new BusinessException("添加角色失败，请稍后重试");
         }
 
+        // 用户项目
+        insertRow = userProjectService.insert(user.getId(), userDto.getProjects());
+        if (insertRow != userDto.getProjects().size()) {
+            throw new BusinessException("添加用户项目失败，请稍后重试");
+        }
+
         return Response.success("添加用户成功");
     }
 
@@ -87,6 +97,8 @@ public class UserService {
 
         // 删除用户角色
         userRoleService.deleteByUserId(userId);
+        // 删除用户项目
+        userProjectService.deleteByUserId(userId);
         // 删除用户
         userMapper.deleteByPrimaryKey(userId);
 
@@ -126,6 +138,15 @@ public class UserService {
             throw new BusinessException("添加用户角色失败");
         }
 
+        // 删除用户项目
+        userProjectService.deleteByUserId(user.getId());
+
+        // 添加用户项目
+        insertRow = userProjectService.insert(user.getId(), userDto.getProjects());
+        if (insertRow != userDto.getProjects().size()) {
+            throw new BusinessException("添加用户项目失败");
+        }
+
         return Response.success("更新用户成功");
     }
 
@@ -154,6 +175,9 @@ public class UserService {
         // 按用户id分组
         Map<Integer, List<UserRoleDto>> userRoleDtosMap = userRoleService.selectUserRoleDtosByUserIds(userIds).stream()
                 .collect(Collectors.groupingBy(UserRoleDto::getUserId));
+        Map<Integer, List<UserProjectDto>> userProjectDtosMap = userProjectService.selectUserProjectDtosByUserIds(userIds).stream()
+                .collect(Collectors.groupingBy(UserProjectDto::getUserId));
+
 
         return users.stream().map(user -> {
             UserDto userDto = new UserDto();
@@ -165,6 +189,14 @@ public class UserService {
             } else {
                 List<Role> roles = userRoleDtos.stream().map(UserRoleDto::getRole).collect(Collectors.toList());
                 userDto.setRoles(roles);
+            }
+
+            List<UserProjectDto> userProjectDtos = userProjectDtosMap.get(user.getId());
+            if (userProjectDtos == null) {
+                userDto.setProjects(Collections.EMPTY_LIST);
+            } else {
+                List<Project> projects = userProjectDtos.stream().map(UserProjectDto::getProject).collect(Collectors.toList());
+                userDto.setProjects(projects);
             }
 
             return userDto;

@@ -1,5 +1,6 @@
 package com.daxiang.model.dto;
 
+import com.daxiang.mbg.po.Project;
 import com.daxiang.mbg.po.Role;
 import com.daxiang.mbg.po.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -9,6 +10,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,6 +23,8 @@ public class UserDto extends User implements UserDetails {
 
     @NotEmpty(message = "角色不能为空")
     private List<Role> roles;
+    @NotNull(message = "projects不能为null")
+    private List<Project> projects;
 
     @JsonIgnore
     @Override

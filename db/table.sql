@@ -286,6 +286,19 @@ CREATE TABLE `user_role` (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `uniq_userId_roleId` (`user_id`, `role_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户角色表';
+
+-- ----------------------------
+-- Table structure for user_project
+-- ----------------------------
+DROP TABLE IF EXISTS `user_project`;
+CREATE TABLE `user_project` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `project_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `uniq_userId_projectId` (`user_id`, `project_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户项目表';
+
 -- ----------------------------
 
 -- Table structure for driver

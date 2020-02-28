@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.daxiang.dao.UserProjectDao">
+
+    <resultMap id="UserProjectDto" type="com.daxiang.model.dto.UserProjectDto" extends="com.daxiang.mbg.mapper.UserProjectMapper.BaseResultMap">
+        <association property="project" resultMap="com.daxiang.mbg.mapper.ProjectMapper.BaseResultMap" columnPrefix="p_" />
+    </resultMap>
+
+    <insert id="insertInBatch">
+        insert into user_project(user_id, project_id) values
+        <foreach collection="userProjects" item="item" separator=",">
+            (#{item.userId}, #{item.projectId})
+        </foreach>
+    </insert>
+
+    <select id="selectUserProjectDtosByUserIds" resultMap="UserProjectDto">
+        SELECT
+            up.*,
+            p.id p_id,
+            p.name p_name,
+            p.description p_description,
+            p.platform p_platform,
+            p.creator_uid p_creator_uid,
+            p.create_time p_create_time
+        FROM
+            user_project up
+            JOIN project p ON up.project_id = p.id
+        WHERE
+            up.user_id IN
+            <foreach collection="userIds" item="userId" open="(" close=")" separator=",">
+                #{userId}
+            </foreach>
+    </select>
+</mapper>

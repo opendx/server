@@ -85,15 +85,18 @@
             <!--<generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
             <!--<columnOverride column="test_plan" typeHandler="com.daxiang.typehandler.TestPlanTypeHandler" javaType="com.daxiang.mbg.po.TestPlan" jdbcType="LONGVARCHAR" />-->
         <!--</table>-->
-        <table tableName="user">
+        <!--<table tableName="user">-->
+            <!--<generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
+        <!--</table>-->
+        <!--<table tableName="role">-->
+            <!--<generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
+        <!--</table>-->
+        <!--<table tableName="user_role">-->
+            <!--<generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
+        <!--</table>-->
+        <table tableName="user_project">
             <generatedKey column="id" sqlStatement="MySql" identity="true"/>
         </table>
-            <!--<table tableName="role">-->
-                <!--<generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
-            <!--</table>-->
-            <!--<table tableName="user_role">-->
-                <!--<generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
-            <!--</table>-->
         <!--<table tableName="driver">-->
             <!--<generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
             <!--<columnOverride column="urls" typeHandler="com.daxiang.typehandler.DriverUrlListTypeHandler" javaType="java.util.List&lt;com.daxiang.model.vo.DriverUrl&gt;" jdbcType="LONGVARCHAR"/>-->

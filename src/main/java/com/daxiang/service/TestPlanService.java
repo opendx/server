@@ -72,7 +72,7 @@ public class TestPlanService {
             addOrUpdateScheduleTask(testPlan);
         }
 
-        return insertRow == 1 ? Response.success("添加TestPlan成功") : Response.fail("添加TestPlan败，请稍后重试");
+        return insertRow == 1 ? Response.success("添加TestPlan成功") : Response.fail("添加TestPlan失败，请稍后重试");
     }
 
     public Response delete(Integer testPlanId) {

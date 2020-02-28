@@ -1,7 +1,6 @@
 package com.daxiang.init;
 
 import com.daxiang.service.TestPlanService;
-import com.daxiang.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,8 +27,6 @@ public class StartupRunner implements ApplicationRunner {
     @Value("${web.upload-other-path}")
     private String uploadOtherPath;
 
-    @Autowired
-    private UserService userService;
     @Autowired
     private TestPlanService testPlanService;
 
