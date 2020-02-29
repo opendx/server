@@ -8,9 +8,10 @@ import com.daxiang.mbg.po.User;
 import com.daxiang.model.Page;
 import com.daxiang.model.PageRequest;
 import com.daxiang.model.Response;
-import com.daxiang.model.vo.DriverUrl;
+import com.daxiang.model.vo.DriverFile;
 import com.daxiang.model.vo.DriverVo;
 import com.daxiang.security.SecurityUtil;
+import com.daxiang.utils.HttpServletUtil;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.ImmutableMap;
 import org.springframework.beans.BeanUtils;
@@ -142,14 +143,13 @@ public class DriverService {
         List<Driver> drivers = driverDao.selectByTypeAndDeviceId(type, deviceId);
         if (!CollectionUtils.isEmpty(drivers)) {
             // 如果同一个手机对应了多个driver，取第一个
-            Driver driver = drivers.get(0);
-            List<DriverUrl> urls = driver.getUrls();
-            if (!CollectionUtils.isEmpty(urls)) {
-                Optional<DriverUrl> driverUrl = urls.stream().filter(url -> url.getPlatform() == platform).findFirst();
-                if (driverUrl.isPresent()) {
-                    String downloadUrl = driverUrl.get().getDownloadUrl();
-                    if (!StringUtils.isEmpty(downloadUrl)) {
-                        return Response.success(ImmutableMap.of("downloadUrl", downloadUrl));
+            List<DriverFile> driverFiles = drivers.get(0).getFiles();
+            if (!CollectionUtils.isEmpty(driverFiles)) {
+                Optional<DriverFile> driverFile = driverFiles.stream().filter(f -> platform.equals(f.getPlatform())).findFirst();
+                if (driverFile.isPresent()) {
+                    String fileName = driverFile.get().getFileName();
+                    if (!StringUtils.isEmpty(fileName)) {
+                        return Response.success(ImmutableMap.of("downloadUrl", HttpServletUtil.getStaticResourcesBaseUrl() + fileName));
                     }
                 }
             }

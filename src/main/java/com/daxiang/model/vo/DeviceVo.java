@@ -1,6 +1,6 @@
 package com.daxiang.model.vo;
 
-import com.daxiang.mbg.po.Page;
+import com.daxiang.mbg.po.Device;
 import com.daxiang.utils.HttpServletUtil;
 import lombok.Data;
 import org.springframework.util.StringUtils;
@@ -9,8 +9,7 @@ import org.springframework.util.StringUtils;
  * Created by jiangyitao.
  */
 @Data
-public class PageVo extends Page {
-    private String creatorNickName = "";
+public class DeviceVo extends Device {
     private String imgUrl;
 
     public String getImgUrl() {

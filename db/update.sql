@@ -1,7 +1,7 @@
--- 0.2.2 -> 0.2.3
+-- 0.2.3
 ALTER TABLE test_plan ADD `cron_expression` varchar(255) DEFAULT NULL COMMENT 'cron表达式';
 ALTER TABLE test_plan ADD `enable_schedule` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否开启定时任务，0: 关闭 1: 开启';
--- 0.2.3 -> 0.2.4
+-- 0.2.4
 ALTER TABLE device_test_task ADD `code` mediumtext COMMENT 'agent转换后的代码';
 ALTER TABLE device_test_task ADD `err_msg` text COMMENT 'status: -1, 错误信息';
 -- 0.2.7
@@ -171,3 +171,34 @@ CREATE TABLE `user_project` (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `uniq_userId_projectId` (`user_id`, `project_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户项目表';
+
+-- 账号admin 密码admin
+INSERT INTO `user`(`id`,`username`, `password`, `nick_name`, `status`, `create_time`) VALUES ('1', 'admin', '$2a$12$v1ERBqyxhU/ocHRPywOjvOAMkhmZGJB3hRoNjr4bWO3HLWZSIlnne', '超级管理员', 1, '2020-02-24 20:14:33');
+INSERT INTO `user_role`(`user_id`, `role_id`) VALUES (1, 1);
+INSERT INTO `project`(`id`, `name`, `description`, `platform`, `creator_uid`, `create_time`) VALUES (1, 'AndroidDemo', '', 1, 1, '2020-02-24 20:14:33');
+INSERT INTO `user_project`(`user_id`, `project_id`) VALUES (1, 1);
+
+INSERT INTO `role`(`id`, `name`, `alias`) VALUES (1, 'admin', '超级管理员');
+INSERT INTO `role`(`id`, `name`, `alias`) VALUES (2, 'agent', 'agent管理员');
+INSERT INTO `role`(`id`, `name`, `alias`) VALUES (3, 'app', 'app管理员');
+INSERT INTO `role`(`id`, `name`, `alias`) VALUES (4, 'device', '设备管理员');
+INSERT INTO `role`(`id`, `name`, `alias`) VALUES (5, 'driver', 'driver管理员');
+INSERT INTO `role`(`id`, `name`, `alias`) VALUES (6, 'environment', '环境管理员');
+INSERT INTO `role`(`id`, `name`, `alias`) VALUES (7, 'globalVar', '全局变量管理员');
+INSERT INTO `role`(`id`, `name`, `alias`) VALUES (8, 'page', 'page管理员');
+INSERT INTO `role`(`id`, `name`, `alias`) VALUES (9, 'action', 'action管理员');
+INSERT INTO `role`(`id`, `name`, `alias`) VALUES (10, 'testcase', '测试用例管理员');
+INSERT INTO `role`(`id`, `name`, `alias`) VALUES (11, 'testplan', '测试计划管理员');
+INSERT INTO `role`(`id`, `name`, `alias`) VALUES (12, 'testtask', '测试任务管理员');
+
+ALTER TABLE `app`
+CHANGE COLUMN `download_url` `file_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '服务端保存的文件名' AFTER `launch_activity`;
+
+ALTER TABLE `device`
+CHANGE COLUMN `img_url` `img_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '服务端保存的文件名' AFTER `screen_height`;
+
+ALTER TABLE `page`
+CHANGE COLUMN `img_url` `img_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '服务端保存的文件名' AFTER `description`;
+
+ALTER TABLE `driver`
+CHANGE COLUMN `urls` `files` json NOT NULL COMMENT '各平台文件，1.windows 2.linux 3.macos' AFTER `type`;

@@ -44,11 +44,11 @@ public class Page implements Serializable {
     private String description;
 
     /**
-     * 截图下载地址
+     * 服务端保存的文件名
      *
      * @mbg.generated
      */
-    private String imgUrl;
+    private String imgName;
 
     /**
      * window高度
@@ -150,12 +150,12 @@ public class Page implements Serializable {
         this.description = description;
     }
 
-    public String getImgUrl() {
-        return imgUrl;
+    public String getImgName() {
+        return imgName;
     }
 
-    public void setImgUrl(String imgUrl) {
-        this.imgUrl = imgUrl;
+    public void setImgName(String imgName) {
+        this.imgName = imgName;
     }
 
     public Integer getWindowHeight() {
@@ -233,7 +233,7 @@ public class Page implements Serializable {
         sb.append(", projectId=").append(projectId);
         sb.append(", categoryId=").append(categoryId);
         sb.append(", description=").append(description);
-        sb.append(", imgUrl=").append(imgUrl);
+        sb.append(", imgName=").append(imgName);
         sb.append(", windowHeight=").append(windowHeight);
         sb.append(", windowWidth=").append(windowWidth);
         sb.append(", windowOrientation=").append(windowOrientation);

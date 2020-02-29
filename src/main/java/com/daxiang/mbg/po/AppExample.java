@@ -505,73 +505,73 @@ public class AppExample {
             return (Criteria) this;
         }
 
-        public Criteria andDownloadUrlIsNull() {
-            addCriterion("download_url is null");
+        public Criteria andFileNameIsNull() {
+            addCriterion("file_name is null");
             return (Criteria) this;
         }
 
-        public Criteria andDownloadUrlIsNotNull() {
-            addCriterion("download_url is not null");
+        public Criteria andFileNameIsNotNull() {
+            addCriterion("file_name is not null");
             return (Criteria) this;
         }
 
-        public Criteria andDownloadUrlEqualTo(String value) {
-            addCriterion("download_url =", value, "downloadUrl");
+        public Criteria andFileNameEqualTo(String value) {
+            addCriterion("file_name =", value, "fileName");
             return (Criteria) this;
         }
 
-        public Criteria andDownloadUrlNotEqualTo(String value) {
-            addCriterion("download_url <>", value, "downloadUrl");
+        public Criteria andFileNameNotEqualTo(String value) {
+            addCriterion("file_name <>", value, "fileName");
             return (Criteria) this;
         }
 
-        public Criteria andDownloadUrlGreaterThan(String value) {
-            addCriterion("download_url >", value, "downloadUrl");
+        public Criteria andFileNameGreaterThan(String value) {
+            addCriterion("file_name >", value, "fileName");
             return (Criteria) this;
         }
 
-        public Criteria andDownloadUrlGreaterThanOrEqualTo(String value) {
-            addCriterion("download_url >=", value, "downloadUrl");
+        public Criteria andFileNameGreaterThanOrEqualTo(String value) {
+            addCriterion("file_name >=", value, "fileName");
             return (Criteria) this;
         }
 
-        public Criteria andDownloadUrlLessThan(String value) {
-            addCriterion("download_url <", value, "downloadUrl");
+        public Criteria andFileNameLessThan(String value) {
+            addCriterion("file_name <", value, "fileName");
             return (Criteria) this;
         }
 
-        public Criteria andDownloadUrlLessThanOrEqualTo(String value) {
-            addCriterion("download_url <=", value, "downloadUrl");
+        public Criteria andFileNameLessThanOrEqualTo(String value) {
+            addCriterion("file_name <=", value, "fileName");
             return (Criteria) this;
         }
 
-        public Criteria andDownloadUrlLike(String value) {
-            addCriterion("download_url like", value, "downloadUrl");
+        public Criteria andFileNameLike(String value) {
+            addCriterion("file_name like", value, "fileName");
             return (Criteria) this;
         }
 
-        public Criteria andDownloadUrlNotLike(String value) {
-            addCriterion("download_url not like", value, "downloadUrl");
+        public Criteria andFileNameNotLike(String value) {
+            addCriterion("file_name not like", value, "fileName");
             return (Criteria) this;
         }
 
-        public Criteria andDownloadUrlIn(List<String> values) {
-            addCriterion("download_url in", values, "downloadUrl");
+        public Criteria andFileNameIn(List<String> values) {
+            addCriterion("file_name in", values, "fileName");
             return (Criteria) this;
         }
 
-        public Criteria andDownloadUrlNotIn(List<String> values) {
-            addCriterion("download_url not in", values, "downloadUrl");
+        public Criteria andFileNameNotIn(List<String> values) {
+            addCriterion("file_name not in", values, "fileName");
             return (Criteria) this;
         }
 
-        public Criteria andDownloadUrlBetween(String value1, String value2) {
-            addCriterion("download_url between", value1, value2, "downloadUrl");
+        public Criteria andFileNameBetween(String value1, String value2) {
+            addCriterion("file_name between", value1, value2, "fileName");
             return (Criteria) this;
         }
 
-        public Criteria andDownloadUrlNotBetween(String value1, String value2) {
-            addCriterion("download_url not between", value1, value2, "downloadUrl");
+        public Criteria andFileNameNotBetween(String value1, String value2) {
+            addCriterion("file_name not between", value1, value2, "fileName");
             return (Criteria) this;
         }
 

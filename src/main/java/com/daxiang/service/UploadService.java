@@ -2,16 +2,15 @@ package com.daxiang.service;
 
 import com.daxiang.model.FileType;
 import com.daxiang.model.Response;
+import com.daxiang.model.UploadFile;
+import com.daxiang.utils.HttpServletUtil;
 import com.daxiang.utils.UUIDUtil;
-import com.google.common.collect.ImmutableMap;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 
@@ -21,9 +20,6 @@ import java.io.IOException;
 @Service
 @Slf4j
 public class UploadService {
-
-    @Autowired
-    private HttpServletRequest request;
 
     @Value("${web.upload-img-path}")
     private String uploadImgPath;
@@ -36,7 +32,7 @@ public class UploadService {
     @Value("${web.upload-other-path}")
     private String uploadOtherPath;
 
-    public Response uploadFile(MultipartFile file, Integer fileType) {
+    public Response<UploadFile> uploadFile(MultipartFile file, Integer fileType) {
         if (file == null) {
             return Response.fail("文件不能为空");
         }
@@ -74,7 +70,10 @@ public class UploadService {
             return Response.fail(e.getMessage());
         }
 
-        String downloadURL = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + "/static/" + destFileName;
-        return Response.success("上传成功", ImmutableMap.of("downloadURL", downloadURL));
+        UploadFile uploadFile = new UploadFile();
+        uploadFile.setFileName(destFileName);
+        uploadFile.setDownloadUrl(HttpServletUtil.getStaticResourcesBaseUrl() + destFileName);
+
+        return Response.success("上传成功", uploadFile);
     }
 }

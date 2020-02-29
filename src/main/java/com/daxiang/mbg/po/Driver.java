@@ -1,6 +1,6 @@
 package com.daxiang.mbg.po;
 
-import com.daxiang.model.vo.DriverUrl;
+import com.daxiang.model.vo.DriverFile;
 import com.daxiang.validator.group.UpdateGroup;
 
 import javax.validation.constraints.NotBlank;
@@ -45,11 +45,11 @@ public class Driver implements Serializable {
     private Integer creatorUid;
 
     /**
-     * 各平台下载地址，1.windows 2.linux 3.macos
+     * 各平台文件，1.windows 2.linux 3.macos
      *
      * @mbg.generated
      */
-    private java.util.List<com.daxiang.model.vo.DriverUrl> urls;
+    private java.util.List<com.daxiang.model.vo.DriverFile> files;
 
     /**
      * 设备ids
@@ -100,12 +100,12 @@ public class Driver implements Serializable {
         this.creatorUid = creatorUid;
     }
 
-    public java.util.List<com.daxiang.model.vo.DriverUrl> getUrls() {
-        return urls;
+    public java.util.List<com.daxiang.model.vo.DriverFile> getFiles() {
+        return files;
     }
 
-    public void setUrls(java.util.List<com.daxiang.model.vo.DriverUrl> urls) {
-        this.urls = urls;
+    public void setFiles(java.util.List<com.daxiang.model.vo.DriverFile> files) {
+        this.files = files;
     }
 
     public java.util.List<String> getDeviceIds() {
@@ -127,7 +127,7 @@ public class Driver implements Serializable {
         sb.append(", type=").append(type);
         sb.append(", createTime=").append(createTime);
         sb.append(", creatorUid=").append(creatorUid);
-        sb.append(", urls=").append(urls);
+        sb.append(", files=").append(files);
         sb.append(", deviceIds=").append(deviceIds);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");

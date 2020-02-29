@@ -9,7 +9,7 @@
     <result column="creator_uid" jdbcType="INTEGER" property="creatorUid" />
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.daxiang.mbg.po.Driver">
-    <result column="urls" jdbcType="LONGVARCHAR" property="urls" typeHandler="com.daxiang.typehandler.DriverUrlListTypeHandler" />
+    <result column="files" jdbcType="LONGVARCHAR" property="files" typeHandler="com.daxiang.typehandler.DriverFileListTypeHandler" />
     <result column="device_ids" jdbcType="LONGVARCHAR" property="deviceIds" typeHandler="com.daxiang.typehandler.StringListTypeHandler" />
   </resultMap>
   <sql id="Example_Where_Clause">
@@ -74,7 +74,7 @@
     id, version, type, create_time, creator_uid
   </sql>
   <sql id="Blob_Column_List">
-    urls, device_ids
+    files, device_ids
   </sql>
   <select id="selectByExampleWithBLOBs" parameterType="com.daxiang.mbg.po.DriverExample" resultMap="ResultMapWithBLOBs">
     select
@@ -129,11 +129,11 @@
       SELECT LAST_INSERT_ID()
     </selectKey>
     insert into driver (version, type, create_time, 
-      creator_uid, urls, 
+      creator_uid, files, 
       device_ids
       )
     values (#{version,jdbcType=VARCHAR}, #{type,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{creatorUid,jdbcType=INTEGER}, #{urls,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.DriverUrlListTypeHandler}, 
+      #{creatorUid,jdbcType=INTEGER}, #{files,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.DriverFileListTypeHandler}, 
       #{deviceIds,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.StringListTypeHandler}
       )
   </insert>
@@ -155,8 +155,8 @@
       <if test="creatorUid != null">
         creator_uid,
       </if>
-      <if test="urls != null">
-        urls,
+      <if test="files != null">
+        files,
       </if>
       <if test="deviceIds != null">
         device_ids,
@@ -175,8 +175,8 @@
       <if test="creatorUid != null">
         #{creatorUid,jdbcType=INTEGER},
       </if>
-      <if test="urls != null">
-        #{urls,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.DriverUrlListTypeHandler},
+      <if test="files != null">
+        #{files,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.DriverFileListTypeHandler},
       </if>
       <if test="deviceIds != null">
         #{deviceIds,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.StringListTypeHandler},
@@ -207,8 +207,8 @@
       <if test="record.creatorUid != null">
         creator_uid = #{record.creatorUid,jdbcType=INTEGER},
       </if>
-      <if test="record.urls != null">
-        urls = #{record.urls,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.DriverUrlListTypeHandler},
+      <if test="record.files != null">
+        files = #{record.files,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.DriverFileListTypeHandler},
       </if>
       <if test="record.deviceIds != null">
         device_ids = #{record.deviceIds,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.StringListTypeHandler},
@@ -225,7 +225,7 @@
       type = #{record.type,jdbcType=TINYINT},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       creator_uid = #{record.creatorUid,jdbcType=INTEGER},
-      urls = #{record.urls,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.DriverUrlListTypeHandler},
+      files = #{record.files,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.DriverFileListTypeHandler},
       device_ids = #{record.deviceIds,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.StringListTypeHandler}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -257,8 +257,8 @@
       <if test="creatorUid != null">
         creator_uid = #{creatorUid,jdbcType=INTEGER},
       </if>
-      <if test="urls != null">
-        urls = #{urls,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.DriverUrlListTypeHandler},
+      <if test="files != null">
+        files = #{files,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.DriverFileListTypeHandler},
       </if>
       <if test="deviceIds != null">
         device_ids = #{deviceIds,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.StringListTypeHandler},
@@ -272,7 +272,7 @@
       type = #{type,jdbcType=TINYINT},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       creator_uid = #{creatorUid,jdbcType=INTEGER},
-      urls = #{urls,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.DriverUrlListTypeHandler},
+      files = #{files,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.DriverFileListTypeHandler},
       device_ids = #{deviceIds,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.StringListTypeHandler}
     where id = #{id,jdbcType=INTEGER}
   </update>

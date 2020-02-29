@@ -11,7 +11,7 @@
     <result column="mem_size" jdbcType="VARCHAR" property="memSize" />
     <result column="screen_width" jdbcType="INTEGER" property="screenWidth" />
     <result column="screen_height" jdbcType="INTEGER" property="screenHeight" />
-    <result column="img_url" jdbcType="VARCHAR" property="imgUrl" />
+    <result column="img_name" jdbcType="VARCHAR" property="imgName" />
     <result column="platform" jdbcType="TINYINT" property="platform" />
     <result column="status" jdbcType="TINYINT" property="status" />
     <result column="last_online_time" jdbcType="TIMESTAMP" property="lastOnlineTime" />
@@ -79,7 +79,7 @@
   </sql>
   <sql id="Base_Column_List">
     id, name, agent_ip, agent_port, system_version, cpu_info, mem_size, screen_width, 
-    screen_height, img_url, platform, status, last_online_time, last_offline_time, username, 
+    screen_height, img_name, platform, status, last_online_time, last_offline_time, username, 
     create_time
   </sql>
   <select id="selectByExample" parameterType="com.daxiang.mbg.po.DeviceExample" resultMap="BaseResultMap">
@@ -116,13 +116,13 @@
     insert into device (id, name, agent_ip, 
       agent_port, system_version, cpu_info, 
       mem_size, screen_width, screen_height, 
-      img_url, platform, status, 
+      img_name, platform, status, 
       last_online_time, last_offline_time, username, 
       create_time)
     values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{agentIp,jdbcType=VARCHAR}, 
       #{agentPort,jdbcType=INTEGER}, #{systemVersion,jdbcType=VARCHAR}, #{cpuInfo,jdbcType=VARCHAR}, 
       #{memSize,jdbcType=VARCHAR}, #{screenWidth,jdbcType=INTEGER}, #{screenHeight,jdbcType=INTEGER}, 
-      #{imgUrl,jdbcType=VARCHAR}, #{platform,jdbcType=TINYINT}, #{status,jdbcType=TINYINT}, 
+      #{imgName,jdbcType=VARCHAR}, #{platform,jdbcType=TINYINT}, #{status,jdbcType=TINYINT}, 
       #{lastOnlineTime,jdbcType=TIMESTAMP}, #{lastOfflineTime,jdbcType=TIMESTAMP}, #{username,jdbcType=VARCHAR}, 
       #{createTime,jdbcType=TIMESTAMP})
   </insert>
@@ -156,8 +156,8 @@
       <if test="screenHeight != null">
         screen_height,
       </if>
-      <if test="imgUrl != null">
-        img_url,
+      <if test="imgName != null">
+        img_name,
       </if>
       <if test="platform != null">
         platform,
@@ -206,8 +206,8 @@
       <if test="screenHeight != null">
         #{screenHeight,jdbcType=INTEGER},
       </if>
-      <if test="imgUrl != null">
-        #{imgUrl,jdbcType=VARCHAR},
+      <if test="imgName != null">
+        #{imgName,jdbcType=VARCHAR},
       </if>
       <if test="platform != null">
         #{platform,jdbcType=TINYINT},
@@ -265,8 +265,8 @@
       <if test="record.screenHeight != null">
         screen_height = #{record.screenHeight,jdbcType=INTEGER},
       </if>
-      <if test="record.imgUrl != null">
-        img_url = #{record.imgUrl,jdbcType=VARCHAR},
+      <if test="record.imgName != null">
+        img_name = #{record.imgName,jdbcType=VARCHAR},
       </if>
       <if test="record.platform != null">
         platform = #{record.platform,jdbcType=TINYINT},
@@ -302,7 +302,7 @@
       mem_size = #{record.memSize,jdbcType=VARCHAR},
       screen_width = #{record.screenWidth,jdbcType=INTEGER},
       screen_height = #{record.screenHeight,jdbcType=INTEGER},
-      img_url = #{record.imgUrl,jdbcType=VARCHAR},
+      img_name = #{record.imgName,jdbcType=VARCHAR},
       platform = #{record.platform,jdbcType=TINYINT},
       status = #{record.status,jdbcType=TINYINT},
       last_online_time = #{record.lastOnlineTime,jdbcType=TIMESTAMP},
@@ -340,8 +340,8 @@
       <if test="screenHeight != null">
         screen_height = #{screenHeight,jdbcType=INTEGER},
       </if>
-      <if test="imgUrl != null">
-        img_url = #{imgUrl,jdbcType=VARCHAR},
+      <if test="imgName != null">
+        img_name = #{imgName,jdbcType=VARCHAR},
       </if>
       <if test="platform != null">
         platform = #{platform,jdbcType=TINYINT},
@@ -374,7 +374,7 @@
       mem_size = #{memSize,jdbcType=VARCHAR},
       screen_width = #{screenWidth,jdbcType=INTEGER},
       screen_height = #{screenHeight,jdbcType=INTEGER},
-      img_url = #{imgUrl,jdbcType=VARCHAR},
+      img_name = #{imgName,jdbcType=VARCHAR},
       platform = #{platform,jdbcType=TINYINT},
       status = #{status,jdbcType=TINYINT},
       last_online_time = #{lastOnlineTime,jdbcType=TIMESTAMP},

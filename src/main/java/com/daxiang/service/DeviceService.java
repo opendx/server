@@ -3,16 +3,19 @@ package com.daxiang.service;
 import com.daxiang.mbg.mapper.DeviceMapper;
 import com.daxiang.model.PageRequest;
 import com.daxiang.model.Response;
+import com.daxiang.model.vo.DeviceVo;
 import com.github.pagehelper.PageHelper;
 import com.daxiang.mbg.po.Device;
 import com.daxiang.mbg.po.DeviceExample;
 import com.daxiang.model.Page;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by jiangyitao.
@@ -58,11 +61,17 @@ public class DeviceService {
         }
 
         List<Device> devices = selectByDevice(device);
+        List<DeviceVo> deviceVos = devices.stream().map(d -> {
+            DeviceVo deviceVo = new DeviceVo();
+            BeanUtils.copyProperties(d, deviceVo);
+            return deviceVo;
+        }).collect(Collectors.toList());
+
         if (needPaging) {
             long total = Page.getTotal(devices);
-            return Response.success(Page.build(devices, total));
+            return Response.success(Page.build(deviceVos, total));
         } else {
-            return Response.success(devices);
+            return Response.success(deviceVos);
         }
     }
 

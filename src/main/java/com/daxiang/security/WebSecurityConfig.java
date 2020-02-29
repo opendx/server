@@ -2,6 +2,7 @@ package com.daxiang.security;
 
 import com.alibaba.fastjson.JSON;
 import com.daxiang.model.Response;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -29,6 +30,9 @@ import java.io.IOException;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
+    @Value("${static-path}")
+    private String staticPath;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable().cors();
@@ -36,7 +40,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests()
                 .antMatchers(HttpMethod.OPTIONS).permitAll()
-                .antMatchers("/static/**").permitAll()
+                .antMatchers(staticPath + "/**").permitAll()
                 .antMatchers("/user/login").permitAll()
                 // 以下为agent调用的接口，放行
                 .antMatchers("/springboot-admin/**").permitAll()

@@ -9,6 +9,7 @@ import com.daxiang.model.*;
 import com.daxiang.model.vo.AgentVo;
 import com.daxiang.model.vo.AppVo;
 import com.daxiang.security.SecurityUtil;
+import com.daxiang.utils.HttpServletUtil;
 import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -40,13 +41,12 @@ public class AppService {
     private UserService userService;
 
     public Response upload(App app, MultipartFile file) {
-        Response response = uploadService.uploadFile(file, FileType.APP);
+        Response<UploadFile> response = uploadService.uploadFile(file, FileType.APP);
         if (!response.isSuccess()) {
             return response;
         }
 
-        String downloadUrl = ((Map<String, String>) (response.getData())).get("downloadURL");
-        app.setDownloadUrl(downloadUrl);
+        app.setFileName(response.getData().getFileName());
         app.setUploadTime(new Date());
         app.setUploadorUid(SecurityUtil.getCurrentUserId());
 
@@ -150,7 +150,9 @@ public class AppService {
             return Response.fail("暂无配置了aapt的agent，无法执行aapt dump");
         }
 
-        Response agentResponse = agentApi.aaptDumpBadging(agentVo.get().getIp(), agentVo.get().getPort(), app.getDownloadUrl());
+        Response agentResponse = agentApi.aaptDumpBadging(agentVo.get().getIp(),
+                agentVo.get().getPort(),
+                HttpServletUtil.getStaticResourcesBaseUrl() + app.getFileName());
         if (!agentResponse.isSuccess()) {
             return agentResponse;
         }

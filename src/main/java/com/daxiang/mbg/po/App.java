@@ -8,11 +8,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class App implements Serializable {
-    /**
-     * 主键
-     *
-     * @mbg.generated
-     */
+
     @NotNull(message = "id不能为空", groups = {UpdateGroup.class})
     private Integer id;
 
@@ -54,11 +50,11 @@ public class App implements Serializable {
     private String launchActivity;
 
     /**
-     * 下载地址
+     * 服务端保存的文件名
      *
      * @mbg.generated
      */
-    private String downloadUrl;
+    private String fileName;
 
     /**
      * 上传时间
@@ -132,12 +128,12 @@ public class App implements Serializable {
         this.launchActivity = launchActivity;
     }
 
-    public String getDownloadUrl() {
-        return downloadUrl;
+    public String getFileName() {
+        return fileName;
     }
 
-    public void setDownloadUrl(String downloadUrl) {
-        this.downloadUrl = downloadUrl;
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
     public Date getUploadTime() {
@@ -176,7 +172,7 @@ public class App implements Serializable {
         sb.append(", version=").append(version);
         sb.append(", packageName=").append(packageName);
         sb.append(", launchActivity=").append(launchActivity);
-        sb.append(", downloadUrl=").append(downloadUrl);
+        sb.append(", fileName=").append(fileName);
         sb.append(", uploadTime=").append(uploadTime);
         sb.append(", uploadorUid=").append(uploadorUid);
         sb.append(", projectId=").append(projectId);
