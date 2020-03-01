@@ -29,7 +29,7 @@ public class Testcase extends Action {
     /**
      * 失败截图
      */
-    private String failImgName;
+    private String failImgPath;
     @JSONField(serialize = false) // 不会序列化的表中
     private String failImgUrl;
     /**
@@ -39,21 +39,21 @@ public class Testcase extends Action {
     /**
      * 运行视频
      */
-    private String videoName;
+    private String videoPath;
     @JSONField(serialize = false) // 不会序列化的表中
     private String videoUrl;
 
     private Integer status;
 
     public String getFailImgUrl() {
-        if (!StringUtils.isEmpty(failImgName))
-            return HttpServletUtil.getStaticResourcesBaseUrl() + failImgName;
+        if (!StringUtils.isEmpty(failImgPath))
+            return HttpServletUtil.getStaticResourceUrl(failImgPath);
         return null;
     }
 
     public String getVideoUrl() {
-        if (!StringUtils.isEmpty(videoName))
-            return HttpServletUtil.getStaticResourcesBaseUrl() + videoName;
+        if (!StringUtils.isEmpty(videoPath))
+            return HttpServletUtil.getStaticResourceUrl(videoPath);
         return null;
     }
 }

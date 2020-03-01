@@ -2,6 +2,7 @@ package com.daxiang.security;
 
 import com.alibaba.fastjson.JSON;
 import com.daxiang.model.Response;
+import com.daxiang.model.UploadFile;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,8 +31,8 @@ import java.io.IOException;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Value("${static-path}")
-    private String staticPath;
+    @Value("${frontend}")
+    private String frontend;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -40,8 +41,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests()
                 .antMatchers(HttpMethod.OPTIONS).permitAll()
-                .antMatchers(staticPath + "/**").permitAll()
+                .antMatchers("/" + UploadFile.UPLOAD_FILE_PATH + "/**").permitAll()
+                .antMatchers("/" + frontend + "/**").permitAll()
                 .antMatchers("/user/login").permitAll()
+                .antMatchers("/").permitAll()
                 // 以下为agent调用的接口，放行
                 .antMatchers("/springboot-admin/**").permitAll()
                 .antMatchers("/upload/file").permitAll()

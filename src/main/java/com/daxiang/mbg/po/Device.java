@@ -75,11 +75,11 @@ public class Device implements Serializable {
     private Integer screenHeight;
 
     /**
-     * 服务端保存的文件名
+     * 服务端保存的文件路径
      *
      * @mbg.generated
      */
-    private String imgName;
+    private String imgPath;
 
     /**
      * 平台：1.android  2.ios
@@ -197,12 +197,12 @@ public class Device implements Serializable {
         this.screenHeight = screenHeight;
     }
 
-    public String getImgName() {
-        return imgName;
+    public String getImgPath() {
+        return imgPath;
     }
 
-    public void setImgName(String imgName) {
-        this.imgName = imgName;
+    public void setImgPath(String imgPath) {
+        this.imgPath = imgPath;
     }
 
     public Integer getPlatform() {
@@ -268,7 +268,7 @@ public class Device implements Serializable {
         sb.append(", memSize=").append(memSize);
         sb.append(", screenWidth=").append(screenWidth);
         sb.append(", screenHeight=").append(screenHeight);
-        sb.append(", imgName=").append(imgName);
+        sb.append(", imgPath=").append(imgPath);
         sb.append(", platform=").append(platform);
         sb.append(", status=").append(status);
         sb.append(", lastOnlineTime=").append(lastOnlineTime);

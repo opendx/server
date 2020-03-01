@@ -14,8 +14,8 @@ public class PageVo extends Page {
     private String imgUrl;
 
     public String getImgUrl() {
-        if (!StringUtils.isEmpty(getImgName()))
-            return HttpServletUtil.getStaticResourcesBaseUrl() + getImgName();
+        if (!StringUtils.isEmpty(getImgPath()))
+            return HttpServletUtil.getStaticResourceUrl(getImgPath());
         return null;
     }
 }

@@ -21,38 +21,30 @@ import java.io.IOException;
 @Slf4j
 public class UploadService {
 
-    @Value("${web.upload-img-path}")
-    private String uploadImgPath;
-    @Value("${web.upload-video-path}")
-    private String uploadVideoPath;
-    @Value("${web.upload-app-path}")
-    private String uploadAppPath;
-    @Value("${web.upload-driver-path}")
-    private String uploadDriverPath;
-    @Value("${web.upload-other-path}")
-    private String uploadOtherPath;
+    @Value("${static-location}/")
+    private String staticLocation;
 
     public Response<UploadFile> uploadFile(MultipartFile file, Integer fileType) {
         if (file == null) {
             return Response.fail("文件不能为空");
         }
 
-        String uploadPath;
+        String uploadFilePath;
         switch (fileType) {
             case FileType.IMG:
-                uploadPath = uploadImgPath;
+                uploadFilePath = UploadFile.IMG_PATH;
                 break;
             case FileType.VIDEO:
-                uploadPath = uploadVideoPath;
+                uploadFilePath = UploadFile.VIDEO_PATH;
                 break;
             case FileType.APP:
-                uploadPath = uploadAppPath;
+                uploadFilePath = UploadFile.APP_PATH;
                 break;
             case FileType.DRIVER:
-                uploadPath = uploadDriverPath;
+                uploadFilePath = UploadFile.DRIVER_PATH;
                 break;
             default:
-                uploadPath = uploadOtherPath;
+                uploadFilePath = UploadFile.OTHER_FILE_PATH;
         }
 
         String destFileName = UUIDUtil.getUUID();
@@ -60,19 +52,21 @@ public class UploadService {
         if (originalFilename.contains(".")) {
             destFileName = destFileName + "." + StringUtils.unqualify(originalFilename);
         }
-        String destFilePath = new File(uploadPath).getAbsolutePath() + File.separator + destFileName; // 不用绝对路径transferTo会报错
+
+        String destFilePath = uploadFilePath + "/" + destFileName;
 
         try {
-            log.info("upload fileType: {}, {} -> {}", fileType, originalFilename, destFilePath);
-            file.transferTo(new File(destFilePath));
+            String destFileAbsolutePath = new File(staticLocation + destFilePath).getAbsolutePath(); // 不用绝对路径transferTo会报错
+            log.info("upload fileType: {}, {} -> {}", fileType, originalFilename, destFileAbsolutePath);
+            file.transferTo(new File(destFileAbsolutePath));
         } catch (IOException e) {
             log.error("transfer err", e);
             return Response.fail(e.getMessage());
         }
 
         UploadFile uploadFile = new UploadFile();
-        uploadFile.setFileName(destFileName);
-        uploadFile.setDownloadUrl(HttpServletUtil.getStaticResourcesBaseUrl() + destFileName);
+        uploadFile.setFilePath(destFilePath);
+        uploadFile.setDownloadUrl(HttpServletUtil.getStaticResourceUrl(destFilePath));
 
         return Response.success("上传成功", uploadFile);
     }

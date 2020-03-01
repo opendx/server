@@ -192,13 +192,13 @@ INSERT INTO `role`(`id`, `name`, `alias`) VALUES (11, 'testplan', '测试计划�
 INSERT INTO `role`(`id`, `name`, `alias`) VALUES (12, 'testtask', '测试任务管理员');
 
 ALTER TABLE `app`
-CHANGE COLUMN `download_url` `file_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '服务端保存的文件名' AFTER `launch_activity`;
+CHANGE COLUMN `download_url` `file_path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '服务端保存的文件路径' AFTER `launch_activity`;
 
 ALTER TABLE `device`
-CHANGE COLUMN `img_url` `img_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '服务端保存的文件名' AFTER `screen_height`;
+CHANGE COLUMN `img_url` `img_path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '服务端保存的文件路径' AFTER `screen_height`;
 
 ALTER TABLE `page`
-CHANGE COLUMN `img_url` `img_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '服务端保存的文件名' AFTER `description`;
+CHANGE COLUMN `img_url` `img_path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '服务端保存的文件路径' AFTER `description`;
 
 ALTER TABLE `driver`
 CHANGE COLUMN `urls` `files` json NOT NULL COMMENT '各平台文件，1.windows 2.linux 3.macos' AFTER `type`;

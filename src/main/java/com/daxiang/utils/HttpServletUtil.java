@@ -1,6 +1,5 @@
 package com.daxiang.utils;
 
-import com.daxiang.App;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -19,19 +18,20 @@ public class HttpServletUtil {
     /**
      * 获取静态资源下载的baseUrl
      *
-     * @return baseUrl 如：http://192.168.8.8:8887/static/
+     * @return baseUrl 如：http://192.168.8.8:8887/
      */
-    public static String getStaticResourcesBaseUrl() {
+    public static StringBuilder getStaticResourceBaseUrl() {
         HttpServletRequest request = getCurrentHttpServletRequest();
-        String staticPath = App.getProperty("static-path");
         return new StringBuilder()
                 .append(request.getScheme())
                 .append("://")
                 .append(request.getServerName())
                 .append(":")
                 .append(request.getServerPort())
-                .append(staticPath)
-                .append("/")
-                .toString();
+                .append("/");
+    }
+
+    public static String getStaticResourceUrl(String filePath) {
+        return getStaticResourceBaseUrl().append(filePath).toString();
     }
 }

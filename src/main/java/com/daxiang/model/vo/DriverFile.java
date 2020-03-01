@@ -14,14 +14,14 @@ public class DriverFile {
      * 1.windows 2.linux 3.macos
      */
     private Integer platform;
-    private String fileName;
+    private String filePath;
 
     @JSONField(serialize = false) // 不会序列化的表中
     private String downloadUrl;
 
     public String getDownloadUrl() {
-        if (!StringUtils.isEmpty(fileName)) {
-            return HttpServletUtil.getStaticResourcesBaseUrl() + fileName;
+        if (!StringUtils.isEmpty(filePath)) {
+            return HttpServletUtil.getStaticResourceUrl(filePath);
         }
         return null;
     }

@@ -148,11 +148,11 @@ public class DeviceTestTaskService {
         if (!StringUtils.isEmpty(sourceTestcase.getFailInfo())) {
             targetTestcase.setFailInfo(sourceTestcase.getFailInfo());
         }
-        if (!StringUtils.isEmpty(sourceTestcase.getFailImgName())) {
-            targetTestcase.setFailImgName(sourceTestcase.getFailImgName());
+        if (!StringUtils.isEmpty(sourceTestcase.getFailImgPath())) {
+            targetTestcase.setFailImgPath(sourceTestcase.getFailImgPath());
         }
-        if (!StringUtils.isEmpty(sourceTestcase.getVideoName())) {
-            targetTestcase.setVideoName(sourceTestcase.getVideoName());
+        if (!StringUtils.isEmpty(sourceTestcase.getVideoPath())) {
+            targetTestcase.setVideoPath(sourceTestcase.getVideoPath());
         }
     }
 

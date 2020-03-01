@@ -46,7 +46,7 @@ public class AppService {
             return response;
         }
 
-        app.setFileName(response.getData().getFileName());
+        app.setFilePath(response.getData().getFilePath());
         app.setUploadTime(new Date());
         app.setUploadorUid(SecurityUtil.getCurrentUserId());
 
@@ -152,7 +152,7 @@ public class AppService {
 
         Response agentResponse = agentApi.aaptDumpBadging(agentVo.get().getIp(),
                 agentVo.get().getPort(),
-                HttpServletUtil.getStaticResourcesBaseUrl() + app.getFileName());
+                HttpServletUtil.getStaticResourceUrl(app.getFilePath()));
         if (!agentResponse.isSuccess()) {
             return agentResponse;
         }

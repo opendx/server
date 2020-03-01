@@ -10,4 +10,4 @@
 *.class
 .checkstyle
 .idea
-/upload
+/static

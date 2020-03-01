@@ -13,6 +13,6 @@ public class AppVo extends App {
     private String downloadUrl;
 
     public String getDownloadUrl() {
-        return HttpServletUtil.getStaticResourcesBaseUrl() + getFileName();
+        return HttpServletUtil.getStaticResourceUrl(getFilePath());
     }
 }

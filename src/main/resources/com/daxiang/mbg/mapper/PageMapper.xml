@@ -7,7 +7,7 @@
     <result column="project_id" jdbcType="INTEGER" property="projectId" />
     <result column="category_id" jdbcType="INTEGER" property="categoryId" />
     <result column="description" jdbcType="VARCHAR" property="description" />
-    <result column="img_name" jdbcType="VARCHAR" property="imgName" />
+    <result column="img_path" jdbcType="VARCHAR" property="imgPath" />
     <result column="window_height" jdbcType="INTEGER" property="windowHeight" />
     <result column="window_width" jdbcType="INTEGER" property="windowWidth" />
     <result column="window_orientation" jdbcType="VARCHAR" property="windowOrientation" />
@@ -78,7 +78,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, name, project_id, category_id, description, img_name, window_height, window_width, 
+    id, name, project_id, category_id, description, img_path, window_height, window_width, 
     window_orientation, device_id, creator_uid, create_time
   </sql>
   <sql id="Blob_Column_List">
@@ -137,13 +137,13 @@
       SELECT LAST_INSERT_ID()
     </selectKey>
     insert into page (name, project_id, category_id, 
-      description, img_name, window_height, 
+      description, img_path, window_height, 
       window_width, window_orientation, device_id, 
       creator_uid, create_time, window_hierarchy, 
       elements
       )
     values (#{name,jdbcType=VARCHAR}, #{projectId,jdbcType=INTEGER}, #{categoryId,jdbcType=INTEGER}, 
-      #{description,jdbcType=VARCHAR}, #{imgName,jdbcType=VARCHAR}, #{windowHeight,jdbcType=INTEGER}, 
+      #{description,jdbcType=VARCHAR}, #{imgPath,jdbcType=VARCHAR}, #{windowHeight,jdbcType=INTEGER}, 
       #{windowWidth,jdbcType=INTEGER}, #{windowOrientation,jdbcType=VARCHAR}, #{deviceId,jdbcType=VARCHAR}, 
       #{creatorUid,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{windowHierarchy,jdbcType=LONGVARCHAR}, 
       #{elements,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.ElementListTypeHandler}
@@ -167,8 +167,8 @@
       <if test="description != null">
         description,
       </if>
-      <if test="imgName != null">
-        img_name,
+      <if test="imgPath != null">
+        img_path,
       </if>
       <if test="windowHeight != null">
         window_height,
@@ -208,8 +208,8 @@
       <if test="description != null">
         #{description,jdbcType=VARCHAR},
       </if>
-      <if test="imgName != null">
-        #{imgName,jdbcType=VARCHAR},
+      <if test="imgPath != null">
+        #{imgPath,jdbcType=VARCHAR},
       </if>
       <if test="windowHeight != null">
         #{windowHeight,jdbcType=INTEGER},
@@ -261,8 +261,8 @@
       <if test="record.description != null">
         description = #{record.description,jdbcType=VARCHAR},
       </if>
-      <if test="record.imgName != null">
-        img_name = #{record.imgName,jdbcType=VARCHAR},
+      <if test="record.imgPath != null">
+        img_path = #{record.imgPath,jdbcType=VARCHAR},
       </if>
       <if test="record.windowHeight != null">
         window_height = #{record.windowHeight,jdbcType=INTEGER},
@@ -300,7 +300,7 @@
       project_id = #{record.projectId,jdbcType=INTEGER},
       category_id = #{record.categoryId,jdbcType=INTEGER},
       description = #{record.description,jdbcType=VARCHAR},
-      img_name = #{record.imgName,jdbcType=VARCHAR},
+      img_path = #{record.imgPath,jdbcType=VARCHAR},
       window_height = #{record.windowHeight,jdbcType=INTEGER},
       window_width = #{record.windowWidth,jdbcType=INTEGER},
       window_orientation = #{record.windowOrientation,jdbcType=VARCHAR},
@@ -320,7 +320,7 @@
       project_id = #{record.projectId,jdbcType=INTEGER},
       category_id = #{record.categoryId,jdbcType=INTEGER},
       description = #{record.description,jdbcType=VARCHAR},
-      img_name = #{record.imgName,jdbcType=VARCHAR},
+      img_path = #{record.imgPath,jdbcType=VARCHAR},
       window_height = #{record.windowHeight,jdbcType=INTEGER},
       window_width = #{record.windowWidth,jdbcType=INTEGER},
       window_orientation = #{record.windowOrientation,jdbcType=VARCHAR},
@@ -346,8 +346,8 @@
       <if test="description != null">
         description = #{description,jdbcType=VARCHAR},
       </if>
-      <if test="imgName != null">
-        img_name = #{imgName,jdbcType=VARCHAR},
+      <if test="imgPath != null">
+        img_path = #{imgPath,jdbcType=VARCHAR},
       </if>
       <if test="windowHeight != null">
         window_height = #{windowHeight,jdbcType=INTEGER},
@@ -382,7 +382,7 @@
       project_id = #{projectId,jdbcType=INTEGER},
       category_id = #{categoryId,jdbcType=INTEGER},
       description = #{description,jdbcType=VARCHAR},
-      img_name = #{imgName,jdbcType=VARCHAR},
+      img_path = #{imgPath,jdbcType=VARCHAR},
       window_height = #{windowHeight,jdbcType=INTEGER},
       window_width = #{windowWidth,jdbcType=INTEGER},
       window_orientation = #{windowOrientation,jdbcType=VARCHAR},
@@ -399,7 +399,7 @@
       project_id = #{projectId,jdbcType=INTEGER},
       category_id = #{categoryId,jdbcType=INTEGER},
       description = #{description,jdbcType=VARCHAR},
-      img_name = #{imgName,jdbcType=VARCHAR},
+      img_path = #{imgPath,jdbcType=VARCHAR},
       window_height = #{windowHeight,jdbcType=INTEGER},
       window_width = #{windowWidth,jdbcType=INTEGER},
       window_orientation = #{windowOrientation,jdbcType=VARCHAR},

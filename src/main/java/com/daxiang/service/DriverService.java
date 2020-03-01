@@ -147,9 +147,9 @@ public class DriverService {
             if (!CollectionUtils.isEmpty(driverFiles)) {
                 Optional<DriverFile> driverFile = driverFiles.stream().filter(f -> platform.equals(f.getPlatform())).findFirst();
                 if (driverFile.isPresent()) {
-                    String fileName = driverFile.get().getFileName();
-                    if (!StringUtils.isEmpty(fileName)) {
-                        return Response.success(ImmutableMap.of("downloadUrl", HttpServletUtil.getStaticResourcesBaseUrl() + fileName));
+                    String filePath = driverFile.get().getFilePath();
+                    if (!StringUtils.isEmpty(filePath)) {
+                        return Response.success(ImmutableMap.of("downloadUrl", HttpServletUtil.getStaticResourceUrl(filePath)));
                     }
                 }
             }

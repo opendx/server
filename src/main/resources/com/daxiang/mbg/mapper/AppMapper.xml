@@ -8,7 +8,7 @@
     <result column="version" jdbcType="VARCHAR" property="version" />
     <result column="package_name" jdbcType="VARCHAR" property="packageName" />
     <result column="launch_activity" jdbcType="VARCHAR" property="launchActivity" />
-    <result column="file_name" jdbcType="VARCHAR" property="fileName" />
+    <result column="file_path" jdbcType="VARCHAR" property="filePath" />
     <result column="upload_time" jdbcType="TIMESTAMP" property="uploadTime" />
     <result column="uploador_uid" jdbcType="INTEGER" property="uploadorUid" />
     <result column="project_id" jdbcType="INTEGER" property="projectId" />
@@ -72,7 +72,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, platform, name, version, package_name, launch_activity, file_name, upload_time, 
+    id, platform, name, version, package_name, launch_activity, file_path, upload_time, 
     uploador_uid, project_id
   </sql>
   <select id="selectByExample" parameterType="com.daxiang.mbg.po.AppExample" resultMap="BaseResultMap">
@@ -110,11 +110,11 @@
       SELECT LAST_INSERT_ID()
     </selectKey>
     insert into app (platform, name, version, 
-      package_name, launch_activity, file_name, 
+      package_name, launch_activity, file_path, 
       upload_time, uploador_uid, project_id
       )
     values (#{platform,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{version,jdbcType=VARCHAR}, 
-      #{packageName,jdbcType=VARCHAR}, #{launchActivity,jdbcType=VARCHAR}, #{fileName,jdbcType=VARCHAR}, 
+      #{packageName,jdbcType=VARCHAR}, #{launchActivity,jdbcType=VARCHAR}, #{filePath,jdbcType=VARCHAR}, 
       #{uploadTime,jdbcType=TIMESTAMP}, #{uploadorUid,jdbcType=INTEGER}, #{projectId,jdbcType=INTEGER}
       )
   </insert>
@@ -139,8 +139,8 @@
       <if test="launchActivity != null">
         launch_activity,
       </if>
-      <if test="fileName != null">
-        file_name,
+      <if test="filePath != null">
+        file_path,
       </if>
       <if test="uploadTime != null">
         upload_time,
@@ -168,8 +168,8 @@
       <if test="launchActivity != null">
         #{launchActivity,jdbcType=VARCHAR},
       </if>
-      <if test="fileName != null">
-        #{fileName,jdbcType=VARCHAR},
+      <if test="filePath != null">
+        #{filePath,jdbcType=VARCHAR},
       </if>
       <if test="uploadTime != null">
         #{uploadTime,jdbcType=TIMESTAMP},
@@ -209,8 +209,8 @@
       <if test="record.launchActivity != null">
         launch_activity = #{record.launchActivity,jdbcType=VARCHAR},
       </if>
-      <if test="record.fileName != null">
-        file_name = #{record.fileName,jdbcType=VARCHAR},
+      <if test="record.filePath != null">
+        file_path = #{record.filePath,jdbcType=VARCHAR},
       </if>
       <if test="record.uploadTime != null">
         upload_time = #{record.uploadTime,jdbcType=TIMESTAMP},
@@ -234,7 +234,7 @@
       version = #{record.version,jdbcType=VARCHAR},
       package_name = #{record.packageName,jdbcType=VARCHAR},
       launch_activity = #{record.launchActivity,jdbcType=VARCHAR},
-      file_name = #{record.fileName,jdbcType=VARCHAR},
+      file_path = #{record.filePath,jdbcType=VARCHAR},
       upload_time = #{record.uploadTime,jdbcType=TIMESTAMP},
       uploador_uid = #{record.uploadorUid,jdbcType=INTEGER},
       project_id = #{record.projectId,jdbcType=INTEGER}
@@ -260,8 +260,8 @@
       <if test="launchActivity != null">
         launch_activity = #{launchActivity,jdbcType=VARCHAR},
       </if>
-      <if test="fileName != null">
-        file_name = #{fileName,jdbcType=VARCHAR},
+      <if test="filePath != null">
+        file_path = #{filePath,jdbcType=VARCHAR},
       </if>
       <if test="uploadTime != null">
         upload_time = #{uploadTime,jdbcType=TIMESTAMP},
@@ -282,7 +282,7 @@
       version = #{version,jdbcType=VARCHAR},
       package_name = #{packageName,jdbcType=VARCHAR},
       launch_activity = #{launchActivity,jdbcType=VARCHAR},
-      file_name = #{fileName,jdbcType=VARCHAR},
+      file_path = #{filePath,jdbcType=VARCHAR},
       upload_time = #{uploadTime,jdbcType=TIMESTAMP},
       uploador_uid = #{uploadorUid,jdbcType=INTEGER},
       project_id = #{projectId,jdbcType=INTEGER}

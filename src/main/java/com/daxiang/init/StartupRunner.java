@@ -1,5 +1,6 @@
 package com.daxiang.init;
 
+import com.daxiang.model.UploadFile;
 import com.daxiang.service.TestPlanService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,31 +17,30 @@ import java.io.File;
 @Component
 @Slf4j
 public class StartupRunner implements ApplicationRunner {
-    @Value("${web.upload-img-path}")
-    private String uploadImgPath;
-    @Value("${web.upload-video-path}")
-    private String uploadVideoPath;
-    @Value("${web.upload-app-path}")
-    private String uploadAppPath;
-    @Value("${web.upload-driver-path}")
-    private String uploadDriverPath;
-    @Value("${web.upload-other-path}")
-    private String uploadOtherPath;
 
     @Autowired
     private TestPlanService testPlanService;
 
+    @Value("${static-location}/")
+    private String staticLocation;
+
     @Override
     public void run(ApplicationArguments args) {
+        String uploadImgPath = staticLocation + UploadFile.IMG_PATH;
+        String uploadVideoPath = staticLocation + UploadFile.VIDEO_PATH;
+        String uploadAppPath = staticLocation + UploadFile.APP_PATH;
+        String uploadDriverPath = staticLocation + UploadFile.DRIVER_PATH;
+        String uploadOtherFilePath = staticLocation + UploadFile.OTHER_FILE_PATH;
+
         File uploadImgDir = new File(uploadImgPath);
         if (!uploadImgDir.exists()) {
-            log.info("创建图片上传存放目录 -> {}", uploadImgPath);
+            log.info("创建img上传存放目录 -> {}", uploadImgPath);
             uploadImgDir.mkdirs();
         }
 
         File uploadVideoDir = new File(uploadVideoPath);
         if (!uploadVideoDir.exists()) {
-            log.info("创建视频上传存放目录 -> {}", uploadVideoPath);
+            log.info("创建video上传存放目录 -> {}", uploadVideoPath);
             uploadVideoDir.mkdirs();
         }
 
@@ -56,10 +56,10 @@ public class StartupRunner implements ApplicationRunner {
             uploadDriverDir.mkdirs();
         }
 
-        File uploadOtherDir = new File(uploadOtherPath);
-        if (!uploadOtherDir.exists()) {
-            log.info("创建other上传存放目录 -> {}", uploadOtherPath);
-            uploadOtherDir.mkdirs();
+        File uploadOtherFileDir = new File(uploadOtherFilePath);
+        if (!uploadOtherFileDir.exists()) {
+            log.info("创建other file上传存放目录 -> {}", uploadOtherFilePath);
+            uploadOtherFileDir.mkdirs();
         }
 
         // 启动server时，按cron表达式执行所有开启的定时任务

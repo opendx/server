@@ -705,73 +705,73 @@ public class DeviceExample {
             return (Criteria) this;
         }
 
-        public Criteria andImgNameIsNull() {
-            addCriterion("img_name is null");
+        public Criteria andImgPathIsNull() {
+            addCriterion("img_path is null");
             return (Criteria) this;
         }
 
-        public Criteria andImgNameIsNotNull() {
-            addCriterion("img_name is not null");
+        public Criteria andImgPathIsNotNull() {
+            addCriterion("img_path is not null");
             return (Criteria) this;
         }
 
-        public Criteria andImgNameEqualTo(String value) {
-            addCriterion("img_name =", value, "imgName");
+        public Criteria andImgPathEqualTo(String value) {
+            addCriterion("img_path =", value, "imgPath");
             return (Criteria) this;
         }
 
-        public Criteria andImgNameNotEqualTo(String value) {
-            addCriterion("img_name <>", value, "imgName");
+        public Criteria andImgPathNotEqualTo(String value) {
+            addCriterion("img_path <>", value, "imgPath");
             return (Criteria) this;
         }
 
-        public Criteria andImgNameGreaterThan(String value) {
-            addCriterion("img_name >", value, "imgName");
+        public Criteria andImgPathGreaterThan(String value) {
+            addCriterion("img_path >", value, "imgPath");
             return (Criteria) this;
         }
 
-        public Criteria andImgNameGreaterThanOrEqualTo(String value) {
-            addCriterion("img_name >=", value, "imgName");
+        public Criteria andImgPathGreaterThanOrEqualTo(String value) {
+            addCriterion("img_path >=", value, "imgPath");
             return (Criteria) this;
         }
 
-        public Criteria andImgNameLessThan(String value) {
-            addCriterion("img_name <", value, "imgName");
+        public Criteria andImgPathLessThan(String value) {
+            addCriterion("img_path <", value, "imgPath");
             return (Criteria) this;
         }
 
-        public Criteria andImgNameLessThanOrEqualTo(String value) {
-            addCriterion("img_name <=", value, "imgName");
+        public Criteria andImgPathLessThanOrEqualTo(String value) {
+            addCriterion("img_path <=", value, "imgPath");
             return (Criteria) this;
         }
 
-        public Criteria andImgNameLike(String value) {
-            addCriterion("img_name like", value, "imgName");
+        public Criteria andImgPathLike(String value) {
+            addCriterion("img_path like", value, "imgPath");
             return (Criteria) this;
         }
 
-        public Criteria andImgNameNotLike(String value) {
-            addCriterion("img_name not like", value, "imgName");
+        public Criteria andImgPathNotLike(String value) {
+            addCriterion("img_path not like", value, "imgPath");
             return (Criteria) this;
         }
 
-        public Criteria andImgNameIn(List<String> values) {
-            addCriterion("img_name in", values, "imgName");
+        public Criteria andImgPathIn(List<String> values) {
+            addCriterion("img_path in", values, "imgPath");
             return (Criteria) this;
         }
 
-        public Criteria andImgNameNotIn(List<String> values) {
-            addCriterion("img_name not in", values, "imgName");
+        public Criteria andImgPathNotIn(List<String> values) {
+            addCriterion("img_path not in", values, "imgPath");
             return (Criteria) this;
         }
 
-        public Criteria andImgNameBetween(String value1, String value2) {
-            addCriterion("img_name between", value1, value2, "imgName");
+        public Criteria andImgPathBetween(String value1, String value2) {
+            addCriterion("img_path between", value1, value2, "imgPath");
             return (Criteria) this;
         }
 
-        public Criteria andImgNameNotBetween(String value1, String value2) {
-            addCriterion("img_name not between", value1, value2, "imgName");
+        public Criteria andImgPathNotBetween(String value1, String value2) {
+            addCriterion("img_path not between", value1, value2, "imgPath");
             return (Criteria) this;
         }
 

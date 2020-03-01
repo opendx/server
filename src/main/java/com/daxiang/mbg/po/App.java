@@ -50,11 +50,11 @@ public class App implements Serializable {
     private String launchActivity;
 
     /**
-     * 服务端保存的文件名
+     * 服务端保存的文件路径
      *
      * @mbg.generated
      */
-    private String fileName;
+    private String filePath;
 
     /**
      * 上传时间
@@ -128,12 +128,12 @@ public class App implements Serializable {
         this.launchActivity = launchActivity;
     }
 
-    public String getFileName() {
-        return fileName;
+    public String getFilePath() {
+        return filePath;
     }
 
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
     }
 
     public Date getUploadTime() {
@@ -172,7 +172,7 @@ public class App implements Serializable {
         sb.append(", version=").append(version);
         sb.append(", packageName=").append(packageName);
         sb.append(", launchActivity=").append(launchActivity);
-        sb.append(", fileName=").append(fileName);
+        sb.append(", filePath=").append(filePath);
         sb.append(", uploadTime=").append(uploadTime);
         sb.append(", uploadorUid=").append(uploadorUid);
         sb.append(", projectId=").append(projectId);
