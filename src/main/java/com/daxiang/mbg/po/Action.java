@@ -3,6 +3,7 @@ package com.daxiang.mbg.po;
 import com.daxiang.model.action.LocalVar;
 import com.daxiang.model.action.Param;
 import com.daxiang.model.action.Step;
+import com.daxiang.validator.annotation.HasLengthIfNotEmpty;
 import com.daxiang.validator.group.SaveActionGroup;
 import com.daxiang.validator.group.UpdateGroup;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -193,6 +194,7 @@ public class Action implements Serializable {
      *
      * @mbg.generated
      */
+    @HasLengthIfNotEmpty(message = "javaImport不能为空")
     private java.util.List<String> javaImports;
 
     /**
