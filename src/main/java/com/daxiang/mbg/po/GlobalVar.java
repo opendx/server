@@ -1,6 +1,7 @@
 package com.daxiang.mbg.po;
 
 import com.daxiang.model.environment.EnvironmentValue;
+import com.daxiang.validator.annotation.JavaIdentifier;
 import com.daxiang.validator.annotation.NoDuplicateEnvironment;
 import com.daxiang.validator.group.UpdateGroup;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -22,7 +23,7 @@ public class GlobalVar implements Serializable {
      *
      * @mbg.generated
      */
-    @NotBlank(message = "变量名不能为空")
+    @JavaIdentifier(message = "变量名不合法")
     private String name;
 
     /**

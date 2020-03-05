@@ -89,7 +89,7 @@ public class Action implements Serializable {
      *
      * @mbg.generated
      */
-    @NotBlank(message = "返回值不能为空")
+    @NotBlank(message = "返回值类型不能为空")
     private String returnValue;
 
     /**

@@ -1,5 +1,6 @@
 package com.daxiang.model.action;
 
+import com.daxiang.validator.annotation.JavaIdentifier;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
@@ -19,7 +20,7 @@ public class Param {
     /**
      * 参数名
      */
-    @NotBlank(message = "方法参数名不能为空")
+    @JavaIdentifier(message = "方法参数名不合法")
     private String name;
     /**
      * 参数描述

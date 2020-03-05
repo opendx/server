@@ -1,5 +1,6 @@
 package com.daxiang.model.page;
 
+import com.daxiang.validator.annotation.JavaIdentifier;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
@@ -11,7 +12,7 @@ import java.util.List;
  */
 @Data
 public class Element {
-    @NotBlank(message = "element name不能为空")
+    @JavaIdentifier(message = "元素名不合法")
     private String name;
     @NotEmpty(message = "findBy不能为空")
     private List<String> findBy;

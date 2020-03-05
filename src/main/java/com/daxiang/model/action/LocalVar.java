@@ -1,6 +1,7 @@
 package com.daxiang.model.action;
 
 import com.daxiang.model.environment.EnvironmentValue;
+import com.daxiang.validator.annotation.JavaIdentifier;
 import com.daxiang.validator.annotation.NoDuplicateEnvironment;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
@@ -23,7 +24,7 @@ public class LocalVar {
     /**
      * 局部变量名
      */
-    @NotBlank(message = "局部变量名不能为空")
+    @JavaIdentifier(message = "局部变量名不合法")
     private String name;
     /**
      * 局部变量值

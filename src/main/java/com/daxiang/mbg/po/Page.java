@@ -1,5 +1,6 @@
 package com.daxiang.mbg.po;
 
+import com.daxiang.validator.annotation.JavaIdentifier;
 import com.daxiang.validator.annotation.NoDuplicateElement;
 import com.daxiang.validator.group.UpdateGroup;
 
@@ -18,7 +19,7 @@ public class Page implements Serializable {
      *
      * @mbg.generated
      */
-    @NotBlank(message = "page名不能为空")
+    @JavaIdentifier(message = "Page名不合法")
     private String name;
 
     /**
