@@ -16,9 +16,9 @@ import java.util.Date;
 @Data
 public class Testcase extends Action {
 
-    public static final Integer FAIL_STATUS = 0;
-    public static final Integer PASS_STATUS = 1;
-    public static final Integer SKIP_STATUS = 2;
+    public static final int FAIL_STATUS = 0;
+    public static final int PASS_STATUS = 1;
+    public static final int SKIP_STATUS = 2;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS", timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS")

@@ -28,23 +28,23 @@ public class Action implements Serializable {
     /**
      * 基础action(代码形式的)
      */
-    public static final Integer TYPE_BASE = 1;
+    public static final int TYPE_BASE = 1;
     /**
      * 用户在网页前端封装的action
      */
-    public static final Integer TYPE_ENCAPSULATION = 2;
+    public static final int TYPE_ENCAPSULATION = 2;
     /**
      * 测试用例action
      */
-    public static final Integer TYPE_TESTCASE = 3;
+    public static final int TYPE_TESTCASE = 3;
     /**
      * 有返回值
      */
-    public static final Integer HAS_RETURN_VALUE = 1;
+    public static final int HAS_RETURN_VALUE = 1;
     /**
      * 无返回值
      */
-    public static final Integer NO_RETURN_VALUE = 0;
+    public static final int NO_RETURN_VALUE = 0;
 
     /**
      * 主键id
