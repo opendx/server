@@ -18,6 +18,7 @@
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.daxiang.mbg.po.Page">
     <result column="window_hierarchy" jdbcType="LONGVARCHAR" property="windowHierarchy" />
     <result column="elements" jdbcType="LONGVARCHAR" property="elements" typeHandler="com.daxiang.typehandler.ElementListTypeHandler" />
+    <result column="bys" jdbcType="LONGVARCHAR" property="bys" typeHandler="com.daxiang.typehandler.ByListTypeHandler" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -82,7 +83,7 @@
     window_orientation, device_id, creator_uid, create_time
   </sql>
   <sql id="Blob_Column_List">
-    window_hierarchy, elements
+    window_hierarchy, elements, bys
   </sql>
   <select id="selectByExampleWithBLOBs" parameterType="com.daxiang.mbg.po.PageExample" resultMap="ResultMapWithBLOBs">
     select
@@ -140,13 +141,15 @@
       description, img_path, window_height, 
       window_width, window_orientation, device_id, 
       creator_uid, create_time, window_hierarchy, 
-      elements
+      elements, 
+      bys
       )
     values (#{name,jdbcType=VARCHAR}, #{projectId,jdbcType=INTEGER}, #{categoryId,jdbcType=INTEGER}, 
       #{description,jdbcType=VARCHAR}, #{imgPath,jdbcType=VARCHAR}, #{windowHeight,jdbcType=INTEGER}, 
       #{windowWidth,jdbcType=INTEGER}, #{windowOrientation,jdbcType=VARCHAR}, #{deviceId,jdbcType=VARCHAR}, 
       #{creatorUid,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{windowHierarchy,jdbcType=LONGVARCHAR}, 
-      #{elements,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.ElementListTypeHandler}
+      #{elements,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.ElementListTypeHandler}, 
+      #{bys,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.ByListTypeHandler}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.daxiang.mbg.po.Page">
@@ -194,6 +197,9 @@
       <if test="elements != null">
         elements,
       </if>
+      <if test="bys != null">
+        bys,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="name != null">
@@ -234,6 +240,9 @@
       </if>
       <if test="elements != null">
         #{elements,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.ElementListTypeHandler},
+      </if>
+      <if test="bys != null">
+        #{bys,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.ByListTypeHandler},
       </if>
     </trim>
   </insert>
@@ -288,6 +297,9 @@
       <if test="record.elements != null">
         elements = #{record.elements,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.ElementListTypeHandler},
       </if>
+      <if test="record.bys != null">
+        bys = #{record.bys,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.ByListTypeHandler},
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -308,7 +320,8 @@
       creator_uid = #{record.creatorUid,jdbcType=INTEGER},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       window_hierarchy = #{record.windowHierarchy,jdbcType=LONGVARCHAR},
-      elements = #{record.elements,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.ElementListTypeHandler}
+      elements = #{record.elements,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.ElementListTypeHandler},
+      bys = #{record.bys,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.ByListTypeHandler}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -373,6 +386,9 @@
       <if test="elements != null">
         elements = #{elements,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.ElementListTypeHandler},
       </if>
+      <if test="bys != null">
+        bys = #{bys,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.ByListTypeHandler},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -390,7 +406,8 @@
       creator_uid = #{creatorUid,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       window_hierarchy = #{windowHierarchy,jdbcType=LONGVARCHAR},
-      elements = #{elements,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.ElementListTypeHandler}
+      elements = #{elements,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.ElementListTypeHandler},
+      bys = #{bys,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.ByListTypeHandler}
     where id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.daxiang.mbg.po.Page">

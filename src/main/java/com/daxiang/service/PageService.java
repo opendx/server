@@ -177,7 +177,10 @@ public class PageService {
         query.setProjectId(projectId);
         List<Page> pages = selectByPage(query);
 
-        List<Integer> categoryIds = pages.stream().filter(p -> Objects.nonNull(p.getCategoryId())).map(Page::getCategoryId).collect(Collectors.toList());
+        List<Integer> categoryIds = pages.stream()
+                .map(Page::getCategoryId)
+                .filter(Objects::nonNull)
+                .distinct().collect(Collectors.toList());
         List<Category> categories = categoryService.selectByPrimaryKeys(categoryIds);
 
         // 带分类的page

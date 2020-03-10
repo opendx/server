@@ -216,8 +216,10 @@ public class ActionService {
         groupByActionTypeMap.forEach((type, actionList) -> {
             ActionCascaderVo root = new ActionCascaderVo();
             root.setName(type == Action.TYPE_BASE ? "基础组件" : type == Action.TYPE_TESTCASE ? "测试用例" : "封装组件");
+
             List<ActionCascaderVo> rootChildren = new ArrayList<>();
             root.setChildren(rootChildren);
+
             if (type == Action.TYPE_TESTCASE) {
                 handleTestcases(actionList, rootChildren);
             } else {
@@ -231,8 +233,12 @@ public class ActionService {
 
     private void handleNonTestcases(List<Action> actionList, List<ActionCascaderVo> rootChildren) {
         // 分类
-        List<Integer> categoryIds = actionList.stream().filter(action -> Objects.nonNull(action.getCategoryId())).map(Action::getCategoryId).collect(Collectors.toList());
-        List<Category> categories = categoryService.selectByPrimaryKeys(categoryIds).stream().collect(Collectors.toList());
+        List<Integer> categoryIds = actionList.stream()
+                .map(Action::getCategoryId)
+                .filter(Objects::nonNull)
+                .distinct()
+                .collect(Collectors.toList());
+        List<Category> categories = categoryService.selectByPrimaryKeys(categoryIds);
 
         // 有分类的action
         categories.forEach(category -> {
@@ -241,7 +247,7 @@ public class ActionService {
             categoryCascaderVo.setName(category.getName());
             // 有分类的actions
             List<ActionCascaderVo> actionCascaderVosInCategory = actionList.stream()
-                    .filter(action -> action.getCategoryId() == category.getId())
+                    .filter(action -> category.getId().equals(action.getCategoryId()))
                     .map(action -> ActionCascaderVo.convert(action)).collect(Collectors.toList());
             categoryCascaderVo.setChildren(actionCascaderVosInCategory);
             rootChildren.add(categoryCascaderVo);
@@ -256,8 +262,12 @@ public class ActionService {
 
     private void handleTestcases(List<Action> testcaseList, List<ActionCascaderVo> rootChildren) {
         // 测试集
-        List<Integer> testSuiteIds = testcaseList.stream().filter(action -> Objects.nonNull(action.getTestSuiteId())).map(Action::getTestSuiteId).collect(Collectors.toList());
-        List<TestSuite> testSuites = testSuiteService.selectByPrimaryKeys(testSuiteIds).stream().collect(Collectors.toList());
+        List<Integer> testSuiteIds = testcaseList.stream()
+                .map(Action::getTestSuiteId)
+                .filter(Objects::nonNull)
+                .distinct()
+                .collect(Collectors.toList());
+        List<TestSuite> testSuites = testSuiteService.selectByPrimaryKeys(testSuiteIds);
 
         // 有测试集的testcases
         testSuites.forEach(testSuite -> {
@@ -266,7 +276,7 @@ public class ActionService {
             testSuiteCascaderVo.setName(testSuite.getName());
             // 有测试集的actions
             List<ActionCascaderVo> actionCascaderVosInTestSuite = testcaseList.stream()
-                    .filter(action -> action.getTestSuiteId() == testSuite.getId())
+                    .filter(action -> testSuite.getId().equals(action.getTestSuiteId()))
                     .map(action -> ActionCascaderVo.convert(action)).collect(Collectors.toList());
             testSuiteCascaderVo.setChildren(actionCascaderVosInTestSuite);
             rootChildren.add(testSuiteCascaderVo);

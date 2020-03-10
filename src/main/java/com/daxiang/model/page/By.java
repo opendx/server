@@ -11,12 +11,12 @@ import java.util.List;
  * Created by jiangyitao.
  */
 @Data
-public class Element {
-    @JavaIdentifier(message = "element name不合法")
+public class By {
+    @JavaIdentifier(message = "By name不合法")
     private String name;
-    @NotEmpty(message = "element findBy不能为空")
+    @NotEmpty(message = "By findBy不能为空")
     private List<String> findBy;
-    @NotBlank(message = "element value不能为空")
+    @NotBlank(message = "By value不能为空")
     private String value;
     private String description;
 }

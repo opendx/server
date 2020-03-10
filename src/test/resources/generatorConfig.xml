@@ -66,10 +66,11 @@
             <!--<generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
             <!--<columnOverride column="environment_values" typeHandler="com.daxiang.typehandler.EnvironmentValueListTypeHandler" javaType="java.util.List&lt;com.daxiang.model.environment.EnvironmentValue&gt;" jdbcType="LONGVARCHAR"/>-->
         <!--</table>-->
-        <!--<table tableName="page">-->
-            <!--<generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
-            <!--<columnOverride column="elements" typeHandler="com.daxiang.typehandler.ElementListTypeHandler" javaType="java.util.List&lt;com.daxiang.model.page.Element&gt;" jdbcType="LONGVARCHAR"/>-->
-        <!--</table>-->
+        <table tableName="page">
+            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
+            <columnOverride column="elements" typeHandler="com.daxiang.typehandler.ElementListTypeHandler" javaType="java.util.List&lt;com.daxiang.model.page.Element&gt;" jdbcType="LONGVARCHAR"/>
+            <columnOverride column="bys" typeHandler="com.daxiang.typehandler.ByListTypeHandler" javaType="java.util.List&lt;com.daxiang.model.page.By&gt;" jdbcType="LONGVARCHAR"/>
+        </table>
         <!--<table tableName="project">-->
             <!--<generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
         <!--</table>-->
@@ -97,11 +98,11 @@
         <!--<table tableName="user_project">-->
             <!--<generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
         <!--</table>-->
-        <table tableName="driver">
-            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
-            <columnOverride column="files" typeHandler="com.daxiang.typehandler.DriverFileListTypeHandler" javaType="java.util.List&lt;com.daxiang.model.vo.DriverFile&gt;" jdbcType="LONGVARCHAR"/>
-            <columnOverride column="device_ids" typeHandler="com.daxiang.typehandler.StringListTypeHandler" javaType="java.util.List&lt;String&gt;" jdbcType="LONGVARCHAR"/>
-        </table>
+        <!--<table tableName="driver">-->
+            <!--<generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
+            <!--<columnOverride column="files" typeHandler="com.daxiang.typehandler.DriverFileListTypeHandler" javaType="java.util.List&lt;com.daxiang.model.vo.DriverFile&gt;" jdbcType="LONGVARCHAR"/>-->
+            <!--<columnOverride column="device_ids" typeHandler="com.daxiang.typehandler.StringListTypeHandler" javaType="java.util.List&lt;String&gt;" jdbcType="LONGVARCHAR"/>-->
+        <!--</table>-->
         <!--<table tableName="environment">-->
             <!--<generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
         <!--</table>-->

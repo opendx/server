@@ -144,7 +144,7 @@ DELETE FROM action WHERE id <= 23; -- 注意！！！ 重新导入基础action h
 ALTER TABLE action
 ADD COLUMN `action_imports` json NULL COMMENT 'action imports' AFTER `java_imports`;
 
--- 0.3.5
+-- 0.3.7
 ALTER TABLE user
 ADD COLUMN `status` tinyint(4) NOT NULL DEFAULT 1 COMMENT '状态，0:禁用 1:正常' AFTER `nick_name`;
 
@@ -202,3 +202,8 @@ CHANGE COLUMN `img_url` `img_path` varchar(255) NULL COMMENT '服务端保存的
 
 ALTER TABLE `driver`
 CHANGE COLUMN `urls` `files` json NOT NULL COMMENT '各平台文件，1.windows 2.linux 3.macos' AFTER `type`;
+
+ALTER TABLE `page`
+ADD COLUMN `bys` json NULL COMMENT 'By' AFTER `elements`;
+
+UPDATE page SET bys = '[]';

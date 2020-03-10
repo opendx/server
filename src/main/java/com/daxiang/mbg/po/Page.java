@@ -1,11 +1,11 @@
 package com.daxiang.mbg.po;
 
 import com.daxiang.validator.annotation.JavaIdentifier;
+import com.daxiang.validator.annotation.NoDuplicateBy;
 import com.daxiang.validator.annotation.NoDuplicateElement;
 import com.daxiang.validator.group.UpdateGroup;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
@@ -108,6 +108,15 @@ public class Page implements Serializable {
     @Valid
     @NoDuplicateElement(message = "元素名不能重复")
     private java.util.List<com.daxiang.model.page.Element> elements;
+
+    /**
+     * By
+     *
+     * @mbg.generated
+     */
+    @Valid
+    @NoDuplicateBy(message = "By name不能重复")
+    private java.util.List<com.daxiang.model.page.By> bys;
 
     private static final long serialVersionUID = 1L;
 
@@ -223,6 +232,14 @@ public class Page implements Serializable {
         this.elements = elements;
     }
 
+    public java.util.List<com.daxiang.model.page.By> getBys() {
+        return bys;
+    }
+
+    public void setBys(java.util.List<com.daxiang.model.page.By> bys) {
+        this.bys = bys;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -243,6 +260,7 @@ public class Page implements Serializable {
         sb.append(", createTime=").append(createTime);
         sb.append(", windowHierarchy=").append(windowHierarchy);
         sb.append(", elements=").append(elements);
+        sb.append(", bys=").append(bys);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

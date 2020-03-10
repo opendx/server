@@ -164,6 +164,7 @@ CREATE TABLE `page` (
   `window_hierarchy` mediumtext COMMENT '页面布局',
   `device_id` varchar(100) DEFAULT NULL COMMENT '图片所属的设备id',
   `elements` json NULL COMMENT '元素',
+  `bys` json NULL COMMENT 'By',
   `creator_uid` int(11) DEFAULT NULL COMMENT '创建人id',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE,
