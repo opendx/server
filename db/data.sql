@@ -16,4 +16,5 @@ INSERT INTO `role`(`id`, `name`, `alias`) VALUES (9, 'action', 'action管理员'
 INSERT INTO `role`(`id`, `name`, `alias`) VALUES (10, 'testcase', '测试用例管理员');
 INSERT INTO `role`(`id`, `name`, `alias`) VALUES (11, 'testPlan', '测试计划管理员');
 INSERT INTO `role`(`id`, `name`, `alias`) VALUES (12, 'testTask', '测试任务管理员');
+INSERT INTO `role`(`id`, `name`, `alias`) VALUES (13, 'testSuite', '测试集管理员');
 

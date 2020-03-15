@@ -48,6 +48,8 @@ public class TestTaskService {
     private PageService pageService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private TestSuiteService testSuiteService;
 
     /**
      * 提交测试任务
@@ -65,22 +67,22 @@ public class TestTaskService {
         }
 
         // 待测试的测试用例
-        List<Action> testcases = actionService.findByTestSuitIds(testPlan.getTestSuites()).stream()
+        List<Integer> testcaseIds = testSuiteService.selectByPrimaryKeys(testPlan.getTestSuites()).stream()
+                .flatMap(testSuite -> testSuite.getTestcases().stream())
+                .distinct().collect(Collectors.toList());
+
+        List<Action> testcases = actionService.selectByPrimaryKeys(testcaseIds).stream()
                 .filter(action -> action.getState() == Action.RELEASE_STATE).collect(Collectors.toList());
         if (CollectionUtils.isEmpty(testcases)) {
             return Response.fail("测试集内没有已发布的测试用例");
         }
 
+        testcaseIds = testcases.stream().map(Action::getId).collect(Collectors.toList());
         // 检查testcase依赖的testcase是否存在
         for (Action testcase : testcases) {
             List<Integer> depends = testcase.getDepends();
-            if (!CollectionUtils.isEmpty(depends)) {
-                for (Integer id : depends) {
-                    Optional<Action> any = testcases.stream().filter(tc -> tc.getId().equals(id)).findAny();
-                    if (!any.isPresent()) {
-                        return Response.fail("测试用例: " + testcase.getName() + ", 依赖的用例不在当前提测的所有用例中");
-                    }
-                }
+            if (!CollectionUtils.isEmpty(depends) && !testcaseIds.containsAll(depends)) {
+                return Response.fail("测试用例: " + testcase.getName() + ", 依赖的用例不在当前提测的所有用例中");
             }
         }
 

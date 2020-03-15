@@ -72,7 +72,7 @@ public class ActionService {
             return Response.fail("actionId不能为空");
         }
 
-        checkActionIsNotUsingByActionOrTestPlan(actionId);
+        checkAction(actionId);
 
         int deleteRow = actionMapper.deleteByPrimaryKey(actionId);
         return deleteRow == 1 ? Response.success("删除成功") : Response.fail("删除失败，请稍后重试");
@@ -88,9 +88,9 @@ public class ActionService {
         // 用例依赖不能依赖自己
         checkDepensNotSelf(action);
 
-        // action状态变为草稿或者禁用，需要检查该action没有被其他action或testplan使用
+        // action状态变为草稿或者禁用
         if (action.getState() == Action.DRAFT_STATE || action.getState() == Action.DISABLE_STATE) {
-            checkActionIsNotUsingByActionOrTestPlan(action.getId());
+            checkAction(action.getId());
         }
 
         action.setUpdateTime(new Date());
@@ -188,9 +188,6 @@ public class ActionService {
             if (action.getPageId() != null) {
                 criteria.andPageIdEqualTo(action.getPageId());
             }
-            if (action.getTestSuiteId() != null) {
-                criteria.andTestSuiteIdEqualTo(action.getTestSuiteId());
-            }
             if (action.getCategoryId() != null) {
                 criteria.andCategoryIdEqualTo(action.getCategoryId());
             }
@@ -217,22 +214,14 @@ public class ActionService {
             ActionCascaderVo root = new ActionCascaderVo();
             root.setName(type == Action.TYPE_BASE ? "基础组件" : type == Action.TYPE_TESTCASE ? "测试用例" : "封装组件");
 
-            List<ActionCascaderVo> rootChildren = new ArrayList<>();
-            root.setChildren(rootChildren);
-
-            if (type == Action.TYPE_TESTCASE) {
-                handleTestcases(actionList, rootChildren);
-            } else {
-                handleNonTestcases(actionList, rootChildren);
-            }
+            root.setChildren(getChildren(actionList));
             result.add(root);
         });
 
         return Response.success(result);
     }
 
-    private void handleNonTestcases(List<Action> actionList, List<ActionCascaderVo> rootChildren) {
-        // 分类
+    private List<ActionCascaderVo> getChildren(List<Action> actionList) {
         List<Integer> categoryIds = actionList.stream()
                 .map(Action::getCategoryId)
                 .filter(Objects::nonNull)
@@ -240,53 +229,26 @@ public class ActionService {
                 .collect(Collectors.toList());
         List<Category> categories = categoryService.selectByPrimaryKeys(categoryIds);
 
+        List<ActionCascaderVo> result = new ArrayList<>();
         // 有分类的action
         categories.forEach(category -> {
-            // 第二级
             ActionCascaderVo categoryCascaderVo = new ActionCascaderVo();
             categoryCascaderVo.setName(category.getName());
-            // 有分类的actions
+
             List<ActionCascaderVo> actionCascaderVosInCategory = actionList.stream()
                     .filter(action -> category.getId().equals(action.getCategoryId()))
                     .map(action -> ActionCascaderVo.convert(action)).collect(Collectors.toList());
             categoryCascaderVo.setChildren(actionCascaderVosInCategory);
-            rootChildren.add(categoryCascaderVo);
+            result.add(categoryCascaderVo);
         });
 
         // 没有分类的actions
         List<ActionCascaderVo> actionCascaderVosNotInCategory = actionList.stream()
                 .filter(action -> Objects.isNull(action.getCategoryId()))
                 .map(action -> ActionCascaderVo.convert(action)).collect(Collectors.toList());
-        rootChildren.addAll(actionCascaderVosNotInCategory);
-    }
+        result.addAll(actionCascaderVosNotInCategory);
 
-    private void handleTestcases(List<Action> testcaseList, List<ActionCascaderVo> rootChildren) {
-        // 测试集
-        List<Integer> testSuiteIds = testcaseList.stream()
-                .map(Action::getTestSuiteId)
-                .filter(Objects::nonNull)
-                .distinct()
-                .collect(Collectors.toList());
-        List<TestSuite> testSuites = testSuiteService.selectByPrimaryKeys(testSuiteIds);
-
-        // 有测试集的testcases
-        testSuites.forEach(testSuite -> {
-            // 第二级
-            ActionCascaderVo testSuiteCascaderVo = new ActionCascaderVo();
-            testSuiteCascaderVo.setName(testSuite.getName());
-            // 有测试集的actions
-            List<ActionCascaderVo> actionCascaderVosInTestSuite = testcaseList.stream()
-                    .filter(action -> testSuite.getId().equals(action.getTestSuiteId()))
-                    .map(action -> ActionCascaderVo.convert(action)).collect(Collectors.toList());
-            testSuiteCascaderVo.setChildren(actionCascaderVosInTestSuite);
-            rootChildren.add(testSuiteCascaderVo);
-        });
-
-        // 没有测试集的testcases
-        List<ActionCascaderVo> actionCascaderVosNotInTestSuite = testcaseList.stream()
-                .filter(action -> Objects.isNull(action.getTestSuiteId()))
-                .map(action -> ActionCascaderVo.convert(action)).collect(Collectors.toList());
-        rootChildren.addAll(actionCascaderVosNotInTestSuite);
+        return result;
     }
 
     /**
@@ -342,23 +304,20 @@ public class ActionService {
         return agentApi.debugAction(debugInfo.getAgentIp(), debugInfo.getAgentPort(), requestBody);
     }
 
-    /**
-     * 查询测试集下的测试用例
-     *
-     * @param testSuiteIds
-     * @return
-     */
-    public List<Action> findByTestSuitIds(List<Integer> testSuiteIds) {
-        if (CollectionUtils.isEmpty(testSuiteIds)) {
-            return Collections.EMPTY_LIST;
-        }
-        ActionExample actionExample = new ActionExample();
-        actionExample.createCriteria().andTestSuiteIdIn(testSuiteIds);
-        return actionMapper.selectByExampleWithBLOBs(actionExample);
-    }
-
     public Action selectByPrimaryKey(Integer actioniId) {
         return actionMapper.selectByPrimaryKey(actioniId);
+    }
+
+    public List<Action> selectByPrimaryKeys(List<Integer> actionIds) {
+        if (CollectionUtils.isEmpty(actionIds)) {
+            return Collections.EMPTY_LIST;
+        }
+
+        ActionExample example = new ActionExample();
+        ActionExample.Criteria criteria = example.createCriteria();
+
+        criteria.andIdIn(actionIds);
+        return actionMapper.selectByExampleWithBLOBs(example);
     }
 
     /**
@@ -371,11 +330,11 @@ public class ActionService {
     }
 
     /**
-     * 检查action没有被action或testplan使用
+     * 检查action没有被action或testplan或testSuite使用
      *
      * @param actionId
      */
-    private void checkActionIsNotUsingByActionOrTestPlan(Integer actionId) {
+    private void checkAction(Integer actionId) {
         // 检查action是否被steps或depends或actionImports使用
         List<Action> actions = actionDao.selectByActionIdInStepsOrDependsOrActionImports(actionId);
         if (!CollectionUtils.isEmpty(actions)) {
@@ -388,6 +347,13 @@ public class ActionService {
         if (!CollectionUtils.isEmpty(testPlans)) {
             String testPlanNames = testPlans.stream().map(TestPlan::getName).collect(Collectors.joining("、"));
             throw new BusinessException("testPlans: " + testPlanNames + ", 正在使用此action");
+        }
+
+        // 检查action是否被testSuite使用
+        List<TestSuite> testSuites = testSuiteService.findByActionId(actionId);
+        if (!CollectionUtils.isEmpty(testSuites)) {
+            String testSuiteNames = testSuites.stream().map(TestSuite::getName).collect(Collectors.joining("、"));
+            throw new BusinessException("testSuites: " + testSuiteNames + ", 正在使用此action");
         }
     }
 

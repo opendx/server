@@ -1,5 +1,7 @@
 package com.daxiang.mbg.po;
 
+import com.daxiang.validator.group.UpdateGroup;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -7,14 +9,12 @@ import java.util.Date;
 
 public class Category implements Serializable {
 
-    public static final int PAGE = 1;
-    public static final int ACTION = 2;
+    public static final int TYPE_PAGE = 1;
+    public static final int TYPE_ACTION = 2;
+    public static final int TYPE_GLOBAL_VAR = 3;
+    public static final int TYPE_TESTCASE = 4;
 
-    /**
-     * 分类id
-     *
-     * @mbg.generated
-     */
+    @NotNull(message = "id不能为空", groups = {UpdateGroup.class})
     private Integer id;
 
     /**
@@ -26,7 +26,7 @@ public class Category implements Serializable {
     private String name;
 
     /**
-     * 类型：1.Page
+     * 类型：1.Page 2.action 3.全局变量
      *
      * @mbg.generated
      */

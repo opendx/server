@@ -995,66 +995,6 @@ public class ActionExample {
             return (Criteria) this;
         }
 
-        public Criteria andTestSuiteIdIsNull() {
-            addCriterion("test_suite_id is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andTestSuiteIdIsNotNull() {
-            addCriterion("test_suite_id is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andTestSuiteIdEqualTo(Integer value) {
-            addCriterion("test_suite_id =", value, "testSuiteId");
-            return (Criteria) this;
-        }
-
-        public Criteria andTestSuiteIdNotEqualTo(Integer value) {
-            addCriterion("test_suite_id <>", value, "testSuiteId");
-            return (Criteria) this;
-        }
-
-        public Criteria andTestSuiteIdGreaterThan(Integer value) {
-            addCriterion("test_suite_id >", value, "testSuiteId");
-            return (Criteria) this;
-        }
-
-        public Criteria andTestSuiteIdGreaterThanOrEqualTo(Integer value) {
-            addCriterion("test_suite_id >=", value, "testSuiteId");
-            return (Criteria) this;
-        }
-
-        public Criteria andTestSuiteIdLessThan(Integer value) {
-            addCriterion("test_suite_id <", value, "testSuiteId");
-            return (Criteria) this;
-        }
-
-        public Criteria andTestSuiteIdLessThanOrEqualTo(Integer value) {
-            addCriterion("test_suite_id <=", value, "testSuiteId");
-            return (Criteria) this;
-        }
-
-        public Criteria andTestSuiteIdIn(List<Integer> values) {
-            addCriterion("test_suite_id in", values, "testSuiteId");
-            return (Criteria) this;
-        }
-
-        public Criteria andTestSuiteIdNotIn(List<Integer> values) {
-            addCriterion("test_suite_id not in", values, "testSuiteId");
-            return (Criteria) this;
-        }
-
-        public Criteria andTestSuiteIdBetween(Integer value1, Integer value2) {
-            addCriterion("test_suite_id between", value1, value2, "testSuiteId");
-            return (Criteria) this;
-        }
-
-        public Criteria andTestSuiteIdNotBetween(Integer value1, Integer value2) {
-            addCriterion("test_suite_id not between", value1, value2, "testSuiteId");
-            return (Criteria) this;
-        }
-
         public Criteria andStateIsNull() {
             addCriterion("state is null");
             return (Criteria) this;

@@ -50,6 +50,13 @@ public class GlobalVar implements Serializable {
     private Integer projectId;
 
     /**
+     * 所属分类
+     *
+     * @mbg.generated
+     */
+    private Integer categoryId;
+
+    /**
      * 创建人id
      *
      * @mbg.generated
@@ -129,6 +136,14 @@ public class GlobalVar implements Serializable {
         this.projectId = projectId;
     }
 
+    public Integer getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(Integer categoryId) {
+        this.categoryId = categoryId;
+    }
+
     public Integer getCreatorUid() {
         return creatorUid;
     }
@@ -164,6 +179,7 @@ public class GlobalVar implements Serializable {
         sb.append(", type=").append(type);
         sb.append(", description=").append(description);
         sb.append(", projectId=").append(projectId);
+        sb.append(", categoryId=").append(categoryId);
         sb.append(", creatorUid=").append(creatorUid);
         sb.append(", createTime=").append(createTime);
         sb.append(", environmentValues=").append(environmentValues);

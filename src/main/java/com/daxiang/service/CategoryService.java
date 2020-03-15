@@ -30,6 +30,8 @@ public class CategoryService {
     @Autowired
     private ActionService actionService;
     @Autowired
+    private GlobalVarService globalVarService;
+    @Autowired
     private UserService userService;
 
     /**
@@ -65,21 +67,29 @@ public class CategoryService {
 
         Category category = categories.get(0);
 
-        if (category.getType() == Category.PAGE) {
+        if (category.getType() == Category.TYPE_PAGE) {
             // 检查该分类下是否有page
-            Page pageQuery = new Page();
-            pageQuery.setCategoryId(categoryId);
-            List<Page> pages = pageService.selectByPage(pageQuery);
+            Page query = new Page();
+            query.setCategoryId(categoryId);
+            List<Page> pages = pageService.selectByPage(query);
             if (!CollectionUtils.isEmpty(pages)) {
                 return Response.fail("分类下有page，无法删除");
             }
-        } else if (category.getType() == Category.ACTION) {
+        } else if (category.getType() == Category.TYPE_ACTION || category.getType() == Category.TYPE_TESTCASE) {
             // 检查该分类下是否有action
-            Action actionQuery = new Action();
-            actionQuery.setCategoryId(categoryId);
-            List<Action> actions = actionService.selectByAction(actionQuery);
+            Action query = new Action();
+            query.setCategoryId(categoryId);
+            List<Action> actions = actionService.selectByAction(query);
             if (!CollectionUtils.isEmpty(actions)) {
                 return Response.fail("分类下有action，无法删除");
+            }
+        } else if (category.getType() == Category.TYPE_GLOBAL_VAR) {
+            // 检查该分类下是否有globalVar
+            GlobalVar query = new GlobalVar();
+            query.setCategoryId(categoryId);
+            List<GlobalVar> globalVars = globalVarService.selectByGlobalVar(query);
+            if (!CollectionUtils.isEmpty(globalVars)) {
+                return Response.fail("分类下有全局变量，无法删除");
             }
         } else {
             return Response.fail("不支持的分类类型");
@@ -156,7 +166,6 @@ public class CategoryService {
                 criteria.andNameEqualTo(category.getName());
             }
         }
-        example.setOrderByClause("create_time asc");
 
         return categoryMapper.selectByExample(example);
     }

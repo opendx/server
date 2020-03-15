@@ -7,6 +7,7 @@
     <result column="type" jdbcType="VARCHAR" property="type" />
     <result column="description" jdbcType="VARCHAR" property="description" />
     <result column="project_id" jdbcType="INTEGER" property="projectId" />
+    <result column="category_id" jdbcType="INTEGER" property="categoryId" />
     <result column="creator_uid" jdbcType="INTEGER" property="creatorUid" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
@@ -72,7 +73,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, name, type, description, project_id, creator_uid, create_time
+    id, name, type, description, project_id, category_id, creator_uid, create_time
   </sql>
   <sql id="Blob_Column_List">
     environment_values
@@ -130,12 +131,12 @@
       SELECT LAST_INSERT_ID()
     </selectKey>
     insert into global_var (name, type, description, 
-      project_id, creator_uid, create_time, 
-      environment_values
+      project_id, category_id, creator_uid, 
+      create_time, environment_values
       )
     values (#{name,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
-      #{projectId,jdbcType=INTEGER}, #{creatorUid,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{environmentValues,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.EnvironmentValueListTypeHandler}
+      #{projectId,jdbcType=INTEGER}, #{categoryId,jdbcType=INTEGER}, #{creatorUid,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{environmentValues,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.EnvironmentValueListTypeHandler}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.daxiang.mbg.po.GlobalVar">
@@ -155,6 +156,9 @@
       </if>
       <if test="projectId != null">
         project_id,
+      </if>
+      <if test="categoryId != null">
+        category_id,
       </if>
       <if test="creatorUid != null">
         creator_uid,
@@ -178,6 +182,9 @@
       </if>
       <if test="projectId != null">
         #{projectId,jdbcType=INTEGER},
+      </if>
+      <if test="categoryId != null">
+        #{categoryId,jdbcType=INTEGER},
       </if>
       <if test="creatorUid != null">
         #{creatorUid,jdbcType=INTEGER},
@@ -214,6 +221,9 @@
       <if test="record.projectId != null">
         project_id = #{record.projectId,jdbcType=INTEGER},
       </if>
+      <if test="record.categoryId != null">
+        category_id = #{record.categoryId,jdbcType=INTEGER},
+      </if>
       <if test="record.creatorUid != null">
         creator_uid = #{record.creatorUid,jdbcType=INTEGER},
       </if>
@@ -235,6 +245,7 @@
       type = #{record.type,jdbcType=VARCHAR},
       description = #{record.description,jdbcType=VARCHAR},
       project_id = #{record.projectId,jdbcType=INTEGER},
+      category_id = #{record.categoryId,jdbcType=INTEGER},
       creator_uid = #{record.creatorUid,jdbcType=INTEGER},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       environment_values = #{record.environmentValues,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.EnvironmentValueListTypeHandler}
@@ -249,6 +260,7 @@
       type = #{record.type,jdbcType=VARCHAR},
       description = #{record.description,jdbcType=VARCHAR},
       project_id = #{record.projectId,jdbcType=INTEGER},
+      category_id = #{record.categoryId,jdbcType=INTEGER},
       creator_uid = #{record.creatorUid,jdbcType=INTEGER},
       create_time = #{record.createTime,jdbcType=TIMESTAMP}
     <if test="_parameter != null">
@@ -270,6 +282,9 @@
       <if test="projectId != null">
         project_id = #{projectId,jdbcType=INTEGER},
       </if>
+      <if test="categoryId != null">
+        category_id = #{categoryId,jdbcType=INTEGER},
+      </if>
       <if test="creatorUid != null">
         creator_uid = #{creatorUid,jdbcType=INTEGER},
       </if>
@@ -288,6 +303,7 @@
       type = #{type,jdbcType=VARCHAR},
       description = #{description,jdbcType=VARCHAR},
       project_id = #{projectId,jdbcType=INTEGER},
+      category_id = #{categoryId,jdbcType=INTEGER},
       creator_uid = #{creatorUid,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       environment_values = #{environmentValues,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.EnvironmentValueListTypeHandler}
@@ -299,6 +315,7 @@
       type = #{type,jdbcType=VARCHAR},
       description = #{description,jdbcType=VARCHAR},
       project_id = #{projectId,jdbcType=INTEGER},
+      category_id = #{categoryId,jdbcType=INTEGER},
       creator_uid = #{creatorUid,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}

@@ -16,7 +16,6 @@
     <result column="page_id" jdbcType="INTEGER" property="pageId" />
     <result column="category_id" jdbcType="INTEGER" property="categoryId" />
     <result column="project_id" jdbcType="INTEGER" property="projectId" />
-    <result column="test_suite_id" jdbcType="INTEGER" property="testSuiteId" />
     <result column="state" jdbcType="TINYINT" property="state" />
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.daxiang.mbg.po.Action">
@@ -88,8 +87,7 @@
   </sql>
   <sql id="Base_Column_List">
     id, name, description, type, invoke, return_value, return_value_desc, creator_uid, 
-    create_time, updator_uid, update_time, page_id, category_id, project_id, test_suite_id, 
-    state
+    create_time, updator_uid, update_time, page_id, category_id, project_id, state
   </sql>
   <sql id="Blob_Column_List">
     params, local_vars, steps, java_imports, action_imports, platforms, depends
@@ -150,8 +148,7 @@
       invoke, return_value, return_value_desc, 
       creator_uid, create_time, updator_uid, 
       update_time, page_id, category_id, 
-      project_id, test_suite_id, state, 
-      params, 
+      project_id, state, params, 
       local_vars, 
       steps, 
       java_imports, 
@@ -163,8 +160,7 @@
       #{invoke,jdbcType=VARCHAR}, #{returnValue,jdbcType=VARCHAR}, #{returnValueDesc,jdbcType=VARCHAR}, 
       #{creatorUid,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updatorUid,jdbcType=INTEGER}, 
       #{updateTime,jdbcType=TIMESTAMP}, #{pageId,jdbcType=INTEGER}, #{categoryId,jdbcType=INTEGER}, 
-      #{projectId,jdbcType=INTEGER}, #{testSuiteId,jdbcType=INTEGER}, #{state,jdbcType=TINYINT}, 
-      #{params,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.ParamListTypeHandler}, 
+      #{projectId,jdbcType=INTEGER}, #{state,jdbcType=TINYINT}, #{params,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.ParamListTypeHandler}, 
       #{localVars,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.LocalVarListTypeHandler}, 
       #{steps,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.StepListTypeHandler}, 
       #{javaImports,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.StringListTypeHandler}, 
@@ -217,9 +213,6 @@
       </if>
       <if test="projectId != null">
         project_id,
-      </if>
-      <if test="testSuiteId != null">
-        test_suite_id,
       </if>
       <if test="state != null">
         state,
@@ -285,9 +278,6 @@
       </if>
       <if test="projectId != null">
         #{projectId,jdbcType=INTEGER},
-      </if>
-      <if test="testSuiteId != null">
-        #{testSuiteId,jdbcType=INTEGER},
       </if>
       <if test="state != null">
         #{state,jdbcType=TINYINT},
@@ -366,9 +356,6 @@
       <if test="record.projectId != null">
         project_id = #{record.projectId,jdbcType=INTEGER},
       </if>
-      <if test="record.testSuiteId != null">
-        test_suite_id = #{record.testSuiteId,jdbcType=INTEGER},
-      </if>
       <if test="record.state != null">
         state = #{record.state,jdbcType=TINYINT},
       </if>
@@ -414,7 +401,6 @@
       page_id = #{record.pageId,jdbcType=INTEGER},
       category_id = #{record.categoryId,jdbcType=INTEGER},
       project_id = #{record.projectId,jdbcType=INTEGER},
-      test_suite_id = #{record.testSuiteId,jdbcType=INTEGER},
       state = #{record.state,jdbcType=TINYINT},
       params = #{record.params,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.ParamListTypeHandler},
       local_vars = #{record.localVars,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.LocalVarListTypeHandler},
@@ -443,7 +429,6 @@
       page_id = #{record.pageId,jdbcType=INTEGER},
       category_id = #{record.categoryId,jdbcType=INTEGER},
       project_id = #{record.projectId,jdbcType=INTEGER},
-      test_suite_id = #{record.testSuiteId,jdbcType=INTEGER},
       state = #{record.state,jdbcType=TINYINT}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -491,9 +476,6 @@
       <if test="projectId != null">
         project_id = #{projectId,jdbcType=INTEGER},
       </if>
-      <if test="testSuiteId != null">
-        test_suite_id = #{testSuiteId,jdbcType=INTEGER},
-      </if>
       <if test="state != null">
         state = #{state,jdbcType=TINYINT},
       </if>
@@ -536,7 +518,6 @@
       page_id = #{pageId,jdbcType=INTEGER},
       category_id = #{categoryId,jdbcType=INTEGER},
       project_id = #{projectId,jdbcType=INTEGER},
-      test_suite_id = #{testSuiteId,jdbcType=INTEGER},
       state = #{state,jdbcType=TINYINT},
       params = #{params,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.ParamListTypeHandler},
       local_vars = #{localVars,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.LocalVarListTypeHandler},
@@ -562,7 +543,6 @@
       page_id = #{pageId,jdbcType=INTEGER},
       category_id = #{categoryId,jdbcType=INTEGER},
       project_id = #{projectId,jdbcType=INTEGER},
-      test_suite_id = #{testSuiteId,jdbcType=INTEGER},
       state = #{state,jdbcType=TINYINT}
     where id = #{id,jdbcType=INTEGER}
   </update>

@@ -1,5 +1,6 @@
 package com.daxiang.service;
 
+import com.daxiang.dao.TestSuiteDao;
 import com.daxiang.mbg.po.*;
 import com.daxiang.model.PageRequest;
 import com.daxiang.model.Response;
@@ -25,9 +26,9 @@ import java.util.stream.Collectors;
 public class TestSuiteService {
 
     @Autowired
-    private TestSuiteMapper testSuiteMapper;
+    private TestSuiteDao testSuiteDao;
     @Autowired
-    private ActionService actionService;
+    private TestSuiteMapper testSuiteMapper;
     @Autowired
     private TestPlanService testPlanService;
     @Autowired
@@ -51,22 +52,25 @@ public class TestSuiteService {
             return Response.fail("testSuiteId不能为空");
         }
 
-        // 检查该测试集下是否有testcase
-        Action query = new Action();
-        query.setTestSuiteId(testSuiteId);
-        List<Action> actions = actionService.selectByAction(query);
-        if (!CollectionUtils.isEmpty(actions)) {
-            return Response.fail("该测试集下有测试用例，无法删除");
-        }
-
         // 检查该测试集是否被testplan使用
         List<TestPlan> testPlans = testPlanService.selectByTestSuiteId(testSuiteId);
         if (!CollectionUtils.isEmpty(testPlans)) {
-            return Response.fail("该测试集被测试计划使用，无法删除");
+            String testPlanNames = testPlans.stream().map(TestPlan::getName).collect(Collectors.joining("、"));
+            return Response.fail("测试计划: " + testPlanNames + ", 正在使用，无法删除");
         }
 
         int deleteRow = testSuiteMapper.deleteByPrimaryKey(testSuiteId);
         return deleteRow == 1 ? Response.success("删除TestSuite成功") : Response.fail("删除TestSuite失败，请稍后重试");
+    }
+
+    public Response update(TestSuite testSuite) {
+        int updateRow;
+        try {
+            updateRow = testSuiteMapper.updateByPrimaryKeySelective(testSuite);
+        } catch (DuplicateKeyException e) {
+            return Response.fail("命名冲突");
+        }
+        return updateRow == 1 ? Response.success("更新TestSuite成功") : Response.fail("更新TestSuite失败");
     }
 
     public Response list(TestSuite testSuite, PageRequest pageRequest) {
@@ -130,7 +134,7 @@ public class TestSuiteService {
         }
         example.setOrderByClause("create_time desc");
 
-        return testSuiteMapper.selectByExample(example);
+        return testSuiteMapper.selectByExampleWithBLOBs(example);
     }
 
     public List<TestSuite> selectByPrimaryKeys(List<Integer> ids) {
@@ -142,7 +146,11 @@ public class TestSuiteService {
         TestSuiteExample.Criteria criteria = example.createCriteria();
 
         criteria.andIdIn(ids);
-        return testSuiteMapper.selectByExample(example);
+        return testSuiteMapper.selectByExampleWithBLOBs(example);
+    }
+
+    public List<TestSuite> findByActionId(Integer actionId) {
+        return testSuiteDao.selectByActionId(actionId);
     }
 
 }

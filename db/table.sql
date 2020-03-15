@@ -39,8 +39,7 @@ CREATE TABLE `action` (
   `page_id` int(11) DEFAULT NULL COMMENT '所属的page id',
   `category_id` int(11) DEFAULT NULL COMMENT '所属的分类id',
   `project_id` int(11) DEFAULT NULL COMMENT '所属的项目id',
-  `test_suite_id` int(11) DEFAULT NULL COMMENT '所属的测试集',
-  `state` tinyint(4) NOT NULL DEFAULT 2 COMMENT '禁用: 0  草稿: 1  发布: 2',
+  `state` tinyint(4) NOT NULL DEFAULT '2' COMMENT '禁用: 0  草稿: 1  发布: 2',
   `depends` json null COMMENT '依赖的测试用例id',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `uniq_name_projectId_type` (`name`,`project_id`,`type`) USING BTREE
@@ -71,13 +70,13 @@ DROP TABLE IF EXISTS `category`;
 CREATE TABLE `category` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL COMMENT '分类名字',
-  `type` tinyint(4) NOT NULL COMMENT '类型：1.Page',
+  `type` tinyint(4) NOT NULL COMMENT '类型：1.page 2.action 3.全局变量 4.testcase(action)',
   `project_id` int(11) NOT NULL COMMENT '所属项目的id',
-  `creator_uid` int(11) DEFAULT NULL COMMENT '创建人',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `creator_uid` int(11) DEFAULT NULL COMMENT '创建人',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `uniq_name_type_projectId` (`name`,`type`,`project_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='分类表';
+) ENGINE=InnoDB AUTO_INCREMENT=1000 DEFAULT CHARSET=utf8mb4 COMMENT='分类表';
 
 -- ----------------------------
 -- Table structure for device
@@ -141,6 +140,7 @@ CREATE TABLE `global_var` (
   `environment_values` json NOT NULL COMMENT '变量值',
   `description` varchar(255) DEFAULT NULL COMMENT '描述',
   `project_id` int(11) NOT NULL COMMENT '所属的项目id',
+  `category_id` int(11) DEFAULT NULL COMMENT '所属分类',
   `creator_uid` int(11) DEFAULT NULL COMMENT '创建人id',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE,
@@ -221,6 +221,7 @@ CREATE TABLE `test_suite` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL COMMENT '测试集名',
   `description` varchar(255) DEFAULT NULL COMMENT '描述',
+  `testcases` json NOT NULL COMMENT '测试用例',
   `project_id` int(11) NOT NULL COMMENT '所属项目',
   `creator_uid` int(11) DEFAULT NULL COMMENT '创建人id',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.daxiang.dao.TestSuiteDao">
+    <resultMap id="ResultMapWithBLOBs" type="com.daxiang.mbg.po.TestSuite" extends="com.daxiang.mbg.mapper.TestSuiteMapper.ResultMapWithBLOBs"/>
+
+    <select id="selectByActionId" resultMap="ResultMapWithBLOBs">
+        select * from test_suite where JSON_CONTAINS(testcases->'$[*]', '${actionId}','$')
+    </select>
+</mapper>

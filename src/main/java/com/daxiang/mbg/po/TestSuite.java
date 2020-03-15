@@ -1,16 +1,15 @@
 package com.daxiang.mbg.po;
 
+import com.daxiang.validator.group.UpdateGroup;
+
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
 public class TestSuite implements Serializable {
-    /**
-     * 主键id
-     *
-     * @mbg.generated
-     */
+    @NotNull(message = "id不能为空", groups = {UpdateGroup.class})
     private Integer id;
 
     /**
@@ -49,6 +48,14 @@ public class TestSuite implements Serializable {
      * @mbg.generated
      */
     private Date createTime;
+
+    /**
+     * 测试用例
+     *
+     * @mbg.generated
+     */
+    @NotEmpty(message = "测试用例不能为空")
+    private java.util.List<Integer> testcases;
 
     private static final long serialVersionUID = 1L;
 
@@ -100,6 +107,14 @@ public class TestSuite implements Serializable {
         this.createTime = createTime;
     }
 
+    public java.util.List<Integer> getTestcases() {
+        return testcases;
+    }
+
+    public void setTestcases(java.util.List<Integer> testcases) {
+        this.testcases = testcases;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -112,6 +127,7 @@ public class TestSuite implements Serializable {
         sb.append(", projectId=").append(projectId);
         sb.append(", creatorUid=").append(creatorUid);
         sb.append(", createTime=").append(createTime);
+        sb.append(", testcases=").append(testcases);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

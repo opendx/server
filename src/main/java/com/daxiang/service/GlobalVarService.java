@@ -74,11 +74,11 @@ public class GlobalVarService {
      * @param globalVar
      */
     public Response update(GlobalVar globalVar) {
-        // todo 检查全局变量是否被action使用，目前是通过前端限制修改name
+        // todo 检查全局变量是否被action使用
 
         int updateRow;
         try {
-            updateRow = globalVarMapper.updateByPrimaryKeySelective(globalVar);
+            updateRow = globalVarMapper.updateByPrimaryKeyWithBLOBs(globalVar);
         } catch (DuplicateKeyException e) {
             return Response.fail("命名冲突");
         }
@@ -149,6 +149,9 @@ public class GlobalVarService {
             }
             if (globalVar.getProjectId() != null) {
                 criteria.andProjectIdEqualTo(globalVar.getProjectId());
+            }
+            if (globalVar.getCategoryId() != null) {
+                criteria.andCategoryIdEqualTo(globalVar.getCategoryId());
             }
             if (!StringUtils.isEmpty(globalVar.getName())) {
                 criteria.andNameEqualTo(globalVar.getName());

@@ -150,13 +150,6 @@ public class Action implements Serializable {
     private Integer projectId;
 
     /**
-     * 所属的测试集
-     *
-     * @mbg.generated
-     */
-    private Integer testSuiteId;
-
-    /**
      * 禁用: 0  草稿: 1  发布: 2
      *
      * @mbg.generated
@@ -216,7 +209,7 @@ public class Action implements Serializable {
     }
 
     /**
-     * 1.android 2.ios null.通用
+     * 1.android 2.ios 3.android微信web 4.android微信小程序 null.通用
      *
      * @mbg.generated
      */
@@ -344,14 +337,6 @@ public class Action implements Serializable {
         this.projectId = projectId;
     }
 
-    public Integer getTestSuiteId() {
-        return testSuiteId;
-    }
-
-    public void setTestSuiteId(Integer testSuiteId) {
-        this.testSuiteId = testSuiteId;
-    }
-
     public Integer getState() {
         return state;
     }
@@ -436,7 +421,6 @@ public class Action implements Serializable {
         sb.append(", pageId=").append(pageId);
         sb.append(", categoryId=").append(categoryId);
         sb.append(", projectId=").append(projectId);
-        sb.append(", testSuiteId=").append(testSuiteId);
         sb.append(", state=").append(state);
         sb.append(", params=").append(params);
         sb.append(", localVars=").append(localVars);
