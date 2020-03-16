@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -39,16 +40,16 @@ public class ScheduledTaskExecutor {
             return;
         }
 
-        List<Integer> testTaskIds = unFinishedTestTasks.stream()
-                .map(TestTask::getId).collect(Collectors.toList());
+        List<Integer> testTaskIds = unFinishedTestTasks.stream().map(TestTask::getId).collect(Collectors.toList());
 
         deviceTestTaskService.findByTestTaskIds(testTaskIds).stream()
                 .collect(Collectors.groupingBy(DeviceTestTask::getTestTaskId)) // 按照testTaskId分组
                 .forEach((testTaskId, deviceTestTasks) -> {
-                    long deviceTestFinishedCount = deviceTestTasks.stream()
-                            .filter(task -> task.getStatus() == DeviceTestTask.FINISHED_STATUS).count();
                     // 所有手机都测试完成
-                    if (deviceTestTasks.size() == deviceTestFinishedCount) {
+                    boolean allDeviceTestFinished = deviceTestTasks.stream()
+                            .allMatch(task -> task.getStatus() == DeviceTestTask.FINISHED_STATUS);
+
+                    if (allDeviceTestFinished) {
                         log.info("开始统计测试结果, testTaskId: {}", testTaskId);
                         List<Testcase> testcases = deviceTestTasks.stream()
                                 .flatMap(task -> task.getTestcases().stream()).collect(Collectors.toList());
@@ -60,7 +61,13 @@ public class ScheduledTaskExecutor {
                         TestTask testTask = new TestTask();
                         testTask.setId(testTaskId);
                         testTask.setStatus(TestTask.FINISHED_STATUS);
-                        testTask.setFinishTime(testcases.stream().map(Testcase::getEndTime).sorted(Comparator.reverseOrder()).findFirst().get()); // 所有用例结束时间最晚的作为完成时间
+
+                        // 所有用例结束时间最晚的作为完成时间
+                        Date finishTime = testcases.stream()
+                                .map(Testcase::getEndTime)
+                                .sorted(Comparator.reverseOrder())
+                                .findFirst().get();
+                        testTask.setFinishTime(finishTime);
 
                         Long passCount = result.get(Testcase.PASS_STATUS);
                         if (passCount != null) {
