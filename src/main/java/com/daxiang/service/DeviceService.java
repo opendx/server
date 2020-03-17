@@ -12,8 +12,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,7 +36,6 @@ public class DeviceService {
      * @return
      */
     public Response save(Device device) {
-        // 数据库是否有该手机
         Device dbDevice = deviceMapper.selectByPrimaryKey(device.getId());
         int saveRow;
         if (dbDevice == null) {
@@ -136,10 +137,17 @@ public class DeviceService {
         return Response.success(deviceMapper.selectByExample(deviceExample));
     }
 
-    public List<Device> getOnlineDevicesByAgentIp(String agentIp) {
-        DeviceExample deviceExample = new DeviceExample();
-        deviceExample.createCriteria().andAgentIpEqualTo(agentIp).andStatusNotEqualTo(Device.OFFLINE_STATUS);
-        return deviceMapper.selectByExample(deviceExample);
+    public List<Device> getOnlineDevicesByAgentIps(List<String> agentIps) {
+        if (CollectionUtils.isEmpty(agentIps)) {
+            return Collections.EMPTY_LIST;
+        }
+
+        DeviceExample example = new DeviceExample();
+        example.createCriteria()
+                .andAgentIpIn(agentIps)
+                .andStatusNotEqualTo(Device.OFFLINE_STATUS);
+
+        return deviceMapper.selectByExample(example);
     }
 
     public int updateByAgentIp(Device device, String agentIp) {

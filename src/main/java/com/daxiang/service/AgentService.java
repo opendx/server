@@ -1,7 +1,7 @@
 package com.daxiang.service;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.daxiang.mbg.po.Device;
 import com.daxiang.model.Response;
 import com.daxiang.model.vo.AgentVo;
 import de.codecentric.boot.admin.server.domain.entities.Instance;
@@ -16,6 +16,7 @@ import org.springframework.web.client.RestTemplate;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -36,8 +37,13 @@ public class AgentService {
 
     public Response getOnlineAgents() {
         List<AgentVo> agentVos = getOnlineAgentsWithoutDevices();
-        agentVos.forEach(agentVo -> agentVo.setDevices(deviceService.getOnlineDevicesByAgentIp(agentVo.getIp())));
-        
+
+        List<String> agentIps = agentVos.stream().map(AgentVo::getIp).collect(Collectors.toList());
+        List<Device> devices = deviceService.getOnlineDevicesByAgentIps(agentIps);
+        // agentIp: List<Device>
+        Map<String, List<Device>> map = devices.stream().collect(Collectors.groupingBy(Device::getAgentIp));
+
+        agentVos.forEach(agentVo -> agentVo.setDevices(map.get(agentVo.getIp())));
         return Response.success(agentVos);
     }
 
@@ -67,10 +73,10 @@ public class AgentService {
         if (env.isPresent()) {
             // http://agent_ip:agent_port/actuator/env
             JSONObject response = restTemplate.getForObject(env.get().getUrl(), JSONObject.class);
-
-            JSONArray propertySources = response.getJSONArray("propertySources");
-            JSONObject systemProperties = (JSONObject) (propertySources.stream().filter(property -> "systemProperties".equals(((JSONObject) property).get("name"))).findFirst().get());
-            JSONObject properties = systemProperties.getJSONObject("properties");
+            Object sysProperties = response.getJSONArray("propertySources").stream()
+                    .filter(property -> "systemProperties".equals(((JSONObject) property).get("name")))
+                    .findFirst().get();
+            JSONObject properties = ((JSONObject) (sysProperties)).getJSONObject("properties");
 
             agentVo.setOsName(properties.getJSONObject("os.name").getString("value"));
             agentVo.setJavaVersion(properties.getJSONObject("java.version").getString("value"));

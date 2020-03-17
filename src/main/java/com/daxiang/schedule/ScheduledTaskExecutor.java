@@ -42,6 +42,7 @@ public class ScheduledTaskExecutor {
 
         List<Integer> testTaskIds = unFinishedTestTasks.stream().map(TestTask::getId).collect(Collectors.toList());
 
+        // todo 批量更新
         deviceTestTaskService.findByTestTaskIds(testTaskIds).stream()
                 .collect(Collectors.groupingBy(DeviceTestTask::getTestTaskId)) // 按照testTaskId分组
                 .forEach((testTaskId, deviceTestTasks) -> {

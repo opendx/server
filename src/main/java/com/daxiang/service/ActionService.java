@@ -10,7 +10,6 @@ import com.daxiang.model.PageRequest;
 import com.daxiang.model.Response;
 import com.daxiang.model.action.LocalVar;
 import com.daxiang.model.action.Step;
-import com.daxiang.model.environment.EnvironmentValue;
 import com.daxiang.model.request.ActionDebugRequest;
 import com.daxiang.model.vo.ActionCascaderVo;
 import com.daxiang.model.vo.ActionVo;
@@ -53,6 +52,8 @@ public class ActionService {
     private PageService pageService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private EnvironmentService environmentService;
 
     public Response add(Action action) {
         action.setCreatorUid(SecurityUtil.getCurrentUserId());
@@ -267,15 +268,18 @@ public class ActionService {
             action.setId(0);
         }
 
-        long enabledStepCount = action.getSteps().stream().filter(step -> step.getStatus() == Step.ENABLE_STATUS).count();
-        if (enabledStepCount == 0) {
+        boolean anyEnabledStep = action.getSteps().stream().anyMatch(step -> step.getStatus() == Step.ENABLE_STATUS);
+        if (!anyEnabledStep) {
             return Response.fail("至少选择一个启用的步骤");
         }
 
         // 根据环境处理action局部变量
         List<LocalVar> localVars = action.getLocalVars();
         if (!CollectionUtils.isEmpty(localVars)) {
-            localVars.forEach(localVar -> localVar.setValue(getValueInEnvironmentValues(localVar.getEnvironmentValues(), env)));
+            localVars.forEach(localVar -> {
+                String value = environmentService.getValueInEnvironmentValues(localVar.getEnvironmentValues(), env);
+                localVar.setValue(value);
+            });
         }
 
         // 构建action树
@@ -288,7 +292,10 @@ public class ActionService {
 
         // 根据环境处理全局变量
         if (!CollectionUtils.isEmpty(globalVars)) {
-            globalVars.forEach(globalVar -> globalVar.setValue(getValueInEnvironmentValues(globalVar.getEnvironmentValues(), env)));
+            globalVars.forEach(globalVar -> {
+                String value = environmentService.getValueInEnvironmentValues(globalVar.getEnvironmentValues(), env);
+                globalVar.setValue(value);
+            });
         }
 
         // 该项目下的Pages
@@ -354,31 +361,6 @@ public class ActionService {
         if (!CollectionUtils.isEmpty(testSuites)) {
             String testSuiteNames = testSuites.stream().map(TestSuite::getName).collect(Collectors.joining("、"));
             throw new BusinessException("testSuites: " + testSuiteNames + ", 正在使用此action");
-        }
-    }
-
-    /**
-     * 在environmentValues中找到与env匹配的value
-     *
-     * @param environmentValues
-     * @param env
-     * @return
-     */
-    public String getValueInEnvironmentValues(List<EnvironmentValue> environmentValues, Integer env) {
-        // 与env匹配的environmentValue
-        EnvironmentValue environmentValue = environmentValues.stream()
-                .filter(ev -> env.equals(ev.getEnvironmentId())).findFirst().orElse(null);
-        if (environmentValue != null) {
-            return environmentValue.getValue();
-        } else {
-            // 没有与env匹配的，用默认的
-            EnvironmentValue defaultEnvironmentValue = environmentValues.stream()
-                    .filter(ev -> EnvironmentValue.DEFAULT_ENVIRONMENT_ID == ev.getEnvironmentId()).findFirst().orElse(null);
-            if (defaultEnvironmentValue != null) {
-                return defaultEnvironmentValue.getValue();
-            } else {
-                return null;
-            }
         }
     }
 

@@ -6,6 +6,7 @@ import com.daxiang.mbg.po.*;
 import com.daxiang.model.Page;
 import com.daxiang.model.PageRequest;
 import com.daxiang.model.Response;
+import com.daxiang.model.environment.EnvironmentValue;
 import com.daxiang.model.vo.EnvironmentVo;
 import com.daxiang.security.SecurityUtil;
 import com.github.pagehelper.PageHelper;
@@ -54,7 +55,7 @@ public class EnvironmentService {
             return Response.fail("环境id不能为空");
         }
 
-        checkEnvIsNotUsingByActionLocalVarsAndGlobalVarsAndTestPlans(environmentId);
+        check(environmentId);
 
         int deleteRow = environmentMapper.deleteByPrimaryKey(environmentId);
         return deleteRow == 1 ? Response.success("删除成功") : Response.fail("删除失败，请稍后重试");
@@ -143,7 +144,7 @@ public class EnvironmentService {
      *
      * @param envId
      */
-    private void checkEnvIsNotUsingByActionLocalVarsAndGlobalVarsAndTestPlans(Integer envId) {
+    private void check(Integer envId) {
         // 检查env是否被action localVars使用
         List<Action> actions = actionService.selectByLocalVarsEnvironmentId(envId);
         if (!CollectionUtils.isEmpty(actions)) {
@@ -165,6 +166,27 @@ public class EnvironmentService {
         if (!CollectionUtils.isEmpty(testPlans)) {
             String testPlanNames = testPlans.stream().map(TestPlan::getName).collect(Collectors.joining("、"));
             throw new BusinessException("testPlans: " + testPlanNames + ", 正在使用此环境");
+        }
+    }
+
+    /**
+     * 在environmentValues中找到与envId匹配的value
+     */
+    public String getValueInEnvironmentValues(List<EnvironmentValue> environmentValues, Integer envId) {
+        // 与envId匹配的environmentValue
+        EnvironmentValue environmentValue = environmentValues.stream()
+                .filter(ev -> envId.equals(ev.getEnvironmentId())).findFirst().orElse(null);
+        if (environmentValue != null) {
+            return environmentValue.getValue();
+        } else {
+            // 没有与env匹配的，用默认的
+            EnvironmentValue defaultEnvironmentValue = environmentValues.stream()
+                    .filter(ev -> EnvironmentValue.DEFAULT_ENVIRONMENT_ID == ev.getEnvironmentId()).findFirst().orElse(null);
+            if (defaultEnvironmentValue != null) {
+                return defaultEnvironmentValue.getValue();
+            } else {
+                return null;
+            }
         }
     }
 }

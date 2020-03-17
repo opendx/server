@@ -22,7 +22,7 @@ import org.springframework.util.CollectionUtils;
 import java.text.NumberFormat;
 import java.util.*;
 import java.util.stream.Collectors;
-
+import java.util.stream.Stream;
 
 /**
  * Created by jiangyitao.
@@ -70,9 +70,10 @@ public class TestTaskService {
         List<Integer> testcaseIds = testSuiteService.selectByPrimaryKeys(testPlan.getTestSuites()).stream()
                 .flatMap(testSuite -> testSuite.getTestcases().stream())
                 .distinct().collect(Collectors.toList());
-
+        // 过滤出已发布的用例
         List<Action> testcases = actionService.selectByPrimaryKeys(testcaseIds).stream()
                 .filter(action -> action.getState() == Action.RELEASE_STATE).collect(Collectors.toList());
+
         if (CollectionUtils.isEmpty(testcases)) {
             return Response.fail("测试集内没有已发布的测试用例");
         }
@@ -86,35 +87,28 @@ public class TestTaskService {
             }
         }
 
-        // build acion tree
-        Action beforeClass = testPlan.getBeforeClass() != null ? actionService.selectByPrimaryKey(testPlan.getBeforeClass()) : null;
-        Action beforeMethod = testPlan.getBeforeMethod() != null ? actionService.selectByPrimaryKey(testPlan.getBeforeMethod()) : null;
-        Action afterClass = testPlan.getAfterClass() != null ? actionService.selectByPrimaryKey(testPlan.getAfterClass()) : null;
-        Action afterMethod = testPlan.getAfterMethod() != null ? actionService.selectByPrimaryKey(testPlan.getAfterMethod()) : null;
+        // 前置后置action
+        List<Integer> beforeAndAfterActionIds = Stream.of(testPlan.getBeforeClass(), testPlan.getBeforeMethod(), testPlan.getAfterClass(), testPlan.getAfterMethod())
+                .filter(Objects::nonNull).distinct().collect(Collectors.toList());
+        Map<Integer, Action> beforeAndAfterActionMap = actionService.selectByPrimaryKeys(beforeAndAfterActionIds).stream()
+                .collect(Collectors.toMap(Action::getId, a -> a));
 
-        List<Action> needBuildActions = new ArrayList<>(testcases);
-        if (beforeClass != null) {
-            needBuildActions.add(beforeClass);
-        }
-        if (beforeMethod != null) {
-            needBuildActions.add(beforeMethod);
-        }
-        if (afterClass != null) {
-            needBuildActions.add(afterClass);
-        }
-        if (afterMethod != null) {
-            needBuildActions.add(afterMethod);
-        }
+        // 待构建的所有action
+        List<Action> actions = new ArrayList<>(testcases);
+        actions.addAll(beforeAndAfterActionMap.values());
 
         // 根据环境处理局部变量
-        needBuildActions.forEach(action -> {
+        actions.forEach(action -> {
             List<LocalVar> localVars = action.getLocalVars();
             if (!CollectionUtils.isEmpty(localVars)) {
-                localVars.forEach(localVar -> localVar.setValue(actionService.getValueInEnvironmentValues(localVar.getEnvironmentValues(), testPlan.getEnvironmentId())));
+                localVars.forEach(localVar -> {
+                    String value = environmentService.getValueInEnvironmentValues(localVar.getEnvironmentValues(), testPlan.getEnvironmentId());
+                    localVar.setValue(value);
+                });
             }
         });
 
-        actionService.buildActionTree(needBuildActions);
+        actionService.buildActionTree(actions);
 
         // 保存测试任务
         TestTask testTask = saveTestTask(testPlan, commitorUid);
@@ -126,7 +120,10 @@ public class TestTaskService {
 
         // 根据环境处理全局变量
         if (!CollectionUtils.isEmpty(globalVars)) {
-            globalVars.forEach(globalVar -> globalVar.setValue(actionService.getValueInEnvironmentValues(globalVar.getEnvironmentValues(), testPlan.getEnvironmentId())));
+            globalVars.forEach(globalVar -> {
+                String value = environmentService.getValueInEnvironmentValues(globalVar.getEnvironmentValues(), testPlan.getEnvironmentId());
+                globalVar.setValue(value);
+            });
         }
 
         // 该项目下的Pages
@@ -137,7 +134,8 @@ public class TestTaskService {
         // 根据不同用例分发策略，给设备分配用例
         Map<String, List<Action>> deviceTestcases = allocateTestcaseToDevice(testPlan.getDeviceIds(), testcases, testPlan.getRunMode());
 
-        deviceTestcases.forEach((deviceId, actions) -> {
+        // todo 批量保存
+        deviceTestcases.forEach((deviceId, actionList) -> {
             DeviceTestTask deviceTestTask = new DeviceTestTask();
             deviceTestTask.setProjectId(testTask.getProjectId());
             deviceTestTask.setPlatform(project.getPlatform());
@@ -146,19 +144,19 @@ public class TestTaskService {
             deviceTestTask.setDeviceId(deviceId);
             deviceTestTask.setGlobalVars(globalVars);
             deviceTestTask.setPages(pages);
-            if (beforeClass != null) {
-                deviceTestTask.setBeforeClass(beforeClass);
+            if (testPlan.getBeforeClass() != null) {
+                deviceTestTask.setBeforeClass(beforeAndAfterActionMap.get(testPlan.getBeforeClass()));
             }
-            if (beforeMethod != null) {
-                deviceTestTask.setBeforeMethod(beforeMethod);
+            if (testPlan.getBeforeMethod() != null) {
+                deviceTestTask.setBeforeMethod(beforeAndAfterActionMap.get(testPlan.getBeforeMethod()));
             }
-            if (afterClass != null) {
-                deviceTestTask.setAfterClass(afterClass);
+            if (testPlan.getAfterClass() != null) {
+                deviceTestTask.setAfterClass(beforeAndAfterActionMap.get(testPlan.getAfterClass()));
             }
-            if (afterMethod != null) {
-                deviceTestTask.setAfterMethod(afterMethod);
+            if (testPlan.getAfterMethod() != null) {
+                deviceTestTask.setAfterMethod(beforeAndAfterActionMap.get(testPlan.getAfterMethod()));
             }
-            List<Testcase> cases = actions.stream().map(action -> {
+            List<Testcase> cases = actionList.stream().map(action -> {
                 Testcase testcase = new Testcase();
                 BeanUtils.copyProperties(action, testcase);
                 return testcase;
@@ -380,14 +378,18 @@ public class TestTaskService {
         List<DeviceTestTask> deviceTestTasks = deviceTestTaskService.findByTestTaskId(testTaskId);
 
         if (!CollectionUtils.isEmpty(deviceTestTasks)) {
-            List<DeviceTestTask> alreadyStartedDeviceTestTasks = deviceTestTasks.stream().filter(deviceTestTask -> !deviceTestTaskService.canDelete(deviceTestTask.getStatus())).collect(Collectors.toList());
+            List<DeviceTestTask> alreadyStartedDeviceTestTasks = deviceTestTasks.stream()
+                    .filter(deviceTestTask -> !deviceTestTaskService.canDelete(deviceTestTask.getStatus()))
+                    .collect(Collectors.toList());
             if (!CollectionUtils.isEmpty(alreadyStartedDeviceTestTasks)) {
                 // 有设备已经运行过测试任务，不让删除整个testTask
-                String alreadyStartedDeviceIds = alreadyStartedDeviceTestTasks.stream().map(DeviceTestTask::getDeviceId).collect(Collectors.joining("、"));
+                String alreadyStartedDeviceIds = alreadyStartedDeviceTestTasks.stream()
+                        .map(DeviceTestTask::getDeviceId).collect(Collectors.joining("、"));
                 return Response.fail(alreadyStartedDeviceIds + "运行过测试任务，无法删除");
             } else {
                 // 批量删除deviceTestTask
-                int deleteRow = deviceTestTaskService.deleteInBatch(deviceTestTasks.stream().map(DeviceTestTask::getId).collect(Collectors.toList()));
+                List<Integer> deviceTestTaskIds = deviceTestTasks.stream().map(DeviceTestTask::getId).collect(Collectors.toList());
+                int deleteRow = deviceTestTaskService.deleteInBatch(deviceTestTaskIds);
                 if (deleteRow != deviceTestTasks.size()) {
                     throw new BusinessException(String.format("删除deviceTestTask失败，deviceTestTasks: %d, deleteRow: %d", deviceTestTasks.size(), deleteRow));
                 }
