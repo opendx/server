@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -179,6 +180,9 @@ public class ActionService {
         if (action != null) {
             if (action.getId() != null) {
                 criteria.andIdEqualTo(action.getId());
+            }
+            if (!StringUtils.isEmpty(action.getName())) {
+                criteria.andNameLike("%" + action.getName() + "%");
             }
             if (action.getProjectId() != null) {
                 criteria.andProjectIdEqualTo(action.getProjectId());
