@@ -10,6 +10,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -41,10 +42,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests()
                 .antMatchers(HttpMethod.OPTIONS).permitAll()
-                .antMatchers("/" + UploadFile.UPLOAD_FILE_PATH + "/**").permitAll()
-                .antMatchers("/" + frontend + "/**").permitAll()
-                .antMatchers("/user/login").permitAll()
                 .antMatchers("/").permitAll()
+                .antMatchers("/user/login").permitAll()
                 // 以下为agent调用的接口，放行
                 .antMatchers("/springboot-admin/**").permitAll()
                 .antMatchers("/upload/file").permitAll()
@@ -58,6 +57,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.exceptionHandling().authenticationEntryPoint(new JwtAuthenticationEntryPoint());
 
         http.addFilterBefore(jwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+    }
+
+    @Override
+    public void configure(WebSecurity web) {
+        web.ignoring().antMatchers("/" + UploadFile.UPLOAD_FILE_PATH + "/**",
+                "/" + frontend + "/**");
     }
 
     static class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
