@@ -178,7 +178,6 @@ public class UserService {
         Map<Integer, List<UserProjectDto>> userProjectDtosMap = userProjectService.selectUserProjectDtosByUserIds(userIds).stream()
                 .collect(Collectors.groupingBy(UserProjectDto::getUserId));
 
-
         return users.stream().map(user -> {
             UserDto userDto = new UserDto();
             BeanUtils.copyProperties(user, userDto);
