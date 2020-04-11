@@ -13,7 +13,7 @@ import java.util.Date;
 public class JwtTokenUtil {
 
     private static final String SECRET_KEY = "opendx";
-    private static final long TOKEN_EXPIRE_IN_MINUTES = 30 * 24 * 60; // token过期时间: 30天
+    private static final long TOKEN_EXPIRE_IN_MS = 30 * 24 * 60 * 60 * 1000L; // token过期时间: 30天
 
     private static final String TOKEN_HTTP_REQUEST_HEADER = "token";
 
@@ -22,7 +22,7 @@ public class JwtTokenUtil {
 
         return Jwts.builder()
                 .setClaims(claims)
-                .setExpiration(new Date(System.currentTimeMillis() + TOKEN_EXPIRE_IN_MINUTES * 60000L))
+                .setExpiration(new Date(System.currentTimeMillis() + TOKEN_EXPIRE_IN_MS))
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
     }
