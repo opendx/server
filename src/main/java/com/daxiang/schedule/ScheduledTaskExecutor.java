@@ -46,7 +46,7 @@ public class ScheduledTaskExecutor {
         deviceTestTaskService.findByTestTaskIds(testTaskIds).stream()
                 .collect(Collectors.groupingBy(DeviceTestTask::getTestTaskId)) // 按照testTaskId分组
                 .forEach((testTaskId, deviceTestTasks) -> {
-                    // 所有手机都测试完成
+                    // 所有设备都测试完成
                     boolean allDeviceTestFinished = deviceTestTasks.stream()
                             .allMatch(task -> task.getStatus() == DeviceTestTask.FINISHED_STATUS);
 

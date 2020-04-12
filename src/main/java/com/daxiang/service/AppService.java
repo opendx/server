@@ -162,7 +162,7 @@ public class AppService {
             return Response.fail("aapt dump信息为空");
         }
 
-        log.info("appId: {} => {}", appId, dumpInfo);
+        log.info("app: {} => {}", app.getName(), dumpInfo);
 
         String version = org.apache.commons.lang3.StringUtils.substringBetween(dumpInfo, "versionName='", "'");
         String packageName = org.apache.commons.lang3.StringUtils.substringBetween(dumpInfo, "package: name='", "'");

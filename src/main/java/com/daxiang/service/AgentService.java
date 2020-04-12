@@ -57,10 +57,9 @@ public class AgentService {
     }
 
     private AgentVo createAgentVoWithoutDevices(Instance agent) {
-        String url = agent.getRegistration().getServiceUrl();
         URI uri;
         try {
-            uri = new URI(url);
+            uri = new URI(agent.getRegistration().getServiceUrl());
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }

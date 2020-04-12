@@ -1,8 +1,12 @@
 package com.daxiang.agent;
 
 import com.alibaba.fastjson.JSONObject;
+import com.daxiang.mbg.po.Device;
 import com.daxiang.model.Response;
+import com.google.common.collect.ImmutableMap;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -12,21 +16,12 @@ import org.springframework.web.client.RestTemplate;
 @Component
 public class AgentApi {
 
-    private static final String PROTOCOL_PREFIX = "http://";
-
     @Autowired
     private RestTemplate restTemplate;
 
-    /**
-     * 调试action
-     *
-     * @param agentIp
-     * @param agentPort
-     * @param requestBody
-     * @return
-     */
     public Response debugAction(String agentIp, int agentPort, JSONObject requestBody) {
-        return restTemplate.postForObject(PROTOCOL_PREFIX + agentIp + ":" + agentPort + "/action/debug", requestBody, Response.class);
+        String url = getUrl(agentIp, agentPort, "/action/debug");
+        return restTemplate.postForObject(url, requestBody, Response.class);
     }
 
     /**
@@ -38,7 +33,21 @@ public class AgentApi {
      * @return
      */
     public Response aaptDumpBadging(String agentIp, int agentPort, String apkDownloadUrl) {
-        return restTemplate.postForObject(PROTOCOL_PREFIX + agentIp + ":" + agentPort + "/android/aaptDumpBadging", apkDownloadUrl, Response.class);
+        String url = getUrl(agentIp, agentPort, "/android/aaptDumpBadging");
+        return restTemplate.postForObject(url, apkDownloadUrl, Response.class);
     }
 
+    public Response<Device> getDeviceStatus(String agentIp, int agentPort, String deviceId) {
+        String url = getUrl(agentIp, agentPort, "/mobile/status?deviceId={deviceId}");
+        return restTemplate.exchange(url,
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<Response<Device>>() {
+                },
+                ImmutableMap.of("deviceId", deviceId)).getBody();
+    }
+
+    private String getUrl(String agentIp, int agentPort, String requestURI) {
+        return String.format("http://%s:%d%s", agentIp, agentPort, requestURI);
+    }
 }

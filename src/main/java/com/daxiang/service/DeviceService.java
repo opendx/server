@@ -1,5 +1,6 @@
 package com.daxiang.service;
 
+import com.daxiang.agent.AgentApi;
 import com.daxiang.mbg.mapper.DeviceMapper;
 import com.daxiang.model.PageRequest;
 import com.daxiang.model.Response;
@@ -28,9 +29,11 @@ public class DeviceService {
 
     @Autowired
     private DeviceMapper deviceMapper;
+    @Autowired
+    private AgentApi agentApi;
 
     /**
-     * 保存手机信息
+     * 保存设备信息
      *
      * @param device
      * @return
@@ -106,7 +109,7 @@ public class DeviceService {
     }
 
     /**
-     * 开始控制手机
+     * 前端点击"立即使用"
      *
      * @param deviceId
      * @return
@@ -116,15 +119,36 @@ public class DeviceService {
             return Response.fail("设备id不能为空");
         }
 
-        Device device = deviceMapper.selectByPrimaryKey(deviceId);
-        if (device == null) {
-            return Response.fail("手机不存在");
-        }
-        if (device.getStatus() != Device.IDLE_STATUS) {
-            return Response.fail("手机未闲置");
+        Device dbDevice = deviceMapper.selectByPrimaryKey(deviceId);
+        if (dbDevice == null) {
+            return Response.fail("设备不存在");
         }
 
-        return Response.success();
+        // 有时server被强制关闭，导致agent下设备的状态无法同步到server
+        // 可能会出现数据库里的设备状态与实际不一致的情况
+        // 在此通过agent获取最新的设备状态
+        Device agentDevice = null;
+        try {
+            agentDevice = agentApi.getDeviceStatus(dbDevice.getAgentIp(), dbDevice.getAgentPort(), dbDevice.getId()).getData();
+        } catch (Exception ign) {
+            // agent可能已经关闭
+        }
+
+        if (agentDevice == null) {
+            if (dbDevice.getStatus() != Device.OFFLINE_STATUS) { // 数据库记录的不是离线，变为离线
+                dbDevice.setStatus(Device.OFFLINE_STATUS);
+                deviceMapper.updateByPrimaryKeySelective(dbDevice);
+            }
+            return Response.fail("设备不在线");
+        } else {
+            if (agentDevice.getStatus() == Device.IDLE_STATUS) {
+                return Response.success(agentDevice);
+            } else {
+                // 同步最新状态
+                deviceMapper.updateByPrimaryKeySelective(agentDevice);
+                return Response.fail("设备未闲置");
+            }
+        }
     }
 
     public Response getOnlineDevices(Integer platform) {
@@ -150,9 +174,14 @@ public class DeviceService {
         return deviceMapper.selectByExample(example);
     }
 
-    public int updateByAgentIp(Device device, String agentIp) {
+    public void agentOffline(String agentIp) {
+        Device device = new Device();
+        device.setStatus(Device.OFFLINE_STATUS);
+
         DeviceExample deviceExample = new DeviceExample();
         deviceExample.createCriteria().andAgentIpEqualTo(agentIp);
-        return deviceMapper.updateByExampleSelective(device, deviceExample);
+
+        deviceMapper.updateByExampleSelective(device, deviceExample);
     }
+
 }

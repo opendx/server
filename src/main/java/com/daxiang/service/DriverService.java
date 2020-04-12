@@ -142,7 +142,7 @@ public class DriverService {
 
         List<Driver> drivers = driverDao.selectByTypeAndDeviceId(type, deviceId);
         if (!CollectionUtils.isEmpty(drivers)) {
-            // 如果同一个手机对应了多个driver，取第一个
+            // 如果同一个设备对应了多个driver，取第一个
             List<DriverFile> driverFiles = drivers.get(0).getFiles();
             if (!CollectionUtils.isEmpty(driverFiles)) {
                 Optional<DriverFile> driverFile = driverFiles.stream().filter(f -> platform.equals(f.getPlatform())).findFirst();
