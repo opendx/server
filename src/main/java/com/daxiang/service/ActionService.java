@@ -210,49 +210,60 @@ public class ActionService {
             return Response.fail("projectId || platform不能为空");
         }
 
+        // 已发布的actions
         List<Action> actions = actionDao.selectByProjectIdAndPlatform(projectId, platform).stream()
-                .filter(action -> action.getState() == Action.RELEASE_STATE).collect(Collectors.toList());
-        List<ActionCascaderVo> result = new ArrayList<>();
+                .filter(action -> action.getState() == Action.RELEASE_STATE)
+                .collect(Collectors.toList());
 
-        Map<Integer, List<Action>> groupByActionTypeMap = actions.stream().collect(Collectors.groupingBy(Action::getType));
-        groupByActionTypeMap.forEach((type, actionList) -> {
-            ActionCascaderVo root = new ActionCascaderVo();
-            root.setName(type == Action.TYPE_BASE ? "基础组件" : type == Action.TYPE_TESTCASE ? "测试用例" : "封装组件");
-
-            root.setChildren(getChildren(actionList));
-            result.add(root);
-        });
-
-        return Response.success(result);
-    }
-
-    private List<ActionCascaderVo> getChildren(List<Action> actionList) {
-        List<Integer> categoryIds = actionList.stream()
+        // 分类
+        List<Integer> categoryIds = actions.stream()
                 .map(Action::getCategoryId)
                 .filter(Objects::nonNull)
                 .distinct()
                 .collect(Collectors.toList());
-        List<Category> categories = categoryService.selectByPrimaryKeys(categoryIds);
+        Map<Integer, Category> categoryMap = categoryService.getCategoryMapByCategoryIds(categoryIds);
 
         List<ActionCascaderVo> result = new ArrayList<>();
-        // 有分类的action
-        categories.forEach(category -> {
-            ActionCascaderVo categoryCascaderVo = new ActionCascaderVo();
-            categoryCascaderVo.setName(category.getName());
 
-            List<ActionCascaderVo> actionCascaderVosInCategory = actionList.stream()
-                    .filter(action -> category.getId().equals(action.getCategoryId()))
-                    .map(action -> ActionCascaderVo.convert(action)).collect(Collectors.toList());
-            categoryCascaderVo.setChildren(actionCascaderVosInCategory);
-            result.add(categoryCascaderVo);
+        actions.stream()
+                .collect(Collectors.groupingBy(Action::getType)) // 按照类型分组
+                .forEach((type, actionList) -> {
+                    ActionCascaderVo root = new ActionCascaderVo();
+                    root.setName(type == Action.TYPE_BASE ? "基础组件" : type == Action.TYPE_TESTCASE ? "测试用例" : "封装组件");
+                    root.setChildren(getChildren(categoryMap, actionList));
+                    result.add(root);
+                });
+
+        return Response.success(result);
+    }
+
+    private List<ActionCascaderVo> getChildren(Map<Integer, Category> categoryMap, List<Action> actionList) {
+        // 按照是否有分类分区
+        Map<Boolean, List<Action>> actionsMap = actionList.stream()
+                .collect(Collectors.partitioningBy(action -> Objects.nonNull(action.getCategoryId())));
+
+        List<ActionCascaderVo> result = new ArrayList<>();
+
+        // 有分类的action 按照分类分组
+        Map<Integer, List<Action>> actionsWithCategoryMap = actionsMap.get(true).stream()
+                .collect(Collectors.groupingBy(Action::getCategoryId));
+
+        actionsWithCategoryMap.forEach((categoryId, actionsWithCategory) -> {
+            ActionCascaderVo actionCascaderVo = new ActionCascaderVo();
+            actionCascaderVo.setName(categoryMap.get(categoryId).getName());
+
+            List<ActionCascaderVo> children = actionsWithCategory.stream()
+                    .map(ActionCascaderVo::convert).collect(Collectors.toList());
+            actionCascaderVo.setChildren(children);
+
+            result.add(actionCascaderVo);
         });
 
-        // 没有分类的actions
-        List<ActionCascaderVo> actionCascaderVosNotInCategory = actionList.stream()
-                .filter(action -> Objects.isNull(action.getCategoryId()))
-                .map(action -> ActionCascaderVo.convert(action)).collect(Collectors.toList());
-        result.addAll(actionCascaderVosNotInCategory);
+        // 无分类的actions
+        List<ActionCascaderVo> actionWithoutCategoryCascaderVos = actionsMap.get(false).stream()
+                .map(ActionCascaderVo::convert).collect(Collectors.toList());
 
+        result.addAll(actionWithoutCategoryCascaderVos);
         return result;
     }
 

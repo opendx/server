@@ -70,20 +70,14 @@ public class ScheduledTaskExecutor {
                                 .findFirst().get();
                         testTask.setFinishTime(finishTime);
 
-                        Long passCount = result.get(Testcase.PASS_STATUS);
-                        if (passCount != null) {
-                            testTask.setPassCaseCount(Math.toIntExact(passCount));
-                        }
+                        int passCount = result.getOrDefault(Testcase.PASS_STATUS, 0L).intValue();
+                        testTask.setPassCaseCount(passCount);
 
-                        Long failCount = result.get(Testcase.FAIL_STATUS);
-                        if (failCount != null) {
-                            testTask.setFailCaseCount(Math.toIntExact(failCount));
-                        }
+                        int failCount = result.getOrDefault(Testcase.FAIL_STATUS, 0L).intValue();
+                        testTask.setFailCaseCount(failCount);
 
-                        Long skipCount = result.get(Testcase.SKIP_STATUS);
-                        if (skipCount != null) {
-                            testTask.setSkipCaseCount(Math.toIntExact(skipCount));
-                        }
+                        int skipCount = result.getOrDefault(Testcase.SKIP_STATUS, 0L).intValue();
+                        testTask.setSkipCaseCount(skipCount);
 
                         testTaskService.updateByPrimaryKeySelective(testTask);
                         log.info("测试结果统计完成, testTaskId: {}", testTaskId);

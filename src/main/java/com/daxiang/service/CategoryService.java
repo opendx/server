@@ -182,4 +182,13 @@ public class CategoryService {
         return categoryMapper.selectByExample(example);
     }
 
+    public Map<Integer, Category> getCategoryMapByCategoryIds(List<Integer> ids) {
+        List<Category> categories = selectByPrimaryKeys(ids);
+        if (CollectionUtils.isEmpty(categories)) {
+            return Collections.EMPTY_MAP;
+        }
+
+        return categories.stream().collect(Collectors.toMap(Category::getId, c -> c, (k1, k2) -> k1));
+    }
+
 }

@@ -181,28 +181,34 @@ public class PageService {
                 .map(Page::getCategoryId)
                 .filter(Objects::nonNull)
                 .distinct().collect(Collectors.toList());
-        List<Category> categories = categoryService.selectByPrimaryKeys(categoryIds);
+        Map<Integer, Category> categoryMap = categoryService.getCategoryMapByCategoryIds(categoryIds);
 
-        // 带分类的page
-        List<PageCascaderVo> result = categories.stream().map(category -> {
+        // 按照是否有分类分区
+        Map<Boolean, List<Page>> pagesMap = pages.stream()
+                .collect(Collectors.partitioningBy(page -> Objects.nonNull(page.getCategoryId())));
+
+        List<PageCascaderVo> result = new ArrayList<>();
+
+        // 有分类的pages 按照分类分组
+        Map<Integer, List<Page>> pagesWithCategoryMap = pagesMap.get(true).stream()
+                .collect(Collectors.groupingBy(Page::getCategoryId));
+
+        pagesWithCategoryMap.forEach((categoryId, pagesWithCategory) -> {
             PageCascaderVo root = new PageCascaderVo();
-            root.setName(category.getName());
+            root.setName(categoryMap.get(categoryId).getName());
 
-            List<PageCascaderVo> children = pages.stream()
-                    .filter(p -> category.getId().equals(p.getCategoryId()))
-                    .map(p -> PageCascaderVo.convert(p)).collect(Collectors.toList());
+            List<PageCascaderVo> children = pagesWithCategory.stream()
+                    .map(PageCascaderVo::convert).collect(Collectors.toList());
             root.setChildren(children);
 
-            return root;
-        }).collect(Collectors.toList());
+            result.add(root);
+        });
 
-        // 不带分类的page
-        List<PageCascaderVo> pageCascaderVosWithoutCategory = pages.stream()
-                .filter(p -> Objects.isNull(p.getCategoryId()))
-                .map(p -> PageCascaderVo.convert(p)).collect(Collectors.toList());
+        // 无分类的pages
+        List<PageCascaderVo> pageWithoutCategoryCascaderVos = pagesMap.get(false).stream()
+                .map(PageCascaderVo::convert).collect(Collectors.toList());
 
-        result.addAll(pageCascaderVosWithoutCategory);
-
+        result.addAll(pageWithoutCategoryCascaderVos);
         return Response.success(result);
     }
 }
