@@ -11,6 +11,11 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class Page implements Serializable {
+
+    public static final int TYPE_ANDROID_NATIVE = 1;
+    public static final int TYPE_IOS_NATIVE = 2;
+    public static final int TYPE_WEB = 3;
+
     @NotNull(message = "id不能为空", groups = {UpdateGroup.class})
     private Integer id;
 
@@ -29,6 +34,14 @@ public class Page implements Serializable {
      */
     @NotNull(message = "所属项目不能为空")
     private Integer projectId;
+
+    /**
+     * 1.android_native 2.ios_native 3.web
+     *
+     * @mbg.generated
+     */
+    @NotNull(message = "type不能为空")
+    private Integer type;
 
     /**
      * page所属分类
@@ -144,6 +157,14 @@ public class Page implements Serializable {
         this.projectId = projectId;
     }
 
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
     public Integer getCategoryId() {
         return categoryId;
     }
@@ -249,6 +270,7 @@ public class Page implements Serializable {
         sb.append(", id=").append(id);
         sb.append(", name=").append(name);
         sb.append(", projectId=").append(projectId);
+        sb.append(", type=").append(type);
         sb.append(", categoryId=").append(categoryId);
         sb.append(", description=").append(description);
         sb.append(", imgPath=").append(imgPath);

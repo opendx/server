@@ -155,6 +155,7 @@ CREATE TABLE `page` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL COMMENT 'page名',
   `project_id` int(11) NOT NULL COMMENT 'page所属项目',
+  `type` tinyint(4) NOT NULL COMMENT '1.android_native 2.ios_native 3.web',
   `category_id` int(11) DEFAULT NULL COMMENT 'page所属分类',
   `description` varchar(255) DEFAULT NULL COMMENT 'page描述',
   `img_path` varchar(255) DEFAULT NULL COMMENT '服务端保存的文件路径',

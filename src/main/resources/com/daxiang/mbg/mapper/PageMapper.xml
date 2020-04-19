@@ -5,6 +5,7 @@
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="project_id" jdbcType="INTEGER" property="projectId" />
+    <result column="type" jdbcType="TINYINT" property="type" />
     <result column="category_id" jdbcType="INTEGER" property="categoryId" />
     <result column="description" jdbcType="VARCHAR" property="description" />
     <result column="img_path" jdbcType="VARCHAR" property="imgPath" />
@@ -79,7 +80,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, name, project_id, category_id, description, img_path, window_height, window_width, 
+    id, name, project_id, type, category_id, description, img_path, window_height, window_width, 
     window_orientation, device_id, creator_uid, create_time
   </sql>
   <sql id="Blob_Column_List">
@@ -137,18 +138,18 @@
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into page (name, project_id, category_id, 
-      description, img_path, window_height, 
-      window_width, window_orientation, device_id, 
-      creator_uid, create_time, window_hierarchy, 
-      elements, 
+    insert into page (name, project_id, type, 
+      category_id, description, img_path, 
+      window_height, window_width, window_orientation, 
+      device_id, creator_uid, create_time, 
+      window_hierarchy, elements, 
       bys
       )
-    values (#{name,jdbcType=VARCHAR}, #{projectId,jdbcType=INTEGER}, #{categoryId,jdbcType=INTEGER}, 
-      #{description,jdbcType=VARCHAR}, #{imgPath,jdbcType=VARCHAR}, #{windowHeight,jdbcType=INTEGER}, 
-      #{windowWidth,jdbcType=INTEGER}, #{windowOrientation,jdbcType=VARCHAR}, #{deviceId,jdbcType=VARCHAR}, 
-      #{creatorUid,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{windowHierarchy,jdbcType=LONGVARCHAR}, 
-      #{elements,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.ElementListTypeHandler}, 
+    values (#{name,jdbcType=VARCHAR}, #{projectId,jdbcType=INTEGER}, #{type,jdbcType=TINYINT}, 
+      #{categoryId,jdbcType=INTEGER}, #{description,jdbcType=VARCHAR}, #{imgPath,jdbcType=VARCHAR}, 
+      #{windowHeight,jdbcType=INTEGER}, #{windowWidth,jdbcType=INTEGER}, #{windowOrientation,jdbcType=VARCHAR}, 
+      #{deviceId,jdbcType=VARCHAR}, #{creatorUid,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{windowHierarchy,jdbcType=LONGVARCHAR}, #{elements,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.ElementListTypeHandler}, 
       #{bys,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.ByListTypeHandler}
       )
   </insert>
@@ -163,6 +164,9 @@
       </if>
       <if test="projectId != null">
         project_id,
+      </if>
+      <if test="type != null">
+        type,
       </if>
       <if test="categoryId != null">
         category_id,
@@ -207,6 +211,9 @@
       </if>
       <if test="projectId != null">
         #{projectId,jdbcType=INTEGER},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=TINYINT},
       </if>
       <if test="categoryId != null">
         #{categoryId,jdbcType=INTEGER},
@@ -264,6 +271,9 @@
       <if test="record.projectId != null">
         project_id = #{record.projectId,jdbcType=INTEGER},
       </if>
+      <if test="record.type != null">
+        type = #{record.type,jdbcType=TINYINT},
+      </if>
       <if test="record.categoryId != null">
         category_id = #{record.categoryId,jdbcType=INTEGER},
       </if>
@@ -310,6 +320,7 @@
     set id = #{record.id,jdbcType=INTEGER},
       name = #{record.name,jdbcType=VARCHAR},
       project_id = #{record.projectId,jdbcType=INTEGER},
+      type = #{record.type,jdbcType=TINYINT},
       category_id = #{record.categoryId,jdbcType=INTEGER},
       description = #{record.description,jdbcType=VARCHAR},
       img_path = #{record.imgPath,jdbcType=VARCHAR},
@@ -331,6 +342,7 @@
     set id = #{record.id,jdbcType=INTEGER},
       name = #{record.name,jdbcType=VARCHAR},
       project_id = #{record.projectId,jdbcType=INTEGER},
+      type = #{record.type,jdbcType=TINYINT},
       category_id = #{record.categoryId,jdbcType=INTEGER},
       description = #{record.description,jdbcType=VARCHAR},
       img_path = #{record.imgPath,jdbcType=VARCHAR},
@@ -352,6 +364,9 @@
       </if>
       <if test="projectId != null">
         project_id = #{projectId,jdbcType=INTEGER},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=TINYINT},
       </if>
       <if test="categoryId != null">
         category_id = #{categoryId,jdbcType=INTEGER},
@@ -396,6 +411,7 @@
     update page
     set name = #{name,jdbcType=VARCHAR},
       project_id = #{projectId,jdbcType=INTEGER},
+      type = #{type,jdbcType=TINYINT},
       category_id = #{categoryId,jdbcType=INTEGER},
       description = #{description,jdbcType=VARCHAR},
       img_path = #{imgPath,jdbcType=VARCHAR},
@@ -414,6 +430,7 @@
     update page
     set name = #{name,jdbcType=VARCHAR},
       project_id = #{projectId,jdbcType=INTEGER},
+      type = #{type,jdbcType=TINYINT},
       category_id = #{categoryId,jdbcType=INTEGER},
       description = #{description,jdbcType=VARCHAR},
       img_path = #{imgPath,jdbcType=VARCHAR},
