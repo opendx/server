@@ -160,7 +160,7 @@ CREATE TABLE `page` (
   `img_path` varchar(255) DEFAULT NULL COMMENT '服务端保存的文件路径',
   `window_height` int(11) DEFAULT NULL COMMENT 'window高度',
   `window_width` int(11) DEFAULT NULL COMMENT 'window宽度',
-  `window_orientation` varchar(11) DEFAULT 'portrait' COMMENT '屏幕方向',
+  `window_orientation` varchar(11) DEFAULT NULL COMMENT '屏幕方向',
   `window_hierarchy` mediumtext COMMENT '页面布局',
   `device_id` varchar(100) DEFAULT NULL COMMENT '图片所属的设备id',
   `elements` json NULL COMMENT '元素',
