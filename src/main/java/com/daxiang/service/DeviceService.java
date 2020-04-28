@@ -1,6 +1,6 @@
 package com.daxiang.service;
 
-import com.daxiang.agent.AgentApi;
+import com.daxiang.agent.AgentClient;
 import com.daxiang.mbg.mapper.DeviceMapper;
 import com.daxiang.model.PageRequest;
 import com.daxiang.model.Response;
@@ -30,7 +30,7 @@ public class DeviceService {
     @Autowired
     private DeviceMapper deviceMapper;
     @Autowired
-    private AgentApi agentApi;
+    private AgentClient agentClient;
 
     /**
      * 保存设备信息
@@ -129,7 +129,7 @@ public class DeviceService {
         // 在此通过agent获取最新的设备状态
         Device agentDevice = null;
         try {
-            agentDevice = agentApi.getDeviceStatus(dbDevice.getAgentIp(), dbDevice.getAgentPort(), dbDevice.getId()).getData();
+            agentDevice = agentClient.getDeviceStatus(dbDevice.getAgentIp(), dbDevice.getAgentPort(), dbDevice.getId()).getData();
         } catch (Exception ign) {
             // agent可能已经关闭
         }

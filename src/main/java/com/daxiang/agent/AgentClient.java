@@ -14,7 +14,7 @@ import org.springframework.web.client.RestTemplate;
  * Created by jiangyitao.
  */
 @Component
-public class AgentApi {
+public class AgentClient {
 
     @Autowired
     private RestTemplate restTemplate;

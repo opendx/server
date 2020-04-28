@@ -1,6 +1,6 @@
 package com.daxiang.service;
 
-import com.daxiang.agent.AgentApi;
+import com.daxiang.agent.AgentClient;
 import com.daxiang.mbg.mapper.AppMapper;
 import com.daxiang.mbg.po.App;
 import com.daxiang.mbg.po.AppExample;
@@ -36,7 +36,7 @@ public class AppService {
     @Autowired
     private AgentService agentService;
     @Autowired
-    private AgentApi agentApi;
+    private AgentClient agentClient;
     @Autowired
     private UserService userService;
 
@@ -150,7 +150,7 @@ public class AppService {
             return Response.fail("暂无配置了aapt的agent，无法执行aapt dump");
         }
 
-        Response agentResponse = agentApi.aaptDumpBadging(agentVo.get().getIp(),
+        Response agentResponse = agentClient.aaptDumpBadging(agentVo.get().getIp(),
                 agentVo.get().getPort(),
                 HttpServletUtil.getStaticResourceUrl(app.getFilePath()));
         if (!agentResponse.isSuccess()) {

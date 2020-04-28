@@ -1,7 +1,7 @@
 package com.daxiang.service;
 
 import com.alibaba.fastjson.JSONObject;
-import com.daxiang.agent.AgentApi;
+import com.daxiang.agent.AgentClient;
 import com.daxiang.exception.BusinessException;
 import com.daxiang.mbg.mapper.ActionMapper;
 import com.daxiang.mbg.po.*;
@@ -42,7 +42,7 @@ public class ActionService {
     @Autowired
     private GlobalVarService globalVarService;
     @Autowired
-    private AgentApi agentApi;
+    private AgentClient agentClient;
     @Autowired
     private TestSuiteService testSuiteService;
     @Autowired
@@ -323,7 +323,7 @@ public class ActionService {
         requestBody.put("deviceId", debugInfo.getDeviceId());
 
         // 发送到agent执行
-        return agentApi.debugAction(debugInfo.getAgentIp(), debugInfo.getAgentPort(), requestBody);
+        return agentClient.debugAction(debugInfo.getAgentIp(), debugInfo.getAgentPort(), requestBody);
     }
 
     public Action selectByPrimaryKey(Integer actioniId) {
