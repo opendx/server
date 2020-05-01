@@ -1,5 +1,6 @@
 package com.daxiang.mbg.po;
 
+import com.daxiang.validator.annotation.JSONFormatIfHasText;
 import com.daxiang.validator.group.UpdateGroup;
 
 import javax.validation.constraints.NotBlank;
@@ -32,7 +33,7 @@ public class Project implements Serializable {
     private String description;
 
     /**
-     * 1.andorid 2.iOS
+     * 1.andorid 2.iOS 3.pc web
      *
      * @mbg.generated
      */
@@ -52,6 +53,14 @@ public class Project implements Serializable {
      * @mbg.generated
      */
     private Date createTime;
+
+    /**
+     * org.openqa.selenium.Capabilities
+     *
+     * @mbg.generated
+     */
+    @JSONFormatIfHasText(message = "Capabilities必须为合法的JSON格式")
+    private String capabilities;
 
     private static final long serialVersionUID = 1L;
 
@@ -103,6 +112,14 @@ public class Project implements Serializable {
         this.createTime = createTime;
     }
 
+    public String getCapabilities() {
+        return capabilities;
+    }
+
+    public void setCapabilities(String capabilities) {
+        this.capabilities = capabilities;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -115,6 +132,7 @@ public class Project implements Serializable {
         sb.append(", platform=").append(platform);
         sb.append(", creatorUid=").append(creatorUid);
         sb.append(", createTime=").append(createTime);
+        sb.append(", capabilities=").append(capabilities);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

@@ -148,7 +148,7 @@ public class ProjectService {
         }
         example.setOrderByClause("create_time desc");
 
-        return projectMapper.selectByExample(example);
+        return projectMapper.selectByExampleWithBLOBs(example);
     }
 
     public Project selectByPrimaryKey(Integer id) {

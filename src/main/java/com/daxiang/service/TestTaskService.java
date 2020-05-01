@@ -139,6 +139,7 @@ public class TestTaskService {
             DeviceTestTask deviceTestTask = new DeviceTestTask();
             deviceTestTask.setProjectId(testTask.getProjectId());
             deviceTestTask.setPlatform(project.getPlatform());
+            deviceTestTask.setCapabilities(project.getCapabilities());
             deviceTestTask.setTestTaskId(testTask.getId());
             deviceTestTask.setTestPlan(testPlan);
             deviceTestTask.setDeviceId(deviceId);

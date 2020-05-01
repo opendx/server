@@ -79,8 +79,12 @@ public class AgentService {
 
             agentVo.setOsName(properties.getJSONObject("os.name").getString("value"));
             agentVo.setJavaVersion(properties.getJSONObject("java.version").getString("value"));
-            agentVo.setAppiumVersion(properties.getJSONObject("appiumVersion").getString("value"));
             agentVo.setIsConfigAapt(properties.getJSONObject("aapt").getBoolean("value"));
+
+            JSONObject appiumVersion = properties.getJSONObject("appium.version");
+            if (appiumVersion != null) {
+                agentVo.setAppiumVersion(appiumVersion.getString("value"));
+            }
         }
 
         return agentVo;

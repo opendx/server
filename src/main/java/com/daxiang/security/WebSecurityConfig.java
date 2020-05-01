@@ -47,6 +47,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // 以下为agent调用的接口，放行
                 .antMatchers("/springboot-admin/**").permitAll()
                 .antMatchers("/upload/file").permitAll()
+                .antMatchers("/project/list").permitAll()
                 .antMatchers("/device/list").permitAll()
                 .antMatchers("/device/save").permitAll()
                 .antMatchers("/driver/downloadUrl").permitAll()

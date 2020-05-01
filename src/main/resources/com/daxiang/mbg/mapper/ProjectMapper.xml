@@ -9,6 +9,9 @@
     <result column="creator_uid" jdbcType="INTEGER" property="creatorUid" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.daxiang.mbg.po.Project">
+    <result column="capabilities" jdbcType="LONGVARCHAR" property="capabilities" />
+  </resultMap>
   <sql id="Example_Where_Clause">
     <where>
       <foreach collection="oredCriteria" item="criteria" separator="or">
@@ -70,6 +73,25 @@
   <sql id="Base_Column_List">
     id, name, description, platform, creator_uid, create_time
   </sql>
+  <sql id="Blob_Column_List">
+    capabilities
+  </sql>
+  <select id="selectByExampleWithBLOBs" parameterType="com.daxiang.mbg.po.ProjectExample" resultMap="ResultMapWithBLOBs">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from project
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
   <select id="selectByExample" parameterType="com.daxiang.mbg.po.ProjectExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
@@ -84,9 +106,11 @@
       order by ${orderByClause}
     </if>
   </select>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
     select 
     <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
     from project
     where id = #{id,jdbcType=INTEGER}
   </select>
@@ -105,9 +129,11 @@
       SELECT LAST_INSERT_ID()
     </selectKey>
     insert into project (name, description, platform, 
-      creator_uid, create_time)
+      creator_uid, create_time, capabilities
+      )
     values (#{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{platform,jdbcType=TINYINT}, 
-      #{creatorUid,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP})
+      #{creatorUid,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{capabilities,jdbcType=LONGVARCHAR}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.daxiang.mbg.po.Project">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
@@ -130,6 +156,9 @@
       <if test="createTime != null">
         create_time,
       </if>
+      <if test="capabilities != null">
+        capabilities,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="name != null">
@@ -146,6 +175,9 @@
       </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="capabilities != null">
+        #{capabilities,jdbcType=LONGVARCHAR},
       </if>
     </trim>
   </insert>
@@ -176,7 +208,23 @@
       <if test="record.createTime != null">
         create_time = #{record.createTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="record.capabilities != null">
+        capabilities = #{record.capabilities,jdbcType=LONGVARCHAR},
+      </if>
     </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map">
+    update project
+    set id = #{record.id,jdbcType=INTEGER},
+      name = #{record.name,jdbcType=VARCHAR},
+      description = #{record.description,jdbcType=VARCHAR},
+      platform = #{record.platform,jdbcType=TINYINT},
+      creator_uid = #{record.creatorUid,jdbcType=INTEGER},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      capabilities = #{record.capabilities,jdbcType=LONGVARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -211,7 +259,20 @@
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="capabilities != null">
+        capabilities = #{capabilities,jdbcType=LONGVARCHAR},
+      </if>
     </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.daxiang.mbg.po.Project">
+    update project
+    set name = #{name,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
+      platform = #{platform,jdbcType=TINYINT},
+      creator_uid = #{creatorUid,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      capabilities = #{capabilities,jdbcType=LONGVARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.daxiang.mbg.po.Project">

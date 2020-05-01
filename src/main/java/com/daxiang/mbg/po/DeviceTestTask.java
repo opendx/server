@@ -70,6 +70,13 @@ public class DeviceTestTask implements Serializable {
     private Date endTime;
 
     /**
+     * org.openqa.selenium.Capabilities
+     *
+     * @mbg.generated
+     */
+    private String capabilities;
+
+    /**
      * 下发任务时的testplan
      *
      * @mbg.generated
@@ -205,6 +212,14 @@ public class DeviceTestTask implements Serializable {
         this.endTime = endTime;
     }
 
+    public String getCapabilities() {
+        return capabilities;
+    }
+
+    public void setCapabilities(String capabilities) {
+        this.capabilities = capabilities;
+    }
+
     public TestPlan getTestPlan() {
         return testPlan;
     }
@@ -299,6 +314,7 @@ public class DeviceTestTask implements Serializable {
         sb.append(", status=").append(status);
         sb.append(", startTime=").append(startTime);
         sb.append(", endTime=").append(endTime);
+        sb.append(", capabilities=").append(capabilities);
         sb.append(", testPlan=").append(testPlan);
         sb.append(", globalVars=").append(globalVars);
         sb.append(", pages=").append(pages);
