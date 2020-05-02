@@ -1,6 +1,7 @@
 package com.daxiang.agent;
 
 import com.alibaba.fastjson.JSONObject;
+import com.daxiang.mbg.po.Browser;
 import com.daxiang.mbg.po.Device;
 import com.daxiang.model.Response;
 import com.google.common.collect.ImmutableMap;
@@ -45,6 +46,16 @@ public class AgentClient {
                 new ParameterizedTypeReference<Response<Device>>() {
                 },
                 ImmutableMap.of("deviceId", deviceId)).getBody();
+    }
+
+    public Response<Browser> getBrowserStatus(String agentIp, int agentPort, String browserId) {
+        String url = getUrl(agentIp, agentPort, "/browser/status?browserId={browserId}");
+        return restTemplate.exchange(url,
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<Response<Browser>>() {
+                },
+                ImmutableMap.of("browserId", browserId)).getBody();
     }
 
     private String getUrl(String agentIp, int agentPort, String requestURI) {

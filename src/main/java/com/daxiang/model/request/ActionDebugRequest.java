@@ -4,6 +4,7 @@ import com.daxiang.mbg.po.Action;
 import lombok.Data;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
@@ -22,15 +23,15 @@ public class ActionDebugRequest {
 
     @Data
     public static class DebugInfo {
+        @NotNull(message = "platform不能为空")
+        private Integer platform;
         @NotEmpty(message = "agentIp不能为空")
         private String agentIp;
         @NotNull(message = "agentPort不能为空")
         private Integer agentPort;
         @NotNull(message = "环境不能为空")
         private Integer env;
-        /**
-         * 移动端需要设备id
-         */
+        @NotBlank(message = "deviceId不能为空")
         private String deviceId;
     }
 }

@@ -14,3 +14,8 @@ ADD COLUMN `capabilities` text NULL COMMENT 'org.openqa.selenium.Capabilities' A
 
 ALTER TABLE `device_test_task`
 ADD COLUMN `capabilities` text NULL COMMENT 'org.openqa.selenium.Capabilities' AFTER `platform`;
+
+ALTER TABLE `device` DROP COLUMN `last_offline_time`;
+
+delete from `action` where id < 10000 -- 重新导入基础action https://github.com/opendx/agent/tree/master/src/main/java/com/daxiang/action/action.sql
+

@@ -955,66 +955,6 @@ public class DeviceExample {
             return (Criteria) this;
         }
 
-        public Criteria andLastOfflineTimeIsNull() {
-            addCriterion("last_offline_time is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andLastOfflineTimeIsNotNull() {
-            addCriterion("last_offline_time is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andLastOfflineTimeEqualTo(Date value) {
-            addCriterion("last_offline_time =", value, "lastOfflineTime");
-            return (Criteria) this;
-        }
-
-        public Criteria andLastOfflineTimeNotEqualTo(Date value) {
-            addCriterion("last_offline_time <>", value, "lastOfflineTime");
-            return (Criteria) this;
-        }
-
-        public Criteria andLastOfflineTimeGreaterThan(Date value) {
-            addCriterion("last_offline_time >", value, "lastOfflineTime");
-            return (Criteria) this;
-        }
-
-        public Criteria andLastOfflineTimeGreaterThanOrEqualTo(Date value) {
-            addCriterion("last_offline_time >=", value, "lastOfflineTime");
-            return (Criteria) this;
-        }
-
-        public Criteria andLastOfflineTimeLessThan(Date value) {
-            addCriterion("last_offline_time <", value, "lastOfflineTime");
-            return (Criteria) this;
-        }
-
-        public Criteria andLastOfflineTimeLessThanOrEqualTo(Date value) {
-            addCriterion("last_offline_time <=", value, "lastOfflineTime");
-            return (Criteria) this;
-        }
-
-        public Criteria andLastOfflineTimeIn(List<Date> values) {
-            addCriterion("last_offline_time in", values, "lastOfflineTime");
-            return (Criteria) this;
-        }
-
-        public Criteria andLastOfflineTimeNotIn(List<Date> values) {
-            addCriterion("last_offline_time not in", values, "lastOfflineTime");
-            return (Criteria) this;
-        }
-
-        public Criteria andLastOfflineTimeBetween(Date value1, Date value2) {
-            addCriterion("last_offline_time between", value1, value2, "lastOfflineTime");
-            return (Criteria) this;
-        }
-
-        public Criteria andLastOfflineTimeNotBetween(Date value1, Date value2) {
-            addCriterion("last_offline_time not between", value1, value2, "lastOfflineTime");
-            return (Criteria) this;
-        }
-
         public Criteria andUsernameIsNull() {
             addCriterion("username is null");
             return (Criteria) this;

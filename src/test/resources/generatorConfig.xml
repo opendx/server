@@ -51,6 +51,8 @@
         <!--</table>-->
         <!--<table tableName="device">-->
         <!--</table>-->
+        <table tableName="browser">
+        </table>
         <!--<table tableName="device_test_task">-->
             <!--<generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
             <!--<columnOverride column="test_plan" typeHandler="com.daxiang.typehandler.TestPlanTypeHandler" javaType="com.daxiang.mbg.po.TestPlan" jdbcType="LONGVARCHAR" />-->
@@ -79,10 +81,10 @@
             <!--<columnOverride column="test_suites" typeHandler="com.daxiang.typehandler.IntegerListTypeHandler" javaType="java.util.List&lt;Integer&gt;" jdbcType="LONGVARCHAR"/>-->
             <!--<columnOverride column="device_ids" typeHandler="com.daxiang.typehandler.StringListTypeHandler" javaType="java.util.List&lt;String&gt;" jdbcType="LONGVARCHAR"/>-->
         <!--</table>-->
-        <table tableName="test_suite">
-            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
-            <columnOverride column="testcases" typeHandler="com.daxiang.typehandler.IntegerListTypeHandler" javaType="java.util.List&lt;Integer&gt;" jdbcType="LONGVARCHAR"/>
-        </table>
+        <!--<table tableName="test_suite">-->
+            <!--<generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
+            <!--<columnOverride column="testcases" typeHandler="com.daxiang.typehandler.IntegerListTypeHandler" javaType="java.util.List&lt;Integer&gt;" jdbcType="LONGVARCHAR"/>-->
+        <!--</table>-->
         <!--<table tableName="test_task">-->
             <!--<generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
             <!--<columnOverride column="test_plan" typeHandler="com.daxiang.typehandler.TestPlanTypeHandler" javaType="com.daxiang.mbg.po.TestPlan" jdbcType="LONGVARCHAR" />-->

@@ -106,15 +106,7 @@ public class Device implements Serializable {
     private Date lastOnlineTime;
 
     /**
-     * 最近一次离线时间
-     *
-     * @mbg.generated
-     */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    private Date lastOfflineTime;
-
-    /**
-     * 使用人
+     * 最近一次使用人
      *
      * @mbg.generated
      */
@@ -234,14 +226,6 @@ public class Device implements Serializable {
         this.lastOnlineTime = lastOnlineTime;
     }
 
-    public Date getLastOfflineTime() {
-        return lastOfflineTime;
-    }
-
-    public void setLastOfflineTime(Date lastOfflineTime) {
-        this.lastOfflineTime = lastOfflineTime;
-    }
-
     public String getUsername() {
         return username;
     }
@@ -277,7 +261,6 @@ public class Device implements Serializable {
         sb.append(", platform=").append(platform);
         sb.append(", status=").append(status);
         sb.append(", lastOnlineTime=").append(lastOnlineTime);
-        sb.append(", lastOfflineTime=").append(lastOfflineTime);
         sb.append(", username=").append(username);
         sb.append(", createTime=").append(createTime);
         sb.append(", serialVersionUID=").append(serialVersionUID);

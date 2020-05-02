@@ -96,8 +96,7 @@ CREATE TABLE `device` (
   `platform` tinyint(4) DEFAULT NULL COMMENT '平台：1.android  2.ios',
   `status` tinyint(4) DEFAULT NULL COMMENT '设备状态：0.离线 1.使用中 2.空闲',
   `last_online_time` datetime DEFAULT NULL COMMENT '最近一次在线时间',
-  `last_offline_time` datetime DEFAULT NULL COMMENT '最近一次离线时间',
-  `username` varchar(100) DEFAULT NULL COMMENT '使用人',
+  `username` varchar(100) DEFAULT NULL COMMENT '最近一次使用人',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='设备表';

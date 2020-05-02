@@ -50,6 +50,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/project/list").permitAll()
                 .antMatchers("/device/list").permitAll()
                 .antMatchers("/device/save").permitAll()
+                .antMatchers("/browser/save").permitAll()
                 .antMatchers("/driver/downloadUrl").permitAll()
                 .antMatchers("/deviceTestTask/**").permitAll();
 

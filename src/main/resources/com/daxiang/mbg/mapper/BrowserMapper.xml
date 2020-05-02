@@ -1,19 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.daxiang.mbg.mapper.DeviceMapper">
-  <resultMap id="BaseResultMap" type="com.daxiang.mbg.po.Device">
+<mapper namespace="com.daxiang.mbg.mapper.BrowserMapper">
+  <resultMap id="BaseResultMap" type="com.daxiang.mbg.po.Browser">
     <id column="id" jdbcType="VARCHAR" property="id" />
-    <result column="name" jdbcType="VARCHAR" property="name" />
-    <result column="agent_ip" jdbcType="VARCHAR" property="agentIp" />
-    <result column="agent_port" jdbcType="INTEGER" property="agentPort" />
-    <result column="system_version" jdbcType="VARCHAR" property="systemVersion" />
-    <result column="cpu_info" jdbcType="VARCHAR" property="cpuInfo" />
-    <result column="mem_size" jdbcType="VARCHAR" property="memSize" />
-    <result column="screen_width" jdbcType="INTEGER" property="screenWidth" />
-    <result column="screen_height" jdbcType="INTEGER" property="screenHeight" />
-    <result column="img_path" jdbcType="VARCHAR" property="imgPath" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="version" jdbcType="VARCHAR" property="version" />
     <result column="platform" jdbcType="TINYINT" property="platform" />
     <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="agent_ip" jdbcType="VARCHAR" property="agentIp" />
+    <result column="agent_port" jdbcType="INTEGER" property="agentPort" />
     <result column="last_online_time" jdbcType="TIMESTAMP" property="lastOnlineTime" />
     <result column="username" jdbcType="VARCHAR" property="username" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
@@ -77,16 +72,16 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, name, agent_ip, agent_port, system_version, cpu_info, mem_size, screen_width, 
-    screen_height, img_path, platform, status, last_online_time, username, create_time
+    id, type, version, platform, status, agent_ip, agent_port, last_online_time, username, 
+    create_time
   </sql>
-  <select id="selectByExample" parameterType="com.daxiang.mbg.po.DeviceExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.daxiang.mbg.po.BrowserExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from device
+    from browser
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -97,71 +92,52 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from device
+    from browser
     where id = #{id,jdbcType=VARCHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
-    delete from device
+    delete from browser
     where id = #{id,jdbcType=VARCHAR}
   </delete>
-  <delete id="deleteByExample" parameterType="com.daxiang.mbg.po.DeviceExample">
-    delete from device
+  <delete id="deleteByExample" parameterType="com.daxiang.mbg.po.BrowserExample">
+    delete from browser
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.daxiang.mbg.po.Device">
-    insert into device (id, name, agent_ip, 
-      agent_port, system_version, cpu_info, 
-      mem_size, screen_width, screen_height, 
-      img_path, platform, status, 
-      last_online_time, username, create_time
-      )
-    values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{agentIp,jdbcType=VARCHAR}, 
-      #{agentPort,jdbcType=INTEGER}, #{systemVersion,jdbcType=VARCHAR}, #{cpuInfo,jdbcType=VARCHAR}, 
-      #{memSize,jdbcType=VARCHAR}, #{screenWidth,jdbcType=INTEGER}, #{screenHeight,jdbcType=INTEGER}, 
-      #{imgPath,jdbcType=VARCHAR}, #{platform,jdbcType=TINYINT}, #{status,jdbcType=TINYINT}, 
-      #{lastOnlineTime,jdbcType=TIMESTAMP}, #{username,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}
-      )
+  <insert id="insert" parameterType="com.daxiang.mbg.po.Browser">
+    insert into browser (id, type, version, 
+      platform, status, agent_ip, 
+      agent_port, last_online_time, username, 
+      create_time)
+    values (#{id,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, #{version,jdbcType=VARCHAR}, 
+      #{platform,jdbcType=TINYINT}, #{status,jdbcType=TINYINT}, #{agentIp,jdbcType=VARCHAR}, 
+      #{agentPort,jdbcType=INTEGER}, #{lastOnlineTime,jdbcType=TIMESTAMP}, #{username,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.daxiang.mbg.po.Device">
-    insert into device
+  <insert id="insertSelective" parameterType="com.daxiang.mbg.po.Browser">
+    insert into browser
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
       </if>
-      <if test="name != null">
-        name,
+      <if test="type != null">
+        type,
       </if>
-      <if test="agentIp != null">
-        agent_ip,
-      </if>
-      <if test="agentPort != null">
-        agent_port,
-      </if>
-      <if test="systemVersion != null">
-        system_version,
-      </if>
-      <if test="cpuInfo != null">
-        cpu_info,
-      </if>
-      <if test="memSize != null">
-        mem_size,
-      </if>
-      <if test="screenWidth != null">
-        screen_width,
-      </if>
-      <if test="screenHeight != null">
-        screen_height,
-      </if>
-      <if test="imgPath != null">
-        img_path,
+      <if test="version != null">
+        version,
       </if>
       <if test="platform != null">
         platform,
       </if>
       <if test="status != null">
         status,
+      </if>
+      <if test="agentIp != null">
+        agent_ip,
+      </if>
+      <if test="agentPort != null">
+        agent_port,
       </if>
       <if test="lastOnlineTime != null">
         last_online_time,
@@ -177,38 +153,23 @@
       <if test="id != null">
         #{id,jdbcType=VARCHAR},
       </if>
-      <if test="name != null">
-        #{name,jdbcType=VARCHAR},
+      <if test="type != null">
+        #{type,jdbcType=VARCHAR},
       </if>
-      <if test="agentIp != null">
-        #{agentIp,jdbcType=VARCHAR},
-      </if>
-      <if test="agentPort != null">
-        #{agentPort,jdbcType=INTEGER},
-      </if>
-      <if test="systemVersion != null">
-        #{systemVersion,jdbcType=VARCHAR},
-      </if>
-      <if test="cpuInfo != null">
-        #{cpuInfo,jdbcType=VARCHAR},
-      </if>
-      <if test="memSize != null">
-        #{memSize,jdbcType=VARCHAR},
-      </if>
-      <if test="screenWidth != null">
-        #{screenWidth,jdbcType=INTEGER},
-      </if>
-      <if test="screenHeight != null">
-        #{screenHeight,jdbcType=INTEGER},
-      </if>
-      <if test="imgPath != null">
-        #{imgPath,jdbcType=VARCHAR},
+      <if test="version != null">
+        #{version,jdbcType=VARCHAR},
       </if>
       <if test="platform != null">
         #{platform,jdbcType=TINYINT},
       </if>
       <if test="status != null">
         #{status,jdbcType=TINYINT},
+      </if>
+      <if test="agentIp != null">
+        #{agentIp,jdbcType=VARCHAR},
+      </if>
+      <if test="agentPort != null">
+        #{agentPort,jdbcType=INTEGER},
       </if>
       <if test="lastOnlineTime != null">
         #{lastOnlineTime,jdbcType=TIMESTAMP},
@@ -221,50 +182,35 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.daxiang.mbg.po.DeviceExample" resultType="java.lang.Long">
-    select count(*) from device
+  <select id="countByExample" parameterType="com.daxiang.mbg.po.BrowserExample" resultType="java.lang.Long">
+    select count(*) from browser
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update device
+    update browser
     <set>
       <if test="record.id != null">
         id = #{record.id,jdbcType=VARCHAR},
       </if>
-      <if test="record.name != null">
-        name = #{record.name,jdbcType=VARCHAR},
+      <if test="record.type != null">
+        type = #{record.type,jdbcType=VARCHAR},
       </if>
-      <if test="record.agentIp != null">
-        agent_ip = #{record.agentIp,jdbcType=VARCHAR},
-      </if>
-      <if test="record.agentPort != null">
-        agent_port = #{record.agentPort,jdbcType=INTEGER},
-      </if>
-      <if test="record.systemVersion != null">
-        system_version = #{record.systemVersion,jdbcType=VARCHAR},
-      </if>
-      <if test="record.cpuInfo != null">
-        cpu_info = #{record.cpuInfo,jdbcType=VARCHAR},
-      </if>
-      <if test="record.memSize != null">
-        mem_size = #{record.memSize,jdbcType=VARCHAR},
-      </if>
-      <if test="record.screenWidth != null">
-        screen_width = #{record.screenWidth,jdbcType=INTEGER},
-      </if>
-      <if test="record.screenHeight != null">
-        screen_height = #{record.screenHeight,jdbcType=INTEGER},
-      </if>
-      <if test="record.imgPath != null">
-        img_path = #{record.imgPath,jdbcType=VARCHAR},
+      <if test="record.version != null">
+        version = #{record.version,jdbcType=VARCHAR},
       </if>
       <if test="record.platform != null">
         platform = #{record.platform,jdbcType=TINYINT},
       </if>
       <if test="record.status != null">
         status = #{record.status,jdbcType=TINYINT},
+      </if>
+      <if test="record.agentIp != null">
+        agent_ip = #{record.agentIp,jdbcType=VARCHAR},
+      </if>
+      <if test="record.agentPort != null">
+        agent_port = #{record.agentPort,jdbcType=INTEGER},
       </if>
       <if test="record.lastOnlineTime != null">
         last_online_time = #{record.lastOnlineTime,jdbcType=TIMESTAMP},
@@ -281,19 +227,14 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update device
+    update browser
     set id = #{record.id,jdbcType=VARCHAR},
-      name = #{record.name,jdbcType=VARCHAR},
-      agent_ip = #{record.agentIp,jdbcType=VARCHAR},
-      agent_port = #{record.agentPort,jdbcType=INTEGER},
-      system_version = #{record.systemVersion,jdbcType=VARCHAR},
-      cpu_info = #{record.cpuInfo,jdbcType=VARCHAR},
-      mem_size = #{record.memSize,jdbcType=VARCHAR},
-      screen_width = #{record.screenWidth,jdbcType=INTEGER},
-      screen_height = #{record.screenHeight,jdbcType=INTEGER},
-      img_path = #{record.imgPath,jdbcType=VARCHAR},
+      type = #{record.type,jdbcType=VARCHAR},
+      version = #{record.version,jdbcType=VARCHAR},
       platform = #{record.platform,jdbcType=TINYINT},
       status = #{record.status,jdbcType=TINYINT},
+      agent_ip = #{record.agentIp,jdbcType=VARCHAR},
+      agent_port = #{record.agentPort,jdbcType=INTEGER},
       last_online_time = #{record.lastOnlineTime,jdbcType=TIMESTAMP},
       username = #{record.username,jdbcType=VARCHAR},
       create_time = #{record.createTime,jdbcType=TIMESTAMP}
@@ -301,41 +242,26 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.daxiang.mbg.po.Device">
-    update device
+  <update id="updateByPrimaryKeySelective" parameterType="com.daxiang.mbg.po.Browser">
+    update browser
     <set>
-      <if test="name != null">
-        name = #{name,jdbcType=VARCHAR},
+      <if test="type != null">
+        type = #{type,jdbcType=VARCHAR},
       </if>
-      <if test="agentIp != null">
-        agent_ip = #{agentIp,jdbcType=VARCHAR},
-      </if>
-      <if test="agentPort != null">
-        agent_port = #{agentPort,jdbcType=INTEGER},
-      </if>
-      <if test="systemVersion != null">
-        system_version = #{systemVersion,jdbcType=VARCHAR},
-      </if>
-      <if test="cpuInfo != null">
-        cpu_info = #{cpuInfo,jdbcType=VARCHAR},
-      </if>
-      <if test="memSize != null">
-        mem_size = #{memSize,jdbcType=VARCHAR},
-      </if>
-      <if test="screenWidth != null">
-        screen_width = #{screenWidth,jdbcType=INTEGER},
-      </if>
-      <if test="screenHeight != null">
-        screen_height = #{screenHeight,jdbcType=INTEGER},
-      </if>
-      <if test="imgPath != null">
-        img_path = #{imgPath,jdbcType=VARCHAR},
+      <if test="version != null">
+        version = #{version,jdbcType=VARCHAR},
       </if>
       <if test="platform != null">
         platform = #{platform,jdbcType=TINYINT},
       </if>
       <if test="status != null">
         status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="agentIp != null">
+        agent_ip = #{agentIp,jdbcType=VARCHAR},
+      </if>
+      <if test="agentPort != null">
+        agent_port = #{agentPort,jdbcType=INTEGER},
       </if>
       <if test="lastOnlineTime != null">
         last_online_time = #{lastOnlineTime,jdbcType=TIMESTAMP},
@@ -349,19 +275,14 @@
     </set>
     where id = #{id,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.daxiang.mbg.po.Device">
-    update device
-    set name = #{name,jdbcType=VARCHAR},
-      agent_ip = #{agentIp,jdbcType=VARCHAR},
-      agent_port = #{agentPort,jdbcType=INTEGER},
-      system_version = #{systemVersion,jdbcType=VARCHAR},
-      cpu_info = #{cpuInfo,jdbcType=VARCHAR},
-      mem_size = #{memSize,jdbcType=VARCHAR},
-      screen_width = #{screenWidth,jdbcType=INTEGER},
-      screen_height = #{screenHeight,jdbcType=INTEGER},
-      img_path = #{imgPath,jdbcType=VARCHAR},
+  <update id="updateByPrimaryKey" parameterType="com.daxiang.mbg.po.Browser">
+    update browser
+    set type = #{type,jdbcType=VARCHAR},
+      version = #{version,jdbcType=VARCHAR},
       platform = #{platform,jdbcType=TINYINT},
       status = #{status,jdbcType=TINYINT},
+      agent_ip = #{agentIp,jdbcType=VARCHAR},
+      agent_port = #{agentPort,jdbcType=INTEGER},
       last_online_time = #{lastOnlineTime,jdbcType=TIMESTAMP},
       username = #{username,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP}

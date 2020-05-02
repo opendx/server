@@ -317,6 +317,7 @@ public class ActionService {
         List<com.daxiang.mbg.po.Page> pages = pageService.findByProjectId(action.getProjectId());
 
         JSONObject requestBody = new JSONObject();
+        requestBody.put("platform", debugInfo.getPlatform());
         requestBody.put("action", action);
         requestBody.put("globalVars", globalVars);
         requestBody.put("pages", pages);
