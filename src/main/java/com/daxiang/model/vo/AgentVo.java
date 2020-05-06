@@ -1,7 +1,7 @@
 package com.daxiang.model.vo;
 
 import com.daxiang.mbg.po.Browser;
-import com.daxiang.mbg.po.Device;
+import com.daxiang.mbg.po.Mobile;
 import lombok.Data;
 
 import java.util.List;
@@ -18,6 +18,6 @@ public class AgentVo {
     private String javaVersion;
     private String appiumVersion;
     private Boolean isConfigAapt;
-    private List<Device> devices;
+    private List<Mobile> mobiles;
     private List<Browser> browsers;
 }

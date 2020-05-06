@@ -6,43 +6,43 @@ import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.Date;
 
-public class Device implements Serializable {
+public class Mobile implements Serializable {
 
     public static final int OFFLINE_STATUS = 0;
     public static final int USING_STATUS = 1;
     public static final int IDLE_STATUS = 2;
 
     /**
-     * 设备id
+     * mobile id
      *
      * @mbg.generated
      */
-    @NotBlank(message = "设备id不能为空")
+    @NotBlank(message = "mobile id不能为空")
     private String id;
 
     /**
-     * 设备名
+     * mobile名
      *
      * @mbg.generated
      */
     private String name;
 
     /**
-     * 设备所在的agent的ip
+     * 所在的agent的ip
      *
      * @mbg.generated
      */
     private String agentIp;
 
     /**
-     * 设备所在的agent的端口
+     * 所在的agent的端口
      *
      * @mbg.generated
      */
     private Integer agentPort;
 
     /**
-     * 设备系统版本
+     * 系统版本
      *
      * @mbg.generated
      */
@@ -77,7 +77,7 @@ public class Device implements Serializable {
     private Integer screenHeight;
 
     /**
-     * 服务端保存的文件路径
+     * 服务端保存的图片路径
      *
      * @mbg.generated
      */
@@ -91,7 +91,7 @@ public class Device implements Serializable {
     private Integer platform;
 
     /**
-     * 设备状态：0.离线 1.使用中 2.空闲
+     * 状态：0.离线 1.使用中 2.空闲
      *
      * @mbg.generated
      */

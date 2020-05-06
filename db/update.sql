@@ -33,3 +33,7 @@ ALTER TABLE `device` DROP COLUMN `last_offline_time`;
 
 delete from `action` where id < 10000 -- 重新导入基础action https://github.com/opendx/agent/tree/master/src/main/java/com/daxiang/action/action.sql
 
+-- 0.6.0
+RENAME TABLE `device` TO `mobile`;
+update role set name='mobile',alias='mobile管理员' where id = 4
+

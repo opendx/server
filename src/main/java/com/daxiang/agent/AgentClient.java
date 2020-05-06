@@ -2,7 +2,7 @@ package com.daxiang.agent;
 
 import com.alibaba.fastjson.JSONObject;
 import com.daxiang.mbg.po.Browser;
-import com.daxiang.mbg.po.Device;
+import com.daxiang.mbg.po.Mobile;
 import com.daxiang.model.Response;
 import com.google.common.collect.ImmutableMap;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,14 +38,14 @@ public class AgentClient {
         return restTemplate.postForObject(url, apkDownloadUrl, Response.class);
     }
 
-    public Response<Device> getDeviceStatus(String agentIp, int agentPort, String deviceId) {
-        String url = getUrl(agentIp, agentPort, "/mobile/status?deviceId={deviceId}");
+    public Response<Mobile> getMobileStatus(String agentIp, int agentPort, String mobileId) {
+        String url = getUrl(agentIp, agentPort, "/mobile/status?mobileId={mobileId}");
         return restTemplate.exchange(url,
                 HttpMethod.GET,
                 null,
-                new ParameterizedTypeReference<Response<Device>>() {
+                new ParameterizedTypeReference<Response<Mobile>>() {
                 },
-                ImmutableMap.of("deviceId", deviceId)).getBody();
+                ImmutableMap.of("mobileId", mobileId)).getBody();
     }
 
     public Response<Browser> getBrowserStatus(String agentIp, int agentPort, String browserId) {

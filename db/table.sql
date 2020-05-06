@@ -96,27 +96,27 @@ CREATE TABLE `category` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1000 DEFAULT CHARSET=utf8mb4 COMMENT='分类表';
 
 -- ----------------------------
--- Table structure for device
+-- Table structure for mobile
 -- ----------------------------
-DROP TABLE IF EXISTS `device`;
-CREATE TABLE `device` (
-  `id` varchar(100) NOT NULL COMMENT '设备id',
-  `name` varchar(100) DEFAULT NULL COMMENT '设备名',
-  `agent_ip` varchar(50) DEFAULT NULL COMMENT '设备所在的agent的ip',
-  `agent_port` int(11) DEFAULT NULL COMMENT '设备所在的agent的端口',
-  `system_version` varchar(50) DEFAULT NULL COMMENT '设备系统版本',
+DROP TABLE IF EXISTS `mobile`;
+CREATE TABLE `mobile` (
+  `id` varchar(100) NOT NULL COMMENT 'mobile id',
+  `name` varchar(100) DEFAULT NULL COMMENT 'mobile名',
+  `agent_ip` varchar(50) DEFAULT NULL COMMENT '所在的agent的ip',
+  `agent_port` int(11) DEFAULT NULL COMMENT '所在的agent的端口',
+  `system_version` varchar(50) DEFAULT NULL COMMENT '系统版本',
   `cpu_info` varchar(50) DEFAULT NULL COMMENT 'cpu信息',
   `mem_size` varchar(50) DEFAULT NULL COMMENT '内存大小：GB',
   `screen_width` int(11) DEFAULT NULL COMMENT '屏幕宽（像素）',
   `screen_height` int(11) DEFAULT NULL COMMENT '屏幕高（像素）',
-  `img_path` varchar(255) DEFAULT NULL COMMENT '服务端保存的文件路径',
+  `img_path` varchar(255) DEFAULT NULL COMMENT '服务端保存的图片路径',
   `platform` tinyint(4) DEFAULT NULL COMMENT '平台：1.android  2.ios',
-  `status` tinyint(4) DEFAULT NULL COMMENT '设备状态：0.离线 1.使用中 2.空闲',
+  `status` tinyint(4) DEFAULT NULL COMMENT '状态：0.离线 1.使用中 2.空闲',
   `last_online_time` datetime DEFAULT NULL COMMENT '最近一次在线时间',
   `username` varchar(100) DEFAULT NULL COMMENT '最近一次使用人',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='设备表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='mobile表';
 
 -- ----------------------------
 -- Table structure for device_test_task

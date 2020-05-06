@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.daxiang.mbg.mapper.DeviceMapper">
-  <resultMap id="BaseResultMap" type="com.daxiang.mbg.po.Device">
+<mapper namespace="com.daxiang.mbg.mapper.MobileMapper">
+  <resultMap id="BaseResultMap" type="com.daxiang.mbg.po.Mobile">
     <id column="id" jdbcType="VARCHAR" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="agent_ip" jdbcType="VARCHAR" property="agentIp" />
@@ -80,13 +80,13 @@
     id, name, agent_ip, agent_port, system_version, cpu_info, mem_size, screen_width, 
     screen_height, img_path, platform, status, last_online_time, username, create_time
   </sql>
-  <select id="selectByExample" parameterType="com.daxiang.mbg.po.DeviceExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.daxiang.mbg.po.MobileExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from device
+    from mobile
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -97,21 +97,21 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from device
+    from mobile
     where id = #{id,jdbcType=VARCHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
-    delete from device
+    delete from mobile
     where id = #{id,jdbcType=VARCHAR}
   </delete>
-  <delete id="deleteByExample" parameterType="com.daxiang.mbg.po.DeviceExample">
-    delete from device
+  <delete id="deleteByExample" parameterType="com.daxiang.mbg.po.MobileExample">
+    delete from mobile
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.daxiang.mbg.po.Device">
-    insert into device (id, name, agent_ip, 
+  <insert id="insert" parameterType="com.daxiang.mbg.po.Mobile">
+    insert into mobile (id, name, agent_ip, 
       agent_port, system_version, cpu_info, 
       mem_size, screen_width, screen_height, 
       img_path, platform, status, 
@@ -124,8 +124,8 @@
       #{lastOnlineTime,jdbcType=TIMESTAMP}, #{username,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.daxiang.mbg.po.Device">
-    insert into device
+  <insert id="insertSelective" parameterType="com.daxiang.mbg.po.Mobile">
+    insert into mobile
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -221,14 +221,14 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.daxiang.mbg.po.DeviceExample" resultType="java.lang.Long">
-    select count(*) from device
+  <select id="countByExample" parameterType="com.daxiang.mbg.po.MobileExample" resultType="java.lang.Long">
+    select count(*) from mobile
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update device
+    update mobile
     <set>
       <if test="record.id != null">
         id = #{record.id,jdbcType=VARCHAR},
@@ -281,7 +281,7 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update device
+    update mobile
     set id = #{record.id,jdbcType=VARCHAR},
       name = #{record.name,jdbcType=VARCHAR},
       agent_ip = #{record.agentIp,jdbcType=VARCHAR},
@@ -301,8 +301,8 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.daxiang.mbg.po.Device">
-    update device
+  <update id="updateByPrimaryKeySelective" parameterType="com.daxiang.mbg.po.Mobile">
+    update mobile
     <set>
       <if test="name != null">
         name = #{name,jdbcType=VARCHAR},
@@ -349,8 +349,8 @@
     </set>
     where id = #{id,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.daxiang.mbg.po.Device">
-    update device
+  <update id="updateByPrimaryKey" parameterType="com.daxiang.mbg.po.Mobile">
+    update mobile
     set name = #{name,jdbcType=VARCHAR},
       agent_ip = #{agentIp,jdbcType=VARCHAR},
       agent_port = #{agentPort,jdbcType=INTEGER},

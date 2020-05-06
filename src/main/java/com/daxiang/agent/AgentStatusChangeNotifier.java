@@ -1,7 +1,7 @@
 package com.daxiang.agent;
 
 import com.daxiang.service.BrowserService;
-import com.daxiang.service.DeviceService;
+import com.daxiang.service.MobileService;
 import de.codecentric.boot.admin.server.domain.entities.Instance;
 import de.codecentric.boot.admin.server.domain.entities.InstanceRepository;
 import de.codecentric.boot.admin.server.domain.events.InstanceEvent;
@@ -24,7 +24,7 @@ import java.net.URISyntaxException;
 public class AgentStatusChangeNotifier extends AbstractStatusChangeNotifier {
 
     @Autowired
-    private DeviceService deviceService;
+    private MobileService mobileService;
     @Autowired
     private BrowserService browserService;
 
@@ -49,8 +49,8 @@ public class AgentStatusChangeNotifier extends AbstractStatusChangeNotifier {
                 }
 
                 if (!StatusInfo.STATUS_UP.equals(status)) {
-                    // agent离线，把该agent下的设备与浏览器变为离线
-                    deviceService.agentOffline(agentUri.getHost());
+                    // agent离线，把该agent下设备变为离线
+                    mobileService.agentOffline(agentUri.getHost());
                     browserService.agentOffline(agentUri.getHost());
                 }
             }

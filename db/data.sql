@@ -7,7 +7,7 @@ INSERT INTO `user_project`(`user_id`, `project_id`) VALUES (1, 1);
 INSERT INTO `role`(`id`, `name`, `alias`) VALUES (1, 'admin', '超级管理员');
 INSERT INTO `role`(`id`, `name`, `alias`) VALUES (2, 'agent', 'agent管理员');
 INSERT INTO `role`(`id`, `name`, `alias`) VALUES (3, 'app', 'app管理员');
-INSERT INTO `role`(`id`, `name`, `alias`) VALUES (4, 'device', '设备管理员');
+INSERT INTO `role`(`id`, `name`, `alias`) VALUES (4, 'mobile', 'mobile管理员');
 INSERT INTO `role`(`id`, `name`, `alias`) VALUES (5, 'driver', 'driver管理员');
 INSERT INTO `role`(`id`, `name`, `alias`) VALUES (6, 'environment', '环境管理员');
 INSERT INTO `role`(`id`, `name`, `alias`) VALUES (7, 'globalVar', '全局变量管理员');

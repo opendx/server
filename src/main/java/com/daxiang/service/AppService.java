@@ -140,7 +140,7 @@ public class AppService {
             return Response.fail("只有Android平台才能执行aapt dump");
         }
 
-        List<AgentVo> onlineAgents = agentService.getOnlineAgentsWithoutDevicesAndBrowsers();
+        List<AgentVo> onlineAgents = agentService.getOnlineAgentsWithoutDevices();
         if (CollectionUtils.isEmpty(onlineAgents)) {
             return Response.fail("暂无在线的agent，无法执行aapt dump");
         }

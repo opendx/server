@@ -49,10 +49,10 @@
         <!--<table tableName="category">-->
             <!--<generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
         <!--</table>-->
-        <!--<table tableName="device">-->
-        <!--</table>-->
-        <table tableName="browser">
+        <table tableName="mobile">
         </table>
+        <!--<table tableName="browser">-->
+        <!--</table>-->
         <!--<table tableName="device_test_task">-->
             <!--<generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
             <!--<columnOverride column="test_plan" typeHandler="com.daxiang.typehandler.TestPlanTypeHandler" javaType="com.daxiang.mbg.po.TestPlan" jdbcType="LONGVARCHAR" />-->

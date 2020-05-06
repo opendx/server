@@ -2,7 +2,7 @@ package com.daxiang.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.daxiang.mbg.po.Browser;
-import com.daxiang.mbg.po.Device;
+import com.daxiang.mbg.po.Mobile;
 import com.daxiang.model.Response;
 import com.daxiang.model.vo.AgentVo;
 import de.codecentric.boot.admin.server.domain.entities.Instance;
@@ -31,39 +31,39 @@ public class AgentService {
     @Autowired
     private InstanceRegistry instanceRegistry;
     @Autowired
-    private DeviceService deviceService;
+    private MobileService mobileService;
     @Autowired
     private BrowserService browserService;
     @Autowired
     private RestTemplate restTemplate;
 
     public Response getOnlineAgents() {
-        List<AgentVo> agentVos = getOnlineAgentsWithoutDevicesAndBrowsers();
+        List<AgentVo> agentVos = getOnlineAgentsWithoutDevices();
         List<String> agentIps = agentVos.stream().map(AgentVo::getIp).collect(Collectors.toList());
 
-        List<Device> devices = deviceService.getOnlineDevicesByAgentIps(agentIps);
-        Map<String, List<Device>> agentIpDevicesMap = devices.stream().collect(Collectors.groupingBy(Device::getAgentIp)); // agentIp: List<Device>
+        List<Mobile> devices = mobileService.getOnlineMobilesByAgentIps(agentIps);
+        Map<String, List<Mobile>> agentIpMobilesMap = devices.stream().collect(Collectors.groupingBy(Mobile::getAgentIp)); // agentIp: List<Mobile>
 
         List<Browser> browsers = browserService.getOnlineBrowsersByAgentIps(agentIps);
         Map<String, List<Browser>> agentIpBrowsersMap = browsers.stream().collect(Collectors.groupingBy(Browser::getAgentIp)); // agentIp: List<Browser>
 
         agentVos.forEach(agentVo -> {
             String ip = agentVo.getIp();
-            agentVo.setDevices(agentIpDevicesMap.get(ip));
+            agentVo.setMobiles(agentIpMobilesMap.get(ip));
             agentVo.setBrowsers(agentIpBrowsersMap.get(ip));
         });
 
         return Response.success(agentVos);
     }
 
-    public List<AgentVo> getOnlineAgentsWithoutDevicesAndBrowsers() {
+    public List<AgentVo> getOnlineAgentsWithoutDevices() {
         return instanceRegistry.getInstances().collectList().block().stream()
                 .filter(agent -> StatusInfo.STATUS_UP.equals(agent.getStatusInfo().getStatus()))
-                .map(agent -> createAgentVoWithoutDevicesAndBrowsers(agent))
+                .map(agent -> createAgentVoWithoutDevices(agent))
                 .collect(Collectors.toList());
     }
 
-    private AgentVo createAgentVoWithoutDevicesAndBrowsers(Instance agent) {
+    private AgentVo createAgentVoWithoutDevices(Instance agent) {
         URI uri;
         try {
             uri = new URI(agent.getRegistration().getServiceUrl());
