@@ -64,6 +64,23 @@ CREATE TABLE `app` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='app表';
 
 -- ----------------------------
+-- Table structure for browser
+-- ----------------------------
+CREATE TABLE `browser` (
+  `id` varchar(100) NOT NULL COMMENT '浏览器id',
+  `type` varchar(50) NOT NULL COMMENT '类型: chrome firefox ...',
+  `version` varchar(50) NOT NULL COMMENT '版本号',
+  `platform` tinyint(4) NOT NULL COMMENT '平台: 1. windows 2.linux 3.macos',
+  `status` tinyint(4) DEFAULT NULL COMMENT '状态：0.离线 1.使用中 2.空闲',
+  `agent_ip` varchar(50) DEFAULT NULL COMMENT '浏览器所在的agent的ip',
+  `agent_port` int(11) DEFAULT NULL COMMENT '浏览器所在的agent的端口',
+  `last_online_time` datetime DEFAULT NULL COMMENT '最近一次在线时间',
+  `username` varchar(100) DEFAULT NULL COMMENT '最近一次使用人',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='浏览器表';
+
+-- ----------------------------
 -- Table structure for category
 -- ----------------------------
 DROP TABLE IF EXISTS `category`;
