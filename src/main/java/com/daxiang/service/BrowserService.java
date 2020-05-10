@@ -104,7 +104,7 @@ public class BrowserService {
         // 在此通过agent获取最新的浏览器状态
         Browser agentBrowser = null;
         try {
-            agentBrowser = agentClient.getBrowserStatus(dbBrowser.getAgentIp(), dbBrowser.getAgentPort(), dbBrowser.getId()).getData();
+            agentBrowser = agentClient.getBrowser(dbBrowser.getAgentIp(), dbBrowser.getAgentPort(), dbBrowser.getId()).getData();
         } catch (Exception ign) {
             // agent可能已经关闭
         }

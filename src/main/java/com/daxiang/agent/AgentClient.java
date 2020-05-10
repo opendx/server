@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.daxiang.mbg.po.Browser;
 import com.daxiang.mbg.po.Mobile;
 import com.daxiang.model.Response;
-import com.google.common.collect.ImmutableMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
@@ -38,24 +37,24 @@ public class AgentClient {
         return restTemplate.postForObject(url, apkDownloadUrl, Response.class);
     }
 
-    public Response<Mobile> getMobileStatus(String agentIp, int agentPort, String mobileId) {
-        String url = getUrl(agentIp, agentPort, "/mobile/status?mobileId={mobileId}");
+    public Response<Mobile> getMobile(String agentIp, int agentPort, String mobileId) {
+        String url = getUrl(agentIp, agentPort, "/mobile/{mobileId}");
         return restTemplate.exchange(url,
                 HttpMethod.GET,
                 null,
                 new ParameterizedTypeReference<Response<Mobile>>() {
                 },
-                ImmutableMap.of("mobileId", mobileId)).getBody();
+                mobileId).getBody();
     }
 
-    public Response<Browser> getBrowserStatus(String agentIp, int agentPort, String browserId) {
-        String url = getUrl(agentIp, agentPort, "/browser/status?browserId={browserId}");
+    public Response<Browser> getBrowser(String agentIp, int agentPort, String browserId) {
+        String url = getUrl(agentIp, agentPort, "/browser/{browserId}");
         return restTemplate.exchange(url,
                 HttpMethod.GET,
                 null,
                 new ParameterizedTypeReference<Response<Browser>>() {
                 },
-                ImmutableMap.of("browserId", browserId)).getBody();
+                browserId).getBody();
     }
 
     private String getUrl(String agentIp, int agentPort, String requestURI) {

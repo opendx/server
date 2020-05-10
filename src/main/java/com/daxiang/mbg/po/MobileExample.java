@@ -245,6 +245,66 @@ public class MobileExample {
             return (Criteria) this;
         }
 
+        public Criteria andEmulatorIsNull() {
+            addCriterion("emulator is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andEmulatorIsNotNull() {
+            addCriterion("emulator is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andEmulatorEqualTo(Integer value) {
+            addCriterion("emulator =", value, "emulator");
+            return (Criteria) this;
+        }
+
+        public Criteria andEmulatorNotEqualTo(Integer value) {
+            addCriterion("emulator <>", value, "emulator");
+            return (Criteria) this;
+        }
+
+        public Criteria andEmulatorGreaterThan(Integer value) {
+            addCriterion("emulator >", value, "emulator");
+            return (Criteria) this;
+        }
+
+        public Criteria andEmulatorGreaterThanOrEqualTo(Integer value) {
+            addCriterion("emulator >=", value, "emulator");
+            return (Criteria) this;
+        }
+
+        public Criteria andEmulatorLessThan(Integer value) {
+            addCriterion("emulator <", value, "emulator");
+            return (Criteria) this;
+        }
+
+        public Criteria andEmulatorLessThanOrEqualTo(Integer value) {
+            addCriterion("emulator <=", value, "emulator");
+            return (Criteria) this;
+        }
+
+        public Criteria andEmulatorIn(List<Integer> values) {
+            addCriterion("emulator in", values, "emulator");
+            return (Criteria) this;
+        }
+
+        public Criteria andEmulatorNotIn(List<Integer> values) {
+            addCriterion("emulator not in", values, "emulator");
+            return (Criteria) this;
+        }
+
+        public Criteria andEmulatorBetween(Integer value1, Integer value2) {
+            addCriterion("emulator between", value1, value2, "emulator");
+            return (Criteria) this;
+        }
+
+        public Criteria andEmulatorNotBetween(Integer value1, Integer value2) {
+            addCriterion("emulator not between", value1, value2, "emulator");
+            return (Criteria) this;
+        }
+
         public Criteria andAgentIpIsNull() {
             addCriterion("agent_ip is null");
             return (Criteria) this;

@@ -28,6 +28,13 @@ public class Mobile implements Serializable {
     private String name;
 
     /**
+     * 0: 真机 1: 模拟器
+     *
+     * @mbg.generated
+     */
+    private Integer emulator;
+
+    /**
      * 所在的agent的ip
      *
      * @mbg.generated
@@ -136,6 +143,14 @@ public class Mobile implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Integer getEmulator() {
+        return emulator;
+    }
+
+    public void setEmulator(Integer emulator) {
+        this.emulator = emulator;
     }
 
     public String getAgentIp() {
@@ -250,6 +265,7 @@ public class Mobile implements Serializable {
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
         sb.append(", name=").append(name);
+        sb.append(", emulator=").append(emulator);
         sb.append(", agentIp=").append(agentIp);
         sb.append(", agentPort=").append(agentPort);
         sb.append(", systemVersion=").append(systemVersion);

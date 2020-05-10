@@ -35,5 +35,8 @@ delete from `action` where id < 10000 -- 重新导入基础action https://github
 
 -- 0.6.0
 RENAME TABLE `device` TO `mobile`;
+
 update role set name='mobile',alias='mobile管理员' where id = 4
 
+ALTER TABLE `mobile`
+ADD COLUMN `emulator` tinyint(4) NULL COMMENT '0: 真机 1: 模拟器' AFTER `name`;

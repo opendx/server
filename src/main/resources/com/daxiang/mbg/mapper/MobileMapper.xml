@@ -4,6 +4,7 @@
   <resultMap id="BaseResultMap" type="com.daxiang.mbg.po.Mobile">
     <id column="id" jdbcType="VARCHAR" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="emulator" jdbcType="TINYINT" property="emulator" />
     <result column="agent_ip" jdbcType="VARCHAR" property="agentIp" />
     <result column="agent_port" jdbcType="INTEGER" property="agentPort" />
     <result column="system_version" jdbcType="VARCHAR" property="systemVersion" />
@@ -77,7 +78,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, name, agent_ip, agent_port, system_version, cpu_info, mem_size, screen_width, 
+    id, name, emulator, agent_ip, agent_port, system_version, cpu_info, mem_size, screen_width, 
     screen_height, img_path, platform, status, last_online_time, username, create_time
   </sql>
   <select id="selectByExample" parameterType="com.daxiang.mbg.po.MobileExample" resultMap="BaseResultMap">
@@ -111,18 +112,18 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.daxiang.mbg.po.Mobile">
-    insert into mobile (id, name, agent_ip, 
-      agent_port, system_version, cpu_info, 
-      mem_size, screen_width, screen_height, 
-      img_path, platform, status, 
-      last_online_time, username, create_time
-      )
-    values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{agentIp,jdbcType=VARCHAR}, 
-      #{agentPort,jdbcType=INTEGER}, #{systemVersion,jdbcType=VARCHAR}, #{cpuInfo,jdbcType=VARCHAR}, 
-      #{memSize,jdbcType=VARCHAR}, #{screenWidth,jdbcType=INTEGER}, #{screenHeight,jdbcType=INTEGER}, 
-      #{imgPath,jdbcType=VARCHAR}, #{platform,jdbcType=TINYINT}, #{status,jdbcType=TINYINT}, 
-      #{lastOnlineTime,jdbcType=TIMESTAMP}, #{username,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}
-      )
+    insert into mobile (id, name, emulator, 
+      agent_ip, agent_port, system_version, 
+      cpu_info, mem_size, screen_width, 
+      screen_height, img_path, platform, 
+      status, last_online_time, username, 
+      create_time)
+    values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{emulator,jdbcType=TINYINT}, 
+      #{agentIp,jdbcType=VARCHAR}, #{agentPort,jdbcType=INTEGER}, #{systemVersion,jdbcType=VARCHAR}, 
+      #{cpuInfo,jdbcType=VARCHAR}, #{memSize,jdbcType=VARCHAR}, #{screenWidth,jdbcType=INTEGER}, 
+      #{screenHeight,jdbcType=INTEGER}, #{imgPath,jdbcType=VARCHAR}, #{platform,jdbcType=TINYINT}, 
+      #{status,jdbcType=TINYINT}, #{lastOnlineTime,jdbcType=TIMESTAMP}, #{username,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.daxiang.mbg.po.Mobile">
     insert into mobile
@@ -132,6 +133,9 @@
       </if>
       <if test="name != null">
         name,
+      </if>
+      <if test="emulator != null">
+        emulator,
       </if>
       <if test="agentIp != null">
         agent_ip,
@@ -179,6 +183,9 @@
       </if>
       <if test="name != null">
         #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="emulator != null">
+        #{emulator,jdbcType=TINYINT},
       </if>
       <if test="agentIp != null">
         #{agentIp,jdbcType=VARCHAR},
@@ -236,6 +243,9 @@
       <if test="record.name != null">
         name = #{record.name,jdbcType=VARCHAR},
       </if>
+      <if test="record.emulator != null">
+        emulator = #{record.emulator,jdbcType=TINYINT},
+      </if>
       <if test="record.agentIp != null">
         agent_ip = #{record.agentIp,jdbcType=VARCHAR},
       </if>
@@ -284,6 +294,7 @@
     update mobile
     set id = #{record.id,jdbcType=VARCHAR},
       name = #{record.name,jdbcType=VARCHAR},
+      emulator = #{record.emulator,jdbcType=TINYINT},
       agent_ip = #{record.agentIp,jdbcType=VARCHAR},
       agent_port = #{record.agentPort,jdbcType=INTEGER},
       system_version = #{record.systemVersion,jdbcType=VARCHAR},
@@ -306,6 +317,9 @@
     <set>
       <if test="name != null">
         name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="emulator != null">
+        emulator = #{emulator,jdbcType=TINYINT},
       </if>
       <if test="agentIp != null">
         agent_ip = #{agentIp,jdbcType=VARCHAR},
@@ -352,6 +366,7 @@
   <update id="updateByPrimaryKey" parameterType="com.daxiang.mbg.po.Mobile">
     update mobile
     set name = #{name,jdbcType=VARCHAR},
+      emulator = #{emulator,jdbcType=TINYINT},
       agent_ip = #{agentIp,jdbcType=VARCHAR},
       agent_port = #{agentPort,jdbcType=INTEGER},
       system_version = #{systemVersion,jdbcType=VARCHAR},

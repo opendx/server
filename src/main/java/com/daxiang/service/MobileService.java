@@ -116,7 +116,7 @@ public class MobileService {
         // 在此通过agent获取最新的mobile状态
         Mobile agentMobile = null;
         try {
-            agentMobile = agentClient.getMobileStatus(dbMobile.getAgentIp(), dbMobile.getAgentPort(), dbMobile.getId()).getData();
+            agentMobile = agentClient.getMobile(dbMobile.getAgentIp(), dbMobile.getAgentPort(), dbMobile.getId()).getData();
         } catch (Exception ign) {
             // agent可能已经关闭
         }
