@@ -77,6 +77,9 @@ public class MobileService {
             if (!StringUtils.isEmpty(mobile.getName())) {
                 criteria.andNameEqualTo(mobile.getName());
             }
+            if (mobile.getEmulator() != null) {
+                criteria.andEmulatorEqualTo(mobile.getEmulator());
+            }
             if (!StringUtils.isEmpty(mobile.getAgentIp())) {
                 criteria.andAgentIpEqualTo(mobile.getAgentIp());
             }
