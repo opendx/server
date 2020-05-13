@@ -52,7 +52,7 @@ public class Driver implements Serializable {
     private java.util.List<com.daxiang.model.vo.DriverFile> files;
 
     /**
-     * 设备ids
+     * deviceIds
      *
      * @mbg.generated
      */

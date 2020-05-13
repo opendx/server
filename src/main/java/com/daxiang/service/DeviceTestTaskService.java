@@ -189,7 +189,7 @@ public class DeviceTestTaskService {
 
         DeviceTestTask deviceTestTask = deviceTestTaskMapper.selectByPrimaryKey(deviceTestTaskId);
         if (deviceTestTask == null) {
-            return Response.fail("设备测试任务不存在");
+            return Response.fail("device测试任务不存在");
         }
 
         if (!canDelete(deviceTestTask.getStatus())) {

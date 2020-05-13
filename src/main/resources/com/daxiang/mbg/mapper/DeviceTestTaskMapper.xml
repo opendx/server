@@ -14,6 +14,7 @@
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.daxiang.mbg.po.DeviceTestTask">
     <result column="capabilities" jdbcType="LONGVARCHAR" property="capabilities" />
     <result column="test_plan" jdbcType="LONGVARCHAR" property="testPlan" typeHandler="com.daxiang.typehandler.TestPlanTypeHandler" />
+    <result column="device" jdbcType="LONGVARCHAR" property="device" typeHandler="com.daxiang.typehandler.JSONObjectTypeHandler" />
     <result column="global_vars" jdbcType="LONGVARCHAR" property="globalVars" typeHandler="com.daxiang.typehandler.GlobalVarListTypeHandler" />
     <result column="pages" jdbcType="LONGVARCHAR" property="pages" typeHandler="com.daxiang.typehandler.PageListTypeHandler" />
     <result column="before_class" jdbcType="LONGVARCHAR" property="beforeClass" typeHandler="com.daxiang.typehandler.ActionTypeHandler" />
@@ -86,8 +87,8 @@
     id, project_id, platform, test_task_id, device_id, status, start_time, end_time
   </sql>
   <sql id="Blob_Column_List">
-    capabilities, test_plan, global_vars, pages, before_class, before_method, after_class, 
-    after_method, testcases, code, err_msg
+    capabilities, test_plan, device, global_vars, pages, before_class, before_method, 
+    after_class, after_method, testcases, code, err_msg
   </sql>
   <select id="selectByExampleWithBLOBs" parameterType="com.daxiang.mbg.po.DeviceTestTaskExample" resultMap="ResultMapWithBLOBs">
     select
@@ -144,6 +145,7 @@
     insert into device_test_task (project_id, platform, test_task_id, 
       device_id, status, start_time, 
       end_time, capabilities, test_plan, 
+      device, 
       global_vars, 
       pages, 
       before_class, 
@@ -155,6 +157,7 @@
     values (#{projectId,jdbcType=INTEGER}, #{platform,jdbcType=TINYINT}, #{testTaskId,jdbcType=INTEGER}, 
       #{deviceId,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT}, #{startTime,jdbcType=TIMESTAMP}, 
       #{endTime,jdbcType=TIMESTAMP}, #{capabilities,jdbcType=LONGVARCHAR}, #{testPlan,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.TestPlanTypeHandler}, 
+      #{device,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.JSONObjectTypeHandler}, 
       #{globalVars,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.GlobalVarListTypeHandler}, 
       #{pages,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.PageListTypeHandler}, 
       #{beforeClass,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.ActionTypeHandler}, 
@@ -196,6 +199,9 @@
       </if>
       <if test="testPlan != null">
         test_plan,
+      </if>
+      <if test="device != null">
+        device,
       </if>
       <if test="globalVars != null">
         global_vars,
@@ -252,6 +258,9 @@
       </if>
       <if test="testPlan != null">
         #{testPlan,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.TestPlanTypeHandler},
+      </if>
+      <if test="device != null">
+        #{device,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.JSONObjectTypeHandler},
       </if>
       <if test="globalVars != null">
         #{globalVars,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.GlobalVarListTypeHandler},
@@ -321,6 +330,9 @@
       <if test="record.testPlan != null">
         test_plan = #{record.testPlan,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.TestPlanTypeHandler},
       </if>
+      <if test="record.device != null">
+        device = #{record.device,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.JSONObjectTypeHandler},
+      </if>
       <if test="record.globalVars != null">
         global_vars = #{record.globalVars,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.GlobalVarListTypeHandler},
       </if>
@@ -365,6 +377,7 @@
       end_time = #{record.endTime,jdbcType=TIMESTAMP},
       capabilities = #{record.capabilities,jdbcType=LONGVARCHAR},
       test_plan = #{record.testPlan,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.TestPlanTypeHandler},
+      device = #{record.device,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.JSONObjectTypeHandler},
       global_vars = #{record.globalVars,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.GlobalVarListTypeHandler},
       pages = #{record.pages,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.PageListTypeHandler},
       before_class = #{record.beforeClass,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.ActionTypeHandler},
@@ -422,6 +435,9 @@
       <if test="testPlan != null">
         test_plan = #{testPlan,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.TestPlanTypeHandler},
       </if>
+      <if test="device != null">
+        device = #{device,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.JSONObjectTypeHandler},
+      </if>
       <if test="globalVars != null">
         global_vars = #{globalVars,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.GlobalVarListTypeHandler},
       </if>
@@ -463,6 +479,7 @@
       end_time = #{endTime,jdbcType=TIMESTAMP},
       capabilities = #{capabilities,jdbcType=LONGVARCHAR},
       test_plan = #{testPlan,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.TestPlanTypeHandler},
+      device = #{device,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.JSONObjectTypeHandler},
       global_vars = #{globalVars,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.GlobalVarListTypeHandler},
       pages = #{pages,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.PageListTypeHandler},
       before_class = #{beforeClass,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.ActionTypeHandler},

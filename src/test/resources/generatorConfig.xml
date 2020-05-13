@@ -49,21 +49,22 @@
         <!--<table tableName="category">-->
             <!--<generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
         <!--</table>-->
-        <table tableName="mobile">
-        </table>
+        <!--<table tableName="mobile">-->
+        <!--</table>-->
         <!--<table tableName="browser">-->
         <!--</table>-->
-        <!--<table tableName="device_test_task">-->
-            <!--<generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
-            <!--<columnOverride column="test_plan" typeHandler="com.daxiang.typehandler.TestPlanTypeHandler" javaType="com.daxiang.mbg.po.TestPlan" jdbcType="LONGVARCHAR" />-->
-            <!--<columnOverride column="global_vars" typeHandler="com.daxiang.typehandler.GlobalVarListTypeHandler" javaType="java.util.List&lt;com.daxiang.mbg.po.GlobalVar&gt;" jdbcType="LONGVARCHAR"/>-->
-            <!--<columnOverride column="pages" typeHandler="com.daxiang.typehandler.PageListTypeHandler" javaType="java.util.List&lt;com.daxiang.mbg.po.Page&gt;" jdbcType="LONGVARCHAR"/>-->
-            <!--<columnOverride column="before_class" typeHandler="com.daxiang.typehandler.ActionTypeHandler" javaType="com.daxiang.mbg.po.Action" jdbcType="LONGVARCHAR"/>-->
-            <!--<columnOverride column="before_method" typeHandler="com.daxiang.typehandler.ActionTypeHandler" javaType="com.daxiang.mbg.po.Action" jdbcType="LONGVARCHAR"/>-->
-            <!--<columnOverride column="after_class" typeHandler="com.daxiang.typehandler.ActionTypeHandler" javaType="com.daxiang.mbg.po.Action" jdbcType="LONGVARCHAR"/>-->
-            <!--<columnOverride column="after_method" typeHandler="com.daxiang.typehandler.ActionTypeHandler" javaType="com.daxiang.mbg.po.Action" jdbcType="LONGVARCHAR"/>-->
-            <!--<columnOverride column="testcases" typeHandler="com.daxiang.typehandler.TestcaseListTypeHandler" javaType="java.util.List&lt;com.daxiang.model.vo.Testcase&gt;" jdbcType="LONGVARCHAR"/>-->
-        <!--</table>-->
+        <table tableName="device_test_task">
+            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
+            <columnOverride column="test_plan" typeHandler="com.daxiang.typehandler.TestPlanTypeHandler" javaType="com.daxiang.mbg.po.TestPlan" jdbcType="LONGVARCHAR" />
+            <columnOverride column="device" typeHandler="com.daxiang.typehandler.JSONObjectTypeHandler" javaType="com.alibaba.fastjson.JSONObject" jdbcType="LONGVARCHAR" />
+            <columnOverride column="global_vars" typeHandler="com.daxiang.typehandler.GlobalVarListTypeHandler" javaType="java.util.List&lt;com.daxiang.mbg.po.GlobalVar&gt;" jdbcType="LONGVARCHAR"/>
+            <columnOverride column="pages" typeHandler="com.daxiang.typehandler.PageListTypeHandler" javaType="java.util.List&lt;com.daxiang.mbg.po.Page&gt;" jdbcType="LONGVARCHAR"/>
+            <columnOverride column="before_class" typeHandler="com.daxiang.typehandler.ActionTypeHandler" javaType="com.daxiang.mbg.po.Action" jdbcType="LONGVARCHAR"/>
+            <columnOverride column="before_method" typeHandler="com.daxiang.typehandler.ActionTypeHandler" javaType="com.daxiang.mbg.po.Action" jdbcType="LONGVARCHAR"/>
+            <columnOverride column="after_class" typeHandler="com.daxiang.typehandler.ActionTypeHandler" javaType="com.daxiang.mbg.po.Action" jdbcType="LONGVARCHAR"/>
+            <columnOverride column="after_method" typeHandler="com.daxiang.typehandler.ActionTypeHandler" javaType="com.daxiang.mbg.po.Action" jdbcType="LONGVARCHAR"/>
+            <columnOverride column="testcases" typeHandler="com.daxiang.typehandler.TestcaseListTypeHandler" javaType="java.util.List&lt;com.daxiang.model.vo.Testcase&gt;" jdbcType="LONGVARCHAR"/>
+        </table>
         <!--<table tableName="global_var">-->
             <!--<generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
             <!--<columnOverride column="environment_values" typeHandler="com.daxiang.typehandler.EnvironmentValueListTypeHandler" javaType="java.util.List&lt;com.daxiang.model.environment.EnvironmentValue&gt;" jdbcType="LONGVARCHAR"/>-->

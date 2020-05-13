@@ -5,7 +5,7 @@ INSERT INTO `project`(`id`, `name`, `description`, `platform`, `creator_uid`, `c
 INSERT INTO `user_project`(`user_id`, `project_id`) VALUES (1, 1);
 
 INSERT INTO `role`(`id`, `name`, `alias`) VALUES (1, 'admin', '超级管理员');
-INSERT INTO `role`(`id`, `name`, `alias`) VALUES (2, 'agent', 'agent管理员');
+INSERT INTO `role`(`id`, `name`, `alias`) VALUES (2, 'browser', '浏览器管理员');
 INSERT INTO `role`(`id`, `name`, `alias`) VALUES (3, 'app', 'app管理员');
 INSERT INTO `role`(`id`, `name`, `alias`) VALUES (4, 'mobile', 'mobile管理员');
 INSERT INTO `role`(`id`, `name`, `alias`) VALUES (5, 'driver', 'driver管理员');
@@ -17,4 +17,3 @@ INSERT INTO `role`(`id`, `name`, `alias`) VALUES (10, 'testcase', '测试用例�
 INSERT INTO `role`(`id`, `name`, `alias`) VALUES (11, 'testPlan', '测试计划管理员');
 INSERT INTO `role`(`id`, `name`, `alias`) VALUES (12, 'testTask', '测试任务管理员');
 INSERT INTO `role`(`id`, `name`, `alias`) VALUES (13, 'testSuite', '测试集管理员');
-

@@ -145,11 +145,11 @@ public class TestPlan implements Serializable {
     private java.util.List<Integer> testSuites;
 
     /**
-     * 设备ids
+     * deviceIds
      *
      * @mbg.generated
      */
-    @NotEmpty(message = "设备不能为空")
+    @NotEmpty(message = "device不能为空")
     private java.util.List<String> deviceIds;
 
     private static final long serialVersionUID = 1L;

@@ -86,7 +86,7 @@ public class Page implements Serializable {
     private String windowOrientation;
 
     /**
-     * 图片所属的设备id
+     * 图片所属的deviceId
      *
      * @mbg.generated
      */

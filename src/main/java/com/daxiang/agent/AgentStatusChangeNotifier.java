@@ -49,7 +49,7 @@ public class AgentStatusChangeNotifier extends AbstractStatusChangeNotifier {
                 }
 
                 if (!StatusInfo.STATUS_UP.equals(status)) {
-                    // agent离线，把该agent下设备变为离线
+                    // agent离线，把该agent下device变为离线
                     mobileService.agentOffline(agentUri.getHost());
                     browserService.agentOffline(agentUri.getHost());
                 }

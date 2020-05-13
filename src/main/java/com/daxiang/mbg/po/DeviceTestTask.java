@@ -1,5 +1,6 @@
 package com.daxiang.mbg.po;
 
+import com.alibaba.fastjson.JSONObject;
 import com.daxiang.mbg.po.GlobalVar;
 import com.daxiang.mbg.po.Page;
 import com.daxiang.model.vo.Testcase;
@@ -42,7 +43,7 @@ public class DeviceTestTask implements Serializable {
     private Integer testTaskId;
 
     /**
-     * 设备id
+     * deviceId
      *
      * @mbg.generated
      */
@@ -82,6 +83,13 @@ public class DeviceTestTask implements Serializable {
      * @mbg.generated
      */
     private TestPlan testPlan;
+
+    /**
+     * 下发任务时的device
+     *
+     * @mbg.generated
+     */
+    private JSONObject device;
 
     /**
      * 全局变量
@@ -228,6 +236,14 @@ public class DeviceTestTask implements Serializable {
         this.testPlan = testPlan;
     }
 
+    public JSONObject getDevice() {
+        return device;
+    }
+
+    public void setDevice(JSONObject device) {
+        this.device = device;
+    }
+
     public java.util.List<GlobalVar> getGlobalVars() {
         return globalVars;
     }
@@ -316,6 +332,7 @@ public class DeviceTestTask implements Serializable {
         sb.append(", endTime=").append(endTime);
         sb.append(", capabilities=").append(capabilities);
         sb.append(", testPlan=").append(testPlan);
+        sb.append(", device=").append(device);
         sb.append(", globalVars=").append(globalVars);
         sb.append(", pages=").append(pages);
         sb.append(", beforeClass=").append(beforeClass);

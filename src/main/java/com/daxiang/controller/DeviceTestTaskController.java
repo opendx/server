@@ -29,7 +29,7 @@ public class DeviceTestTaskController {
     }
 
     /**
-     * 更新设备的测试用例运行信息
+     * 更新device的测试用例运行信息
      *
      * @param deviceTestTaskId
      * @param testcase
@@ -41,7 +41,7 @@ public class DeviceTestTaskController {
     }
 
     /**
-     * 通过设备id查询未开始的测试任务（最开始的一条）
+     * 通过deviceId查询未开始的测试任务（最开始的一条）
      *
      * @return
      */

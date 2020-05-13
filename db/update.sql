@@ -35,8 +35,10 @@ delete from `action` where id < 10000 -- 重新导入基础action https://github
 
 -- 0.6.0
 RENAME TABLE `device` TO `mobile`;
+ALTER TABLE `mobile` ADD COLUMN `emulator` tinyint(4) NULL COMMENT '0: 真机 1: 模拟器' AFTER `name`;
 
-update role set name='mobile',alias='mobile管理员' where id = 4
+update role set name='browser',alias='浏览器管理员' where id = 2;
+update role set name='mobile',alias='mobile管理员' where id = 4;
 
-ALTER TABLE `mobile`
-ADD COLUMN `emulator` tinyint(4) NULL COMMENT '0: 真机 1: 模拟器' AFTER `name`;
+ALTER TABLE `device_test_task`
+ADD COLUMN `device` json NULL COMMENT '下发任务时的device' AFTER `device_id`;

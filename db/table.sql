@@ -130,7 +130,8 @@ CREATE TABLE `device_test_task` (
   `capabilities` text DEFAULT NULL COMMENT 'org.openqa.selenium.Capabilities',
   `test_task_id` int(11) NOT NULL COMMENT '测试任务id',
   `test_plan` json NOT NULL COMMENT '下发任务时的testplan',
-  `device_id` varchar(100) NOT NULL COMMENT '设备id',
+  `device_id` varchar(100) NOT NULL COMMENT 'deviceId',
+  `device` json DEFAULT NULL COMMENT '下发任务时的device',
   `global_vars` json DEFAULT NULL COMMENT '全局变量',
   `pages` json DEFAULT NULL COMMENT 'pages',
   `before_class` json DEFAULT NULL COMMENT 'BeforeClass',
@@ -145,7 +146,7 @@ CREATE TABLE `device_test_task` (
   `end_time` datetime DEFAULT NULL COMMENT '结束测试时间',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `uniq_testTaskId_deviceId` (`test_task_id`,`device_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='设备测试任务表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='device测试任务表';
 
 -- ----------------------------
 -- Table structure for global_var
@@ -181,7 +182,7 @@ CREATE TABLE `page` (
   `window_width` int(11) DEFAULT NULL COMMENT 'window宽度',
   `window_orientation` varchar(11) DEFAULT NULL COMMENT '屏幕方向',
   `window_hierarchy` mediumtext COMMENT '页面布局',
-  `device_id` varchar(100) DEFAULT NULL COMMENT '图片所属的设备id',
+  `device_id` varchar(100) DEFAULT NULL COMMENT '图片所属的deviceId',
   `elements` json NULL COMMENT '元素',
   `bys` json NULL COMMENT 'By',
   `creator_uid` int(11) DEFAULT NULL COMMENT '创建人id',
@@ -221,7 +222,7 @@ CREATE TABLE `test_plan` (
   `after_class` int(11) DEFAULT NULL COMMENT 'AfterClass',
   `after_method` int(11) DEFAULT NULL COMMENT 'AfterMethod',
   `test_suites` json NOT NULL COMMENT '测试集',
-  `device_ids` json NOT NULL COMMENT '设备ids',
+  `device_ids` json NOT NULL COMMENT 'deviceIds',
   `run_mode` tinyint(4) NOT NULL COMMENT '运行模式 1:兼容模式 2:高效模式',
   `cron_expression` varchar(255) DEFAULT NULL COMMENT 'cron表达式',
   `enable_schedule` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否开启定时任务，0: 关闭 1: 开启',
@@ -331,7 +332,7 @@ CREATE TABLE `driver` (
   `version` varchar(100) NOT NULL COMMENT '版本号',
   `type` tinyint(4) NOT NULL COMMENT '1. chromedriver',
   `files` json NOT NULL COMMENT '各平台文件，1.windows 2.linux 3.macos',
-  `device_ids` json DEFAULT NULL COMMENT '设备ids',
+  `device_ids` json DEFAULT NULL COMMENT 'deviceIds',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
   `creator_uid` int(11) DEFAULT NULL COMMENT '创建人',
   PRIMARY KEY (`id`) USING BTREE,

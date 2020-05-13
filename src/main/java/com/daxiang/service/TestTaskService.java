@@ -1,5 +1,6 @@
 package com.daxiang.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.daxiang.mbg.mapper.TestTaskMapper;
 import com.daxiang.mbg.po.*;
 import com.daxiang.model.action.LocalVar;
@@ -131,8 +132,18 @@ public class TestTaskService {
 
         Project project = projectService.selectByPrimaryKey(testTask.getProjectId());
 
-        // 根据不同用例分发策略，给设备分配用例
+        // 根据不同用例分发策略，给device分配用例
         Map<String, List<Action>> deviceTestcases = allocateTestcaseToDevice(testPlan.getDeviceIds(), testcases, testPlan.getRunMode());
+
+        Map<String, JSONObject> deviceMap;
+        Set<String> deviceIds = deviceTestcases.keySet();
+        if (project.getPlatform() == Project.PC_WEB_PLATFORM) {
+            // browser
+            deviceMap =
+        } else {
+            // mobile
+            deviceMap =
+        }
 
         // todo 批量保存
         deviceTestcases.forEach((deviceId, actionList) -> {
@@ -143,6 +154,7 @@ public class TestTaskService {
             deviceTestTask.setTestTaskId(testTask.getId());
             deviceTestTask.setTestPlan(testPlan);
             deviceTestTask.setDeviceId(deviceId);
+            deviceTestTask.setDevice(deviceMap.get(deviceId));
             deviceTestTask.setGlobalVars(globalVars);
             deviceTestTask.setPages(pages);
             if (testPlan.getBeforeClass() != null) {
@@ -175,7 +187,7 @@ public class TestTaskService {
     }
 
     /**
-     * 给设备分配测试用例
+     * 给device分配测试用例
      *
      * @param deviceIds
      * @param testcases
@@ -185,10 +197,10 @@ public class TestTaskService {
     private Map<String, List<Action>> allocateTestcaseToDevice(List<String> deviceIds, List<Action> testcases, Integer runMode) {
         Map<String, List<Action>> result = new HashMap<>(); // deviceId : List<Action>
 
-        if (runMode == TestPlan.RUN_MODE_COMPATIBLE) { // 兼容模式： 所有设备都运行同一份用例
+        if (runMode == TestPlan.RUN_MODE_COMPATIBLE) { // 兼容模式： 所有device都运行同一份用例
             result = deviceIds.stream().collect(Collectors.toMap(deviceId -> deviceId, v -> testcases));
-        } else if (runMode == TestPlan.RUN_MODE_EFFICIENCY) { // 高效模式：平均分配用例给设备
-            int deviceIndex = 0; //当前分配到第几个设备
+        } else if (runMode == TestPlan.RUN_MODE_EFFICIENCY) { // 高效模式：平均分配用例给device
+            int deviceIndex = 0; //当前分配到第几个device
             for (int i = 0; i < testcases.size(); i++) {
                 List<Action> actions = result.get(deviceIds.get(deviceIndex));
                 if (actions == null) {
@@ -197,7 +209,7 @@ public class TestTaskService {
                 }
                 actions.add(testcases.get(i));
                 deviceIndex++;
-                // 分配完最后一个设备，再从第一个设备开始分配
+                // 分配完最后一个device，再从第一个device开始分配
                 if (deviceIndex == deviceIds.size()) {
                     deviceIndex = 0;
                 }
@@ -383,7 +395,7 @@ public class TestTaskService {
                     .filter(deviceTestTask -> !deviceTestTaskService.canDelete(deviceTestTask.getStatus()))
                     .collect(Collectors.toList());
             if (!CollectionUtils.isEmpty(alreadyStartedDeviceTestTasks)) {
-                // 有设备已经运行过测试任务，不让删除整个testTask
+                // 有device已经运行过测试任务，不让删除整个testTask
                 String alreadyStartedDeviceIds = alreadyStartedDeviceTestTasks.stream()
                         .map(DeviceTestTask::getDeviceId).collect(Collectors.joining("、"));
                 return Response.fail(alreadyStartedDeviceIds + "运行过测试任务，无法删除");

@@ -9,6 +9,11 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class Project implements Serializable {
+
+    public static final int ANDROID_PLATFORM = 1;
+    public static final int IOS_PLATFORM = 2;
+    public static final int PC_WEB_PLATFORM = 3;
+
     /**
      * 项目id
      *
