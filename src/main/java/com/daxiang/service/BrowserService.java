@@ -14,9 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 /**
@@ -155,5 +154,25 @@ public class BrowserService {
         example.createCriteria().andAgentIpEqualTo(agentIp);
 
         browserMapper.updateByExampleSelective(browser, example);
+    }
+
+    public List<Browser> selectByBrowserIds(Set<String> browserIds) {
+        if (CollectionUtils.isEmpty(browserIds)) {
+            return Collections.EMPTY_LIST;
+        }
+
+        BrowserExample example = new BrowserExample();
+        BrowserExample.Criteria criteria = example.createCriteria();
+        criteria.andIdIn(browserIds.stream().collect(Collectors.toList()));
+        return browserMapper.selectByExample(example);
+    }
+
+    public Map<String, Browser> getBrowserMapByBrowserIds(Set<String> browserIds) {
+        List<Browser> browsers = selectByBrowserIds(browserIds);
+        if (browsers.isEmpty()) {
+            return Collections.EMPTY_MAP;
+        }
+
+        return browsers.stream().collect(Collectors.toMap(Browser::getId, b -> b, (k1, k2) -> k1));
     }
 }

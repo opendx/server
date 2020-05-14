@@ -51,6 +51,10 @@ public class TestTaskService {
     private UserService userService;
     @Autowired
     private TestSuiteService testSuiteService;
+    @Autowired
+    private BrowserService browserService;
+    @Autowired
+    private MobileService mobileService;
 
     /**
      * 提交测试任务
@@ -135,14 +139,14 @@ public class TestTaskService {
         // 根据不同用例分发策略，给device分配用例
         Map<String, List<Action>> deviceTestcases = allocateTestcaseToDevice(testPlan.getDeviceIds(), testcases, testPlan.getRunMode());
 
-        Map<String, JSONObject> deviceMap;
+        Map<String, JSONObject> deviceMap = new HashMap<>();
         Set<String> deviceIds = deviceTestcases.keySet();
-        if (project.getPlatform() == Project.PC_WEB_PLATFORM) {
-            // browser
-            deviceMap =
-        } else {
-            // mobile
-            deviceMap =
+        if (project.getPlatform() == Project.PC_WEB_PLATFORM) { // browser
+            Map<String, Browser> browserMap = browserService.getBrowserMapByBrowserIds(deviceIds);
+            browserMap.forEach((browserId, browser) -> deviceMap.put(browserId, (JSONObject) JSONObject.toJSON(browser)));
+        } else { // mobile
+            Map<String, Mobile> mobileMap = mobileService.getMobileMapByMobileIds(deviceIds);
+            mobileMap.forEach((mobileId, mobile) -> deviceMap.put(mobileId, (JSONObject) JSONObject.toJSON(mobile)));
         }
 
         // todo 批量保存
