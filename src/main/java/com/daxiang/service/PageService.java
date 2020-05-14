@@ -49,7 +49,7 @@ public class PageService {
         } catch (DuplicateKeyException e) {
             return Response.fail("命名冲突");
         }
-        return insertRow == 1 ? Response.success("添加Page成功") : Response.fail("添加Page失败，请稍后重试");
+        return insertRow == 1 ? Response.success("添加Page成功", page) : Response.fail("添加Page失败，请稍后重试");
     }
 
     /**
@@ -86,7 +86,7 @@ public class PageService {
         } catch (DuplicateKeyException e) {
             return Response.fail("命名冲突");
         }
-        return updateRow == 1 ? Response.success("更新Page成功") : Response.fail("更新Page失败，请稍后重试");
+        return updateRow == 1 ? Response.success("保存Page成功") : Response.fail("保存Page失败，请稍后重试");
     }
 
     /**
