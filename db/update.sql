@@ -33,7 +33,7 @@ ALTER TABLE `device` DROP COLUMN `last_offline_time`;
 
 delete from `action` where id < 10000 -- 重新导入基础action https://github.com/opendx/agent/tree/master/src/main/java/com/daxiang/action/action.sql
 
--- 0.6.0
+-- 0.6.5
 RENAME TABLE `device` TO `mobile`;
 ALTER TABLE `mobile` ADD COLUMN `emulator` tinyint(4) NULL COMMENT '0: 真机 1: 模拟器' AFTER `name`;
 

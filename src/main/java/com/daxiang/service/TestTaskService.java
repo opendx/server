@@ -132,7 +132,7 @@ public class TestTaskService {
         }
 
         // 该项目下的Pages
-        List<com.daxiang.mbg.po.Page> pages = pageService.findByProjectId(testTask.getProjectId());
+        List<com.daxiang.mbg.po.Page> pages = pageService.findByProjectIdWithoutWindowHierarchy(testTask.getProjectId());
 
         Project project = projectService.selectByPrimaryKey(testTask.getProjectId());
 

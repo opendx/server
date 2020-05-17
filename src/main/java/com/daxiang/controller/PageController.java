@@ -34,6 +34,11 @@ public class PageController {
         return pageService.add(page);
     }
 
+    @GetMapping("/{pageId}")
+    public Response getPageById(@PathVariable Integer pageId) {
+        return pageService.findById(pageId);
+    }
+
     /**
      * 删除page
      *

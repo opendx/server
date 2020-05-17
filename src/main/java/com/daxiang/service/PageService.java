@@ -1,5 +1,6 @@
 package com.daxiang.service;
 
+import com.daxiang.dao.PageDao;
 import com.daxiang.mbg.po.*;
 import com.daxiang.model.vo.PageCascaderVo;
 import com.daxiang.security.SecurityUtil;
@@ -26,6 +27,8 @@ public class PageService {
 
     @Autowired
     private PageMapper pageMapper;
+    @Autowired
+    private PageDao pageDao;
     @Autowired
     private ActionService actionService;
     @Autowired
@@ -102,7 +105,7 @@ public class PageService {
             PageHelper.startPage(pageRequest.getPageNum(), pageRequest.getPageSize());
         }
 
-        List<Page> pages = selectByPage(page);
+        List<Page> pages = selectByPageWithoutWindowHierarchy(page);
         List<PageVo> pageVos = convertPagesToPageVos(pages);
 
         if (needPaging) {
@@ -140,7 +143,7 @@ public class PageService {
         }).collect(Collectors.toList());
     }
 
-    public List<Page> selectByPage(Page page) {
+    public List<Page> selectByPageWithoutWindowHierarchy(Page page) {
         PageExample example = new PageExample();
         PageExample.Criteria criteria = example.createCriteria();
 
@@ -157,15 +160,15 @@ public class PageService {
         }
         example.setOrderByClause("create_time desc");
 
-        return pageMapper.selectByExampleWithBLOBs(example);
+        return pageDao.selectByExampleWithoutWindowHierarchy(example);
     }
 
-    public List<Page> findByProjectId(Integer projectId) {
+    public List<Page> findByProjectIdWithoutWindowHierarchy(Integer projectId) {
         Assert.notNull(projectId, "projectId cannot be null");
 
         Page query = new Page();
         query.setProjectId(projectId);
-        return selectByPage(query);
+        return selectByPageWithoutWindowHierarchy(query);
     }
 
     public Response cascader(Integer projectId) {
@@ -175,7 +178,7 @@ public class PageService {
 
         Page query = new Page();
         query.setProjectId(projectId);
-        List<Page> pages = selectByPage(query);
+        List<Page> pages = selectByPageWithoutWindowHierarchy(query);
 
         List<Integer> categoryIds = pages.stream()
                 .map(Page::getCategoryId)
@@ -210,5 +213,19 @@ public class PageService {
 
         result.addAll(pageWithoutCategoryCascaderVos);
         return Response.success(result);
+    }
+
+    public Response findById(Integer pageId) {
+        if (pageId == null) {
+            return Response.fail("pageId不能为空");
+        }
+
+        Page page = pageMapper.selectByPrimaryKey(pageId);
+        if (page == null) {
+            return Response.fail("page不存在");
+        }
+
+        List<PageVo> pageVos = convertPagesToPageVos(Arrays.asList(page));
+        return Response.success(pageVos.get(0));
     }
 }

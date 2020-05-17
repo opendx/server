@@ -71,7 +71,7 @@ public class CategoryService {
             // 检查该分类下是否有page
             Page query = new Page();
             query.setCategoryId(categoryId);
-            List<Page> pages = pageService.selectByPage(query);
+            List<Page> pages = pageService.selectByPageWithoutWindowHierarchy(query);
             if (!CollectionUtils.isEmpty(pages)) {
                 return Response.fail("分类下有page，无法删除");
             }

@@ -77,10 +77,13 @@ public class MobileService {
                 criteria.andIdEqualTo(mobile.getId());
             }
             if (!StringUtils.isEmpty(mobile.getName())) {
-                criteria.andNameEqualTo(mobile.getName());
+                criteria.andNameLike("%" + mobile.getName() + "%");
             }
             if (mobile.getEmulator() != null) {
                 criteria.andEmulatorEqualTo(mobile.getEmulator());
+            }
+            if (!StringUtils.isEmpty(mobile.getSystemVersion())) {
+                criteria.andSystemVersionEqualTo(mobile.getSystemVersion());
             }
             if (!StringUtils.isEmpty(mobile.getAgentIp())) {
                 criteria.andAgentIpEqualTo(mobile.getAgentIp());

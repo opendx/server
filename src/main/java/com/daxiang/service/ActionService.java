@@ -314,7 +314,7 @@ public class ActionService {
         }
 
         // 该项目下的Pages
-        List<com.daxiang.mbg.po.Page> pages = pageService.findByProjectId(action.getProjectId());
+        List<com.daxiang.mbg.po.Page> pages = pageService.findByProjectIdWithoutWindowHierarchy(action.getProjectId());
 
         JSONObject requestBody = new JSONObject();
         requestBody.put("platform", debugInfo.getPlatform());
