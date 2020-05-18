@@ -102,7 +102,7 @@ DROP TABLE IF EXISTS `mobile`;
 CREATE TABLE `mobile` (
   `id` varchar(100) NOT NULL COMMENT 'mobile id',
   `name` varchar(100) DEFAULT NULL COMMENT 'mobile名',
-  `emulator` tinyint(4) DEFAULT COMMENT '0: 真机 1: 模拟器',
+  `emulator` tinyint(4) DEFAULT NULL COMMENT '0: 真机 1: 模拟器',
   `agent_ip` varchar(50) DEFAULT NULL COMMENT '所在的agent的ip',
   `agent_port` int(11) DEFAULT NULL COMMENT '所在的agent的端口',
   `system_version` varchar(50) DEFAULT NULL COMMENT '系统版本',
