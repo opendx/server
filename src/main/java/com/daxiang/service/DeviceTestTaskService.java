@@ -189,18 +189,15 @@ public class DeviceTestTaskService {
 
         DeviceTestTask deviceTestTask = deviceTestTaskMapper.selectByPrimaryKey(deviceTestTaskId);
         if (deviceTestTask == null) {
-            return Response.fail("device测试任务不存在");
+            return Response.fail("deviceTestTask不存在");
         }
 
-        if (!canDelete(deviceTestTask.getStatus())) {
-            return Response.fail("执行过的测试任务不能删除");
+        if (deviceTestTask.getStatus() == DeviceTestTask.RUNNING_STATUS) {
+            return Response.fail("deviceTestTask正在执行，无法删除");
         }
 
         int deleteRow = deviceTestTaskMapper.deleteByPrimaryKey(deviceTestTaskId);
         return deleteRow == 1 ? Response.success("删除成功") : Response.fail("删除失败，请稍后重试");
     }
 
-    public boolean canDelete(Integer status) {
-        return status == DeviceTestTask.UNSTART_STATUS || status == DeviceTestTask.ERROR_STATUS;
-    }
 }

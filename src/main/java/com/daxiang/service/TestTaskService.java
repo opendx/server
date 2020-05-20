@@ -395,14 +395,14 @@ public class TestTaskService {
         List<DeviceTestTask> deviceTestTasks = deviceTestTaskService.findByTestTaskId(testTaskId);
 
         if (!CollectionUtils.isEmpty(deviceTestTasks)) {
-            List<DeviceTestTask> alreadyStartedDeviceTestTasks = deviceTestTasks.stream()
-                    .filter(deviceTestTask -> !deviceTestTaskService.canDelete(deviceTestTask.getStatus()))
+            List<DeviceTestTask> deviceTestTasksInRunning = deviceTestTasks.stream()
+                    .filter(deviceTestTask -> deviceTestTask.getStatus() == DeviceTestTask.RUNNING_STATUS)
                     .collect(Collectors.toList());
-            if (!CollectionUtils.isEmpty(alreadyStartedDeviceTestTasks)) {
-                // 有device已经运行过测试任务，不让删除整个testTask
-                String alreadyStartedDeviceIds = alreadyStartedDeviceTestTasks.stream()
+            if (!CollectionUtils.isEmpty(deviceTestTasksInRunning)) {
+                // 有device还在运行，不让删除testTask
+                String deviceIdsInRunning = deviceTestTasksInRunning.stream()
                         .map(DeviceTestTask::getDeviceId).collect(Collectors.joining("、"));
-                return Response.fail(alreadyStartedDeviceIds + "运行过测试任务，无法删除");
+                return Response.fail(deviceIdsInRunning + "正在运行，无法删除");
             } else {
                 // 批量删除deviceTestTask
                 List<Integer> deviceTestTaskIds = deviceTestTasks.stream().map(DeviceTestTask::getId).collect(Collectors.toList());
