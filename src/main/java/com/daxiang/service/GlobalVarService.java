@@ -49,8 +49,9 @@ public class GlobalVarService {
 
     public Response addBatch(List<GlobalVar> globalVars) {
         Integer currentUserId = SecurityUtil.getCurrentUserId();
+        Date now = new Date();
         globalVars.forEach(globalVar -> {
-            globalVar.setCreateTime(new Date());
+            globalVar.setCreateTime(now);
             globalVar.setCreatorUid(currentUserId);
         });
 
