@@ -34,12 +34,6 @@ public class GlobalVarService {
     @Autowired
     private UserService userService;
 
-    /**
-     * 添加全局变量
-     *
-     * @param globalVar
-     * @return
-     */
     public Response add(GlobalVar globalVar) {
         globalVar.setCreateTime(new Date());
         globalVar.setCreatorUid(SecurityUtil.getCurrentUserId());
@@ -53,11 +47,22 @@ public class GlobalVarService {
         return insertRow == 1 ? Response.success("添加GlobalVar成功") : Response.fail("添加GlobalVar失败，请稍后重试");
     }
 
-    /**
-     * 删除全局变量
-     *
-     * @param globalVarId
-     */
+    public Response addBatch(List<GlobalVar> globalVars) {
+        Integer currentUserId = SecurityUtil.getCurrentUserId();
+        globalVars.forEach(globalVar -> {
+            globalVar.setCreateTime(new Date());
+            globalVar.setCreatorUid(currentUserId);
+        });
+
+        int insertRow;
+        try {
+            insertRow = globalVarDao.insertBatch(globalVars);
+        } catch (DuplicateKeyException e) {
+            return Response.fail("命名冲突");
+        }
+        return insertRow == globalVars.size() ? Response.success("添加成功") : Response.fail("添加失败，请稍后重试");
+    }
+
     public Response delete(Integer globalVarId) {
         if (globalVarId == null) {
             return Response.fail("globalVarId不能为空");
@@ -68,11 +73,6 @@ public class GlobalVarService {
         return deleteRow == 1 ? Response.success("删除成功") : Response.fail("删除失败,请稍后重试");
     }
 
-    /**
-     * 修改全局变量
-     *
-     * @param globalVar
-     */
     public Response update(GlobalVar globalVar) {
         // todo 检查全局变量是否被action使用
 
@@ -86,12 +86,6 @@ public class GlobalVarService {
         return updateRow == 1 ? Response.success("更新GlobalVar成功") : Response.fail("更新GlobalVar失败,请稍后重试");
     }
 
-    /**
-     * 查询全局变量列表
-     *
-     * @param globalVar
-     * @return
-     */
     public Response list(GlobalVar globalVar, PageRequest pageRequest) {
         boolean needPaging = pageRequest.needPaging();
         if (needPaging) {

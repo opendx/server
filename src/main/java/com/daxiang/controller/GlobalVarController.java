@@ -11,56 +11,42 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
+import java.util.List;
+
 /**
  * Created by jiangyitao.
  */
 @RestController
 @Slf4j
+@Validated({GlobalVarGroup.class})
 @RequestMapping("/globalVar")
 public class GlobalVarController {
 
     @Autowired
     private GlobalVarService globalVarService;
 
-    /**
-     * 添加全局变量
-     *
-     * @param globalVar
-     * @return
-     */
     @PostMapping("/add")
     public Response add(@RequestBody @Validated({GlobalVarGroup.class}) GlobalVar globalVar) {
         return globalVarService.add(globalVar);
     }
 
-    /**
-     * 删除全局变量
-     *
-     * @param globalVarId
-     * @return
-     */
+    @PostMapping("/addBatch")
+    public Response addBatch(@RequestBody @NotEmpty(message = "全局变量不能为空") @Valid List<GlobalVar> globalVars) {
+        return globalVarService.addBatch(globalVars);
+    }
+
     @DeleteMapping("/{globalVarId}")
     public Response delete(@PathVariable Integer globalVarId) {
         return globalVarService.delete(globalVarId);
     }
 
-    /**
-     * 修改全局变量
-     *
-     * @param globalVar
-     * @return
-     */
     @PostMapping("/update")
     public Response update(@RequestBody @Validated({GlobalVarGroup.class, UpdateGroup.class}) GlobalVar globalVar) {
         return globalVarService.update(globalVar);
     }
 
-    /**
-     * 查询全局变量列表
-     *
-     * @param globalVar
-     * @return
-     */
     @PostMapping("/list")
     public Response list(GlobalVar globalVar, PageRequest pageRequest) {
         return globalVarService.list(globalVar, pageRequest);

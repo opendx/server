@@ -9,5 +9,6 @@ import java.util.List;
  * Created by jiangyitao.
  */
 public interface GlobalVarDao {
+    int insertBatch(@Param("globalVars") List<GlobalVar> globalVars);
     List<GlobalVar> selectByEnvironmentId(@Param("envId") Integer envId);
 }
