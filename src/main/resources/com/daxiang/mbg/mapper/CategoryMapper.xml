@@ -3,6 +3,7 @@
 <mapper namespace="com.daxiang.mbg.mapper.CategoryMapper">
   <resultMap id="BaseResultMap" type="com.daxiang.mbg.po.Category">
     <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="parent_id" jdbcType="INTEGER" property="parentId" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="type" jdbcType="TINYINT" property="type" />
     <result column="project_id" jdbcType="INTEGER" property="projectId" />
@@ -68,7 +69,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, name, type, project_id, create_time, creator_uid
+    id, parent_id, name, type, project_id, create_time, creator_uid
   </sql>
   <select id="selectByExample" parameterType="com.daxiang.mbg.po.CategoryExample" resultMap="BaseResultMap">
     select
@@ -104,10 +105,12 @@
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into category (name, type, project_id, 
-      create_time, creator_uid)
-    values (#{name,jdbcType=VARCHAR}, #{type,jdbcType=TINYINT}, #{projectId,jdbcType=INTEGER}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{creatorUid,jdbcType=INTEGER})
+    insert into category (parent_id, name, type, 
+      project_id, create_time, creator_uid
+      )
+    values (#{parentId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{type,jdbcType=TINYINT}, 
+      #{projectId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{creatorUid,jdbcType=INTEGER}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.daxiang.mbg.po.Category">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
@@ -115,6 +118,9 @@
     </selectKey>
     insert into category
     <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="parentId != null">
+        parent_id,
+      </if>
       <if test="name != null">
         name,
       </if>
@@ -132,6 +138,9 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="parentId != null">
+        #{parentId,jdbcType=INTEGER},
+      </if>
       <if test="name != null">
         #{name,jdbcType=VARCHAR},
       </if>
@@ -161,6 +170,9 @@
       <if test="record.id != null">
         id = #{record.id,jdbcType=INTEGER},
       </if>
+      <if test="record.parentId != null">
+        parent_id = #{record.parentId,jdbcType=INTEGER},
+      </if>
       <if test="record.name != null">
         name = #{record.name,jdbcType=VARCHAR},
       </if>
@@ -184,6 +196,7 @@
   <update id="updateByExample" parameterType="map">
     update category
     set id = #{record.id,jdbcType=INTEGER},
+      parent_id = #{record.parentId,jdbcType=INTEGER},
       name = #{record.name,jdbcType=VARCHAR},
       type = #{record.type,jdbcType=TINYINT},
       project_id = #{record.projectId,jdbcType=INTEGER},
@@ -196,6 +209,9 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.daxiang.mbg.po.Category">
     update category
     <set>
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=INTEGER},
+      </if>
       <if test="name != null">
         name = #{name,jdbcType=VARCHAR},
       </if>
@@ -216,7 +232,8 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.daxiang.mbg.po.Category">
     update category
-    set name = #{name,jdbcType=VARCHAR},
+    set parent_id = #{parentId,jdbcType=INTEGER},
+      name = #{name,jdbcType=VARCHAR},
       type = #{type,jdbcType=TINYINT},
       project_id = #{projectId,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},

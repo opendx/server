@@ -3,7 +3,7 @@ package com.daxiang.controller;
 import com.daxiang.model.PageRequest;
 import com.daxiang.mbg.po.DeviceTestTask;
 import com.daxiang.model.Response;
-import com.daxiang.model.vo.Testcase;
+import com.daxiang.model.dto.Testcase;
 import com.daxiang.service.DeviceTestTaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

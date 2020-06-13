@@ -13,7 +13,7 @@ import com.daxiang.exception.BusinessException;
 import com.daxiang.model.Page;
 import com.daxiang.model.PageRequest;
 import com.daxiang.model.Response;
-import com.daxiang.model.vo.Testcase;
+import com.daxiang.model.dto.Testcase;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

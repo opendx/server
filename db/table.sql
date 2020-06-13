@@ -35,11 +35,11 @@ CREATE TABLE `action` (
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
   `updator_uid` int(11) DEFAULT NULL COMMENT '更新人id',
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
-  `platforms` json DEFAULT NULL COMMENT '1.android 2.ios 3.android微信web 4.android微信小程序 null.通用',
+  `platforms` json DEFAULT NULL COMMENT '1.android 2.ios 3.pc web null.通用',
   `page_id` int(11) DEFAULT NULL COMMENT '所属的page id',
   `category_id` int(11) DEFAULT NULL COMMENT '所属的分类id',
   `project_id` int(11) DEFAULT NULL COMMENT '所属的项目id',
-  `state` tinyint(4) NOT NULL DEFAULT '2' COMMENT '禁用: 0  草稿: 1  发布: 2',
+  `state` tinyint(4) NOT NULL DEFAULT '2' COMMENT '禁用: 0 草稿: 1 发布: 2',
   `depends` json null COMMENT '依赖的测试用例id',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `uniq_name_projectId_type` (`name`,`project_id`,`type`) USING BTREE
@@ -86,6 +86,7 @@ CREATE TABLE `browser` (
 DROP TABLE IF EXISTS `category`;
 CREATE TABLE `category` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `parent_id` int(11) NOT NULL DEFAULT 0 COMMENT '父id',
   `name` varchar(100) NOT NULL COMMENT '分类名字',
   `type` tinyint(4) NOT NULL COMMENT '类型：1.page 2.action 3.全局变量 4.testcase(action)',
   `project_id` int(11) NOT NULL COMMENT '所属项目的id',

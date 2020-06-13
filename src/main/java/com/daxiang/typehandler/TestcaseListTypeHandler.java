@@ -1,6 +1,6 @@
 package com.daxiang.typehandler;
 
-import com.daxiang.model.vo.Testcase;
+import com.daxiang.model.dto.Testcase;
 
 /**
  * Created by jiangyitao.

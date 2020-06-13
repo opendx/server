@@ -3,7 +3,7 @@ package com.daxiang.mbg.po;
 import com.alibaba.fastjson.JSONObject;
 import com.daxiang.mbg.po.GlobalVar;
 import com.daxiang.mbg.po.Page;
-import com.daxiang.model.vo.Testcase;
+import com.daxiang.model.dto.Testcase;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -138,7 +138,7 @@ public class DeviceTestTask implements Serializable {
      *
      * @mbg.generated
      */
-    private java.util.List<com.daxiang.model.vo.Testcase> testcases;
+    private java.util.List<com.daxiang.model.dto.Testcase> testcases;
 
     /**
      * agent转换后的代码
@@ -292,11 +292,11 @@ public class DeviceTestTask implements Serializable {
         this.afterMethod = afterMethod;
     }
 
-    public java.util.List<com.daxiang.model.vo.Testcase> getTestcases() {
+    public java.util.List<com.daxiang.model.dto.Testcase> getTestcases() {
         return testcases;
     }
 
-    public void setTestcases(java.util.List<com.daxiang.model.vo.Testcase> testcases) {
+    public void setTestcases(java.util.List<com.daxiang.model.dto.Testcase> testcases) {
         this.testcases = testcases;
     }
 

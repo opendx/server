@@ -1,6 +1,6 @@
 package com.daxiang.typehandler;
 
-import com.daxiang.model.vo.DriverFile;
+import com.daxiang.model.dto.DriverFile;
 
 /**
  * Created by jiangyitao.

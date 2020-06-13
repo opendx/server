@@ -8,7 +8,7 @@ import com.daxiang.mbg.po.User;
 import com.daxiang.model.Page;
 import com.daxiang.model.PageRequest;
 import com.daxiang.model.Response;
-import com.daxiang.model.vo.DriverFile;
+import com.daxiang.model.dto.DriverFile;
 import com.daxiang.model.vo.DriverVo;
 import com.daxiang.security.SecurityUtil;
 import com.daxiang.utils.HttpServletUtil;

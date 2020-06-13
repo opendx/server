@@ -42,3 +42,7 @@ update role set name='mobile',alias='mobile管理员' where id = 4;
 
 ALTER TABLE `device_test_task`
 ADD COLUMN `device` json NULL COMMENT '下发任务时的device' AFTER `device_id`;
+
+-- 0.7.0
+ALTER TABLE `category`
+ADD COLUMN `parent_id` int(11) NOT NULL DEFAULT 0 COMMENT '父id' AFTER `id`;

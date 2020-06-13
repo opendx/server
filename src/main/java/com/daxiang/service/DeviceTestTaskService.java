@@ -7,7 +7,7 @@ import com.daxiang.mbg.po.DeviceTestTaskExample;
 import com.daxiang.model.PageRequest;
 import com.daxiang.model.Response;
 import com.daxiang.model.action.Step;
-import com.daxiang.model.vo.Testcase;
+import com.daxiang.model.dto.Testcase;
 import com.github.pagehelper.PageHelper;
 import com.daxiang.mbg.po.DeviceTestTask;
 import com.daxiang.model.Page;

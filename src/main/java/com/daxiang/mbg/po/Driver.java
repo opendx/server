@@ -1,6 +1,6 @@
 package com.daxiang.mbg.po;
 
-import com.daxiang.model.vo.DriverFile;
+import com.daxiang.model.dto.DriverFile;
 import com.daxiang.validator.group.UpdateGroup;
 
 import javax.validation.constraints.NotBlank;
@@ -49,7 +49,7 @@ public class Driver implements Serializable {
      *
      * @mbg.generated
      */
-    private java.util.List<com.daxiang.model.vo.DriverFile> files;
+    private java.util.List<com.daxiang.model.dto.DriverFile> files;
 
     /**
      * deviceIds
@@ -100,11 +100,11 @@ public class Driver implements Serializable {
         this.creatorUid = creatorUid;
     }
 
-    public java.util.List<com.daxiang.model.vo.DriverFile> getFiles() {
+    public java.util.List<com.daxiang.model.dto.DriverFile> getFiles() {
         return files;
     }
 
-    public void setFiles(java.util.List<com.daxiang.model.vo.DriverFile> files) {
+    public void setFiles(java.util.List<com.daxiang.model.dto.DriverFile> files) {
         this.files = files;
     }
 

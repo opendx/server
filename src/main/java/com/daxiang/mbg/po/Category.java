@@ -18,6 +18,13 @@ public class Category implements Serializable {
     private Integer id;
 
     /**
+     * 父id
+     *
+     * @mbg.generated
+     */
+    private Integer parentId;
+
+    /**
      * 分类名字
      *
      * @mbg.generated
@@ -26,7 +33,7 @@ public class Category implements Serializable {
     private String name;
 
     /**
-     * 类型：1.Page 2.action 3.全局变量
+     * 类型：1.page 2.action 3.全局变量
      *
      * @mbg.generated
      */
@@ -63,6 +70,14 @@ public class Category implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(Integer parentId) {
+        this.parentId = parentId;
     }
 
     public String getName() {
@@ -112,6 +127,7 @@ public class Category implements Serializable {
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
+        sb.append(", parentId=").append(parentId);
         sb.append(", name=").append(name);
         sb.append(", type=").append(type);
         sb.append(", projectId=").append(projectId);

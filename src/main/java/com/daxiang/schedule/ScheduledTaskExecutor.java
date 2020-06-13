@@ -1,6 +1,6 @@
 package com.daxiang.schedule;
 
-import com.daxiang.model.vo.Testcase;
+import com.daxiang.model.dto.Testcase;
 import com.daxiang.service.TestTaskService;
 import com.daxiang.mbg.po.DeviceTestTask;
 import com.daxiang.mbg.po.TestTask;

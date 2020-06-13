@@ -1,4 +1,4 @@
-package com.daxiang.model.vo;
+package com.daxiang.model.dto;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.daxiang.mbg.po.Action;
