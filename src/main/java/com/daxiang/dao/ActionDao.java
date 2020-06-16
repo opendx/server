@@ -13,5 +13,5 @@ public interface ActionDao {
 
     List<Action> selectByLocalVarsEnvironmentId(@Param("envId") Integer envId);
 
-    List<Action> selectByProjectIdAndPlatform(@Param("projectId") Integer projectId, @Param("platform") Integer platform);
+    List<Action> selectPublishedCascaderData(@Param("projectId") Integer projectId, @Param("platform") Integer platform, @Param("type") Integer type);
 }

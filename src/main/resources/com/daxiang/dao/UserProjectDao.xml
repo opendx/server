@@ -6,7 +6,7 @@
         <association property="project" resultMap="com.daxiang.mbg.mapper.ProjectMapper.BaseResultMap" columnPrefix="p_" />
     </resultMap>
 
-    <insert id="insertInBatch">
+    <insert id="insertBatch">
         insert into user_project(user_id, project_id) values
         <foreach collection="userProjects" item="item" separator=",">
             (#{item.userId}, #{item.projectId})

@@ -16,10 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -68,7 +65,7 @@ public class MobileService {
         }
     }
 
-    public List<Mobile> selectByMobile(Mobile mobile) {
+    private List<Mobile> selectByMobile(Mobile mobile) {
         MobileExample example = new MobileExample();
         MobileExample.Criteria criteria = example.createCriteria();
 
@@ -147,18 +144,19 @@ public class MobileService {
     }
 
     public Response getOnlineMobiles(Integer platform) {
-        MobileExample mobileExample = new MobileExample();
-        MobileExample.Criteria criteria = mobileExample.createCriteria();
+        MobileExample example = new MobileExample();
+        MobileExample.Criteria criteria = example.createCriteria();
+
         criteria.andStatusNotEqualTo(Mobile.OFFLINE_STATUS);
         if (platform != null) {
             criteria.andPlatformEqualTo(platform);
         }
-        return Response.success(mobileMapper.selectByExample(mobileExample));
+        return Response.success(mobileMapper.selectByExample(example));
     }
 
     public List<Mobile> getOnlineMobilesByAgentIps(List<String> agentIps) {
         if (CollectionUtils.isEmpty(agentIps)) {
-            return Collections.EMPTY_LIST;
+            return new ArrayList<>();
         }
 
         MobileExample example = new MobileExample();
@@ -173,29 +171,25 @@ public class MobileService {
         Mobile mobile = new Mobile();
         mobile.setStatus(Mobile.OFFLINE_STATUS);
 
-        MobileExample mobileExample = new MobileExample();
-        mobileExample.createCriteria().andAgentIpEqualTo(agentIp);
+        MobileExample example = new MobileExample();
+        example.createCriteria().andAgentIpEqualTo(agentIp);
 
-        mobileMapper.updateByExampleSelective(mobile, mobileExample);
+        mobileMapper.updateByExampleSelective(mobile, example);
     }
 
-    public List<Mobile> selectByMobileIds(Set<String> mobileIds) {
+    private List<Mobile> getMobilesByIds(Set<String> mobileIds) {
         if (CollectionUtils.isEmpty(mobileIds)) {
-            return Collections.EMPTY_LIST;
+            return new ArrayList<>();
         }
 
         MobileExample example = new MobileExample();
         MobileExample.Criteria criteria = example.createCriteria();
-        criteria.andIdIn(mobileIds.stream().collect(Collectors.toList()));
+        criteria.andIdIn(new ArrayList<>(mobileIds));
         return mobileMapper.selectByExample(example);
     }
 
-    public Map<String, Mobile> getMobileMapByMobileIds(Set<String> mobileIds) {
-        List<Mobile> mobiles = selectByMobileIds(mobileIds);
-        if (mobiles.isEmpty()) {
-            return Collections.EMPTY_MAP;
-        }
-
+    public Map<String, Mobile> getMobileMapByIds(Set<String> mobileIds) {
+        List<Mobile> mobiles = getMobilesByIds(mobileIds);
         return mobiles.stream().collect(Collectors.toMap(Mobile::getId, m -> m, (k1, k2) -> k1));
     }
 }

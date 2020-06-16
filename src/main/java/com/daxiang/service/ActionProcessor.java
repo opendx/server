@@ -1,9 +1,7 @@
 package com.daxiang.service;
 
-import com.daxiang.mbg.mapper.ActionMapper;
 import com.daxiang.mbg.po.Action;
 import com.daxiang.model.action.Step;
-import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;
@@ -13,30 +11,25 @@ import java.util.stream.Collectors;
 /**
  * Created by jiangyitao.
  */
-public class ActionTreeBuilder {
+public class ActionProcessor {
 
-    private final List<Action> actions;
-    private final ActionMapper actionMapper;
+    private final ActionService actionService;
 
     /**
      * actionId : action
      */
     private final Map<Integer, Action> cachedActions = new HashMap<>();
 
-    public ActionTreeBuilder(List<Action> actions, ActionMapper actionMapper) {
-        Assert.notNull(actions, "actions cannot be null");
-        Assert.notNull(actionMapper, "actionMapper cannot be null");
-
-        this.actions = actions;
-        this.actionMapper = actionMapper;
+    public ActionProcessor(ActionService actionService) {
+        this.actionService = actionService;
     }
 
-    public void build() {
+    public void process(List<Action> actions) {
         actions.forEach(action -> cachedActions.put(action.getId(), action));
-        build(this.actions);
+        recursivelyProcess(actions);
     }
 
-    private void build(List<Action> actions) {
+    private void recursivelyProcess(List<Action> actions) {
         for (Action action : actions) {
             // steps
             List<Step> steps = action.getSteps();
@@ -48,7 +41,7 @@ public class ActionTreeBuilder {
                 for (Step step : steps) {
                     Action stepAction = getActionById(step.getActionId());
                     step.setAction(stepAction);
-                    build(Arrays.asList(stepAction));
+                    recursivelyProcess(Arrays.asList(stepAction));
                 }
             }
 
@@ -56,10 +49,10 @@ public class ActionTreeBuilder {
             List<Integer> actionImports = action.getActionImports();
             if (!CollectionUtils.isEmpty(actionImports)) {
                 List<Action> importActions = actionImports.stream()
-                        .map(actionId -> getActionById(actionId))
+                        .map(this::getActionById)
                         .collect(Collectors.toList());
                 action.setImportActions(importActions);
-                build(importActions);
+                recursivelyProcess(importActions);
             }
         }
     }
@@ -67,7 +60,7 @@ public class ActionTreeBuilder {
     private Action getActionById(Integer actionId) {
         Action action = cachedActions.get(actionId);
         if (action == null) {
-            action = actionMapper.selectByPrimaryKey(actionId);
+            action = actionService.getActionById(actionId);
             cachedActions.put(actionId, action);
         }
         return action;

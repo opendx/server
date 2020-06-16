@@ -24,21 +24,21 @@ public class UserProjectService {
     @Autowired
     private UserProjectDao userProjectDao;
 
-    public int insertInBatch(List<UserProject> userProjects) {
+    public int addBatch(List<UserProject> userProjects) {
         if (CollectionUtils.isEmpty(userProjects)) {
             return 0;
         }
-        return userProjectDao.insertInBatch(userProjects);
+        return userProjectDao.insertBatch(userProjects);
     }
 
-    public int insert(Integer userId, List<Project> projects) {
+    public int addBatch(Integer userId, List<Project> projects) {
         List<UserProject> userProjects = projects.stream().map(project -> {
             UserProject userProject = new UserProject();
             userProject.setUserId(userId);
             userProject.setProjectId(project.getId());
             return userProject;
         }).collect(Collectors.toList());
-        return insertInBatch(userProjects);
+        return addBatch(userProjects);
     }
 
     public int deleteByUserId(Integer userId) {
@@ -48,7 +48,7 @@ public class UserProjectService {
         return userProjectMapper.deleteByExample(example);
     }
 
-    public List<UserProjectDto> selectUserProjectDtosByUserIds(List<Integer> userIds) {
+    public List<UserProjectDto> getUserProjectDtosByUserIds(List<Integer> userIds) {
         return userProjectDao.selectUserProjectDtosByUserIds(userIds);
     }
 }

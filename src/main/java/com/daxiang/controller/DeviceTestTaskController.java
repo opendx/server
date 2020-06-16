@@ -46,8 +46,8 @@ public class DeviceTestTaskController {
      * @return
      */
     @GetMapping("/firstUnStart/device/{deviceId}")
-    public Response findFirstUnStartDeviceTestTask(@PathVariable String deviceId) {
-        return deviceTestTaskService.findFirstUnStartDeviceTestTask(deviceId);
+    public Response getFirstUnStartDeviceTestTask(@PathVariable String deviceId) {
+        return deviceTestTaskService.getFirstUnStartDeviceTestTask(deviceId);
     }
 
     @DeleteMapping("/{deviceTestTaskId}")

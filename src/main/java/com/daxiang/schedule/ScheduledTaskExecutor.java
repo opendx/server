@@ -35,15 +35,15 @@ public class ScheduledTaskExecutor {
     @Scheduled(fixedRate = 15000)
     public void statisticsFinishedTestTask() {
         // 未完成的测试任务
-        List<TestTask> unFinishedTestTasks = testTaskService.findUnFinishedTestTask();
-        if (CollectionUtils.isEmpty(unFinishedTestTasks)) {
+        List<TestTask> testTasks = testTaskService.getUnFinishedTestTasks();
+        if (CollectionUtils.isEmpty(testTasks)) {
             return;
         }
 
-        List<Integer> testTaskIds = unFinishedTestTasks.stream().map(TestTask::getId).collect(Collectors.toList());
+        List<Integer> testTaskIds = testTasks.stream().map(TestTask::getId).collect(Collectors.toList());
 
         // todo 批量更新
-        deviceTestTaskService.findByTestTaskIds(testTaskIds).stream()
+        deviceTestTaskService.getDeviceTestTasksByTestTaskIds(testTaskIds).stream()
                 .collect(Collectors.groupingBy(DeviceTestTask::getTestTaskId)) // 按照testTaskId分组
                 .forEach((testTaskId, deviceTestTasks) -> {
                     // 所有device都测试完成
@@ -79,7 +79,7 @@ public class ScheduledTaskExecutor {
                         int skipCount = result.getOrDefault(Testcase.SKIP_STATUS, 0L).intValue();
                         testTask.setSkipCaseCount(skipCount);
 
-                        testTaskService.updateByPrimaryKeySelective(testTask);
+                        testTaskService.update(testTask);
                         log.info("测试结果统计完成, testTaskId: {}", testTaskId);
                     }
                 });

@@ -31,12 +31,6 @@ public class ProjectService {
     @Autowired
     private UserService userService;
 
-    /**
-     * 新增项目
-     *
-     * @param project
-     * @return
-     */
     public Response add(Project project) {
         project.setCreateTime(new Date());
         project.setCreatorUid(SecurityUtil.getCurrentUserId());
@@ -50,11 +44,6 @@ public class ProjectService {
         return insertRow == 1 ? Response.success("添加Project成功") : Response.fail("添加Project失败，请稍后重试");
     }
 
-    /**
-     * 删除项目
-     *
-     * @param projectId
-     */
     public Response delete(Integer projectId) {
         if (projectId == null) {
             return Response.fail("项目id不能为空");
@@ -64,11 +53,6 @@ public class ProjectService {
         return deleteRow == 1 ? Response.success("删除Project成功") : Response.fail("删除Project失败，请稍后重试");
     }
 
-    /**
-     * 更新项目
-     *
-     * @param project
-     */
     public Response update(Project project) {
         int updateRow;
         try {
@@ -79,14 +63,6 @@ public class ProjectService {
         return updateRow == 1 ? Response.success("更新Project成功") : Response.fail("修改Project失败,请稍后重试");
     }
 
-
-    /**
-     * 查询项目列表
-     *
-     * @param project
-     * @param pageRequest
-     * @return
-     */
     public Response list(Project project, PageRequest pageRequest) {
         boolean needPaging = pageRequest.needPaging();
         if (needPaging) {
@@ -106,7 +82,7 @@ public class ProjectService {
 
     private List<ProjectVo> convertProjectsToProjectVos(List<Project> projects) {
         if (CollectionUtils.isEmpty(projects)) {
-            return Collections.EMPTY_LIST;
+            return new ArrayList<>();
         }
 
         List<Integer> creatorUids = projects.stream()
@@ -114,7 +90,7 @@ public class ProjectService {
                 .filter(Objects::nonNull)
                 .distinct()
                 .collect(Collectors.toList());
-        Map<Integer, User> userMap = userService.getUserMapByUserIds(creatorUids);
+        Map<Integer, User> userMap = userService.getUserMapByIds(creatorUids);
 
         return projects.stream().map(project -> {
             ProjectVo projectVo = new ProjectVo();
@@ -131,7 +107,7 @@ public class ProjectService {
         }).collect(Collectors.toList());
     }
 
-    public List<Project> selectByProject(Project project) {
+    private List<Project> selectByProject(Project project) {
         ProjectExample example = new ProjectExample();
         ProjectExample.Criteria criteria = example.createCriteria();
 
@@ -151,7 +127,7 @@ public class ProjectService {
         return projectMapper.selectByExampleWithBLOBs(example);
     }
 
-    public Project selectByPrimaryKey(Integer id) {
+    public Project getProjectById(Integer id) {
         return projectMapper.selectByPrimaryKey(id);
     }
 }

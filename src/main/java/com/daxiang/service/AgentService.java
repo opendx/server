@@ -41,16 +41,16 @@ public class AgentService {
         List<AgentVo> agentVos = getOnlineAgentsWithoutDevices();
         List<String> agentIps = agentVos.stream().map(AgentVo::getIp).collect(Collectors.toList());
 
-        List<Mobile> devices = mobileService.getOnlineMobilesByAgentIps(agentIps);
-        Map<String, List<Mobile>> agentIpMobilesMap = devices.stream().collect(Collectors.groupingBy(Mobile::getAgentIp)); // agentIp: List<Mobile>
+        List<Mobile> mobiles = mobileService.getOnlineMobilesByAgentIps(agentIps);
+        Map<String, List<Mobile>> mobileMap = mobiles.stream().collect(Collectors.groupingBy(Mobile::getAgentIp)); // agentIp: List<Mobile>
 
         List<Browser> browsers = browserService.getOnlineBrowsersByAgentIps(agentIps);
-        Map<String, List<Browser>> agentIpBrowsersMap = browsers.stream().collect(Collectors.groupingBy(Browser::getAgentIp)); // agentIp: List<Browser>
+        Map<String, List<Browser>> browserMap = browsers.stream().collect(Collectors.groupingBy(Browser::getAgentIp)); // agentIp: List<Browser>
 
         agentVos.forEach(agentVo -> {
             String ip = agentVo.getIp();
-            agentVo.setMobiles(agentIpMobilesMap.get(ip));
-            agentVo.setBrowsers(agentIpBrowsersMap.get(ip));
+            agentVo.setMobiles(mobileMap.get(ip));
+            agentVo.setBrowsers(browserMap.get(ip));
         });
 
         return Response.success(agentVos);
@@ -59,7 +59,7 @@ public class AgentService {
     public List<AgentVo> getOnlineAgentsWithoutDevices() {
         return instanceRegistry.getInstances().collectList().block().stream()
                 .filter(agent -> StatusInfo.STATUS_UP.equals(agent.getStatusInfo().getStatus()))
-                .map(agent -> createAgentVoWithoutDevices(agent))
+                .map(this::createAgentVoWithoutDevices)
                 .collect(Collectors.toList());
     }
 

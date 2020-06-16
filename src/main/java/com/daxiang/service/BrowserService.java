@@ -60,7 +60,7 @@ public class BrowserService {
         }
     }
 
-    public List<Browser> selectByBrowser(Browser browser) {
+    private List<Browser> selectByBrowser(Browser browser) {
         BrowserExample example = new BrowserExample();
         BrowserExample.Criteria criteria = example.createCriteria();
 
@@ -135,7 +135,7 @@ public class BrowserService {
 
     public List<Browser> getOnlineBrowsersByAgentIps(List<String> agentIps) {
         if (CollectionUtils.isEmpty(agentIps)) {
-            return Collections.EMPTY_LIST;
+            return new ArrayList<>();
         }
 
         BrowserExample example = new BrowserExample();
@@ -156,23 +156,19 @@ public class BrowserService {
         browserMapper.updateByExampleSelective(browser, example);
     }
 
-    public List<Browser> selectByBrowserIds(Set<String> browserIds) {
+    private List<Browser> getBrowsersByIds(Set<String> browserIds) {
         if (CollectionUtils.isEmpty(browserIds)) {
-            return Collections.EMPTY_LIST;
+            return new ArrayList<>();
         }
 
         BrowserExample example = new BrowserExample();
         BrowserExample.Criteria criteria = example.createCriteria();
-        criteria.andIdIn(browserIds.stream().collect(Collectors.toList()));
+        criteria.andIdIn(new ArrayList<>(browserIds));
         return browserMapper.selectByExample(example);
     }
 
     public Map<String, Browser> getBrowserMapByBrowserIds(Set<String> browserIds) {
-        List<Browser> browsers = selectByBrowserIds(browserIds);
-        if (browsers.isEmpty()) {
-            return Collections.EMPTY_MAP;
-        }
-
+        List<Browser> browsers = getBrowsersByIds(browserIds);
         return browsers.stream().collect(Collectors.toMap(Browser::getId, b -> b, (k1, k2) -> k1));
     }
 }

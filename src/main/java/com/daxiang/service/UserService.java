@@ -17,7 +17,6 @@ import com.daxiang.model.Response;
 import com.daxiang.security.SecurityUtil;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.ImmutableMap;
-import io.jsonwebtoken.lang.Assert;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -76,13 +75,13 @@ public class UserService {
         }
 
         // 用户角色
-        insertRow = userRoleService.insert(user.getId(), userDto.getRoles());
+        insertRow = userRoleService.addBatch(user.getId(), userDto.getRoles());
         if (insertRow != userDto.getRoles().size()) {
             throw new BusinessException("添加角色失败，请稍后重试");
         }
 
         // 用户项目
-        insertRow = userProjectService.insert(user.getId(), userDto.getProjects());
+        insertRow = userProjectService.addBatch(user.getId(), userDto.getProjects());
         if (insertRow != userDto.getProjects().size()) {
             throw new BusinessException("添加用户项目失败，请稍后重试");
         }
@@ -93,7 +92,9 @@ public class UserService {
 
     @Transactional
     public Response delete(Integer userId) {
-        Assert.notNull(userId, "userId不能为空");
+        if (userId == null) {
+            return Response.fail("userId不能为空");
+        }
 
         // 删除用户角色
         userRoleService.deleteByUserId(userId);
@@ -133,7 +134,7 @@ public class UserService {
         userRoleService.deleteByUserId(user.getId());
 
         // 添加用户角色
-        int insertRow = userRoleService.insert(user.getId(), userDto.getRoles());
+        int insertRow = userRoleService.addBatch(user.getId(), userDto.getRoles());
         if (insertRow != userDto.getRoles().size()) {
             throw new BusinessException("添加用户角色失败");
         }
@@ -142,7 +143,7 @@ public class UserService {
         userProjectService.deleteByUserId(user.getId());
 
         // 添加用户项目
-        insertRow = userProjectService.insert(user.getId(), userDto.getProjects());
+        insertRow = userProjectService.addBatch(user.getId(), userDto.getProjects());
         if (insertRow != userDto.getProjects().size()) {
             throw new BusinessException("添加用户项目失败");
         }
@@ -168,14 +169,14 @@ public class UserService {
 
     private List<UserDto> convertUsersToUserDtos(List<User> users) {
         if (CollectionUtils.isEmpty(users)) {
-            return Collections.EMPTY_LIST;
+            return new ArrayList<>();
         }
 
         List<Integer> userIds = users.stream().map(User::getId).collect(Collectors.toList());
         // 按用户id分组
-        Map<Integer, List<UserRoleDto>> userRoleDtosMap = userRoleService.selectUserRoleDtosByUserIds(userIds).stream()
+        Map<Integer, List<UserRoleDto>> userRoleDtosMap = userRoleService.getUserRoleDtosByUserIds(userIds).stream()
                 .collect(Collectors.groupingBy(UserRoleDto::getUserId));
-        Map<Integer, List<UserProjectDto>> userProjectDtosMap = userProjectService.selectUserProjectDtosByUserIds(userIds).stream()
+        Map<Integer, List<UserProjectDto>> userProjectDtosMap = userProjectService.getUserProjectDtosByUserIds(userIds).stream()
                 .collect(Collectors.groupingBy(UserProjectDto::getUserId));
 
         return users.stream().map(user -> {
@@ -184,7 +185,7 @@ public class UserService {
 
             List<UserRoleDto> userRoleDtos = userRoleDtosMap.get(user.getId());
             if (userRoleDtos == null) {
-                userDto.setRoles(Collections.EMPTY_LIST);
+                userDto.setRoles(new ArrayList<>());
             } else {
                 List<Role> roles = userRoleDtos.stream().map(UserRoleDto::getRole).collect(Collectors.toList());
                 userDto.setRoles(roles);
@@ -192,7 +193,7 @@ public class UserService {
 
             List<UserProjectDto> userProjectDtos = userProjectDtosMap.get(user.getId());
             if (userProjectDtos == null) {
-                userDto.setProjects(Collections.EMPTY_LIST);
+                userDto.setProjects(new ArrayList<>());
             } else {
                 List<Project> projects = userProjectDtos.stream().map(UserProjectDto::getProject).collect(Collectors.toList());
                 userDto.setProjects(projects);
@@ -224,7 +225,7 @@ public class UserService {
         return Response.success();
     }
 
-    public List<User> selectByUser(User user) {
+    private List<User> selectByUser(User user) {
         UserExample example = new UserExample();
         UserExample.Criteria criteria = example.createCriteria();
 
@@ -247,13 +248,13 @@ public class UserService {
         return userMapper.selectByExample(example);
     }
 
-    public UserDto selectUserDtoByUsername(String useranme) {
+    public UserDto getUserDtoByUsername(String useranme) {
         return userDao.selectUserDtoByUsername(useranme);
     }
 
-    public List<User> selectByUserIds(List<Integer> userIds) {
+    private List<User> getUsersByIds(List<Integer> userIds) {
         if (CollectionUtils.isEmpty(userIds)) {
-            return Collections.EMPTY_LIST;
+            return new ArrayList<>();
         }
 
         UserExample example = new UserExample();
@@ -262,16 +263,12 @@ public class UserService {
         return userMapper.selectByExample(example);
     }
 
-    public Map<Integer, User> getUserMapByUserIds(List<Integer> userIds) {
-        List<User> users = selectByUserIds(userIds);
-        if (CollectionUtils.isEmpty(users)) {
-            return Collections.EMPTY_MAP;
-        }
-
+    public Map<Integer, User> getUserMapByIds(List<Integer> userIds) {
+        List<User> users = getUsersByIds(userIds);
         return users.stream().collect(Collectors.toMap(User::getId, u -> u, (k1, k2) -> k1));
     }
 
-    public User selectByPrimaryKey(Integer userId) {
+    public User getUserById(Integer userId) {
         return userMapper.selectByPrimaryKey(userId);
     }
 

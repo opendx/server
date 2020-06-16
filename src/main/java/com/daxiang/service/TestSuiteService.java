@@ -53,10 +53,10 @@ public class TestSuiteService {
         }
 
         // 检查该测试集是否被testplan使用
-        List<TestPlan> testPlans = testPlanService.selectByTestSuiteId(testSuiteId);
+        List<TestPlan> testPlans = testPlanService.getTestPlansByTestSuiteId(testSuiteId);
         if (!CollectionUtils.isEmpty(testPlans)) {
             String testPlanNames = testPlans.stream().map(TestPlan::getName).collect(Collectors.joining("、"));
-            return Response.fail("测试计划: " + testPlanNames + ", 正在使用，无法删除");
+            return Response.fail("测试计划: " + testPlanNames + "，正在使用，无法删除");
         }
 
         int deleteRow = testSuiteMapper.deleteByPrimaryKey(testSuiteId);
@@ -92,7 +92,7 @@ public class TestSuiteService {
 
     private List<TestSuiteVo> convertTestSuitesToTestSuiteVos(List<TestSuite> testSuites) {
         if (CollectionUtils.isEmpty(testSuites)) {
-            return Collections.EMPTY_LIST;
+            return new ArrayList<>();
         }
 
         List<Integer> creatorUids = testSuites.stream()
@@ -100,7 +100,7 @@ public class TestSuiteService {
                 .filter(Objects::nonNull)
                 .distinct()
                 .collect(Collectors.toList());
-        Map<Integer, User> userMap = userService.getUserMapByUserIds(creatorUids);
+        Map<Integer, User> userMap = userService.getUserMapByIds(creatorUids);
 
         return testSuites.stream().map(testSuite -> {
             TestSuiteVo testSuiteVo = new TestSuiteVo();
@@ -117,7 +117,7 @@ public class TestSuiteService {
         }).collect(Collectors.toList());
     }
 
-    public List<TestSuite> selectByTestSuite(TestSuite testSuite) {
+    private List<TestSuite> selectByTestSuite(TestSuite testSuite) {
         TestSuiteExample example = new TestSuiteExample();
         TestSuiteExample.Criteria criteria = example.createCriteria();
 
@@ -137,9 +137,9 @@ public class TestSuiteService {
         return testSuiteMapper.selectByExampleWithBLOBs(example);
     }
 
-    public List<TestSuite> selectByPrimaryKeys(List<Integer> ids) {
+    public List<TestSuite> getTestSuitesByIds(List<Integer> ids) {
         if (CollectionUtils.isEmpty(ids)) {
-            return Collections.EMPTY_LIST;
+            return new ArrayList<>();
         }
 
         TestSuiteExample example = new TestSuiteExample();
@@ -149,7 +149,7 @@ public class TestSuiteService {
         return testSuiteMapper.selectByExampleWithBLOBs(example);
     }
 
-    public List<TestSuite> findByActionId(Integer actionId) {
+    public List<TestSuite> getTestSuitesByActionId(Integer actionId) {
         return testSuiteDao.selectByActionId(actionId);
     }
 

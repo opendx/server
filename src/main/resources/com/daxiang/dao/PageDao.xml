@@ -6,7 +6,7 @@
         <result column="bys" jdbcType="LONGVARCHAR" property="bys" typeHandler="com.daxiang.typehandler.ByListTypeHandler" />
     </resultMap>
 
-    <select id="selectByExampleWithoutWindowHierarchy" parameterType="com.daxiang.mbg.po.PageExample" resultMap="ResultMapWithoutWindowHierarchy">
+    <select id="selectPagesWithoutWindowHierarchyByExample" parameterType="com.daxiang.mbg.po.PageExample" resultMap="ResultMapWithoutWindowHierarchy">
         select
         <if test="distinct">
             distinct

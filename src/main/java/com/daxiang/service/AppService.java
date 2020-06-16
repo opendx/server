@@ -82,7 +82,7 @@ public class AppService {
 
     private List<AppVo> convertAppsToAppVos(List<App> apps) {
         if (CollectionUtils.isEmpty(apps)) {
-            return Collections.EMPTY_LIST;
+            return new ArrayList<>();
         }
 
         List<Integer> uploadorUids = apps.stream()
@@ -90,7 +90,7 @@ public class AppService {
                 .filter(Objects::nonNull)
                 .distinct()
                 .collect(Collectors.toList());
-        Map<Integer, User> userMap = userService.getUserMapByUserIds(uploadorUids);
+        Map<Integer, User> userMap = userService.getUserMapByIds(uploadorUids);
 
         return apps.stream().map(app -> {
             AppVo appVo = new AppVo();
@@ -107,7 +107,7 @@ public class AppService {
         }).collect(Collectors.toList());
     }
 
-    public List<App> selectByApp(App app) {
+    private List<App> selectByApp(App app) {
         AppExample example = new AppExample();
         AppExample.Criteria criteria = example.createCriteria();
 
@@ -150,8 +150,8 @@ public class AppService {
             return Response.fail("暂无配置了aapt的agent，无法执行aapt dump");
         }
 
-        Response agentResponse = agentClient.aaptDumpBadging(agentVo.get().getIp(),
-                agentVo.get().getPort(),
+        AgentVo agent = agentVo.get();
+        Response agentResponse = agentClient.aaptDumpBadging(agent.getIp(), agent.getPort(),
                 HttpServletUtil.getStaticResourceUrl(app.getFilePath()));
         if (!agentResponse.isSuccess()) {
             return agentResponse;

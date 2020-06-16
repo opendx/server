@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class HomeController {
 
-    @Value("${frontend}")
-    private String frontend;
+    @Value("redirect:/${frontend}/index.html")
+    private String url;
 
     @GetMapping("/")
     public String index() {
-        return String.format("redirect:/%s/index.html", frontend);
+        return url;
     }
 }

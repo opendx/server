@@ -52,7 +52,6 @@ public class ProjectController {
         return projectService.update(project);
     }
 
-
     /**
      * 查询项目列表
      *

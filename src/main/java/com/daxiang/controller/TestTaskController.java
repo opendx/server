@@ -3,6 +3,7 @@ package com.daxiang.controller;
 import com.daxiang.mbg.po.TestTask;
 import com.daxiang.model.PageRequest;
 import com.daxiang.model.Response;
+import com.daxiang.security.SecurityUtil;
 import com.daxiang.service.TestTaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +26,7 @@ public class TestTaskController {
      */
     @GetMapping("/commit")
     public Response commit(Integer testPlanId) {
-        return testTaskService.commit(testPlanId, null);
+        return testTaskService.commit(testPlanId, SecurityUtil.getCurrentUserId());
     }
 
     /**

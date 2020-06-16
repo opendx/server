@@ -90,7 +90,7 @@ public class EnvironmentService {
 
     private List<EnvironmentVo> convertEnvironmentsToEnvironmentVos(List<Environment> environments) {
         if (CollectionUtils.isEmpty(environments)) {
-            return Collections.EMPTY_LIST;
+            return new ArrayList<>();
         }
 
         List<Integer> creatorUids = environments.stream()
@@ -98,7 +98,7 @@ public class EnvironmentService {
                 .filter(Objects::nonNull)
                 .distinct()
                 .collect(Collectors.toList());
-        Map<Integer, User> userMap = userService.getUserMapByUserIds(creatorUids);
+        Map<Integer, User> userMap = userService.getUserMapByIds(creatorUids);
 
         return environments.stream().map(env -> {
             EnvironmentVo environmentVo = new EnvironmentVo();
@@ -115,7 +115,7 @@ public class EnvironmentService {
         }).collect(Collectors.toList());
     }
 
-    public List<Environment> selectByEnvironment(Environment environment) {
+    private List<Environment> selectByEnvironment(Environment environment) {
         EnvironmentExample example = new EnvironmentExample();
         EnvironmentExample.Criteria criteria = example.createCriteria();
 
@@ -135,10 +135,6 @@ public class EnvironmentService {
         return environmentMapper.selectByExample(example);
     }
 
-    public Environment selectByPrimaryKey(Integer id) {
-        return environmentMapper.selectByPrimaryKey(id);
-    }
-
     /**
      * 检查env没有被action.localVar globalVar testplan使用
      *
@@ -146,27 +142,29 @@ public class EnvironmentService {
      */
     private void check(Integer envId) {
         // 检查env是否被action localVars使用
-        List<Action> actions = actionService.selectByLocalVarsEnvironmentId(envId);
+        List<Action> actions = actionService.getActionsByLocalVarsEnvironmentId(envId);
         if (!CollectionUtils.isEmpty(actions)) {
             String actionNames = actions.stream().map(Action::getName).collect(Collectors.joining("、"));
             throw new BusinessException("actions: " + actionNames + ", 正在使用此环境");
         }
 
         // 检查env是否被globalVar使用
-        List<GlobalVar> globalVars = globalVarService.selectByEnvironmentId(envId);
+        List<GlobalVar> globalVars = globalVarService.getGlobalVarsByEnvironmentId(envId);
         if (!CollectionUtils.isEmpty(globalVars)) {
             String globalVarNames = globalVars.stream().map(GlobalVar::getName).collect(Collectors.joining("、"));
             throw new BusinessException("globalVars: " + globalVarNames + ", 正在使用此环境");
         }
 
         // 检查env是否被testplan使用
-        TestPlan query = new TestPlan();
-        query.setEnvironmentId(envId);
-        List<TestPlan> testPlans = testPlanService.selectByTestPlan(query);
+        List<TestPlan> testPlans = testPlanService.getTestPlansByEnvironmentId(envId);
         if (!CollectionUtils.isEmpty(testPlans)) {
             String testPlanNames = testPlans.stream().map(TestPlan::getName).collect(Collectors.joining("、"));
             throw new BusinessException("testPlans: " + testPlanNames + ", 正在使用此环境");
         }
+    }
+
+    public Environment getEnvironmentById(Integer id) {
+        return environmentMapper.selectByPrimaryKey(id);
     }
 
     /**
@@ -175,13 +173,13 @@ public class EnvironmentService {
     public String getValueInEnvironmentValues(List<EnvironmentValue> environmentValues, Integer envId) {
         // 与envId匹配的environmentValue
         EnvironmentValue environmentValue = environmentValues.stream()
-                .filter(ev -> envId.equals(ev.getEnvironmentId())).findFirst().orElse(null);
+                .filter(env -> envId.equals(env.getEnvironmentId())).findFirst().orElse(null);
         if (environmentValue != null) {
             return environmentValue.getValue();
         } else {
             // 没有与env匹配的，用默认的
             EnvironmentValue defaultEnvironmentValue = environmentValues.stream()
-                    .filter(ev -> EnvironmentValue.DEFAULT_ENVIRONMENT_ID == ev.getEnvironmentId()).findFirst().orElse(null);
+                    .filter(env -> EnvironmentValue.DEFAULT_ENVIRONMENT_ID == env.getEnvironmentId()).findFirst().orElse(null);
             if (defaultEnvironmentValue != null) {
                 return defaultEnvironmentValue.getValue();
             } else {

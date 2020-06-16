@@ -1,16 +1,20 @@
 package com.daxiang.service;
 
+import com.daxiang.exception.BusinessException;
 import com.daxiang.mbg.mapper.CategoryMapper;
 import com.daxiang.mbg.po.*;
 import com.daxiang.model.PageRequest;
 import com.daxiang.model.Response;
+import com.daxiang.model.dto.CategoryTreeNode;
 import com.daxiang.model.vo.CategoryVo;
 import com.daxiang.security.SecurityUtil;
+import com.daxiang.utils.Tree;
 import com.github.pagehelper.PageHelper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -34,12 +38,6 @@ public class CategoryService {
     @Autowired
     private UserService userService;
 
-    /**
-     * 添加分类
-     *
-     * @param category
-     * @return
-     */
     public Response add(Category category) {
         category.setCreateTime(new Date());
         category.setCreatorUid(SecurityUtil.getCurrentUserId());
@@ -53,57 +51,69 @@ public class CategoryService {
         return insertRow == 1 ? Response.success("添加Category成功") : Response.fail("添加Category失败");
     }
 
-    public Response delete(Integer categoryId) {
-        if (categoryId == null) {
-            return Response.fail("categoryId不能为空");
+    @Transactional
+    public Response delete(Integer categoryId, Integer type, Integer projectId) {
+        if (categoryId == null || type == null || projectId == null) {
+            return Response.fail("categoryId || type || projectId 不能为空");
         }
 
-        Category categoryQuery = new Category();
-        categoryQuery.setId(categoryId);
-        List<Category> categories = selectByCategory(categoryQuery);
-        if (CollectionUtils.isEmpty(categories)) {
-            return Response.fail("分类不存在");
+        Set<Integer> categoryIds = getDescendantIds(categoryId, type, projectId); // 后代
+        categoryIds.add(categoryId);
+        List<Integer> cids = new ArrayList<>(categoryIds);
+
+        switch (type) {
+            case Category.TYPE_PAGE:
+                List<Page> pages = pageService.getPagesWithoutWindowHierarchyByCategoryIds(cids);
+                if (!CollectionUtils.isEmpty(pages)) {
+                    return Response.fail("分类下有page，无法删除");
+                }
+                break;
+            case Category.TYPE_ACTION: {
+                List<Action> actions = actionService.getActionsByCategoryIds(cids);
+                if (!CollectionUtils.isEmpty(actions)) {
+                    return Response.fail("分类下有action，无法删除");
+                }
+                break;
+            }
+            case Category.TYPE_TESTCASE: {
+                List<Action> actions = actionService.getActionsByCategoryIds(cids);
+                if (!CollectionUtils.isEmpty(actions)) {
+                    return Response.fail("分类下有测试用例，无法删除");
+                }
+                break;
+            }
+            case Category.TYPE_GLOBAL_VAR:
+                List<GlobalVar> globalVars = globalVarService.getGlobalVarsByCategoryIds(cids);
+                if (!CollectionUtils.isEmpty(globalVars)) {
+                    return Response.fail("分类下有全局变量，无法删除");
+                }
+                break;
+            default:
+                return Response.fail("不支持的category type");
         }
 
-        Category category = categories.get(0);
+        CategoryExample example = new CategoryExample();
+        CategoryExample.Criteria criteria = example.createCriteria();
+        criteria.andIdIn(cids);
 
-        if (category.getType() == Category.TYPE_PAGE) {
-            // 检查该分类下是否有page
-            Page query = new Page();
-            query.setCategoryId(categoryId);
-            List<Page> pages = pageService.selectByPageWithoutWindowHierarchy(query);
-            if (!CollectionUtils.isEmpty(pages)) {
-                return Response.fail("分类下有page，无法删除");
-            }
-        } else if (category.getType() == Category.TYPE_ACTION || category.getType() == Category.TYPE_TESTCASE) {
-            // 检查该分类下是否有action
-            Action query = new Action();
-            query.setCategoryId(categoryId);
-            List<Action> actions = actionService.selectByAction(query);
-            if (!CollectionUtils.isEmpty(actions)) {
-                return Response.fail("分类下有action，无法删除");
-            }
-        } else if (category.getType() == Category.TYPE_GLOBAL_VAR) {
-            // 检查该分类下是否有globalVar
-            GlobalVar query = new GlobalVar();
-            query.setCategoryId(categoryId);
-            List<GlobalVar> globalVars = globalVarService.selectByGlobalVar(query);
-            if (!CollectionUtils.isEmpty(globalVars)) {
-                return Response.fail("分类下有全局变量，无法删除");
-            }
+        int deleteRow = categoryMapper.deleteByExample(example);
+        if (deleteRow == categoryIds.size()) {
+            return Response.success("删除成功");
         } else {
-            return Response.fail("不支持的分类类型");
+            throw new BusinessException("删除失败，请稍后重试");
         }
-
-        int deleteRow = categoryMapper.deleteByPrimaryKey(categoryId);
-        return deleteRow == 1 ? Response.success("删除分类成功") : Response.fail("删除分类失败，请稍后重试");
     }
 
-    /**
-     * 查询列表
-     *
-     * @return
-     */
+    public Response update(Category category) {
+        int updateRow;
+        try {
+            updateRow = categoryMapper.updateByPrimaryKeySelective(category);
+        } catch (DuplicateKeyException e) {
+            return Response.fail("命名冲突");
+        }
+        return updateRow == 1 ? Response.success("保存成功") : Response.fail("保存失败，请稍后重试");
+    }
+
     public Response list(Category category, PageRequest pageRequest) {
         boolean needPaging = pageRequest.needPaging();
         if (needPaging) {
@@ -121,9 +131,29 @@ public class CategoryService {
         }
     }
 
+    public Response getCategoryTreeByProjectIdAndType(Integer projectId, Integer type) {
+        if (projectId == null || type == null) {
+            return Response.fail("projectId或type不能为空");
+        }
+
+        Category query = new Category();
+        query.setProjectId(projectId);
+        query.setType(type);
+        List<Category> categories = selectByCategory(query);
+
+        return Response.success(buildCategoryTree(categories));
+    }
+
+    private List<Tree.TreeNode> buildCategoryTree(List<Category> categories) {
+        List<CategoryTreeNode> categroyTreeNodes = categories.stream()
+                .map(CategoryTreeNode::create).collect(Collectors.toList());
+
+        return Tree.build(categroyTreeNodes);
+    }
+
     private List<CategoryVo> convertCategoriesToCategoryVos(List<Category> categories) {
         if (CollectionUtils.isEmpty(categories)) {
-            return Collections.EMPTY_LIST;
+            return new ArrayList<>();
         }
 
         List<Integer> creatorUids = categories.stream()
@@ -131,7 +161,7 @@ public class CategoryService {
                 .filter(Objects::nonNull)
                 .distinct()
                 .collect(Collectors.toList());
-        Map<Integer, User> userMap = userService.getUserMapByUserIds(creatorUids);
+        Map<Integer, User> userMap = userService.getUserMapByIds(creatorUids);
 
         return categories.stream().map(category -> {
             CategoryVo categoryVo = new CategoryVo();
@@ -148,7 +178,7 @@ public class CategoryService {
         }).collect(Collectors.toList());
     }
 
-    public List<Category> selectByCategory(Category category) {
+    private List<Category> selectByCategory(Category category) {
         CategoryExample example = new CategoryExample();
         CategoryExample.Criteria criteria = example.createCriteria();
 
@@ -156,39 +186,79 @@ public class CategoryService {
             if (category.getId() != null) {
                 criteria.andIdEqualTo(category.getId());
             }
-            if (category.getProjectId() != null) {
-                criteria.andProjectIdEqualTo(category.getProjectId());
-            }
-            if (category.getType() != null) {
-                criteria.andTypeEqualTo(category.getType());
+            if (category.getParentId() != null) {
+                criteria.andParentIdEqualTo(category.getParentId());
             }
             if (!StringUtils.isEmpty(category.getName())) {
                 criteria.andNameEqualTo(category.getName());
             }
+            if (category.getType() != null) {
+                criteria.andTypeEqualTo(category.getType());
+            }
+            if (category.getProjectId() != null) {
+                criteria.andProjectIdEqualTo(category.getProjectId());
+            }
         }
 
         return categoryMapper.selectByExample(example);
     }
 
-    public List<Category> selectByPrimaryKeys(List<Integer> ids) {
-        if (CollectionUtils.isEmpty(ids)) {
-            return Collections.EMPTY_LIST;
+    public List<Category> getCategoriesWithProjectIdIsNullOrProjectIdEqualsTo(Integer projectId) {
+        if (projectId == null) {
+            return new ArrayList<>();
         }
 
         CategoryExample example = new CategoryExample();
-        CategoryExample.Criteria criteria = example.createCriteria();
 
-        criteria.andIdIn(ids);
+        CategoryExample.Criteria c1 = example.createCriteria();
+        c1.andProjectIdIsNull();
+
+        CategoryExample.Criteria c2 = example.createCriteria();
+        c2.andProjectIdEqualTo(projectId);
+
+        example.or(c2);
         return categoryMapper.selectByExample(example);
     }
 
-    public Map<Integer, Category> getCategoryMapByCategoryIds(List<Integer> ids) {
-        List<Category> categories = selectByPrimaryKeys(ids);
-        if (CollectionUtils.isEmpty(categories)) {
-            return Collections.EMPTY_MAP;
+    /**
+     * 获取后代ids
+     *
+     * @param parentId
+     * @param type
+     * @param projectId
+     * @return
+     */
+    private Set<Integer> getDescendantIds(Integer parentId, Integer type, Integer projectId) {
+        Category query = new Category();
+        query.setProjectId(projectId);
+        query.setType(type);
+        List<Category> categories = selectByCategory(query);
+        Map<Integer, Category> categoryMap = categoriesToMap(categories);
+
+        Set<Integer> descendantIds = new HashSet<>();
+
+        for (Category category : categories) {
+            Integer pid = category.getParentId();
+            while (pid != null && pid > 0) {
+                if (parentId.equals(pid)) {
+                    descendantIds.add(category.getId());
+                    break;
+                } else {
+                    if (categoryMap.containsKey(pid)) {
+                        pid = categoryMap.get(pid).getParentId(); // 往上取
+                    } else {
+                        break;
+                    }
+                }
+            }
         }
 
-        return categories.stream().collect(Collectors.toMap(Category::getId, c -> c, (k1, k2) -> k1));
+        return descendantIds;
+    }
+
+    public Map<Integer, Category> categoriesToMap(List<Category> categories) {
+        return categories.stream()
+                .collect(Collectors.toMap(Category::getId, c -> c, (k1, k2) -> k1));
     }
 
 }

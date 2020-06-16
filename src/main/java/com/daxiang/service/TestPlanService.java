@@ -34,12 +34,12 @@ import java.util.stream.Collectors;
 @Service
 public class TestPlanService {
 
-    private static final ThreadPoolTaskScheduler scheduler;
-    private static final Map<Integer, ScheduledFuture> testPlanFutureMap = new ConcurrentHashMap<>();
+    private static final ThreadPoolTaskScheduler TASK_SCHEDULER;
+    private static final Map<Integer, ScheduledFuture> TEST_PLAN_SCHEDULED_FUTURE_MAP = new ConcurrentHashMap<>();
 
     static {
-        scheduler = new ThreadPoolTaskScheduler();
-        scheduler.initialize();
+        TASK_SCHEDULER = new ThreadPoolTaskScheduler();
+        TASK_SCHEDULER.initialize();
     }
 
     @Autowired
@@ -128,7 +128,7 @@ public class TestPlanService {
 
     private List<TestPlanVo> convertTestPlansToTestPlanVos(List<TestPlan> testPlans) {
         if (CollectionUtils.isEmpty(testPlans)) {
-            return Collections.EMPTY_LIST;
+            return new ArrayList<>();
         }
 
         List<Integer> creatorUids = testPlans.stream()
@@ -136,7 +136,7 @@ public class TestPlanService {
                 .filter(Objects::nonNull)
                 .distinct()
                 .collect(Collectors.toList());
-        Map<Integer, User> userMap = userService.getUserMapByUserIds(creatorUids);
+        Map<Integer, User> userMap = userService.getUserMapByIds(creatorUids);
 
         return testPlans.stream().map(testPlan -> {
             TestPlanVo testPlanVo = new TestPlanVo();
@@ -153,7 +153,7 @@ public class TestPlanService {
         }).collect(Collectors.toList());
     }
 
-    public List<TestPlan> selectByTestPlan(TestPlan testPlan) {
+    private List<TestPlan> selectByTestPlan(TestPlan testPlan) {
         TestPlanExample example = new TestPlanExample();
         TestPlanExample.Criteria criteria = example.createCriteria();
 
@@ -185,14 +185,6 @@ public class TestPlanService {
         return testPlanMapper.selectByExampleWithBLOBs(example);
     }
 
-    public TestPlan selectByPrimaryKey(Integer testPlanId) {
-        return testPlanMapper.selectByPrimaryKey(testPlanId);
-    }
-
-    public List<TestPlan> selectByTestSuiteId(Integer testSuiteId) {
-        return testPlanDao.selectByTestSuiteId(testSuiteId);
-    }
-
     /**
      * 首次启动server，按计划去执行所有开启的定时任务
      */
@@ -208,15 +200,15 @@ public class TestPlanService {
      * 添加或更新定时任务
      */
     private synchronized void addOrUpdateScheduleTask(TestPlan testPlan) {
-        ScheduledFuture future = testPlanFutureMap.get(testPlan.getId());
+        ScheduledFuture future = TEST_PLAN_SCHEDULED_FUTURE_MAP.get(testPlan.getId());
         if (future != null) {
             // 取消上一次设置的定时任务
             log.info("cancel schedule, testPlan: {}", testPlan.getName());
             future.cancel(true);
         }
         log.info("add schedule, testPlan: {}", testPlan.getName());
-        future = scheduler.schedule(() -> testTaskService.commit(testPlan.getId(), testPlan.getCreatorUid()), new CronTrigger(testPlan.getCronExpression()));
-        testPlanFutureMap.put(testPlan.getId(), future);
+        future = TASK_SCHEDULER.schedule(() -> testTaskService.commit(testPlan.getId(), testPlan.getCreatorUid()), new CronTrigger(testPlan.getCronExpression()));
+        TEST_PLAN_SCHEDULED_FUTURE_MAP.put(testPlan.getId(), future);
     }
 
     /**
@@ -225,15 +217,29 @@ public class TestPlanService {
      * @param testPlanId
      */
     private synchronized void cancelScheduleTask(Integer testPlanId) {
-        ScheduledFuture future = testPlanFutureMap.get(testPlanId);
+        ScheduledFuture future = TEST_PLAN_SCHEDULED_FUTURE_MAP.get(testPlanId);
         if (future != null) {
             log.info("cancel schedule, testPlanId: {}", testPlanId);
             future.cancel(true);
-            testPlanFutureMap.remove(testPlanId);
+            TEST_PLAN_SCHEDULED_FUTURE_MAP.remove(testPlanId);
         }
     }
 
-    public List<TestPlan> findByActionId(Integer actionId) {
+    public TestPlan getTestPlanById(Integer testPlanId) {
+        return testPlanMapper.selectByPrimaryKey(testPlanId);
+    }
+
+    public List<TestPlan> getTestPlansByTestSuiteId(Integer testSuiteId) {
+        return testPlanDao.selectByTestSuiteId(testSuiteId);
+    }
+
+    public List<TestPlan> getTestPlansByActionId(Integer actionId) {
         return testPlanDao.selectByActionId(actionId);
+    }
+
+    public List<TestPlan> getTestPlansByEnvironmentId(Integer envId) {
+        TestPlan query = new TestPlan();
+        query.setEnvironmentId(envId);
+        return selectByTestPlan(query);
     }
 }

@@ -25,8 +25,8 @@ public class UploadService {
     private String staticLocation;
 
     public Response<UploadFile> uploadFile(MultipartFile file, Integer fileType) {
-        if (file == null) {
-            return Response.fail("文件不能为空");
+        if (file == null || fileType == null) {
+            return Response.fail("file || fileType不能为空");
         }
 
         String uploadFilePath;

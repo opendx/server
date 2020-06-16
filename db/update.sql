@@ -46,3 +46,6 @@ ADD COLUMN `device` json NULL COMMENT '下发任务时的device' AFTER `device_i
 -- 0.7.0
 ALTER TABLE `category`
 ADD COLUMN `parent_id` int(11) NOT NULL DEFAULT 0 COMMENT '父id' AFTER `id`;
+
+ALTER TABLE `category`
+MODIFY COLUMN `project_id` int(11) NULL COMMENT '所属项目的id' AFTER `type`;

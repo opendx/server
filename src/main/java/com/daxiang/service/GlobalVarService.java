@@ -50,6 +50,7 @@ public class GlobalVarService {
     public Response addBatch(List<GlobalVar> globalVars) {
         Integer currentUserId = SecurityUtil.getCurrentUserId();
         Date now = new Date();
+
         globalVars.forEach(globalVar -> {
             globalVar.setCreateTime(now);
             globalVar.setCreatorUid(currentUserId);
@@ -106,7 +107,7 @@ public class GlobalVarService {
 
     private List<GlobalVarVo> convertGlobalVarsToGlobalVarVos(List<GlobalVar> globalVars) {
         if (CollectionUtils.isEmpty(globalVars)) {
-            return Collections.EMPTY_LIST;
+            return new ArrayList<>();
         }
 
         List<Integer> creatorUids = globalVars.stream()
@@ -114,7 +115,7 @@ public class GlobalVarService {
                 .filter(Objects::nonNull)
                 .distinct()
                 .collect(Collectors.toList());
-        Map<Integer, User> userMap = userService.getUserMapByUserIds(creatorUids);
+        Map<Integer, User> userMap = userService.getUserMapByIds(creatorUids);
 
         return globalVars.stream().map(globalVar -> {
             GlobalVarVo globalVarVo = new GlobalVarVo();
@@ -131,7 +132,7 @@ public class GlobalVarService {
         }).collect(Collectors.toList());
     }
 
-    public List<GlobalVar> selectByGlobalVar(GlobalVar globalVar) {
+    private List<GlobalVar> selectByGlobalVar(GlobalVar globalVar) {
         GlobalVarExample example = new GlobalVarExample();
         GlobalVarExample.Criteria criteria = example.createCriteria();
 
@@ -157,10 +158,33 @@ public class GlobalVarService {
         return globalVarMapper.selectByExampleWithBLOBs(example);
     }
 
-    public List<GlobalVar> selectByEnvironmentId(Integer envId) {
+    public List<GlobalVar> getGlobalVarsByEnvironmentId(Integer envId) {
         if (envId == null) {
-            return Collections.EMPTY_LIST;
+            return new ArrayList<>();
         }
+
         return globalVarDao.selectByEnvironmentId(envId);
+    }
+
+    public List<GlobalVar> getGlobalVarsByProjectId(Integer projectId) {
+        if (projectId == null) {
+            return new ArrayList<>();
+        }
+
+        GlobalVar query = new GlobalVar();
+        query.setProjectId(projectId);
+        return selectByGlobalVar(query);
+    }
+
+    public List<GlobalVar> getGlobalVarsByCategoryIds(List<Integer> categoryIds) {
+        if (CollectionUtils.isEmpty(categoryIds)) {
+            return new ArrayList<>();
+        }
+
+        GlobalVarExample example = new GlobalVarExample();
+        GlobalVarExample.Criteria criteria = example.createCriteria();
+
+        criteria.andCategoryIdIn(categoryIds);
+        return globalVarMapper.selectByExample(example);
     }
 }

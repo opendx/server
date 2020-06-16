@@ -18,7 +18,7 @@ public class NoDuplicateElementValidator implements ConstraintValidator<NoDuplic
     @Override
     public boolean isValid(List<Element> elementList, ConstraintValidatorContext context) {
         if (!CollectionUtils.isEmpty(elementList)) {
-            Map<String, Long> elementNameCountMap = elementList.stream().filter(e -> !StringUtils.isEmpty(e.getName()))
+            Map<String, Long> elementNameCountMap = elementList.stream().filter(element -> !StringUtils.isEmpty(element.getName()))
                     .collect(Collectors.groupingBy(Element::getName, Collectors.counting()));
             for (Map.Entry<String, Long> elementNameCount : elementNameCountMap.entrySet()) {
                 if (elementNameCount.getValue() > 1) {

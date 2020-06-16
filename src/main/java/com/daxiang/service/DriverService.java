@@ -68,7 +68,7 @@ public class DriverService {
             return Response.fail("版本已存在");
         }
 
-        return updateRow == 1 ? Response.success("更新成功") : Response.fail("更新失败,请稍后重试");
+        return updateRow == 1 ? Response.success("更新成功") : Response.fail("更新失败，请稍后重试");
     }
 
     public Response list(Driver driver, PageRequest pageRequest) {
@@ -90,7 +90,7 @@ public class DriverService {
 
     private List<DriverVo> convertDriversToDriverVos(List<Driver> drivers) {
         if (CollectionUtils.isEmpty(drivers)) {
-            return Collections.EMPTY_LIST;
+            return new ArrayList<>();
         }
 
         List<Integer> creatorUids = drivers.stream()
@@ -98,7 +98,7 @@ public class DriverService {
                 .filter(Objects::nonNull)
                 .distinct()
                 .collect(Collectors.toList());
-        Map<Integer, User> userMap = userService.getUserMapByUserIds(creatorUids);
+        Map<Integer, User> userMap = userService.getUserMapByIds(creatorUids);
 
         return drivers.stream().map(driver -> {
             DriverVo driverVo = new DriverVo();
@@ -115,7 +115,7 @@ public class DriverService {
         }).collect(Collectors.toList());
     }
 
-    public List<Driver> selectByDriver(Driver driver) {
+    private List<Driver> selectByDriver(Driver driver) {
         DriverExample example = new DriverExample();
         DriverExample.Criteria criteria = example.createCriteria();
 

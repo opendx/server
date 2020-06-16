@@ -10,7 +10,7 @@ import java.util.List;
  * Created by jiangyitao.
  */
 public interface UserProjectDao {
-    int insertInBatch(@Param("userProjects") List<UserProject> userProjects);
+    int insertBatch(@Param("userProjects") List<UserProject> userProjects);
 
     List<UserProjectDto> selectUserProjectDtosByUserIds(@Param("userIds") List<Integer> userIds);
 }

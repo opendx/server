@@ -6,7 +6,7 @@
         <association property="role" resultMap="com.daxiang.mbg.mapper.RoleMapper.BaseResultMap" columnPrefix="r_" />
     </resultMap>
 
-    <insert id="insertInBatch">
+    <insert id="insertBatch">
         insert into user_role(user_id, role_id) values
         <foreach collection="userRoles" item="item" separator=",">
             (#{item.userId}, #{item.roleId})

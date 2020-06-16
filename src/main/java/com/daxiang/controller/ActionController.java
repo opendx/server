@@ -24,65 +24,31 @@ public class ActionController {
     @Autowired
     private ActionService actionService;
 
-    /**
-     * 添加action
-     *
-     * @param action
-     * @return
-     */
     @PostMapping("/add")
     public Response add(@RequestBody @Validated({SaveActionGroup.class}) Action action) {
         return actionService.add(action);
     }
 
-    /**
-     * 删除action
-     *
-     * @param actionId
-     * @return
-     */
     @DeleteMapping("/{actionId}")
     public Response delete(@PathVariable Integer actionId) {
         return actionService.delete(actionId);
     }
 
-    /**
-     * 更新action
-     */
     @PostMapping("/update")
     public Response update(@RequestBody @Validated({SaveActionGroup.class, UpdateGroup.class}) Action action) {
         return actionService.update(action);
     }
 
-    /**
-     * 查询action
-     *
-     * @param action
-     * @param pageRequest
-     * @return
-     */
     @PostMapping("/list")
     public Response list(Action action, PageRequest pageRequest) {
         return actionService.list(action, pageRequest);
     }
 
-    /**
-     * action cascader
-     *
-     * @param projectId
-     * @return
-     */
     @GetMapping("/cascader")
-    public Response cascader(Integer projectId, Integer platform) {
-        return actionService.cascader(projectId, platform);
+    public Response cascader(Integer projectId, Integer platform, Integer type) {
+        return actionService.cascader(projectId, platform, type);
     }
 
-    /**
-     * 调试action
-     *
-     * @param actionDebugRequest
-     * @return
-     */
     @PostMapping("/debug")
     public Response debug(@Valid @RequestBody ActionDebugRequest actionDebugRequest) {
         return actionService.debug(actionDebugRequest);

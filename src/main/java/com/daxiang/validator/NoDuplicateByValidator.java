@@ -18,7 +18,7 @@ public class NoDuplicateByValidator implements ConstraintValidator<NoDuplicateBy
     @Override
     public boolean isValid(List<By> byList, ConstraintValidatorContext context) {
         if (!CollectionUtils.isEmpty(byList)) {
-            Map<String, Long> byNameCountMap = byList.stream().filter(b -> !StringUtils.isEmpty(b.getName()))
+            Map<String, Long> byNameCountMap = byList.stream().filter(by -> !StringUtils.isEmpty(by.getName()))
                     .collect(Collectors.groupingBy(By::getName, Collectors.counting()));
             for (Map.Entry<String, Long> byNameCount : byNameCountMap.entrySet()) {
                 if (byNameCount.getValue() > 1) {

@@ -18,7 +18,7 @@ public class NoDuplicateEnvironmentValidator implements ConstraintValidator<NoDu
     @Override
     public boolean isValid(List<EnvironmentValue> environmentValueList, ConstraintValidatorContext context) {
         if (!CollectionUtils.isEmpty(environmentValueList)) {
-            Map<Integer, Long> environmentIdCountMap = environmentValueList.stream().filter(ev -> Objects.nonNull(ev.getEnvironmentId()))
+            Map<Integer, Long> environmentIdCountMap = environmentValueList.stream().filter(env -> Objects.nonNull(env.getEnvironmentId()))
                     .collect(Collectors.groupingBy(EnvironmentValue::getEnvironmentId, Collectors.counting()));
             for (Map.Entry<Integer, Long> environmentIdCount : environmentIdCountMap.entrySet()) {
                 if (environmentIdCount.getValue() > 1) {

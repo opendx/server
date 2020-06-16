@@ -9,5 +9,5 @@ import java.util.List;
  * Created by jiangyitao.
  */
 public interface PageDao {
-    List<Page> selectByExampleWithoutWindowHierarchy(PageExample example);
+    List<Page> selectPagesWithoutWindowHierarchyByExample(PageExample example);
 }

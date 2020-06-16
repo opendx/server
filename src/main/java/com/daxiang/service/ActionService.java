@@ -11,9 +11,10 @@ import com.daxiang.model.Response;
 import com.daxiang.model.action.LocalVar;
 import com.daxiang.model.action.Step;
 import com.daxiang.model.request.ActionDebugRequest;
-import com.daxiang.model.vo.ActionCascaderVo;
+import com.daxiang.model.dto.ActionTreeNode;
 import com.daxiang.model.vo.ActionVo;
 import com.daxiang.security.SecurityUtil;
+import com.daxiang.utils.Tree;
 import com.github.pagehelper.PageHelper;
 import com.daxiang.dao.ActionDao;
 import lombok.extern.slf4j.Slf4j;
@@ -80,17 +81,11 @@ public class ActionService {
         return deleteRow == 1 ? Response.success("删除成功") : Response.fail("删除失败，请稍后重试");
     }
 
-    /**
-     * 更新action
-     *
-     * @param action
-     * @return
-     */
     public Response update(Action action) {
-        // 用例依赖不能依赖自己
-        checkDepensNotSelf(action);
+        checkStepsNotContainsSelf(action);
+        checkDepensNotContainsSelf(action);
 
-        // action状态变为草稿或者禁用
+        // action状态变为草稿或禁用
         if (action.getState() == Action.DRAFT_STATE || action.getState() == Action.DISABLE_STATE) {
             checkAction(action.getId());
         }
@@ -107,23 +102,8 @@ public class ActionService {
         return updateRow == 1 ? Response.success("更新Action成功") : Response.fail("更新Action失败，请稍后重试");
     }
 
-    private void checkDepensNotSelf(Action action) {
-        List<Integer> depends = action.getDepends();
-        if (!CollectionUtils.isEmpty(depends) && depends.contains(action.getId())) {
-            throw new BusinessException("依赖用例不能包含自身");
-        }
-    }
-
-    /**
-     * 查询action
-     *
-     * @param action
-     * @param pageRequest
-     * @return
-     */
     public Response list(Action action, PageRequest pageRequest) {
         boolean needPaging = pageRequest.needPaging();
-        // 需要分页
         if (needPaging) {
             PageHelper.startPage(pageRequest.getPageNum(), pageRequest.getPageSize());
         }
@@ -141,7 +121,7 @@ public class ActionService {
 
     private List<ActionVo> convertActionsToActionVos(List<Action> actions) {
         if (CollectionUtils.isEmpty(actions)) {
-            return Collections.EMPTY_LIST;
+            return new ArrayList<>();
         }
 
         List<Integer> creatorAndUpdatorUids = actions.stream()
@@ -149,7 +129,7 @@ public class ActionService {
                 .filter(Objects::nonNull)
                 .distinct()
                 .collect(Collectors.toList());
-        Map<Integer, User> userMap = userService.getUserMapByUserIds(creatorAndUpdatorUids);
+        Map<Integer, User> userMap = userService.getUserMapByIds(creatorAndUpdatorUids);
 
         return actions.stream().map(action -> {
             ActionVo actionVo = new ActionVo();
@@ -173,7 +153,7 @@ public class ActionService {
         }).collect(Collectors.toList());
     }
 
-    public List<Action> selectByAction(Action action) {
+    private List<Action> selectByAction(Action action) {
         ActionExample example = new ActionExample();
         ActionExample.Criteria criteria = example.createCriteria();
 
@@ -205,85 +185,109 @@ public class ActionService {
         return actionMapper.selectByExampleWithBLOBs(example);
     }
 
-    public Response cascader(Integer projectId, Integer platform) {
+    public Response cascader(Integer projectId, Integer platform, Integer type) {
         if (projectId == null || platform == null) {
             return Response.fail("projectId || platform不能为空");
         }
 
-        // 已发布的actions
-        List<Action> actions = actionDao.selectByProjectIdAndPlatform(projectId, platform).stream()
-                .filter(action -> action.getState() == Action.RELEASE_STATE)
-                .collect(Collectors.toList());
+        List<ActionTreeNode> tree = new ArrayList<>();
 
-        // 分类
-        List<Integer> categoryIds = actions.stream()
-                .map(Action::getCategoryId)
-                .filter(Objects::nonNull)
-                .distinct()
-                .collect(Collectors.toList());
-        Map<Integer, Category> categoryMap = categoryService.getCategoryMapByCategoryIds(categoryIds);
+        // type可以为空
+        List<Action> actions = actionDao.selectPublishedCascaderData(projectId, platform, type);
+        if (CollectionUtils.isEmpty(actions)) {
+            return Response.success(tree);
+        }
 
-        List<ActionCascaderVo> result = new ArrayList<>();
+        List<Category> categories = categoryService.getCategoriesWithProjectIdIsNullOrProjectIdEqualsTo(projectId);
+        // categoryId : category
+        Map<Integer, Category> categoryMap = categoryService.categoriesToMap(categories);
 
-        actions.stream()
-                .collect(Collectors.groupingBy(Action::getType)) // 按照类型分组
-                .forEach((type, actionList) -> {
-                    ActionCascaderVo root = new ActionCascaderVo();
-                    root.setName(type == Action.TYPE_BASE ? "基础组件" : type == Action.TYPE_TESTCASE ? "测试用例" : "封装组件");
-                    root.setChildren(getChildren(categoryMap, actionList));
-                    result.add(root);
-                });
+        // actionType : node
+        Map<Integer, ActionTreeNode> rMap = new HashMap<>();
+        // categoryId : node
+        Map<Integer, ActionTreeNode> cMap = new HashMap<>();
 
-        return Response.success(result);
+        for (Action action : actions) {
+            // 创建根节点加入到tree，如果没创建过
+            Integer actionType = action.getType();
+            ActionTreeNode root = rMap.get(actionType);
+            if (root == null) {
+                root = new ActionTreeNode();
+                root.setName(getActionTypeName(actionType));
+                root.setChildren(new ArrayList<>());
+                rMap.put(actionType, root);
+                tree.add(root);
+            }
+
+            Integer actionCid = action.getCategoryId();
+            if (actionCid == null) {
+                // 无分类的action，放入相应根节点
+                root.getChildren().add(ActionTreeNode.create(action));
+            } else {
+                // action对应的分类节点
+                ActionTreeNode cNode = cMap.get(actionCid);
+                if (cNode != null) {
+                    // action放入相应的分类
+                    cNode.getChildren().add(ActionTreeNode.create(action));
+                } else {
+                    cNode = new ActionTreeNode();
+                    Category category = categoryMap.get(actionCid);
+                    cNode.setName(category.getName());
+                    List<ActionTreeNode> children = new ArrayList<>();
+                    // action放入相应分类
+                    children.add(ActionTreeNode.create(action));
+                    cNode.setChildren(children);
+                    cMap.put(actionCid, cNode);
+
+                    Integer pid = category.getParentId();
+                    while (pid != null && pid > 0) {
+                        Category parent = categoryMap.get(pid);
+                        ActionTreeNode cpNode = cMap.get(pid);
+                        if (cpNode == null) {
+                            cpNode = new ActionTreeNode();
+                            cpNode.setName(parent.getName());
+                            cpNode.setChildren(new ArrayList<>());
+                            cMap.put(pid, cpNode);
+                        }
+                        cpNode.getChildren().add(cNode);
+                        cNode = cpNode;
+                        pid = parent.getParentId();
+                    }
+
+                    root.getChildren().add(cNode);
+                }
+            }
+        }
+
+        return Response.success(tree);
     }
 
-    private List<ActionCascaderVo> getChildren(Map<Integer, Category> categoryMap, List<Action> actionList) {
-        // 按照是否有分类分区
-        Map<Boolean, List<Action>> actionsMap = actionList.stream()
-                .collect(Collectors.partitioningBy(action -> Objects.nonNull(action.getCategoryId())));
-
-        List<ActionCascaderVo> result = new ArrayList<>();
-
-        // 有分类的action 按照分类分组
-        Map<Integer, List<Action>> actionsWithCategoryMap = actionsMap.get(true).stream()
-                .collect(Collectors.groupingBy(Action::getCategoryId));
-
-        actionsWithCategoryMap.forEach((categoryId, actionsWithCategory) -> {
-            ActionCascaderVo actionCascaderVo = new ActionCascaderVo();
-            actionCascaderVo.setName(categoryMap.get(categoryId).getName());
-
-            List<ActionCascaderVo> children = actionsWithCategory.stream()
-                    .map(ActionCascaderVo::convert).collect(Collectors.toList());
-            actionCascaderVo.setChildren(children);
-
-            result.add(actionCascaderVo);
-        });
-
-        // 无分类的actions
-        List<ActionCascaderVo> actionWithoutCategoryCascaderVos = actionsMap.get(false).stream()
-                .map(ActionCascaderVo::convert).collect(Collectors.toList());
-
-        result.addAll(actionWithoutCategoryCascaderVos);
-        return result;
+    private String getActionTypeName(Integer actionType) {
+        switch (actionType) {
+            case Action.TYPE_BASE:
+                return "基础组件";
+            case Action.TYPE_ENCAPSULATION:
+                return "封装组件";
+            case Action.TYPE_TESTCASE:
+                return "测试用例";
+            default:
+                throw new BusinessException("unknow action type: " + actionType);
+        }
     }
 
-    /**
-     * 调试action
-     *
-     * @param actionDebugRequest
-     * @return
-     */
     public Response debug(ActionDebugRequest actionDebugRequest) {
         Action action = actionDebugRequest.getAction();
         ActionDebugRequest.DebugInfo debugInfo = actionDebugRequest.getDebugInfo();
         Integer env = debugInfo.getEnv();
 
-        // 没保存过的action设置个默认的actionId
-        if (action.getId() == null) {
+        if (action.getId() == null) { // 未保存过的action
             action.setId(0);
+        } else {
+            checkStepsNotContainsSelf(action);
         }
 
-        boolean anyEnabledStep = action.getSteps().stream().anyMatch(step -> step.getStatus() == Step.ENABLE_STATUS);
+        boolean anyEnabledStep = action.getSteps().stream()
+                .anyMatch(step -> step.getStatus() == Step.ENABLE_STATUS);
         if (!anyEnabledStep) {
             return Response.fail("至少选择一个启用的步骤");
         }
@@ -297,13 +301,11 @@ public class ActionService {
             });
         }
 
-        // 构建action树
-        buildActionTree(Arrays.asList(action));
+        // 处理action
+        processActions(Arrays.asList(action));
 
         // 该项目下的全局变量
-        GlobalVar query = new GlobalVar();
-        query.setProjectId(action.getProjectId());
-        List<GlobalVar> globalVars = globalVarService.selectByGlobalVar(query);
+        List<GlobalVar> globalVars = globalVarService.getGlobalVarsByProjectId(action.getProjectId());
 
         // 根据环境处理全局变量
         if (!CollectionUtils.isEmpty(globalVars)) {
@@ -314,7 +316,7 @@ public class ActionService {
         }
 
         // 该项目下的Pages
-        List<com.daxiang.mbg.po.Page> pages = pageService.findByProjectIdWithoutWindowHierarchy(action.getProjectId());
+        List<com.daxiang.mbg.po.Page> pages = pageService.getPagesWithoutWindowHierarchyByProjectId(action.getProjectId());
 
         JSONObject requestBody = new JSONObject();
         requestBody.put("platform", debugInfo.getPlatform());
@@ -327,13 +329,13 @@ public class ActionService {
         return agentClient.debugAction(debugInfo.getAgentIp(), debugInfo.getAgentPort(), requestBody);
     }
 
-    public Action selectByPrimaryKey(Integer actioniId) {
+    public Action getActionById(Integer actioniId) {
         return actionMapper.selectByPrimaryKey(actioniId);
     }
 
-    public List<Action> selectByPrimaryKeys(List<Integer> actionIds) {
+    public List<Action> getActionsByIds(List<Integer> actionIds) {
         if (CollectionUtils.isEmpty(actionIds)) {
-            return Collections.EMPTY_LIST;
+            return new ArrayList<>();
         }
 
         ActionExample example = new ActionExample();
@@ -343,13 +345,33 @@ public class ActionService {
         return actionMapper.selectByExampleWithBLOBs(example);
     }
 
+    public void processActions(List<Action> actions) {
+        new ActionProcessor(this).process(actions);
+    }
+
     /**
-     * 构建actionTree
+     * 依赖用例不包含自身
      *
-     * @param actions
+     * @param action
      */
-    public void buildActionTree(List<Action> actions) {
-        new ActionTreeBuilder(actions, actionMapper).build();
+    private void checkDepensNotContainsSelf(Action action) {
+        List<Integer> depends = action.getDepends();
+        if (!CollectionUtils.isEmpty(depends) && depends.contains(action.getId())) {
+            throw new BusinessException("依赖用例不能包含自身");
+        }
+    }
+
+    /**
+     * 检查步骤不包含自身，防止出现死循环
+     *
+     * @param action
+     */
+    private void checkStepsNotContainsSelf(Action action) {
+        List<Integer> stepActionIds = action.getSteps().stream()
+                .map(Step::getActionId).collect(Collectors.toList());
+        if (stepActionIds.contains(action.getId())) {
+            throw new BusinessException("步骤不能包含自身");
+        }
     }
 
     /**
@@ -366,25 +388,47 @@ public class ActionService {
         }
 
         // 检查action是否被testplan使用
-        List<TestPlan> testPlans = testPlanService.findByActionId(actionId);
+        List<TestPlan> testPlans = testPlanService.getTestPlansByActionId(actionId);
         if (!CollectionUtils.isEmpty(testPlans)) {
             String testPlanNames = testPlans.stream().map(TestPlan::getName).collect(Collectors.joining("、"));
             throw new BusinessException("testPlans: " + testPlanNames + ", 正在使用此action");
         }
 
         // 检查action是否被testSuite使用
-        List<TestSuite> testSuites = testSuiteService.findByActionId(actionId);
+        List<TestSuite> testSuites = testSuiteService.getTestSuitesByActionId(actionId);
         if (!CollectionUtils.isEmpty(testSuites)) {
             String testSuiteNames = testSuites.stream().map(TestSuite::getName).collect(Collectors.joining("、"));
             throw new BusinessException("testSuites: " + testSuiteNames + ", 正在使用此action");
         }
     }
 
-    public List<Action> selectByLocalVarsEnvironmentId(Integer envId) {
+    public List<Action> getActionsByLocalVarsEnvironmentId(Integer envId) {
         if (envId == null) {
-            return Collections.EMPTY_LIST;
+            return new ArrayList<>();
         }
         return actionDao.selectByLocalVarsEnvironmentId(envId);
+    }
+
+    public List<Action> getActionsByCategoryIds(List<Integer> categoryIds) {
+        if (CollectionUtils.isEmpty(categoryIds)) {
+            return new ArrayList<>();
+        }
+
+        ActionExample example = new ActionExample();
+        ActionExample.Criteria criteria = example.createCriteria();
+
+        criteria.andCategoryIdIn(categoryIds);
+        return actionMapper.selectByExample(example);
+    }
+
+    public List<Action> getActionsByPageId(Integer pageId) {
+        if (pageId == null) {
+            return new ArrayList<>();
+        }
+
+        Action query = new Action();
+        query.setPageId(pageId);
+        return selectByAction(query);
     }
 
 }

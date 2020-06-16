@@ -2,7 +2,6 @@ package com.daxiang.service;
 
 import com.daxiang.dao.PageDao;
 import com.daxiang.mbg.po.*;
-import com.daxiang.model.vo.PageCascaderVo;
 import com.daxiang.security.SecurityUtil;
 import com.github.pagehelper.PageHelper;
 import com.daxiang.mbg.mapper.PageMapper;
@@ -13,7 +12,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;
@@ -36,12 +34,6 @@ public class PageService {
     @Autowired
     private UserService userService;
 
-    /**
-     * 添加page
-     *
-     * @param page
-     * @return
-     */
     public Response add(Page page) {
         page.setCreateTime(new Date());
         page.setCreatorUid(SecurityUtil.getCurrentUserId());
@@ -55,33 +47,22 @@ public class PageService {
         return insertRow == 1 ? Response.success("添加Page成功", page) : Response.fail("添加Page失败，请稍后重试");
     }
 
-    /**
-     * 删除page
-     *
-     * @param pageId
-     */
     public Response delete(Integer pageId) {
         if (pageId == null) {
             return Response.fail("pageId不能为空");
         }
 
         // 检查Page名下是否有action
-        Action query = new Action();
-        query.setPageId(pageId);
-        List<Action> actions = actionService.selectByAction(query);
+        List<Action> actions = actionService.getActionsByPageId(pageId);
         if (!CollectionUtils.isEmpty(actions)) {
-            return Response.fail("有action绑定了该page，无法删除");
+            String actionNames = actions.stream().map(Action::getName).collect(Collectors.joining("、"));
+            return Response.fail("actions: " + actionNames + "，已绑定该page，无法删除");
         }
 
         int delRow = pageMapper.deleteByPrimaryKey(pageId);
         return delRow == 1 ? Response.success("删除Page成功") : Response.fail("删除Page失败，请稍后重试");
     }
 
-    /**
-     * 更新page
-     *
-     * @param page
-     */
     public Response update(Page page) {
         int updateRow;
         try {
@@ -92,20 +73,13 @@ public class PageService {
         return updateRow == 1 ? Response.success("保存Page成功") : Response.fail("保存Page失败，请稍后重试");
     }
 
-    /**
-     * 查询page列表
-     *
-     * @param page
-     * @param pageRequest
-     * @return
-     */
     public Response list(Page page, PageRequest pageRequest) {
         boolean needPaging = pageRequest.needPaging();
         if (needPaging) {
             PageHelper.startPage(pageRequest.getPageNum(), pageRequest.getPageSize());
         }
 
-        List<Page> pages = selectByPageWithoutWindowHierarchy(page);
+        List<Page> pages = selectPagesWithoutWindowHierarchyByPage(page);
         List<PageVo> pageVos = convertPagesToPageVos(pages);
 
         if (needPaging) {
@@ -116,9 +90,23 @@ public class PageService {
         }
     }
 
+    public Response getPageVoById(Integer pageId) {
+        if (pageId == null) {
+            return Response.fail("pageId不能为空");
+        }
+
+        Page page = pageMapper.selectByPrimaryKey(pageId);
+        if (page == null) {
+            return Response.fail("page不存在");
+        }
+
+        List<PageVo> pageVos = convertPagesToPageVos(Arrays.asList(page));
+        return Response.success(pageVos.get(0));
+    }
+
     private List<PageVo> convertPagesToPageVos(List<Page> pages) {
         if (CollectionUtils.isEmpty(pages)) {
-            return Collections.EMPTY_LIST;
+            return new ArrayList<>();
         }
 
         List<Integer> creatorUids = pages.stream()
@@ -126,7 +114,7 @@ public class PageService {
                 .filter(Objects::nonNull)
                 .distinct()
                 .collect(Collectors.toList());
-        Map<Integer, User> userMap = userService.getUserMapByUserIds(creatorUids);
+        Map<Integer, User> userMap = userService.getUserMapByIds(creatorUids);
 
         return pages.stream().map(page -> {
             PageVo pageVo = new PageVo();
@@ -143,7 +131,7 @@ public class PageService {
         }).collect(Collectors.toList());
     }
 
-    public List<Page> selectByPageWithoutWindowHierarchy(Page page) {
+    private List<Page> selectPagesWithoutWindowHierarchyByPage(Page page) {
         PageExample example = new PageExample();
         PageExample.Criteria criteria = example.createCriteria();
 
@@ -160,72 +148,29 @@ public class PageService {
         }
         example.setOrderByClause("create_time desc");
 
-        return pageDao.selectByExampleWithoutWindowHierarchy(example);
+        return pageDao.selectPagesWithoutWindowHierarchyByExample(example);
     }
 
-    public List<Page> findByProjectIdWithoutWindowHierarchy(Integer projectId) {
-        Assert.notNull(projectId, "projectId cannot be null");
-
-        Page query = new Page();
-        query.setProjectId(projectId);
-        return selectByPageWithoutWindowHierarchy(query);
-    }
-
-    public Response cascader(Integer projectId) {
+    public List<Page> getPagesWithoutWindowHierarchyByProjectId(Integer projectId) {
         if (projectId == null) {
-            return Response.fail("projectId不能为空");
+            return new ArrayList<>();
         }
 
         Page query = new Page();
         query.setProjectId(projectId);
-        List<Page> pages = selectByPageWithoutWindowHierarchy(query);
-
-        List<Integer> categoryIds = pages.stream()
-                .map(Page::getCategoryId)
-                .filter(Objects::nonNull)
-                .distinct().collect(Collectors.toList());
-        Map<Integer, Category> categoryMap = categoryService.getCategoryMapByCategoryIds(categoryIds);
-
-        // 按照是否有分类分区
-        Map<Boolean, List<Page>> pagesMap = pages.stream()
-                .collect(Collectors.partitioningBy(page -> Objects.nonNull(page.getCategoryId())));
-
-        List<PageCascaderVo> result = new ArrayList<>();
-
-        // 有分类的pages 按照分类分组
-        Map<Integer, List<Page>> pagesWithCategoryMap = pagesMap.get(true).stream()
-                .collect(Collectors.groupingBy(Page::getCategoryId));
-
-        pagesWithCategoryMap.forEach((categoryId, pagesWithCategory) -> {
-            PageCascaderVo root = new PageCascaderVo();
-            root.setName(categoryMap.get(categoryId).getName());
-
-            List<PageCascaderVo> children = pagesWithCategory.stream()
-                    .map(PageCascaderVo::convert).collect(Collectors.toList());
-            root.setChildren(children);
-
-            result.add(root);
-        });
-
-        // 无分类的pages
-        List<PageCascaderVo> pageWithoutCategoryCascaderVos = pagesMap.get(false).stream()
-                .map(PageCascaderVo::convert).collect(Collectors.toList());
-
-        result.addAll(pageWithoutCategoryCascaderVos);
-        return Response.success(result);
+        return selectPagesWithoutWindowHierarchyByPage(query);
     }
 
-    public Response findById(Integer pageId) {
-        if (pageId == null) {
-            return Response.fail("pageId不能为空");
+    public List<Page> getPagesWithoutWindowHierarchyByCategoryIds(List<Integer> categoryIds) {
+        if (CollectionUtils.isEmpty(categoryIds)) {
+            return new ArrayList<>();
         }
 
-        Page page = pageMapper.selectByPrimaryKey(pageId);
-        if (page == null) {
-            return Response.fail("page不存在");
-        }
+        PageExample example = new PageExample();
+        PageExample.Criteria criteria = example.createCriteria();
 
-        List<PageVo> pageVos = convertPagesToPageVos(Arrays.asList(page));
-        return Response.success(pageVos.get(0));
+        criteria.andCategoryIdIn(categoryIds);
+        return pageDao.selectPagesWithoutWindowHierarchyByExample(example);
     }
+
 }

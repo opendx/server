@@ -13,6 +13,7 @@ public class Category implements Serializable {
     public static final int TYPE_ACTION = 2;
     public static final int TYPE_GLOBAL_VAR = 3;
     public static final int TYPE_TESTCASE = 4;
+    public static final int TYPE_BASE_ACTION = 5;
 
     @NotNull(message = "id不能为空", groups = {UpdateGroup.class})
     private Integer id;
@@ -33,7 +34,7 @@ public class Category implements Serializable {
     private String name;
 
     /**
-     * 类型：1.page 2.action 3.全局变量
+     * 类型：1.page 2.action 3.全局变量 4.testcase(action) 5.基础action
      *
      * @mbg.generated
      */

@@ -23,18 +23,18 @@ public class UserRoleService {
     @Autowired
     private UserRoleMapper userRoleMapper;
 
-    public int insertInBatch(List<UserRole> userRoles) {
-        return userRoleDao.insertInBatch(userRoles);
+    public int addBatch(List<UserRole> userRoles) {
+        return userRoleDao.insertBatch(userRoles);
     }
 
-    public int insert(Integer userId, List<Role> roles) {
+    public int addBatch(Integer userId, List<Role> roles) {
         List<UserRole> userRoles = roles.stream().map(role -> {
             UserRole userRole = new UserRole();
             userRole.setUserId(userId);
             userRole.setRoleId(role.getId());
             return userRole;
         }).collect(Collectors.toList());
-        return insertInBatch(userRoles);
+        return addBatch(userRoles);
     }
 
     public int deleteByUserId(Integer userId) {
@@ -44,7 +44,7 @@ public class UserRoleService {
         return userRoleMapper.deleteByExample(example);
     }
 
-    public List<UserRoleDto> selectUserRoleDtosByUserIds(List<Integer> userIds) {
+    public List<UserRoleDto> getUserRoleDtosByUserIds(List<Integer> userIds) {
         return userRoleDao.selectUserRoleDtosByUserIds(userIds);
     }
 }

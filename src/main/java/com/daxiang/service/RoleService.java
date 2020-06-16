@@ -15,6 +15,7 @@ public class RoleService {
     private RoleMapper roleMapper;
 
     public Response list() {
+        // select all
         return Response.success(roleMapper.selectByExample(null));
     }
 

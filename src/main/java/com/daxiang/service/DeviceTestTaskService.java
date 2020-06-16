@@ -1,7 +1,5 @@
 package com.daxiang.service;
 
-import com.daxiang.dao.DeviceTestTaskDao;
-import com.daxiang.exception.BusinessException;
 import com.daxiang.mbg.mapper.DeviceTestTaskMapper;
 import com.daxiang.mbg.po.DeviceTestTaskExample;
 import com.daxiang.model.PageRequest;
@@ -28,8 +26,6 @@ public class DeviceTestTaskService {
 
     @Autowired
     private DeviceTestTaskMapper deviceTestTaskMapper;
-    @Autowired
-    private DeviceTestTaskDao deviceTestTaskDao;
 
     public Response update(DeviceTestTask deviceTestTask) {
         if (deviceTestTask.getId() == null) {
@@ -56,7 +52,7 @@ public class DeviceTestTaskService {
         }
     }
 
-    public List<DeviceTestTask> selectByDeviceTestTask(DeviceTestTask deviceTestTask) {
+    private List<DeviceTestTask> selectByDeviceTestTask(DeviceTestTask deviceTestTask) {
         DeviceTestTaskExample deviceTestTaskExample = new DeviceTestTaskExample();
         DeviceTestTaskExample.Criteria criteria = deviceTestTaskExample.createCriteria();
 
@@ -78,17 +74,19 @@ public class DeviceTestTaskService {
         return deviceTestTaskMapper.selectByExampleWithBLOBs(deviceTestTaskExample);
     }
 
-    public Response findFirstUnStartDeviceTestTask(String deviceId) {
+    public Response getFirstUnStartDeviceTestTask(String deviceId) {
         if (StringUtils.isEmpty(deviceId)) {
             return Response.fail("deviceId不能为空");
         }
 
-        DeviceTestTaskExample deviceTestTaskExample = new DeviceTestTaskExample();
-        DeviceTestTaskExample.Criteria criteria = deviceTestTaskExample.createCriteria();
-        criteria.andDeviceIdEqualTo(deviceId).andStatusEqualTo(DeviceTestTask.UNSTART_STATUS);
-        deviceTestTaskExample.setOrderByClause("id asc limit 1");
+        DeviceTestTaskExample example = new DeviceTestTaskExample();
+        DeviceTestTaskExample.Criteria criteria = example.createCriteria();
 
-        List<DeviceTestTask> deviceTestTasks = deviceTestTaskMapper.selectByExampleWithBLOBs(deviceTestTaskExample);
+        criteria.andDeviceIdEqualTo(deviceId)
+                .andStatusEqualTo(DeviceTestTask.UNSTART_STATUS);
+        example.setOrderByClause("id asc limit 1");
+
+        List<DeviceTestTask> deviceTestTasks = deviceTestTaskMapper.selectByExampleWithBLOBs(example);
         return CollectionUtils.isEmpty(deviceTestTasks) ? Response.success() : Response.success(deviceTestTasks.get(0));
     }
 
@@ -102,22 +100,20 @@ public class DeviceTestTaskService {
             return Response.fail("DeviceTestTask不存在");
         }
 
-        List<Testcase> testcases = deviceTestTask.getTestcases();
-        testcases.stream()
-                .filter(targetTestcase -> targetTestcase.getId().equals(sourceTestcase.getId()))
-                .forEach(targetTestcase -> {
+        deviceTestTask.getTestcases().stream()
+                .filter(testcase -> testcase.getId().equals(sourceTestcase.getId()))
+                .forEach(testcase -> {
                     // 更新testcase运行结果
-                    copyTestcaseProperties(sourceTestcase, targetTestcase);
+                    copyTestcaseProperties(sourceTestcase, testcase);
                     List<Step> sourceSteps = sourceTestcase.getSteps();
                     if (!CollectionUtils.isEmpty(sourceSteps)) {
                         // 每次agent只会传1个要更新的步骤
-                        Step sourceStep = sourceTestcase.getSteps().stream().findFirst().get();
-                        List<Step> steps = targetTestcase.getSteps();
-                        steps.stream()
-                                .filter(targetStep -> targetStep.getNumber().equals(sourceStep.getNumber()))
-                                .forEach(targetStep -> {
+                        Step sourceStep = sourceSteps.get(0);
+                        testcase.getSteps().stream()
+                                .filter(step -> step.getNumber().equals(sourceStep.getNumber()))
+                                .forEach(step -> {
                                     // 更新step运行结果
-                                    copyStepProperties(sourceStep, targetStep);
+                                    copyStepProperties(sourceStep, step);
                                 });
                     }
                 });
@@ -156,17 +152,17 @@ public class DeviceTestTaskService {
         }
     }
 
-    public int insertSelective(DeviceTestTask deviceTestTask) {
+    public int add(DeviceTestTask deviceTestTask) {
         return deviceTestTaskMapper.insertSelective(deviceTestTask);
     }
 
-    public List<DeviceTestTask> findByTestTaskId(Integer testTaskId) {
-        DeviceTestTask deviceTestTask = new DeviceTestTask();
-        deviceTestTask.setTestTaskId(testTaskId);
-        return selectByDeviceTestTask(deviceTestTask);
+    public List<DeviceTestTask> getDeviceTestTasksByTestTaskId(Integer testTaskId) {
+        DeviceTestTask query = new DeviceTestTask();
+        query.setTestTaskId(testTaskId);
+        return selectByDeviceTestTask(query);
     }
 
-    public List<DeviceTestTask> findByTestTaskIds(List<Integer> testTaskIds) {
+    public List<DeviceTestTask> getDeviceTestTasksByTestTaskIds(List<Integer> testTaskIds) {
         DeviceTestTaskExample example = new DeviceTestTaskExample();
         DeviceTestTaskExample.Criteria criteria = example.createCriteria();
 
@@ -174,12 +170,16 @@ public class DeviceTestTaskService {
         return deviceTestTaskMapper.selectByExampleWithBLOBs(example);
     }
 
-    public int deleteInBatch(List<Integer> ids) {
+    public int deleteBatch(List<Integer> ids) {
         if (CollectionUtils.isEmpty(ids)) {
-            throw new BusinessException("批量删除deviceTestTask, ids不能为空");
+            return 0;
         }
 
-        return deviceTestTaskDao.deleteInBatch(ids);
+        DeviceTestTaskExample example = new DeviceTestTaskExample();
+        DeviceTestTaskExample.Criteria criteria = example.createCriteria();
+        criteria.andIdIn(ids);
+
+        return deviceTestTaskMapper.deleteByExample(example);
     }
 
     public Response delete(Integer deviceTestTaskId) {
