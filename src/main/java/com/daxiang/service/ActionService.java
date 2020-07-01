@@ -83,6 +83,7 @@ public class ActionService {
 
     public Response update(Action action) {
         checkStepsNotContainsSelf(action);
+        checkActionImportsNotContainsSelf(action);
         checkDepensNotContainsSelf(action);
 
         // action状态变为草稿或禁用
@@ -280,11 +281,8 @@ public class ActionService {
         ActionDebugRequest.DebugInfo debugInfo = actionDebugRequest.getDebugInfo();
         Integer env = debugInfo.getEnv();
 
-        if (action.getId() == null) { // 未保存过的action
-            action.setId(0);
-        } else {
-            checkStepsNotContainsSelf(action);
-        }
+        action.setId(0);
+        action.setDepends(new ArrayList<>());
 
         boolean anyEnabledStep = action.getSteps().stream()
                 .anyMatch(step -> step.getStatus() == Step.ENABLE_STATUS);
@@ -371,6 +369,17 @@ public class ActionService {
                 .map(Step::getActionId).collect(Collectors.toList());
         if (stepActionIds.contains(action.getId())) {
             throw new BusinessException("步骤不能包含自身");
+        }
+    }
+
+    /**
+     * 导入Action不能包含自身
+     * @param action
+     */
+    private void checkActionImportsNotContainsSelf(Action action) {
+        List<Integer> actionImports = action.getActionImports();
+        if (!CollectionUtils.isEmpty(actionImports) && actionImports.contains(action.getId())) {
+            throw new BusinessException("导入Action不能包含自身");
         }
     }
 
