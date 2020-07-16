@@ -278,9 +278,6 @@ public class ActionService {
 
     public Response debug(ActionDebugRequest actionDebugRequest) {
         Action action = actionDebugRequest.getAction();
-        ActionDebugRequest.DebugInfo debugInfo = actionDebugRequest.getDebugInfo();
-        Integer env = debugInfo.getEnv();
-
         action.setId(0);
         action.setDepends(new ArrayList<>());
 
@@ -290,31 +287,17 @@ public class ActionService {
             return Response.fail("至少选择一个启用的步骤");
         }
 
-        // 根据环境处理action局部变量
-        List<LocalVar> localVars = action.getLocalVars();
-        if (!CollectionUtils.isEmpty(localVars)) {
-            localVars.forEach(localVar -> {
-                String value = environmentService.getValueInEnvironmentValues(localVar.getEnvironmentValues(), env);
-                localVar.setValue(value);
-            });
-        }
+        ActionDebugRequest.DebugInfo debugInfo = actionDebugRequest.getDebugInfo();
 
-        // 处理action
-        processActions(Arrays.asList(action));
+        Integer projectId = action.getProjectId();
+        Integer env = debugInfo.getEnv();
+
+        processActions(Arrays.asList(action), env);
 
         // 该项目下的全局变量
-        List<GlobalVar> globalVars = globalVarService.getGlobalVarsByProjectId(action.getProjectId());
-
-        // 根据环境处理全局变量
-        if (!CollectionUtils.isEmpty(globalVars)) {
-            globalVars.forEach(globalVar -> {
-                String value = environmentService.getValueInEnvironmentValues(globalVar.getEnvironmentValues(), env);
-                globalVar.setValue(value);
-            });
-        }
-
+        List<GlobalVar> globalVars = globalVarService.getGlobalVarsByProjectIdAndEnv(projectId, env);
         // 该项目下的Pages
-        List<com.daxiang.mbg.po.Page> pages = pageService.getPagesWithoutWindowHierarchyByProjectId(action.getProjectId());
+        List<com.daxiang.mbg.po.Page> pages = pageService.getPagesWithoutWindowHierarchyByProjectId(projectId);
 
         JSONObject requestBody = new JSONObject();
         requestBody.put("platform", debugInfo.getPlatform());
@@ -343,8 +326,8 @@ public class ActionService {
         return actionMapper.selectByExampleWithBLOBs(example);
     }
 
-    public void processActions(List<Action> actions) {
-        new ActionProcessor(this).process(actions);
+    public void processActions(List<Action> actions, Integer env) {
+        new ActionProcessor(this, environmentService, env).process(actions);
     }
 
     /**
@@ -374,6 +357,7 @@ public class ActionService {
 
     /**
      * 导入Action不能包含自身
+     *
      * @param action
      */
     private void checkActionImportsNotContainsSelf(Action action) {

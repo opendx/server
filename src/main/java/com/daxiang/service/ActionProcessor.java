@@ -1,6 +1,7 @@
 package com.daxiang.service;
 
 import com.daxiang.mbg.po.Action;
+import com.daxiang.model.action.LocalVar;
 import com.daxiang.model.action.Step;
 import org.springframework.util.CollectionUtils;
 
@@ -14,18 +15,25 @@ import java.util.stream.Collectors;
 public class ActionProcessor {
 
     private final ActionService actionService;
+    private final EnvironmentService environmentService;
+    private final Integer env;
 
     /**
      * actionId : action
      */
     private final Map<Integer, Action> cachedActions = new HashMap<>();
 
-    public ActionProcessor(ActionService actionService) {
+    public ActionProcessor(ActionService actionService, EnvironmentService environmentService, Integer env) {
         this.actionService = actionService;
+        this.environmentService = environmentService;
+        this.env = env;
     }
 
     public void process(List<Action> actions) {
-        actions.forEach(action -> cachedActions.put(action.getId(), action));
+        actions.forEach(action -> {
+            handleActionLocalVarsValue(action);
+            cachedActions.put(action.getId(), action);
+        });
         recursivelyProcess(actions);
     }
 
@@ -61,8 +69,19 @@ public class ActionProcessor {
         Action action = cachedActions.get(actionId);
         if (action == null) {
             action = actionService.getActionById(actionId);
+            handleActionLocalVarsValue(action);
             cachedActions.put(actionId, action);
         }
         return action;
+    }
+
+    private void handleActionLocalVarsValue(Action action) {
+        List<LocalVar> localVars = action.getLocalVars();
+        if (!CollectionUtils.isEmpty(localVars)) {
+            localVars.forEach(localVar -> {
+                String value = environmentService.getValueInEnvironmentValues(localVar.getEnvironmentValues(), env);
+                localVar.setValue(value);
+            });
+        }
     }
 }

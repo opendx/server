@@ -3,7 +3,6 @@ package com.daxiang.service;
 import com.alibaba.fastjson.JSONObject;
 import com.daxiang.mbg.mapper.TestTaskMapper;
 import com.daxiang.mbg.po.*;
-import com.daxiang.model.action.LocalVar;
 import com.daxiang.model.environment.EnvironmentValue;
 import com.daxiang.model.vo.TestTaskVo;
 import com.daxiang.model.vo.TestTaskSummary;
@@ -102,33 +101,13 @@ public class TestTaskService {
         List<Action> actions = new ArrayList<>(testcases);
         actions.addAll(beforeAndAfterActionMap.values());
 
-        // 根据环境处理局部变量
-        actions.forEach(action -> {
-            List<LocalVar> localVars = action.getLocalVars();
-            if (!CollectionUtils.isEmpty(localVars)) {
-                localVars.forEach(localVar -> {
-                    String value = environmentService.getValueInEnvironmentValues(localVar.getEnvironmentValues(), testPlan.getEnvironmentId());
-                    localVar.setValue(value);
-                });
-            }
-        });
-
-        actionService.processActions(actions);
+        actionService.processActions(actions, testPlan.getEnvironmentId());
 
         // 保存测试任务
         TestTask testTask = saveTestTask(testPlan, commitorUid);
 
         // 同一项目下的全局变量
-        List<GlobalVar> globalVars = globalVarService.getGlobalVarsByProjectId(testTask.getProjectId());
-
-        // 根据环境处理全局变量
-        if (!CollectionUtils.isEmpty(globalVars)) {
-            globalVars.forEach(globalVar -> {
-                String value = environmentService.getValueInEnvironmentValues(globalVar.getEnvironmentValues(), testPlan.getEnvironmentId());
-                globalVar.setValue(value);
-            });
-        }
-
+        List<GlobalVar> globalVars = globalVarService.getGlobalVarsByProjectIdAndEnv(testTask.getProjectId(), testPlan.getEnvironmentId());
         // 该项目下的Pages
         List<com.daxiang.mbg.po.Page> pages = pageService.getPagesWithoutWindowHierarchyByProjectId(testTask.getProjectId());
 

@@ -171,20 +171,17 @@ public class EnvironmentService {
      * 在environmentValues中找到与envId匹配的value
      */
     public String getValueInEnvironmentValues(List<EnvironmentValue> environmentValues, Integer envId) {
-        // 与envId匹配的environmentValue
-        EnvironmentValue environmentValue = environmentValues.stream()
-                .filter(env -> envId.equals(env.getEnvironmentId())).findFirst().orElse(null);
-        if (environmentValue != null) {
-            return environmentValue.getValue();
-        } else {
-            // 没有与env匹配的，用默认的
-            EnvironmentValue defaultEnvironmentValue = environmentValues.stream()
-                    .filter(env -> EnvironmentValue.DEFAULT_ENVIRONMENT_ID == env.getEnvironmentId()).findFirst().orElse(null);
-            if (defaultEnvironmentValue != null) {
-                return defaultEnvironmentValue.getValue();
-            } else {
-                return null;
+        String defaultValue = null;
+
+        for (EnvironmentValue env : environmentValues) {
+            Integer environmentId = env.getEnvironmentId();
+            if (envId.equals(environmentId)) {
+                return env.getValue();
+            } else if (environmentId == EnvironmentValue.DEFAULT_ENVIRONMENT_ID) {
+                defaultValue = env.getValue();
             }
         }
+
+        return defaultValue;
     }
 }

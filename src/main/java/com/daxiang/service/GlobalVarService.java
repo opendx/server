@@ -33,6 +33,8 @@ public class GlobalVarService {
     private GlobalVarDao globalVarDao;
     @Autowired
     private UserService userService;
+    @Autowired
+    private EnvironmentService environmentService;
 
     public Response add(GlobalVar globalVar) {
         globalVar.setCreateTime(new Date());
@@ -166,14 +168,21 @@ public class GlobalVarService {
         return globalVarDao.selectByEnvironmentId(envId);
     }
 
-    public List<GlobalVar> getGlobalVarsByProjectId(Integer projectId) {
-        if (projectId == null) {
+    public List<GlobalVar> getGlobalVarsByProjectIdAndEnv(Integer projectId, Integer env) {
+        if (projectId == null || env == null) {
             return new ArrayList<>();
         }
 
         GlobalVar query = new GlobalVar();
         query.setProjectId(projectId);
-        return selectByGlobalVar(query);
+        List<GlobalVar> globalVars = selectByGlobalVar(query);
+
+        globalVars.forEach(globalVar -> {
+            String value = environmentService.getValueInEnvironmentValues(globalVar.getEnvironmentValues(), env);
+            globalVar.setValue(value);
+        });
+
+        return globalVars;
     }
 
     public List<GlobalVar> getGlobalVarsByCategoryIds(List<Integer> categoryIds) {
