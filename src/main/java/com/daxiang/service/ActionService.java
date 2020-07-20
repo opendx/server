@@ -8,18 +8,17 @@ import com.daxiang.mbg.po.*;
 import com.daxiang.model.Page;
 import com.daxiang.model.PageRequest;
 import com.daxiang.model.Response;
-import com.daxiang.model.action.LocalVar;
 import com.daxiang.model.action.Step;
 import com.daxiang.model.request.ActionDebugRequest;
 import com.daxiang.model.dto.ActionTreeNode;
 import com.daxiang.model.vo.ActionVo;
 import com.daxiang.security.SecurityUtil;
-import com.daxiang.utils.Tree;
 import com.github.pagehelper.PageHelper;
 import com.daxiang.dao.ActionDao;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -40,6 +39,9 @@ public class ActionService {
     private ActionMapper actionMapper;
     @Autowired
     private ActionDao actionDao;
+    @Lazy
+    @Autowired
+    private ActionProcessor actionProcessor;
     @Autowired
     private GlobalVarService globalVarService;
     @Autowired
@@ -292,7 +294,7 @@ public class ActionService {
         Integer projectId = action.getProjectId();
         Integer env = debugInfo.getEnv();
 
-        processActions(Arrays.asList(action), env);
+        actionProcessor.process(Arrays.asList(action), env);
 
         // 该项目下的全局变量
         List<GlobalVar> globalVars = globalVarService.getGlobalVarsByProjectIdAndEnv(projectId, env);
@@ -324,10 +326,6 @@ public class ActionService {
 
         criteria.andIdIn(actionIds);
         return actionMapper.selectByExampleWithBLOBs(example);
-    }
-
-    public void processActions(List<Action> actions, Integer env) {
-        new ActionProcessor(this, environmentService, env).process(actions);
     }
 
     /**

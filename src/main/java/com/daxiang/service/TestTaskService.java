@@ -14,6 +14,7 @@ import com.daxiang.model.Response;
 import com.daxiang.model.dto.Testcase;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -39,6 +40,9 @@ public class TestTaskService {
     private GlobalVarService globalVarService;
     @Autowired
     private ActionService actionService;
+    @Lazy
+    @Autowired
+    private ActionProcessor actionProcessor;
     @Autowired
     private ProjectService projectService;
     @Autowired
@@ -101,7 +105,7 @@ public class TestTaskService {
         List<Action> actions = new ArrayList<>(testcases);
         actions.addAll(beforeAndAfterActionMap.values());
 
-        actionService.processActions(actions, testPlan.getEnvironmentId());
+        actionProcessor.process(actions, testPlan.getEnvironmentId());
 
         // 保存测试任务
         TestTask testTask = saveTestTask(testPlan, commitorUid);

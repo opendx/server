@@ -3,6 +3,9 @@ package com.daxiang.service;
 import com.daxiang.mbg.po.Action;
 import com.daxiang.model.action.LocalVar;
 import com.daxiang.model.action.Step;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;
@@ -12,24 +15,22 @@ import java.util.stream.Collectors;
 /**
  * Created by jiangyitao.
  */
+@Component
+@Scope("prototype")
 public class ActionProcessor {
 
-    private final ActionService actionService;
-    private final EnvironmentService environmentService;
-    private final Integer env;
-
+    @Autowired
+    private ActionService actionService;
+    @Autowired
+    private EnvironmentService environmentService;
+    private Integer env;
     /**
      * actionId : action
      */
     private final Map<Integer, Action> cachedActions = new HashMap<>();
 
-    public ActionProcessor(ActionService actionService, EnvironmentService environmentService, Integer env) {
-        this.actionService = actionService;
-        this.environmentService = environmentService;
+    public void process(List<Action> actions, Integer env) {
         this.env = env;
-    }
-
-    public void process(List<Action> actions) {
         actions.forEach(action -> {
             handleActionLocalVarsValue(action);
             cachedActions.put(action.getId(), action);
