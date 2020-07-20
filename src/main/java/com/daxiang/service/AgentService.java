@@ -72,6 +72,7 @@ public class AgentService {
         }
 
         AgentVo agentVo = new AgentVo();
+        agentVo.setInstanceId(agent.getId().getValue());
         agentVo.setIp(uri.getHost());
         agentVo.setPort(uri.getPort());
 

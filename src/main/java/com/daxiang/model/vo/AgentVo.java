@@ -12,6 +12,7 @@ import java.util.List;
  */
 @Data
 public class AgentVo {
+    private String instanceId;
     private String ip;
     private Integer port;
     private String osName;
