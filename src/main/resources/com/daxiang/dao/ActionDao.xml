@@ -17,7 +17,7 @@
     <select id="selectPublishedCascaderData" resultMap="ResultMapWithBLOBs">
         select * from action where
         state = 2
-        and (project_id = #{projectId} or (project_Id is null and (platforms is null or JSON_CONTAINS(platforms->'$[*]', '${platform}', '$'))))
+        and (project_id = #{projectId} or (project_id is null and (platforms is null or platforms = '[]' or JSON_CONTAINS(platforms->'$[*]', '${platform}', '$'))))
         <if test="type != null">and type = #{type}</if>
     </select>
 </mapper>

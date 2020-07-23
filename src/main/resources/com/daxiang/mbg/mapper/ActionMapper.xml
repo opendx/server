@@ -7,7 +7,7 @@
     <result column="description" jdbcType="VARCHAR" property="description" />
     <result column="type" jdbcType="TINYINT" property="type" />
     <result column="invoke" jdbcType="VARCHAR" property="invoke" />
-    <result column="return_value" jdbcType="VARCHAR" property="returnValue" />
+    <result column="return_value_type" jdbcType="VARCHAR" property="returnValueType" />
     <result column="return_value_desc" jdbcType="VARCHAR" property="returnValueDesc" />
     <result column="creator_uid" jdbcType="INTEGER" property="creatorUid" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
@@ -86,7 +86,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, name, description, type, invoke, return_value, return_value_desc, creator_uid, 
+    id, name, description, type, invoke, return_value_type, return_value_desc, creator_uid, 
     create_time, updator_uid, update_time, page_id, category_id, project_id, state
   </sql>
   <sql id="Blob_Column_List">
@@ -145,7 +145,7 @@
       SELECT LAST_INSERT_ID()
     </selectKey>
     insert into action (name, description, type, 
-      invoke, return_value, return_value_desc, 
+      invoke, return_value_type, return_value_desc, 
       creator_uid, create_time, updator_uid, 
       update_time, page_id, category_id, 
       project_id, state, params, 
@@ -157,7 +157,7 @@
       depends
       )
     values (#{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{type,jdbcType=TINYINT}, 
-      #{invoke,jdbcType=VARCHAR}, #{returnValue,jdbcType=VARCHAR}, #{returnValueDesc,jdbcType=VARCHAR}, 
+      #{invoke,jdbcType=VARCHAR}, #{returnValueType,jdbcType=VARCHAR}, #{returnValueDesc,jdbcType=VARCHAR}, 
       #{creatorUid,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updatorUid,jdbcType=INTEGER}, 
       #{updateTime,jdbcType=TIMESTAMP}, #{pageId,jdbcType=INTEGER}, #{categoryId,jdbcType=INTEGER}, 
       #{projectId,jdbcType=INTEGER}, #{state,jdbcType=TINYINT}, #{params,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.ParamListTypeHandler}, 
@@ -187,8 +187,8 @@
       <if test="invoke != null">
         invoke,
       </if>
-      <if test="returnValue != null">
-        return_value,
+      <if test="returnValueType != null">
+        return_value_type,
       </if>
       <if test="returnValueDesc != null">
         return_value_desc,
@@ -252,8 +252,8 @@
       <if test="invoke != null">
         #{invoke,jdbcType=VARCHAR},
       </if>
-      <if test="returnValue != null">
-        #{returnValue,jdbcType=VARCHAR},
+      <if test="returnValueType != null">
+        #{returnValueType,jdbcType=VARCHAR},
       </if>
       <if test="returnValueDesc != null">
         #{returnValueDesc,jdbcType=VARCHAR},
@@ -329,8 +329,8 @@
       <if test="record.invoke != null">
         invoke = #{record.invoke,jdbcType=VARCHAR},
       </if>
-      <if test="record.returnValue != null">
-        return_value = #{record.returnValue,jdbcType=VARCHAR},
+      <if test="record.returnValueType != null">
+        return_value_type = #{record.returnValueType,jdbcType=VARCHAR},
       </if>
       <if test="record.returnValueDesc != null">
         return_value_desc = #{record.returnValueDesc,jdbcType=VARCHAR},
@@ -392,7 +392,7 @@
       description = #{record.description,jdbcType=VARCHAR},
       type = #{record.type,jdbcType=TINYINT},
       invoke = #{record.invoke,jdbcType=VARCHAR},
-      return_value = #{record.returnValue,jdbcType=VARCHAR},
+      return_value_type = #{record.returnValueType,jdbcType=VARCHAR},
       return_value_desc = #{record.returnValueDesc,jdbcType=VARCHAR},
       creator_uid = #{record.creatorUid,jdbcType=INTEGER},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
@@ -420,7 +420,7 @@
       description = #{record.description,jdbcType=VARCHAR},
       type = #{record.type,jdbcType=TINYINT},
       invoke = #{record.invoke,jdbcType=VARCHAR},
-      return_value = #{record.returnValue,jdbcType=VARCHAR},
+      return_value_type = #{record.returnValueType,jdbcType=VARCHAR},
       return_value_desc = #{record.returnValueDesc,jdbcType=VARCHAR},
       creator_uid = #{record.creatorUid,jdbcType=INTEGER},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
@@ -449,8 +449,8 @@
       <if test="invoke != null">
         invoke = #{invoke,jdbcType=VARCHAR},
       </if>
-      <if test="returnValue != null">
-        return_value = #{returnValue,jdbcType=VARCHAR},
+      <if test="returnValueType != null">
+        return_value_type = #{returnValueType,jdbcType=VARCHAR},
       </if>
       <if test="returnValueDesc != null">
         return_value_desc = #{returnValueDesc,jdbcType=VARCHAR},
@@ -509,7 +509,7 @@
       description = #{description,jdbcType=VARCHAR},
       type = #{type,jdbcType=TINYINT},
       invoke = #{invoke,jdbcType=VARCHAR},
-      return_value = #{returnValue,jdbcType=VARCHAR},
+      return_value_type = #{returnValueType,jdbcType=VARCHAR},
       return_value_desc = #{returnValueDesc,jdbcType=VARCHAR},
       creator_uid = #{creatorUid,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
@@ -534,7 +534,7 @@
       description = #{description,jdbcType=VARCHAR},
       type = #{type,jdbcType=TINYINT},
       invoke = #{invoke,jdbcType=VARCHAR},
-      return_value = #{returnValue,jdbcType=VARCHAR},
+      return_value_type = #{returnValueType,jdbcType=VARCHAR},
       return_value_desc = #{returnValueDesc,jdbcType=VARCHAR},
       creator_uid = #{creatorUid,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},

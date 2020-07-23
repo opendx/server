@@ -49,3 +49,7 @@ ADD COLUMN `parent_id` int(11) NOT NULL DEFAULT 0 COMMENT '父id' AFTER `id`;
 
 ALTER TABLE `category`
 MODIFY COLUMN `project_id` int(11) NULL COMMENT '所属项目的id' AFTER `type`;
+
+-- 0.7.5
+ALTER TABLE `action`
+CHANGE COLUMN `return_value` `return_value_type` varchar(255) NOT NULL COMMENT '返回值类型: void / 其他' AFTER `invoke`;
