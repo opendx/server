@@ -53,3 +53,5 @@ MODIFY COLUMN `project_id` int(11) NULL COMMENT '所属项目的id' AFTER `type`
 -- 0.7.5
 ALTER TABLE `action`
 CHANGE COLUMN `return_value` `return_value_type` varchar(255) NOT NULL COMMENT '返回值类型: void / 其他' AFTER `invoke`;
+
+INSERT INTO `category`(`id`, `name`, `type`, `create_time`, `creator_uid`) VALUES (10000, '废弃', 5, '2020-07-23 17:11:00', 1);
