@@ -84,7 +84,7 @@ public class ActionService {
         example.createCriteria().andTypeEqualTo(Action.TYPE_BASE);
         actionMapper.deleteByExample(example);
 
-        actionDao.insertBatch(actions);
+        actionDao.insertBasicActions(actions);
 
         return Response.success();
     }
