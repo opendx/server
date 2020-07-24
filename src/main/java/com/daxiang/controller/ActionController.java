@@ -12,6 +12,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 
 /**
@@ -27,6 +28,11 @@ public class ActionController {
     @PostMapping("/add")
     public Response add(@RequestBody @Validated({SaveActionGroup.class}) Action action) {
         return actionService.add(action);
+    }
+
+    @PostMapping("/resetBasicAction")
+    public Response resetBasicAction(@RequestBody List<Action> actions) {
+        return actionService.resetBasicAction(actions);
     }
 
     @DeleteMapping("/{actionId}")

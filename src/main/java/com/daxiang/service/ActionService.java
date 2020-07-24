@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -70,6 +71,22 @@ public class ActionService {
             return Response.fail("命名冲突");
         }
         return insertRow == 1 ? Response.success("添加action成功") : Response.fail("添加action失败，请稍后重试");
+    }
+
+    @Transactional
+    public Response resetBasicAction(List<Action> actions) {
+        if (CollectionUtils.isEmpty(actions)) {
+            return Response.success();
+        }
+
+        // 删除基础action
+        ActionExample example = new ActionExample();
+        example.createCriteria().andTypeEqualTo(Action.TYPE_BASE);
+        actionMapper.deleteByExample(example);
+
+        actionDao.insertBatch(actions);
+
+        return Response.success();
     }
 
     public Response delete(Integer actionId) {
