@@ -6,6 +6,8 @@ import lombok.Data;
  * Created by jiangyitao.
  * 步骤传入的参数值
  */
+@Deprecated
+// todo 后续删除
 @Data
 public class ParamValue {
     /**

@@ -57,8 +57,6 @@ public class ActionService {
     private PageService pageService;
     @Autowired
     private UserService userService;
-    @Autowired
-    private EnvironmentService environmentService;
 
     public Response add(Action action) {
         action.setCreatorUid(SecurityUtil.getCurrentUserId());
