@@ -37,14 +37,6 @@ public class Action implements Serializable {
      * 测试用例action
      */
     public static final int TYPE_TESTCASE = 3;
-    /**
-     * 有返回值
-     */
-    public static final int HAS_RETURN_VALUE = 1;
-    /**
-     * 无返回值
-     */
-    public static final int NO_RETURN_VALUE = 0;
 
     /**
      * 主键id
@@ -85,12 +77,12 @@ public class Action implements Serializable {
     private String invoke;
 
     /**
-     * 返回值: void / 其他
+     * 返回值类型: void / 其他
      *
      * @mbg.generated
      */
     @NotBlank(message = "返回值类型不能为空")
-    private String returnValue;
+    private String returnValueType;
 
     /**
      * 返回值描述
@@ -146,7 +138,6 @@ public class Action implements Serializable {
      *
      * @mbg.generated
      */
-    @NotNull(message = "项目id不能为空")
     private Integer projectId;
 
     /**
@@ -209,11 +200,10 @@ public class Action implements Serializable {
     }
 
     /**
-     * 1.android 2.ios 3.android微信web 4.android微信小程序 null.通用
+     * 1.android 2.ios 3.pc web empty.通用
      *
      * @mbg.generated
      */
-    @NotEmpty(message = "platforms不能为空")
     private java.util.List<Integer> platforms;
 
     /**
@@ -265,12 +255,12 @@ public class Action implements Serializable {
         this.invoke = invoke;
     }
 
-    public String getReturnValue() {
-        return returnValue;
+    public String getReturnValueType() {
+        return returnValueType;
     }
 
-    public void setReturnValue(String returnValue) {
-        this.returnValue = returnValue;
+    public void setReturnValueType(String returnValueType) {
+        this.returnValueType = returnValueType;
     }
 
     public String getReturnValueDesc() {
@@ -412,7 +402,7 @@ public class Action implements Serializable {
         sb.append(", description=").append(description);
         sb.append(", type=").append(type);
         sb.append(", invoke=").append(invoke);
-        sb.append(", returnValue=").append(returnValue);
+        sb.append(", returnValueType=").append(returnValueType);
         sb.append(", returnValueDesc=").append(returnValueDesc);
         sb.append(", creatorUid=").append(creatorUid);
         sb.append(", createTime=").append(createTime);

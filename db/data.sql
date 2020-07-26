@@ -17,3 +17,6 @@ INSERT INTO `role`(`id`, `name`, `alias`) VALUES (10, 'testcase', '测试用例�
 INSERT INTO `role`(`id`, `name`, `alias`) VALUES (11, 'testPlan', '测试计划管理员');
 INSERT INTO `role`(`id`, `name`, `alias`) VALUES (12, 'testTask', '测试任务管理员');
 INSERT INTO `role`(`id`, `name`, `alias`) VALUES (13, 'testSuite', '测试集管理员');
+
+INSERT INTO `category`(`id`, `name`, `type`, `create_time`, `creator_uid`) VALUES (10000, '废弃', 5, '2020-07-23 18:21:00', 1);
+

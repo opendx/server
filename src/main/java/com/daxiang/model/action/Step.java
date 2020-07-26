@@ -1,8 +1,10 @@
 package com.daxiang.model.action;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.daxiang.mbg.po.Action;
 import com.daxiang.validator.group.SaveActionGroup;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -54,6 +56,11 @@ public class Step {
     /**
      * 调用action传入的值
      */
+    private List<String> args;
+    @Deprecated
+    // todo 后续删除
+    @JsonIgnore
+    @JSONField(serialize = false)
     private List<ParamValue> paramValues;
 
     @NotNull(message = "步骤status不能为空")

@@ -17,7 +17,23 @@
     <select id="selectPublishedCascaderData" resultMap="ResultMapWithBLOBs">
         select * from action where
         state = 2
-        and (project_id = #{projectId} or (project_Id is null and (platforms is null or JSON_CONTAINS(platforms->'$[*]', '${platform}', '$'))))
+        and (project_id = #{projectId} or (project_id is null and (platforms is null or JSON_EXTRACT(platforms, '$[0]') is null or JSON_CONTAINS(platforms->'$[*]', '${platform}', '$'))))
         <if test="type != null">and type = #{type}</if>
     </select>
+
+    <insert id="insertBasicActions">
+        insert into action (id, name, description,
+          type, invoke, return_value_type, return_value_desc,
+          category_id, project_id, state, params, platforms)
+        values
+        <foreach collection="actions" item="action" separator=",">
+          (
+            #{action.id}, #{action.name}, #{action.description},
+            #{action.type}, #{action.invoke}, #{action.returnValueType}, #{action.returnValueDesc},
+            #{action.categoryId}, #{action.projectId}, #{action.state},
+            #{action.params,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.ParamListTypeHandler},
+            #{action.platforms,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.IntegerListTypeHandler}
+          )
+        </foreach>
+    </insert>
 </mapper>
