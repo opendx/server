@@ -283,9 +283,9 @@ public class ActionService {
     private String getActionTypeName(Integer actionType) {
         switch (actionType) {
             case Action.TYPE_BASE:
-                return "基础组件";
+                return "基础Action";
             case Action.TYPE_ENCAPSULATION:
-                return "封装组件";
+                return "Action";
             case Action.TYPE_TESTCASE:
                 return "测试用例";
             default:

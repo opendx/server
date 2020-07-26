@@ -37,14 +37,6 @@ public class Action implements Serializable {
      * 测试用例action
      */
     public static final int TYPE_TESTCASE = 3;
-    /**
-     * 有返回值
-     */
-    public static final int HAS_RETURN_VALUE = 1;
-    /**
-     * 无返回值
-     */
-    public static final int NO_RETURN_VALUE = 0;
 
     /**
      * 主键id
@@ -208,7 +200,7 @@ public class Action implements Serializable {
     }
 
     /**
-     * 1.android 2.ios 3.android微信web 4.android微信小程序 empty.通用
+     * 1.android 2.ios 3.pc web empty.通用
      *
      * @mbg.generated
      */
