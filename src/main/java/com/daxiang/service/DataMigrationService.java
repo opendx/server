@@ -32,7 +32,10 @@ public class DataMigrationService {
                     List<Step> steps = action.getSteps();
                     for (Step step : steps) {
                         List<ParamValue> paramValues = step.getParamValues();
-                        if (CollectionUtils.isEmpty(paramValues)) {
+                        if (paramValues == null) { // 已迁移过
+                            return;
+                        }
+                        if (paramValues.isEmpty()) {
                             step.setArgs(new ArrayList<>());
                         } else {
                             List<String> values = paramValues.stream().map(ParamValue::getParamValue).collect(Collectors.toList());
