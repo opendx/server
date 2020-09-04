@@ -130,4 +130,8 @@ public class ProjectService {
     public Project getProjectById(Integer id) {
         return projectMapper.selectByPrimaryKey(id);
     }
+
+    public List<Project> getAll() {
+        return projectMapper.selectByExample(null);
+    }
 }

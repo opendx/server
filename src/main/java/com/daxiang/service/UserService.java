@@ -1,6 +1,5 @@
 package com.daxiang.service;
 
-import com.daxiang.dao.UserDao;
 import com.daxiang.exception.BusinessException;
 import com.daxiang.mbg.mapper.UserMapper;
 import com.daxiang.mbg.po.Project;
@@ -42,13 +41,13 @@ public class UserService {
 
     @Autowired
     private UserMapper userMapper;
-    @Autowired
-    private UserDao userDao;
 
     @Autowired
     private UserRoleService userRoleService;
     @Autowired
     private UserProjectService userProjectService;
+    @Autowired
+    private ProjectService projectService;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -248,8 +247,40 @@ public class UserService {
         return userMapper.selectByExample(example);
     }
 
-    public UserDto getUserDtoByUsername(String useranme) {
-        return userDao.selectUserDtoByUsername(useranme);
+    private User getUserByUsername(String username) {
+        UserExample example = new UserExample();
+        example.createCriteria().andUsernameEqualTo(username);
+        List<User> users = userMapper.selectByExample(example);
+        if (!users.isEmpty()) {
+            return users.get(0);
+        }
+        return null;
+    }
+
+    public UserDto getUserDtoByUsername(String username) {
+        User user = getUserByUsername(username);
+        if (user == null) {
+            return null;
+        }
+
+        UserDto userDto = new UserDto();
+        BeanUtils.copyProperties(user, userDto);
+        List<Integer> singleUid = Collections.singletonList(user.getId());
+
+        List<Role> roles = userRoleService.getUserRoleDtosByUserIds(singleUid).stream()
+                .map(UserRoleDto::getRole).collect(Collectors.toList());
+        userDto.setRoles(roles);
+
+        boolean isAdmin = roles.stream().map(Role::getName).anyMatch("admin"::equals);
+        if (isAdmin) {
+            userDto.setProjects(projectService.getAll());
+        } else {
+            List<Project> projects = userProjectService.getUserProjectDtosByUserIds(singleUid).stream()
+                    .map(UserProjectDto::getProject).collect(Collectors.toList());
+            userDto.setProjects(projects);
+        }
+
+        return userDto;
     }
 
     private List<User> getUsersByIds(List<Integer> userIds) {
