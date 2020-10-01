@@ -1,6 +1,6 @@
 package com.daxiang.controller;
 
-import com.daxiang.exception.BusinessException;
+import com.daxiang.exception.ServerException;
 import com.daxiang.model.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;
@@ -44,14 +44,14 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * BusinessException
+     * ServerException
      *
      * @param e
      * @return
      */
     @ResponseBody
-    @ExceptionHandler(BusinessException.class)
-    public Response handleBusinessException(BusinessException e) {
+    @ExceptionHandler(ServerException.class)
+    public Response handleBusinessException(ServerException e) {
         return Response.fail(e.getMessage());
     }
 

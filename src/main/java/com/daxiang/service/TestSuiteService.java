@@ -1,13 +1,14 @@
 package com.daxiang.service;
 
 import com.daxiang.dao.TestSuiteDao;
+import com.daxiang.exception.ServerException;
 import com.daxiang.mbg.po.*;
 import com.daxiang.model.PageRequest;
-import com.daxiang.model.Response;
+import com.daxiang.model.PagedData;
 import com.daxiang.security.SecurityUtil;
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.Page;
 import com.daxiang.mbg.mapper.TestSuiteMapper;
-import com.daxiang.model.Page;
 import com.daxiang.model.vo.TestSuiteVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,60 +35,54 @@ public class TestSuiteService {
     @Autowired
     private UserService userService;
 
-    public Response add(TestSuite testSuite) {
+    public void add(TestSuite testSuite) {
         testSuite.setCreateTime(new Date());
         testSuite.setCreatorUid(SecurityUtil.getCurrentUserId());
 
-        int insertRow;
         try {
-            insertRow = testSuiteMapper.insertSelective(testSuite);
+            int insertCount = testSuiteMapper.insertSelective(testSuite);
+            if (insertCount != 1) {
+                throw new ServerException("添加失败，请稍后重试");
+            }
         } catch (DuplicateKeyException e) {
-            return Response.fail("命名冲突");
+            throw new ServerException(testSuite.getName() + "已存在");
         }
-        return insertRow == 1 ? Response.success("添加TestSuite成功") : Response.fail("添加TestSuite失败");
     }
 
-    public Response delete(Integer testSuiteId) {
-        if (testSuiteId == null) {
-            return Response.fail("testSuiteId不能为空");
-        }
-
+    public void delete(Integer testSuiteId) {
         // 检查该测试集是否被testplan使用
         List<TestPlan> testPlans = testPlanService.getTestPlansByTestSuiteId(testSuiteId);
         if (!CollectionUtils.isEmpty(testPlans)) {
             String testPlanNames = testPlans.stream().map(TestPlan::getName).collect(Collectors.joining("、"));
-            return Response.fail("测试计划: " + testPlanNames + "，正在使用，无法删除");
+            throw new ServerException("测试计划: " + testPlanNames + "，正在使用，无法删除");
         }
 
-        int deleteRow = testSuiteMapper.deleteByPrimaryKey(testSuiteId);
-        return deleteRow == 1 ? Response.success("删除TestSuite成功") : Response.fail("删除TestSuite失败，请稍后重试");
+        int deleteCount = testSuiteMapper.deleteByPrimaryKey(testSuiteId);
+        if (deleteCount != 1) {
+            throw new ServerException("删除失败，请稍后重试");
+        }
     }
 
-    public Response update(TestSuite testSuite) {
-        int updateRow;
+    public void update(TestSuite testSuite) {
         try {
-            updateRow = testSuiteMapper.updateByPrimaryKeySelective(testSuite);
+            int updateCount = testSuiteMapper.updateByPrimaryKeySelective(testSuite);
+            if (updateCount != 1) {
+                throw new ServerException("更新失败，请稍后重试");
+            }
         } catch (DuplicateKeyException e) {
-            return Response.fail("命名冲突");
+            throw new ServerException(testSuite.getName() + "已存在");
         }
-        return updateRow == 1 ? Response.success("更新TestSuite成功") : Response.fail("更新TestSuite失败");
     }
 
-    public Response list(TestSuite testSuite, PageRequest pageRequest) {
-        boolean needPaging = pageRequest.needPaging();
-        if (needPaging) {
-            PageHelper.startPage(pageRequest.getPageNum(), pageRequest.getPageSize());
+    public PagedData<TestSuiteVo> list(TestSuite query, String orderBy, PageRequest pageRequest) {
+        Page page = PageHelper.startPage(pageRequest.getPageNum(), pageRequest.getPageSize());
+
+        if (StringUtils.isEmpty(orderBy)) {
+            orderBy = "create_time desc";
         }
 
-        List<TestSuite> testSuites = selectByTestSuite(testSuite);
-        List<TestSuiteVo> testSuiteVos = convertTestSuitesToTestSuiteVos(testSuites);
-
-        if (needPaging) {
-            long total = Page.getTotal(testSuites);
-            return Response.success(Page.build(testSuiteVos, total));
-        } else {
-            return Response.success(testSuiteVos);
-        }
+        List<TestSuiteVo> testSuiteVos = getTestSuiteVos(query, orderBy);
+        return new PagedData<>(testSuiteVos, page.getTotal());
     }
 
     private List<TestSuiteVo> convertTestSuitesToTestSuiteVos(List<TestSuite> testSuites) {
@@ -102,7 +97,7 @@ public class TestSuiteService {
                 .collect(Collectors.toList());
         Map<Integer, User> userMap = userService.getUserMapByIds(creatorUids);
 
-        return testSuites.stream().map(testSuite -> {
+        List<TestSuiteVo> testSuiteVos = testSuites.stream().map(testSuite -> {
             TestSuiteVo testSuiteVo = new TestSuiteVo();
             BeanUtils.copyProperties(testSuite, testSuiteVo);
 
@@ -115,24 +110,34 @@ public class TestSuiteService {
 
             return testSuiteVo;
         }).collect(Collectors.toList());
+
+        return testSuiteVos;
     }
 
-    private List<TestSuite> selectByTestSuite(TestSuite testSuite) {
+    public List<TestSuiteVo> getTestSuiteVos(TestSuite query, String orderBy) {
+        List<TestSuite> testSuites = getTestSuites(query, orderBy);
+        return convertTestSuitesToTestSuiteVos(testSuites);
+    }
+
+    public List<TestSuite> getTestSuites(TestSuite query, String orderBy) {
         TestSuiteExample example = new TestSuiteExample();
         TestSuiteExample.Criteria criteria = example.createCriteria();
 
-        if (testSuite != null) {
-            if (testSuite.getId() != null) {
-                criteria.andIdEqualTo(testSuite.getId());
+        if (query != null) {
+            if (query.getId() != null) {
+                criteria.andIdEqualTo(query.getId());
             }
-            if (testSuite.getProjectId() != null) {
-                criteria.andProjectIdEqualTo(testSuite.getProjectId());
+            if (query.getProjectId() != null) {
+                criteria.andProjectIdEqualTo(query.getProjectId());
             }
-            if (!StringUtils.isEmpty(testSuite.getName())) {
-                criteria.andNameEqualTo(testSuite.getName());
+            if (!StringUtils.isEmpty(query.getName())) {
+                criteria.andNameEqualTo(query.getName());
             }
         }
-        example.setOrderByClause("create_time desc");
+
+        if (!StringUtils.isEmpty(orderBy)) {
+            example.setOrderByClause(orderBy);
+        }
 
         return testSuiteMapper.selectByExampleWithBLOBs(example);
     }

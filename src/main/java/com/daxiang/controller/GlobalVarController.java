@@ -2,11 +2,12 @@ package com.daxiang.controller;
 
 import com.daxiang.mbg.po.GlobalVar;
 import com.daxiang.model.PageRequest;
+import com.daxiang.model.PagedData;
 import com.daxiang.model.Response;
+import com.daxiang.model.vo.GlobalVarVo;
 import com.daxiang.service.GlobalVarService;
 import com.daxiang.validator.group.GlobalVarGroup;
 import com.daxiang.validator.group.UpdateGroup;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -18,9 +19,8 @@ import java.util.List;
 /**
  * Created by jiangyitao.
  */
-@RestController
-@Slf4j
 @Validated({GlobalVarGroup.class})
+@RestController
 @RequestMapping("/globalVar")
 public class GlobalVarController {
 
@@ -29,27 +29,37 @@ public class GlobalVarController {
 
     @PostMapping("/add")
     public Response add(@RequestBody @Validated({GlobalVarGroup.class}) GlobalVar globalVar) {
-        return globalVarService.add(globalVar);
+        globalVarService.add(globalVar);
+        return Response.success("添加成功");
     }
 
     @PostMapping("/addBatch")
     public Response addBatch(@RequestBody @NotEmpty(message = "全局变量不能为空") @Valid List<GlobalVar> globalVars) {
-        return globalVarService.addBatch(globalVars);
+        globalVarService.addBatch(globalVars);
+        return Response.success("添加成功");
     }
 
     @DeleteMapping("/{globalVarId}")
     public Response delete(@PathVariable Integer globalVarId) {
-        return globalVarService.delete(globalVarId);
+        globalVarService.delete(globalVarId);
+        return Response.success("删除成功");
     }
 
     @PostMapping("/update")
     public Response update(@RequestBody @Validated({GlobalVarGroup.class, UpdateGroup.class}) GlobalVar globalVar) {
-        return globalVarService.update(globalVar);
+        globalVarService.update(globalVar);
+        return Response.success("更新成功");
     }
 
     @PostMapping("/list")
-    public Response list(GlobalVar globalVar, PageRequest pageRequest) {
-        return globalVarService.list(globalVar, pageRequest);
+    public Response list(GlobalVar query, String orderBy, PageRequest pageRequest) {
+        if (pageRequest.needPaging()) {
+            PagedData<GlobalVarVo> pagedData = globalVarService.list(query, orderBy, pageRequest);
+            return Response.success(pagedData);
+        } else {
+            List<GlobalVarVo> globalVarVos = globalVarService.getGlobalVarVos(query, orderBy);
+            return Response.success(globalVarVos);
+        }
     }
 
 }

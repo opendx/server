@@ -21,8 +21,8 @@ public class Response<T> {
     private String msg;
     private T data;
 
-    private static <T> Response<T> buildResponse(Integer status, String msg, T data) {
-        Response response = new Response();
+    private static <T> Response<T> createResponse(Integer status, String msg, T data) {
+        Response<T> response = new Response<>();
         response.setStatus(status);
         response.setMsg(msg);
         response.setData(data);
@@ -32,39 +32,39 @@ public class Response<T> {
     @JsonIgnore
     @JSONField(serialize = false)
     public boolean isSuccess() {
-        return status == SUCCESS;
+        return SUCCESS.equals(status);
     }
 
     public static Response success() {
-        return buildResponse(SUCCESS, "success", null);
+        return createResponse(SUCCESS, "success", null);
     }
 
     public static <T> Response<T> success(T data) {
-        return buildResponse(SUCCESS, "success", data);
+        return createResponse(SUCCESS, "success", data);
     }
 
     public static Response success(String msg) {
-        return buildResponse(SUCCESS, msg, null);
+        return createResponse(SUCCESS, msg, null);
     }
 
     public static <T> Response<T> success(String msg, T data) {
-        return buildResponse(SUCCESS, msg, data);
+        return createResponse(SUCCESS, msg, data);
     }
 
     public static Response fail(String msg) {
-        return buildResponse(FAIL, msg, null);
+        return createResponse(FAIL, msg, null);
     }
 
     public static Response error(String msg) {
-        return buildResponse(ERROR, msg, null);
+        return createResponse(ERROR, msg, null);
     }
 
     public static Response unauthorized() {
-        return buildResponse(UNAUTHORIZED, "认证失败", null);
+        return createResponse(UNAUTHORIZED, "认证失败", null);
     }
 
     public static Response accessDenied() {
-        return buildResponse(ACCESSDENIED, "权限不足", null);
+        return createResponse(ACCESSDENIED, "权限不足", null);
     }
 
 }

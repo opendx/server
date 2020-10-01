@@ -1,16 +1,17 @@
 package com.daxiang.service;
 
+import com.daxiang.exception.ServerException;
 import com.daxiang.mbg.po.TestPlan;
 import com.daxiang.mbg.po.TestPlanExample;
 import com.daxiang.mbg.po.User;
-import com.daxiang.model.Page;
+import com.daxiang.model.PagedData;
 import com.daxiang.model.PageRequest;
 import com.daxiang.dao.TestPlanDao;
 import com.daxiang.model.vo.TestPlanVo;
 import com.daxiang.security.SecurityUtil;
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.Page;
 import com.daxiang.mbg.mapper.TestPlanMapper;
-import com.daxiang.model.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,52 +53,54 @@ public class TestPlanService {
     private UserService userService;
 
     @Transactional
-    public Response add(TestPlan testPlan) {
-        if (testPlan.getEnableSchedule() == TestPlan.ENABLE_SCHEDULE && StringUtils.isEmpty(testPlan.getCronExpression())) {
-            // 开启定时任务，表达式不能为空
-            return Response.fail("cron表达式不能为空");
+    public void add(TestPlan testPlan) {
+        if (testPlan.getEnableSchedule() == TestPlan.ENABLE_SCHEDULE
+                && StringUtils.isEmpty(testPlan.getCronExpression())) {
+            // 若开启定时任务，表达式不能为空
+            throw new ServerException("cron表达式不能为空");
         }
 
         testPlan.setCreateTime(new Date());
         testPlan.setCreatorUid(SecurityUtil.getCurrentUserId());
 
-        int insertRow;
         try {
-            insertRow = testPlanMapper.insertSelective(testPlan);
+            int insertCount = testPlanMapper.insertSelective(testPlan);
+            if (insertCount != 1) {
+                throw new ServerException("添加失败，请稍后重试");
+            }
         } catch (DuplicateKeyException e) {
-            return Response.fail("重复命名");
+            throw new ServerException(testPlan.getName() + "已存在");
         }
 
         if (testPlan.getEnableSchedule() == TestPlan.ENABLE_SCHEDULE) {
             addOrUpdateScheduleTask(testPlan);
         }
-
-        return insertRow == 1 ? Response.success("添加TestPlan成功") : Response.fail("添加TestPlan失败，请稍后重试");
-    }
-
-    public Response delete(Integer testPlanId) {
-        if (testPlanId == null) {
-            return Response.fail("测试计划id不能为空");
-        }
-
-        cancelScheduleTask(testPlanId);
-
-        int deleteRow = testPlanMapper.deleteByPrimaryKey(testPlanId);
-        return deleteRow == 1 ? Response.success("删除TestPlan成功") : Response.fail("删除TestPlan失败，请稍后重试");
     }
 
     @Transactional
-    public Response update(TestPlan testPlan) {
-        if (testPlan.getEnableSchedule() == TestPlan.ENABLE_SCHEDULE && StringUtils.isEmpty(testPlan.getCronExpression())) {
-            // 开启定时任务，表达式不能为空
-            return Response.fail("cron表达式不能为空");
+    public void delete(Integer testPlanId) {
+        int deleteCount = testPlanMapper.deleteByPrimaryKey(testPlanId);
+        if (deleteCount != 1) {
+            throw new ServerException("删除失败，请稍后重试");
+        }
+        cancelScheduleTask(testPlanId);
+    }
+
+    @Transactional
+    public void update(TestPlan testPlan) {
+        if (testPlan.getEnableSchedule() == TestPlan.ENABLE_SCHEDULE
+                && StringUtils.isEmpty(testPlan.getCronExpression())) {
+            // 若开启定时任务，表达式不能为空
+            throw new ServerException("cron表达式不能为空");
         }
 
-        int updateRow;
         try {
-            updateRow = testPlanMapper.updateByPrimaryKeyWithBLOBs(testPlan);
+            int updateCount = testPlanMapper.updateByPrimaryKeyWithBLOBs(testPlan);
+            if (updateCount != 1) {
+                throw new ServerException("更新失败，请稍后重试");
+            }
         } catch (DuplicateKeyException e) {
-            return Response.fail("命名冲突");
+            throw new ServerException(testPlan.getName() + "已存在");
         }
 
         if (testPlan.getEnableSchedule() == TestPlan.ENABLE_SCHEDULE) {
@@ -105,25 +108,17 @@ public class TestPlanService {
         } else {
             cancelScheduleTask(testPlan.getId());
         }
-
-        return updateRow == 1 ? Response.success("更新TestPlan成功") : Response.fail("更新TestPlan失败，请稍后重试");
     }
 
-    public Response list(TestPlan testPlan, PageRequest pageRequest) {
-        boolean needPaging = pageRequest.needPaging();
-        if (needPaging) {
-            PageHelper.startPage(pageRequest.getPageNum(), pageRequest.getPageSize());
+    public PagedData<TestPlanVo> list(TestPlan query, String orderBy, PageRequest pageRequest) {
+        Page page = PageHelper.startPage(pageRequest.getPageNum(), pageRequest.getPageSize());
+
+        if (StringUtils.isEmpty(orderBy)) {
+            orderBy = "create_time desc";
         }
 
-        List<TestPlan> testPlans = selectByTestPlan(testPlan);
-        List<TestPlanVo> testPlanVos = convertTestPlansToTestPlanVos(testPlans);
-
-        if (needPaging) {
-            long total = Page.getTotal(testPlans);
-            return Response.success(Page.build(testPlanVos, total));
-        } else {
-            return Response.success(testPlanVos);
-        }
+        List<TestPlanVo> testPlanVos = getTestPlanVos(query, orderBy);
+        return new PagedData<>(testPlanVos, page.getTotal());
     }
 
     private List<TestPlanVo> convertTestPlansToTestPlanVos(List<TestPlan> testPlans) {
@@ -138,7 +133,7 @@ public class TestPlanService {
                 .collect(Collectors.toList());
         Map<Integer, User> userMap = userService.getUserMapByIds(creatorUids);
 
-        return testPlans.stream().map(testPlan -> {
+        List<TestPlanVo> testPlanVos = testPlans.stream().map(testPlan -> {
             TestPlanVo testPlanVo = new TestPlanVo();
             BeanUtils.copyProperties(testPlan, testPlanVo);
 
@@ -151,54 +146,62 @@ public class TestPlanService {
 
             return testPlanVo;
         }).collect(Collectors.toList());
+
+        return testPlanVos;
     }
 
-    private List<TestPlan> selectByTestPlan(TestPlan testPlan) {
+    public List<TestPlanVo> getTestPlanVos(TestPlan query, String orderBy) {
+        List<TestPlan> testPlans = getTestPlans(query, orderBy);
+        return convertTestPlansToTestPlanVos(testPlans);
+    }
+
+    public List<TestPlan> getTestPlans(TestPlan query) {
+        return getTestPlans(query, null);
+    }
+
+    public List<TestPlan> getTestPlans(TestPlan query, String orderBy) {
         TestPlanExample example = new TestPlanExample();
         TestPlanExample.Criteria criteria = example.createCriteria();
 
-        if (testPlan != null) {
-            if (testPlan.getId() != null) {
-                criteria.andIdEqualTo(testPlan.getId());
+        if (query != null) {
+            if (query.getId() != null) {
+                criteria.andIdEqualTo(query.getId());
             }
-            if (testPlan.getProjectId() != null) {
-                criteria.andProjectIdEqualTo(testPlan.getProjectId());
+            if (query.getProjectId() != null) {
+                criteria.andProjectIdEqualTo(query.getProjectId());
             }
-            if (!StringUtils.isEmpty(testPlan.getName())) {
-                criteria.andNameEqualTo(testPlan.getName());
+            if (!StringUtils.isEmpty(query.getName())) {
+                criteria.andNameEqualTo(query.getName());
             }
-            if (testPlan.getRunMode() != null) {
-                criteria.andRunModeEqualTo(testPlan.getRunMode());
+            if (query.getRunMode() != null) {
+                criteria.andRunModeEqualTo(query.getRunMode());
             }
-            if (testPlan.getEnableSchedule() != null) {
-                criteria.andEnableScheduleEqualTo(testPlan.getEnableSchedule());
+            if (query.getEnableSchedule() != null) {
+                criteria.andEnableScheduleEqualTo(query.getEnableSchedule());
             }
-            if (testPlan.getEnvironmentId() != null) {
-                criteria.andEnvironmentIdEqualTo(testPlan.getEnvironmentId());
+            if (query.getEnvironmentId() != null) {
+                criteria.andEnvironmentIdEqualTo(query.getEnvironmentId());
             }
-            if (testPlan.getEnableRecordVideo() != null) {
-                criteria.andEnableRecordVideoEqualTo(testPlan.getEnableRecordVideo());
+            if (query.getEnableRecordVideo() != null) {
+                criteria.andEnableRecordVideoEqualTo(query.getEnableRecordVideo());
             }
         }
-        example.setOrderByClause("create_time desc");
+
+        if (!StringUtils.isEmpty(orderBy)) {
+            example.setOrderByClause(orderBy);
+        }
 
         return testPlanMapper.selectByExampleWithBLOBs(example);
     }
 
-    /**
-     * 首次启动server，按计划去执行所有开启的定时任务
-     */
     public void scheduleEnabledTasks() {
         TestPlan query = new TestPlan();
         query.setEnableSchedule(TestPlan.ENABLE_SCHEDULE);
 
-        List<TestPlan> testPlans = selectByTestPlan(query);
-        testPlans.forEach(testPlan -> addOrUpdateScheduleTask(testPlan));
+        List<TestPlan> testPlans = getTestPlans(query);
+        testPlans.forEach(this::addOrUpdateScheduleTask);
     }
 
-    /**
-     * 添加或更新定时任务
-     */
     private synchronized void addOrUpdateScheduleTask(TestPlan testPlan) {
         ScheduledFuture future = TEST_PLAN_SCHEDULED_FUTURE_MAP.get(testPlan.getId());
         if (future != null) {
@@ -206,17 +209,18 @@ public class TestPlanService {
             log.info("cancel schedule, testPlan: {}", testPlan.getName());
             future.cancel(true);
         }
+
         log.info("add schedule, testPlan: {}", testPlan.getName());
-        future = TASK_SCHEDULER.schedule(() -> testTaskService.commit(testPlan.getId(), testPlan.getCreatorUid()), new CronTrigger(testPlan.getCronExpression()));
+        CronTrigger cronTrigger = new CronTrigger(testPlan.getCronExpression());
+        future = TASK_SCHEDULER.schedule(() -> testTaskService.commit(testPlan.getId(), testPlan.getCreatorUid()), cronTrigger);
         TEST_PLAN_SCHEDULED_FUTURE_MAP.put(testPlan.getId(), future);
     }
 
-    /**
-     * 取消定时任务
-     *
-     * @param testPlanId
-     */
     private synchronized void cancelScheduleTask(Integer testPlanId) {
+        if (testPlanId == null) {
+            throw new ServerException("testPlanId不能为空");
+        }
+
         ScheduledFuture future = TEST_PLAN_SCHEDULED_FUTURE_MAP.get(testPlanId);
         if (future != null) {
             log.info("cancel schedule, testPlanId: {}", testPlanId);
@@ -230,6 +234,9 @@ public class TestPlanService {
     }
 
     public List<TestPlan> getTestPlansByTestSuiteId(Integer testSuiteId) {
+        if (testSuiteId == null) {
+            throw new ServerException("testSuiteId不能为空");
+        }
         return testPlanDao.selectByTestSuiteId(testSuiteId);
     }
 
@@ -238,8 +245,12 @@ public class TestPlanService {
     }
 
     public List<TestPlan> getTestPlansByEnvironmentId(Integer envId) {
+        if (envId == null) {
+            throw new ServerException("envId不能为空");
+        }
+
         TestPlan query = new TestPlan();
         query.setEnvironmentId(envId);
-        return selectByTestPlan(query);
+        return getTestPlans(query);
     }
 }

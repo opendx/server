@@ -2,11 +2,11 @@ package com.daxiang.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.daxiang.agent.AgentClient;
-import com.daxiang.exception.BusinessException;
+import com.daxiang.exception.ServerException;
 import com.daxiang.mbg.mapper.ActionMapper;
 import com.daxiang.mbg.po.*;
-import com.daxiang.model.Page;
 import com.daxiang.model.PageRequest;
+import com.daxiang.model.PagedData;
 import com.daxiang.model.Response;
 import com.daxiang.model.action.Step;
 import com.daxiang.model.request.ActionDebugRequest;
@@ -14,7 +14,9 @@ import com.daxiang.model.dto.ActionTreeNode;
 import com.daxiang.model.vo.ActionVo;
 import com.daxiang.security.SecurityUtil;
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.Page;
 import com.daxiang.dao.ActionDao;
+import com.google.common.collect.ImmutableMap;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +37,12 @@ import java.util.stream.Stream;
 @Service
 @Slf4j
 public class ActionService {
+
+    private static final Map<Integer, String> ACTION_TYPE_MAP = ImmutableMap.of(
+            Action.TYPE_BASE, "基础Action",
+            Action.TYPE_ENCAPSULATION, "Action",
+            Action.TYPE_TESTCASE, "测试用例"
+    );
 
     @Autowired
     private ActionMapper actionMapper;
@@ -58,23 +66,24 @@ public class ActionService {
     @Autowired
     private UserService userService;
 
-    public Response add(Action action) {
-        action.setCreatorUid(SecurityUtil.getCurrentUserId());
+    public void add(Action action) {
         action.setCreateTime(new Date());
+        action.setCreatorUid(SecurityUtil.getCurrentUserId());
 
-        int insertRow;
         try {
-            insertRow = actionMapper.insertSelective(action);
+            int insertCount = actionMapper.insertSelective(action);
+            if (insertCount != 1) {
+                throw new ServerException("添加失败，请稍后重试");
+            }
         } catch (DuplicateKeyException e) {
-            return Response.fail("命名冲突");
+            throw new ServerException(action.getName() + "已存在");
         }
-        return insertRow == 1 ? Response.success("添加action成功") : Response.fail("添加action失败，请稍后重试");
     }
 
     @Transactional
-    public Response resetBasicAction(List<Action> actions) {
+    public void resetBasicAction(List<Action> actions) {
         if (CollectionUtils.isEmpty(actions)) {
-            return Response.success();
+            return;
         }
 
         // 删除基础action
@@ -83,58 +92,49 @@ public class ActionService {
         actionMapper.deleteByExample(example);
 
         actionDao.insertBasicActions(actions);
-
-        return Response.success();
     }
 
-    public Response delete(Integer actionId) {
-        if (actionId == null) {
-            return Response.fail("actionId不能为空");
-        }
-
+    public void delete(Integer actionId) {
         checkAction(actionId);
 
-        int deleteRow = actionMapper.deleteByPrimaryKey(actionId);
-        return deleteRow == 1 ? Response.success("删除成功") : Response.fail("删除失败，请稍后重试");
+        int deleteCount = actionMapper.deleteByPrimaryKey(actionId);
+        if (deleteCount != 1) {
+            throw new ServerException("删除失败，请稍后重试");
+        }
     }
 
-    public Response update(Action action) {
+    public void update(Action action) {
         checkStepsNotContainsSelf(action);
         checkActionImportsNotContainsSelf(action);
         checkDepensNotContainsSelf(action);
 
         // action状态变为草稿或禁用
-        if (action.getState() == Action.DRAFT_STATE || action.getState() == Action.DISABLE_STATE) {
+        if (action.getState() != Action.RELEASE_STATE) {
             checkAction(action.getId());
         }
 
         action.setUpdateTime(new Date());
         action.setUpdatorUid(SecurityUtil.getCurrentUserId());
 
-        int updateRow;
         try {
-            updateRow = actionMapper.updateByPrimaryKeyWithBLOBs(action);
+            int updateCount = actionMapper.updateByPrimaryKeyWithBLOBs(action);
+            if (updateCount != 1) {
+                throw new ServerException("更新失败，请稍后重试");
+            }
         } catch (DuplicateKeyException e) {
-            return Response.fail("命名冲突");
+            throw new ServerException(action.getName() + "已存在");
         }
-        return updateRow == 1 ? Response.success("更新Action成功") : Response.fail("更新Action失败，请稍后重试");
     }
 
-    public Response list(Action action, PageRequest pageRequest) {
-        boolean needPaging = pageRequest.needPaging();
-        if (needPaging) {
-            PageHelper.startPage(pageRequest.getPageNum(), pageRequest.getPageSize());
+    public PagedData<ActionVo> list(Action query, String orderBy, PageRequest pageRequest) {
+        Page page = PageHelper.startPage(pageRequest.getPageNum(), pageRequest.getPageSize());
+
+        if (StringUtils.isEmpty(orderBy)) {
+            orderBy = "create_time desc";
         }
 
-        List<Action> actions = selectByAction(action);
-        List<ActionVo> actionVos = convertActionsToActionVos(actions);
-
-        if (needPaging) {
-            long total = Page.getTotal(actions);
-            return Response.success(Page.build(actionVos, total));
-        } else {
-            return Response.success(actionVos);
-        }
+        List<ActionVo> actionVos = getActionVos(query, orderBy);
+        return new PagedData<>(actionVos, page.getTotal());
     }
 
     private List<ActionVo> convertActionsToActionVos(List<Action> actions) {
@@ -149,7 +149,7 @@ public class ActionService {
                 .collect(Collectors.toList());
         Map<Integer, User> userMap = userService.getUserMapByIds(creatorAndUpdatorUids);
 
-        return actions.stream().map(action -> {
+        List<ActionVo> actionVos = actions.stream().map(action -> {
             ActionVo actionVo = new ActionVo();
             BeanUtils.copyProperties(action, actionVo);
 
@@ -169,43 +169,57 @@ public class ActionService {
 
             return actionVo;
         }).collect(Collectors.toList());
+
+        return actionVos;
     }
 
-    private List<Action> selectByAction(Action action) {
+    public List<ActionVo> getActionVos(Action query, String orderBy) {
+        List<Action> actions = getActions(query, orderBy);
+        return convertActionsToActionVos(actions);
+    }
+
+    public List<Action> getActions(Action query) {
+        return getActions(query, null);
+    }
+
+    public List<Action> getActions(Action query, String orderBy) {
         ActionExample example = new ActionExample();
         ActionExample.Criteria criteria = example.createCriteria();
 
-        if (action != null) {
-            if (action.getId() != null) {
-                criteria.andIdEqualTo(action.getId());
+        if (query != null) {
+            if (query.getId() != null) {
+                criteria.andIdEqualTo(query.getId());
             }
-            if (!StringUtils.isEmpty(action.getName())) {
-                criteria.andNameLike("%" + action.getName() + "%");
+            if (!StringUtils.isEmpty(query.getName())) {
+                criteria.andNameLike("%" + query.getName() + "%");
             }
-            if (action.getProjectId() != null) {
-                criteria.andProjectIdEqualTo(action.getProjectId());
+            if (query.getProjectId() != null) {
+                criteria.andProjectIdEqualTo(query.getProjectId());
             }
-            if (action.getType() != null) {
-                criteria.andTypeEqualTo(action.getType());
+            if (query.getType() != null) {
+                criteria.andTypeEqualTo(query.getType());
             }
-            if (action.getPageId() != null) {
-                criteria.andPageIdEqualTo(action.getPageId());
+            if (query.getPageId() != null) {
+                criteria.andPageIdEqualTo(query.getPageId());
             }
-            if (action.getCategoryId() != null) {
-                criteria.andCategoryIdEqualTo(action.getCategoryId());
+            if (query.getCategoryId() != null) {
+                criteria.andCategoryIdEqualTo(query.getCategoryId());
             }
-            if (action.getState() != null) {
-                criteria.andStateEqualTo(action.getState());
+            if (query.getState() != null) {
+                criteria.andStateEqualTo(query.getState());
             }
         }
-        example.setOrderByClause("create_time desc");
+
+        if (!StringUtils.isEmpty(orderBy)) {
+            example.setOrderByClause(orderBy);
+        }
 
         return actionMapper.selectByExampleWithBLOBs(example);
     }
 
-    public Response cascader(Integer projectId, Integer platform, Integer type) {
+    public List<ActionTreeNode> cascader(Integer projectId, Integer platform, Integer type) {
         if (projectId == null || platform == null) {
-            return Response.fail("projectId || platform不能为空");
+            throw new ServerException("projectId or platform不能为空");
         }
 
         List<ActionTreeNode> tree = new ArrayList<>();
@@ -213,7 +227,7 @@ public class ActionService {
         // type可以为空
         List<Action> actions = actionDao.selectPublishedCascaderData(projectId, platform, type);
         if (CollectionUtils.isEmpty(actions)) {
-            return Response.success(tree);
+            return tree;
         }
 
         List<Category> categories = categoryService.getCategoriesWithProjectIdIsNullOrProjectIdEqualsTo(projectId);
@@ -231,7 +245,7 @@ public class ActionService {
             ActionTreeNode root = rMap.get(actionType);
             if (root == null) {
                 root = new ActionTreeNode();
-                root.setName(getActionTypeName(actionType));
+                root.setName(ACTION_TYPE_MAP.get(actionType));
                 root.setChildren(new ArrayList<>());
                 rMap.put(actionType, root);
                 tree.add(root);
@@ -277,35 +291,21 @@ public class ActionService {
             }
         }
 
-        return Response.success(tree);
-    }
-
-    private String getActionTypeName(Integer actionType) {
-        switch (actionType) {
-            case Action.TYPE_BASE:
-                return "基础Action";
-            case Action.TYPE_ENCAPSULATION:
-                return "Action";
-            case Action.TYPE_TESTCASE:
-                return "测试用例";
-            default:
-                throw new BusinessException("unknow action type: " + actionType);
-        }
+        return tree;
     }
 
     public Response debug(ActionDebugRequest actionDebugRequest) {
         Action action = actionDebugRequest.getAction();
-        action.setId(0);
-        action.setDepends(new ArrayList<>());
-
         boolean anyEnabledStep = action.getSteps().stream()
                 .anyMatch(step -> step.getStatus() == Step.ENABLE_STATUS);
         if (!anyEnabledStep) {
             return Response.fail("至少选择一个启用的步骤");
         }
 
-        ActionDebugRequest.DebugInfo debugInfo = actionDebugRequest.getDebugInfo();
+        action.setId(0);
+        action.setDepends(new ArrayList<>());
 
+        ActionDebugRequest.DebugInfo debugInfo = actionDebugRequest.getDebugInfo();
         Integer projectId = action.getProjectId();
         Integer env = debugInfo.getEnv();
 
@@ -327,8 +327,8 @@ public class ActionService {
         return agentClient.debugAction(debugInfo.getAgentIp(), debugInfo.getAgentPort(), requestBody);
     }
 
-    public Action getActionById(Integer actioniId) {
-        return actionMapper.selectByPrimaryKey(actioniId);
+    public Action getActionById(Integer actionId) {
+        return actionMapper.selectByPrimaryKey(actionId);
     }
 
     public List<Action> getActionsByIds(List<Integer> actionIds) {
@@ -351,7 +351,7 @@ public class ActionService {
     private void checkDepensNotContainsSelf(Action action) {
         List<Integer> depends = action.getDepends();
         if (!CollectionUtils.isEmpty(depends) && depends.contains(action.getId())) {
-            throw new BusinessException("依赖用例不能包含自身");
+            throw new ServerException("依赖用例不能包含自身");
         }
     }
 
@@ -364,7 +364,7 @@ public class ActionService {
         List<Integer> stepActionIds = action.getSteps().stream()
                 .map(Step::getActionId).collect(Collectors.toList());
         if (stepActionIds.contains(action.getId())) {
-            throw new BusinessException("步骤不能包含自身");
+            throw new ServerException("步骤不能包含自身");
         }
     }
 
@@ -376,7 +376,7 @@ public class ActionService {
     private void checkActionImportsNotContainsSelf(Action action) {
         List<Integer> actionImports = action.getActionImports();
         if (!CollectionUtils.isEmpty(actionImports) && actionImports.contains(action.getId())) {
-            throw new BusinessException("导入Action不能包含自身");
+            throw new ServerException("导入Action不能包含自身");
         }
     }
 
@@ -386,31 +386,35 @@ public class ActionService {
      * @param actionId
      */
     private void checkAction(Integer actionId) {
+        if (actionId == null) {
+            throw new ServerException("actionId不能为空");
+        }
+
         // 检查action是否被steps或depends或actionImports使用
         List<Action> actions = actionDao.selectByActionIdInStepsOrDependsOrActionImports(actionId);
         if (!CollectionUtils.isEmpty(actions)) {
             String actionNames = actions.stream().map(Action::getName).collect(Collectors.joining("、"));
-            throw new BusinessException("actions: " + actionNames + ", 正在使用此action");
+            throw new ServerException("actions: " + actionNames + ", 正在使用此action");
         }
 
         // 检查action是否被testplan使用
         List<TestPlan> testPlans = testPlanService.getTestPlansByActionId(actionId);
         if (!CollectionUtils.isEmpty(testPlans)) {
             String testPlanNames = testPlans.stream().map(TestPlan::getName).collect(Collectors.joining("、"));
-            throw new BusinessException("testPlans: " + testPlanNames + ", 正在使用此action");
+            throw new ServerException("testPlans: " + testPlanNames + ", 正在使用此action");
         }
 
         // 检查action是否被testSuite使用
         List<TestSuite> testSuites = testSuiteService.getTestSuitesByActionId(actionId);
         if (!CollectionUtils.isEmpty(testSuites)) {
             String testSuiteNames = testSuites.stream().map(TestSuite::getName).collect(Collectors.joining("、"));
-            throw new BusinessException("testSuites: " + testSuiteNames + ", 正在使用此action");
+            throw new ServerException("testSuites: " + testSuiteNames + ", 正在使用此action");
         }
     }
 
     public List<Action> getActionsByLocalVarsEnvironmentId(Integer envId) {
         if (envId == null) {
-            return new ArrayList<>();
+            throw new ServerException("envId不能为空");
         }
         return actionDao.selectByLocalVarsEnvironmentId(envId);
     }
@@ -429,12 +433,12 @@ public class ActionService {
 
     public List<Action> getActionsByPageId(Integer pageId) {
         if (pageId == null) {
-            return new ArrayList<>();
+            throw new ServerException("pageId不能为空");
         }
 
         Action query = new Action();
         query.setPageId(pageId);
-        return selectByAction(query);
+        return getActions(query);
     }
 
 }

@@ -5,6 +5,7 @@ import org.springframework.util.CollectionUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -30,7 +31,7 @@ public class Tree {
         }
 
         Map<Integer, TreeNode> nodeMap = nodes.stream()
-                .collect(Collectors.toMap(TreeNode::getId, v -> v, (k1, k2) -> k1));
+                .collect(Collectors.toMap(TreeNode::getId, Function.identity(), (k1, k2) -> k1));
 
         for (TreeNode node : nodes) {
             TreeNode parent = nodeMap.get(node.getParentId());

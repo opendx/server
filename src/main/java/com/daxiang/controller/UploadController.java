@@ -1,6 +1,7 @@
 package com.daxiang.controller;
 
 import com.daxiang.model.Response;
+import com.daxiang.model.UploadFile;
 import com.daxiang.service.UploadService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ public class UploadController {
 
     @PostMapping("/file/{fileType}")
     public Response uploadFile(MultipartFile file, @PathVariable Integer fileType) {
-       return uploadService.uploadFile(file, fileType);
+        UploadFile uploadFile = uploadService.upload(file, fileType);
+        return Response.success(uploadFile);
     }
 }

@@ -7,6 +7,7 @@ import lombok.Data;
  */
 @Data
 public class PageRequest {
+
     private Integer pageNum;
     private Integer pageSize;
 
@@ -16,6 +17,6 @@ public class PageRequest {
      * @return
      */
     public boolean needPaging() {
-        return pageNum != null && pageNum > 0 && pageSize != null && pageSize > 0;
+        return (pageNum != null && pageNum > 0) && (pageSize != null && pageSize > 0);
     }
 }

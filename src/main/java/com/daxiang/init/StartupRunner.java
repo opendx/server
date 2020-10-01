@@ -1,7 +1,6 @@
 package com.daxiang.init;
 
 import com.daxiang.model.UploadFile;
-import com.daxiang.service.DataMigrationService;
 import com.daxiang.service.TestPlanService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +20,6 @@ public class StartupRunner implements ApplicationRunner {
 
     @Autowired
     private TestPlanService testPlanService;
-    @Autowired
-    private DataMigrationService dataMigrationService;
 
     @Value("${static-location}/")
     private String staticLocation;
@@ -67,8 +64,5 @@ public class StartupRunner implements ApplicationRunner {
 
         // 启动server时，按cron表达式执行所有开启的定时任务
         testPlanService.scheduleEnabledTasks();
-
-        // v0.7.5 数据迁移 todo 后续删除
-        dataMigrationService.actionStepParamValuesToArgs();
     }
 }

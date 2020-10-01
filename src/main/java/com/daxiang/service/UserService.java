@@ -1,10 +1,10 @@
 package com.daxiang.service;
 
-import com.daxiang.exception.BusinessException;
+import com.daxiang.exception.ServerException;
 import com.daxiang.mbg.mapper.UserMapper;
 import com.daxiang.mbg.po.Project;
 import com.daxiang.mbg.po.Role;
-import com.daxiang.model.Page;
+import com.daxiang.model.PagedData;
 import com.daxiang.model.PageRequest;
 import com.daxiang.model.dto.UserDto;
 import com.daxiang.model.dto.UserProjectDto;
@@ -12,10 +12,8 @@ import com.daxiang.model.dto.UserRoleDto;
 import com.daxiang.security.JwtTokenUtil;
 import com.daxiang.mbg.po.User;
 import com.daxiang.mbg.po.UserExample;
-import com.daxiang.model.Response;
-import com.daxiang.security.SecurityUtil;
 import com.github.pagehelper.PageHelper;
-import com.google.common.collect.ImmutableMap;
+import com.github.pagehelper.Page;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -30,6 +28,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 
@@ -55,7 +54,7 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
 
     @Transactional
-    public Response add(UserDto userDto) {
+    public void add(UserDto userDto) {
         User user = new User();
         BeanUtils.copyProperties(userDto, user);
 
@@ -63,107 +62,70 @@ public class UserService {
         user.setCreateTime(new Date());
 
         // 用户
-        int insertRow;
+        int insertCount;
         try {
-            insertRow = userMapper.insertSelective(user);
+            insertCount = userMapper.insertSelective(user);
         } catch (DuplicateKeyException e) {
-            return Response.fail("用户名已存在");
+            throw new ServerException(user.getUsername() + "已存在");
         }
-        if (insertRow != 1) {
-            return Response.fail("添加用户失败，请稍后重试");
-        }
-
-        // 用户角色
-        insertRow = userRoleService.addBatch(user.getId(), userDto.getRoles());
-        if (insertRow != userDto.getRoles().size()) {
-            throw new BusinessException("添加角色失败，请稍后重试");
+        if (insertCount != 1) {
+            throw new ServerException("添加用户失败，请稍后重试");
         }
 
-        // 用户项目
-        insertRow = userProjectService.addBatch(user.getId(), userDto.getProjects());
-        if (insertRow != userDto.getProjects().size()) {
-            throw new BusinessException("添加用户项目失败，请稍后重试");
-        }
-
-        return Response.success("添加用户成功");
+        userRoleService.addBatch(user.getId(), userDto.getRoles());
+        userProjectService.addBatch(user.getId(), userDto.getProjects());
     }
 
-
     @Transactional
-    public Response delete(Integer userId) {
+    public void delete(Integer userId) {
         if (userId == null) {
-            return Response.fail("userId不能为空");
+            throw new ServerException("userId不能为空");
         }
 
-        // 删除用户角色
         userRoleService.deleteByUserId(userId);
-        // 删除用户项目
         userProjectService.deleteByUserId(userId);
-        // 删除用户
         userMapper.deleteByPrimaryKey(userId);
-
-        return Response.success("删除成功");
     }
 
     @Transactional
-    public Response update(UserDto userDto) {
+    public void update(UserDto userDto) {
         User user = new User();
         BeanUtils.copyProperties(userDto, user);
 
         User originalUser = userMapper.selectByPrimaryKey(user.getId());
         if (originalUser == null) {
-            return Response.fail("用户不存在");
+            throw new ServerException("用户不存在");
         }
 
         if (!originalUser.getPassword().equals(user.getPassword())) { // 修改了密码，需要重新encode
             user.setPassword(passwordEncoder.encode(user.getPassword()));
         }
 
-        int updateRow;
         try {
-            updateRow = userMapper.updateByPrimaryKeySelective(user);
+            int updateCount = userMapper.updateByPrimaryKeySelective(user);
+            if (updateCount != 1) {
+                throw new ServerException("更新用户失败，请稍后重试");
+            }
         } catch (DuplicateKeyException e) {
-            return Response.fail("命名冲突");
-        }
-        if (updateRow != 1) {
-            return Response.fail("更新用户失败，请稍后重试");
+            throw new ServerException(user.getUsername() + "已存在");
         }
 
-        // 删除用户角色
         userRoleService.deleteByUserId(user.getId());
+        userRoleService.addBatch(user.getId(), userDto.getRoles());
 
-        // 添加用户角色
-        int insertRow = userRoleService.addBatch(user.getId(), userDto.getRoles());
-        if (insertRow != userDto.getRoles().size()) {
-            throw new BusinessException("添加用户角色失败");
-        }
-
-        // 删除用户项目
         userProjectService.deleteByUserId(user.getId());
-
-        // 添加用户项目
-        insertRow = userProjectService.addBatch(user.getId(), userDto.getProjects());
-        if (insertRow != userDto.getProjects().size()) {
-            throw new BusinessException("添加用户项目失败");
-        }
-
-        return Response.success("更新用户成功");
+        userProjectService.addBatch(user.getId(), userDto.getProjects());
     }
 
-    public Response list(User user, PageRequest pageRequest) {
-        boolean needPaging = pageRequest.needPaging();
-        if (needPaging) {
-            PageHelper.startPage(pageRequest.getPageNum(), pageRequest.getPageSize());
+    public PagedData<UserDto> list(User query, String orderBy, PageRequest pageRequest) {
+        Page page = PageHelper.startPage(pageRequest.getPageNum(), pageRequest.getPageSize());
+
+        if (StringUtils.isEmpty(orderBy)) {
+            orderBy = "create_time desc";
         }
 
-        List<User> users = selectByUser(user);
-        List<UserDto> userDtos = convertUsersToUserDtos(users);
-
-        if (needPaging) {
-            return Response.success(Page.build(userDtos, Page.getTotal(users)));
-        } else {
-            return Response.success(userDtos);
-        }
+        List<UserDto> userDtos = getUserDtos(query, orderBy);
+        return new PagedData<>(userDtos, page.getTotal());
     }
 
     private List<UserDto> convertUsersToUserDtos(List<User> users) {
@@ -178,7 +140,7 @@ public class UserService {
         Map<Integer, List<UserProjectDto>> userProjectDtosMap = userProjectService.getUserProjectDtosByUserIds(userIds).stream()
                 .collect(Collectors.groupingBy(UserProjectDto::getUserId));
 
-        return users.stream().map(user -> {
+        List<UserDto> userDtos = users.stream().map(user -> {
             UserDto userDto = new UserDto();
             BeanUtils.copyProperties(user, userDto);
 
@@ -200,54 +162,55 @@ public class UserService {
 
             return userDto;
         }).collect(Collectors.toList());
+
+        return userDtos;
     }
 
-    public Response login(User user) {
+    public String login(User user) {
         try {
             authenticationManager
                     .authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
         } catch (DisabledException e) {
-            return Response.fail("账户已禁用");
+            throw new ServerException("账户已禁用");
         } catch (AuthenticationException e) {
-            return Response.fail("用户名或密码错误");
+            throw new ServerException("用户名或密码错误");
         }
 
-        String token = JwtTokenUtil.createToken(user.getUsername());
-        return Response.success("登陆成功", ImmutableMap.of("token", token));
+        return JwtTokenUtil.createToken(user.getUsername());
     }
 
-    public Response getInfo() {
-        return Response.success(SecurityUtil.getCurrentUserDto());
+    public List<UserDto> getUserDtos(User query, String orderBy) {
+        List<User> users = getUsers(query, orderBy);
+        return convertUsersToUserDtos(users);
     }
 
-    public Response logout() {
-        return Response.success();
-    }
-
-    private List<User> selectByUser(User user) {
+    public List<User> getUsers(User query, String orderBy) {
         UserExample example = new UserExample();
         UserExample.Criteria criteria = example.createCriteria();
 
-        if (user != null) {
-            if (user.getId() != null) {
-                criteria.andIdEqualTo(user.getId());
+        if (query != null) {
+            if (query.getId() != null) {
+                criteria.andIdEqualTo(query.getId());
             }
-            if (!StringUtils.isEmpty(user.getUsername())) {
-                criteria.andUsernameLike("%" + user.getUsername() + "%");
+            if (!StringUtils.isEmpty(query.getUsername())) {
+                criteria.andUsernameLike("%" + query.getUsername() + "%");
             }
-            if (!StringUtils.isEmpty(user.getNickName())) {
-                criteria.andNickNameEqualTo(user.getNickName());
+            if (!StringUtils.isEmpty(query.getNickName())) {
+                criteria.andNickNameEqualTo(query.getNickName());
             }
-            if (user.getStatus() != null) {
-                criteria.andStatusEqualTo(user.getStatus());
+            if (query.getStatus() != null) {
+                criteria.andStatusEqualTo(query.getStatus());
             }
         }
-        example.setOrderByClause("create_time desc");
+
+        if (!StringUtils.isEmpty(orderBy)) {
+            example.setOrderByClause(orderBy);
+        }
 
         return userMapper.selectByExample(example);
     }
 
-    private User getUserByUsername(String username) {
+    public User getUserByUsername(String username) {
         UserExample example = new UserExample();
         example.createCriteria().andUsernameEqualTo(username);
         List<User> users = userMapper.selectByExample(example);
@@ -283,7 +246,7 @@ public class UserService {
         return userDto;
     }
 
-    private List<User> getUsersByIds(List<Integer> userIds) {
+    public List<User> getUsersByIds(List<Integer> userIds) {
         if (CollectionUtils.isEmpty(userIds)) {
             return new ArrayList<>();
         }
@@ -296,7 +259,7 @@ public class UserService {
 
     public Map<Integer, User> getUserMapByIds(List<Integer> userIds) {
         List<User> users = getUsersByIds(userIds);
-        return users.stream().collect(Collectors.toMap(User::getId, u -> u, (k1, k2) -> k1));
+        return users.stream().collect(Collectors.toMap(User::getId, Function.identity(), (k1, k2) -> k1));
     }
 
     public User getUserById(Integer userId) {

@@ -21,4 +21,5 @@ public class ApplicationController {
     public Response version() {
         return Response.success(ImmutableMap.of("version", version));
     }
+
 }

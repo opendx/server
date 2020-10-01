@@ -1,14 +1,15 @@
 package com.daxiang.service;
 
+import com.daxiang.exception.ServerException;
 import com.daxiang.mbg.mapper.DeviceTestTaskMapper;
 import com.daxiang.mbg.po.DeviceTestTaskExample;
 import com.daxiang.model.PageRequest;
-import com.daxiang.model.Response;
+import com.daxiang.model.PagedData;
 import com.daxiang.model.action.Step;
 import com.daxiang.model.dto.Testcase;
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.Page;
 import com.daxiang.mbg.po.DeviceTestTask;
-import com.daxiang.model.Page;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,77 +28,71 @@ public class DeviceTestTaskService {
     @Autowired
     private DeviceTestTaskMapper deviceTestTaskMapper;
 
-    public Response update(DeviceTestTask deviceTestTask) {
-        if (deviceTestTask.getId() == null) {
-            return Response.fail("deviceTestTaskId不能为空");
-        }
-
-        int insertRow = deviceTestTaskMapper.updateByPrimaryKeySelective(deviceTestTask);
-        return insertRow == 1 ? Response.success("更新成功") : Response.fail("更新失败，请稍后重试");
-    }
-
-    public Response list(DeviceTestTask deviceTestTask, PageRequest pageRequest) {
-        boolean needPaging = pageRequest.needPaging();
-        if (needPaging) {
-            PageHelper.startPage(pageRequest.getPageNum(), pageRequest.getPageSize());
-        }
-
-        List<DeviceTestTask> deviceTestTasks = selectByDeviceTestTask(deviceTestTask);
-
-        if (needPaging) {
-            long total = Page.getTotal(deviceTestTasks);
-            return Response.success(Page.build(deviceTestTasks, total));
-        } else {
-            return Response.success(deviceTestTasks);
+    public void update(DeviceTestTask deviceTestTask) {
+        int updateCount = deviceTestTaskMapper.updateByPrimaryKeySelective(deviceTestTask);
+        if (updateCount != 1) {
+            throw new ServerException("更新失败，请稍后重试");
         }
     }
 
-    private List<DeviceTestTask> selectByDeviceTestTask(DeviceTestTask deviceTestTask) {
-        DeviceTestTaskExample deviceTestTaskExample = new DeviceTestTaskExample();
-        DeviceTestTaskExample.Criteria criteria = deviceTestTaskExample.createCriteria();
+    public PagedData<DeviceTestTask> list(DeviceTestTask query, String orderBy, PageRequest pageRequest) {
+        Page page = PageHelper.startPage(pageRequest.getPageNum(), pageRequest.getPageSize());
 
-        if (deviceTestTask != null) {
-            if (deviceTestTask.getId() != null) {
-                criteria.andIdEqualTo(deviceTestTask.getId());
-            }
-            if (deviceTestTask.getTestTaskId() != null) {
-                criteria.andTestTaskIdEqualTo(deviceTestTask.getTestTaskId());
-            }
-            if (!StringUtils.isEmpty(deviceTestTask.getDeviceId())) {
-                criteria.andDeviceIdEqualTo(deviceTestTask.getDeviceId());
-            }
-            if (deviceTestTask.getStatus() != null) {
-                criteria.andStatusEqualTo(deviceTestTask.getStatus());
-            }
-        }
-
-        return deviceTestTaskMapper.selectByExampleWithBLOBs(deviceTestTaskExample);
+        List<DeviceTestTask> deviceTestTasks = getDeviceTestTasks(query, orderBy);
+        return new PagedData<>(deviceTestTasks, page.getTotal());
     }
 
-    public Response getFirstUnStartDeviceTestTask(String deviceId) {
-        if (StringUtils.isEmpty(deviceId)) {
-            return Response.fail("deviceId不能为空");
-        }
+    public List<DeviceTestTask> getDeviceTestTasks(DeviceTestTask query) {
+        return getDeviceTestTasks(query, null);
+    }
 
+    public List<DeviceTestTask> getDeviceTestTasks(DeviceTestTask query, String orderBy) {
         DeviceTestTaskExample example = new DeviceTestTaskExample();
         DeviceTestTaskExample.Criteria criteria = example.createCriteria();
 
-        criteria.andDeviceIdEqualTo(deviceId)
-                .andStatusEqualTo(DeviceTestTask.UNSTART_STATUS);
-        example.setOrderByClause("id asc limit 1");
+        if (query != null) {
+            if (query.getId() != null) {
+                criteria.andIdEqualTo(query.getId());
+            }
+            if (query.getTestTaskId() != null) {
+                criteria.andTestTaskIdEqualTo(query.getTestTaskId());
+            }
+            if (!StringUtils.isEmpty(query.getDeviceId())) {
+                criteria.andDeviceIdEqualTo(query.getDeviceId());
+            }
+            if (query.getStatus() != null) {
+                criteria.andStatusEqualTo(query.getStatus());
+            }
+        }
 
-        List<DeviceTestTask> deviceTestTasks = deviceTestTaskMapper.selectByExampleWithBLOBs(example);
-        return CollectionUtils.isEmpty(deviceTestTasks) ? Response.success() : Response.success(deviceTestTasks.get(0));
+        if (!StringUtils.isEmpty(orderBy)) {
+            example.setOrderByClause(orderBy);
+        }
+
+        return deviceTestTaskMapper.selectByExampleWithBLOBs(example);
     }
 
-    public Response updateTestcase(Integer deviceTestTaskId, Testcase sourceTestcase) {
+    public DeviceTestTask getFirstUnStartDeviceTestTask(String deviceId) {
+        if (StringUtils.isEmpty(deviceId)) {
+            throw new ServerException("deviceId不能为空");
+        }
+
+        DeviceTestTask query = new DeviceTestTask();
+        query.setDeviceId(deviceId);
+        query.setStatus(DeviceTestTask.UNSTART_STATUS);
+
+        List<DeviceTestTask> deviceTestTasks = getDeviceTestTasks(query, "id asc limit 1");
+        return CollectionUtils.isEmpty(deviceTestTasks) ? null : deviceTestTasks.get(0);
+    }
+
+    public void updateTestcase(Integer deviceTestTaskId, Testcase sourceTestcase) {
         if (deviceTestTaskId == null) {
-            return Response.fail("deviceTestTaskId不能为空");
+            throw new ServerException("deviceTestTaskId不能为空");
         }
 
         DeviceTestTask deviceTestTask = deviceTestTaskMapper.selectByPrimaryKey(deviceTestTaskId);
         if (deviceTestTask == null) {
-            return Response.fail("DeviceTestTask不存在");
+            throw new ServerException("deviceTestTask不存在");
         }
 
         deviceTestTask.getTestcases().stream()
@@ -118,8 +113,10 @@ public class DeviceTestTaskService {
                     }
                 });
 
-        int updateRow = deviceTestTaskMapper.updateByPrimaryKeySelective(deviceTestTask);
-        return updateRow == 1 ? Response.success("更新成功") : Response.fail("更新失败");
+        int updateCount = deviceTestTaskMapper.updateByPrimaryKeySelective(deviceTestTask);
+        if (updateCount != 1) {
+            throw new ServerException("更新失败，请稍后重试");
+        }
     }
 
     private void copyStepProperties(Step sourceStep, Step targetStep) {
@@ -152,14 +149,17 @@ public class DeviceTestTaskService {
         }
     }
 
-    public int add(DeviceTestTask deviceTestTask) {
-        return deviceTestTaskMapper.insertSelective(deviceTestTask);
+    public void add(DeviceTestTask deviceTestTask) {
+        int insertCount = deviceTestTaskMapper.insertSelective(deviceTestTask);
+        if (insertCount != 1) {
+            throw new ServerException("添加失败");
+        }
     }
 
     public List<DeviceTestTask> getDeviceTestTasksByTestTaskId(Integer testTaskId) {
         DeviceTestTask query = new DeviceTestTask();
         query.setTestTaskId(testTaskId);
-        return selectByDeviceTestTask(query);
+        return getDeviceTestTasks(query);
     }
 
     public List<DeviceTestTask> getDeviceTestTasksByTestTaskIds(List<Integer> testTaskIds) {
@@ -170,34 +170,39 @@ public class DeviceTestTaskService {
         return deviceTestTaskMapper.selectByExampleWithBLOBs(example);
     }
 
-    public int deleteBatch(List<Integer> ids) {
+    public void deleteBatch(List<Integer> ids) {
         if (CollectionUtils.isEmpty(ids)) {
-            return 0;
+            return;
         }
 
         DeviceTestTaskExample example = new DeviceTestTaskExample();
         DeviceTestTaskExample.Criteria criteria = example.createCriteria();
         criteria.andIdIn(ids);
 
-        return deviceTestTaskMapper.deleteByExample(example);
+        int deleteCount = deviceTestTaskMapper.deleteByExample(example);
+        if (deleteCount != ids.size()) {
+            throw new ServerException("删除失败");
+        }
     }
 
-    public Response delete(Integer deviceTestTaskId) {
+    public void delete(Integer deviceTestTaskId) {
         if (deviceTestTaskId == null) {
-            return Response.fail("deviceTestTaskId不能为空");
+            throw new ServerException("deviceTestTaskId不能为空");
         }
 
         DeviceTestTask deviceTestTask = deviceTestTaskMapper.selectByPrimaryKey(deviceTestTaskId);
         if (deviceTestTask == null) {
-            return Response.fail("deviceTestTask不存在");
+            throw new ServerException("deviceTestTask不存在");
         }
 
         if (deviceTestTask.getStatus() == DeviceTestTask.RUNNING_STATUS) {
-            return Response.fail("deviceTestTask正在执行，无法删除");
+            throw new ServerException("deviceTestTask正在执行，无法删除");
         }
 
-        int deleteRow = deviceTestTaskMapper.deleteByPrimaryKey(deviceTestTaskId);
-        return deleteRow == 1 ? Response.success("删除成功") : Response.fail("删除失败，请稍后重试");
+        int deleteCount = deviceTestTaskMapper.deleteByPrimaryKey(deviceTestTaskId);
+        if (deleteCount != 1) {
+            throw new ServerException("删除失败，请稍后重试");
+        }
     }
 
 }
