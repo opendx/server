@@ -1,12 +1,13 @@
 package com.daxiang.service;
 
 import com.daxiang.agent.AgentClient;
+import com.daxiang.exception.ServerException;
 import com.daxiang.mbg.mapper.BrowserMapper;
 import com.daxiang.mbg.po.Browser;
 import com.daxiang.mbg.po.BrowserExample;
-import com.daxiang.model.Page;
+import com.daxiang.model.PagedData;
 import com.daxiang.model.PageRequest;
-import com.daxiang.model.Response;
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 
@@ -30,73 +32,73 @@ public class BrowserService {
     @Autowired
     private AgentClient agentClient;
 
-    public Response save(Browser browser) {
+    public void save(Browser browser) {
         Browser dbBrowser = browserMapper.selectByPrimaryKey(browser.getId());
 
-        int saveRow;
+        int saveCount;
         if (dbBrowser == null) {
             browser.setCreateTime(new Date());
-            saveRow = browserMapper.insertSelective(browser);
+            saveCount = browserMapper.insertSelective(browser);
         } else {
-            saveRow = browserMapper.updateByPrimaryKeySelective(browser);
+            saveCount = browserMapper.updateByPrimaryKeySelective(browser);
         }
 
-        return saveRow == 1 ? Response.success("保存成功") : Response.fail("保存失败");
-    }
-
-    public Response list(Browser browser, PageRequest pageRequest) {
-        boolean needPaging = pageRequest.needPaging();
-        if (needPaging) {
-            PageHelper.startPage(pageRequest.getPageNum(), pageRequest.getPageSize());
-        }
-
-        List<Browser> browsers = selectByBrowser(browser);
-
-        if (needPaging) {
-            long total = Page.getTotal(browsers);
-            return Response.success(Page.build(browsers, total));
-        } else {
-            return Response.success(browsers);
+        if (saveCount != 1) {
+            throw new ServerException("保存失败，请稍后重试");
         }
     }
 
-    private List<Browser> selectByBrowser(Browser browser) {
+    public PagedData<Browser> list(Browser query, String orderBy, PageRequest pageRequest) {
+        Page page = PageHelper.startPage(pageRequest.getPageNum(), pageRequest.getPageSize());
+
+        if (StringUtils.isEmpty(orderBy)) {
+            orderBy = "status desc,create_time desc";
+        }
+
+        List<Browser> browsers = getBrowsers(query, orderBy);
+        return new PagedData<>(browsers, page.getTotal());
+    }
+
+    public List<Browser> getBrowsers(Browser query, String orderBy) {
         BrowserExample example = new BrowserExample();
         BrowserExample.Criteria criteria = example.createCriteria();
 
-        if (browser != null) {
-            if (!StringUtils.isEmpty(browser.getId())) {
-                criteria.andIdEqualTo(browser.getId());
+        if (query != null) {
+            if (!StringUtils.isEmpty(query.getId())) {
+                criteria.andIdEqualTo(query.getId());
             }
-            if (!StringUtils.isEmpty(browser.getType())) {
-                criteria.andTypeEqualTo(browser.getType());
+            if (!StringUtils.isEmpty(query.getType())) {
+                criteria.andTypeEqualTo(query.getType());
             }
-            if (!StringUtils.isEmpty(browser.getVersion())) {
-                criteria.andVersionEqualTo(browser.getVersion());
+            if (!StringUtils.isEmpty(query.getVersion())) {
+                criteria.andVersionEqualTo(query.getVersion());
             }
-            if (browser.getPlatform() != null) {
-                criteria.andPlatformEqualTo(browser.getPlatform());
+            if (query.getPlatform() != null) {
+                criteria.andPlatformEqualTo(query.getPlatform());
             }
-            if (!StringUtils.isEmpty(browser.getAgentIp())) {
-                criteria.andAgentIpEqualTo(browser.getAgentIp());
+            if (!StringUtils.isEmpty(query.getAgentIp())) {
+                criteria.andAgentIpEqualTo(query.getAgentIp());
             }
-            if (browser.getStatus() != null) {
-                criteria.andStatusEqualTo(browser.getStatus());
+            if (query.getStatus() != null) {
+                criteria.andStatusEqualTo(query.getStatus());
             }
         }
-        example.setOrderByClause("status desc,create_time desc");
+
+        if (!StringUtils.isEmpty(orderBy)) {
+            example.setOrderByClause(orderBy);
+        }
 
         return browserMapper.selectByExample(example);
     }
 
-    public Response start(String browserId) {
+    public Browser start(String browserId) {
         if (StringUtils.isEmpty(browserId)) {
-            return Response.fail("浏览器id不能为空");
+            throw new ServerException("浏览器id不能为空");
         }
 
         Browser dbBrowser = browserMapper.selectByPrimaryKey(browserId);
         if (dbBrowser == null) {
-            return Response.fail("浏览器不存在");
+            throw new ServerException("浏览器不存在");
         }
 
         // 有时server被强制关闭，导致数据库浏览器状态与实际不一致
@@ -113,24 +115,24 @@ public class BrowserService {
                 dbBrowser.setStatus(Browser.OFFLINE_STATUS);
                 browserMapper.updateByPrimaryKeySelective(dbBrowser);
             }
-            return Response.fail("浏览器不在线");
+            throw new ServerException("浏览器不在线");
         } else {
             if (agentBrowser.getStatus() == Browser.IDLE_STATUS) {
-                return Response.success(agentBrowser);
+                return agentBrowser;
             } else {
                 // 同步最新状态
                 browserMapper.updateByPrimaryKeySelective(agentBrowser);
-                return Response.fail("浏览器未闲置");
+                throw new ServerException("浏览器未闲置");
             }
         }
     }
 
-    public Response getOnlineBrowsers() {
+    public List<Browser> getOnlineBrowsers() {
         BrowserExample example = new BrowserExample();
         BrowserExample.Criteria criteria = example.createCriteria();
 
         criteria.andStatusNotEqualTo(Browser.OFFLINE_STATUS);
-        return Response.success(browserMapper.selectByExample(example));
+        return browserMapper.selectByExample(example);
     }
 
     public List<Browser> getOnlineBrowsersByAgentIps(List<String> agentIps) {
@@ -156,7 +158,7 @@ public class BrowserService {
         browserMapper.updateByExampleSelective(browser, example);
     }
 
-    private List<Browser> getBrowsersByIds(Set<String> browserIds) {
+    public List<Browser> getBrowsersByIds(Set<String> browserIds) {
         if (CollectionUtils.isEmpty(browserIds)) {
             return new ArrayList<>();
         }
@@ -169,6 +171,6 @@ public class BrowserService {
 
     public Map<String, Browser> getBrowserMapByBrowserIds(Set<String> browserIds) {
         List<Browser> browsers = getBrowsersByIds(browserIds);
-        return browsers.stream().collect(Collectors.toMap(Browser::getId, b -> b, (k1, k2) -> k1));
+        return browsers.stream().collect(Collectors.toMap(Browser::getId, Function.identity(), (k1, k2) -> k1));
     }
 }

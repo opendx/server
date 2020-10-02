@@ -2,11 +2,16 @@ package com.daxiang.controller;
 
 import com.daxiang.mbg.po.TestTask;
 import com.daxiang.model.PageRequest;
+import com.daxiang.model.PagedData;
 import com.daxiang.model.Response;
+import com.daxiang.model.vo.TestTaskSummary;
+import com.daxiang.model.vo.TestTaskVo;
 import com.daxiang.security.SecurityUtil;
 import com.daxiang.service.TestTaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 /**
@@ -19,41 +24,32 @@ public class TestTaskController {
     @Autowired
     private TestTaskService testTaskService;
 
-    /**
-     * 提交测试任务
-     *
-     * @return
-     */
     @GetMapping("/commit")
     public Response commit(Integer testPlanId) {
-        return testTaskService.commit(testPlanId, SecurityUtil.getCurrentUserId());
+        testTaskService.commit(testPlanId, SecurityUtil.getCurrentUserId());
+        return Response.success("提交成功");
     }
 
-    /**
-     * 测试任务列表
-     *
-     * @param testTask
-     * @param pageRequest
-     * @return
-     */
     @PostMapping("/list")
-    public Response list(TestTask testTask, PageRequest pageRequest) {
-        return testTaskService.list(testTask, pageRequest);
+    public Response list(TestTask query, String orderBy, PageRequest pageRequest) {
+        if (pageRequest.needPaging()) {
+            PagedData<TestTaskVo> pagedData = testTaskService.list(query, orderBy, pageRequest);
+            return Response.success(pagedData);
+        } else {
+            List<TestTaskVo> testTaskVos = testTaskService.getTestTaskVos(query, orderBy);
+            return Response.success(testTaskVos);
+        }
     }
 
-    /**
-     * 测试任务概要
-     *
-     * @param testTaskId
-     * @return
-     */
     @GetMapping("/{testTaskId}/summary")
     public Response getTestTaskSummary(@PathVariable Integer testTaskId) {
-        return testTaskService.getTestTaskSummary(testTaskId);
+        TestTaskSummary testTaskSummary = testTaskService.getTestTaskSummary(testTaskId);
+        return Response.success(testTaskSummary);
     }
 
     @DeleteMapping("/{testTaskId}")
     public Response delete(@PathVariable Integer testTaskId) {
-        return testTaskService.delete(testTaskId);
+        testTaskService.delete(testTaskId);
+        return Response.success("删除成功");
     }
 }

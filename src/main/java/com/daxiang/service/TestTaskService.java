@@ -1,16 +1,15 @@
 package com.daxiang.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.daxiang.exception.ServerException;
 import com.daxiang.mbg.mapper.TestTaskMapper;
 import com.daxiang.mbg.po.*;
-import com.daxiang.model.environment.EnvironmentValue;
 import com.daxiang.model.vo.TestTaskVo;
 import com.daxiang.model.vo.TestTaskSummary;
 import com.github.pagehelper.PageHelper;
-import com.daxiang.exception.BusinessException;
-import com.daxiang.model.Page;
+import com.github.pagehelper.Page;
+import com.daxiang.model.PagedData;
 import com.daxiang.model.PageRequest;
-import com.daxiang.model.Response;
 import com.daxiang.model.dto.Testcase;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +17,11 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.text.NumberFormat;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -64,14 +65,14 @@ public class TestTaskService {
      * @return
      */
     @Transactional
-    public Response commit(Integer testPlanId, Integer commitorUid) {
+    public void commit(Integer testPlanId, Integer commitorUid) {
         if (testPlanId == null || commitorUid == null) {
-            return Response.fail("testPlanId || commitorUid 不能为空");
+            throw new ServerException("testPlanId or commitorUid 不能为空");
         }
 
         TestPlan testPlan = testPlanService.getTestPlanById(testPlanId);
         if (testPlan == null) {
-            return Response.fail("测试计划不存在");
+            throw new ServerException("测试计划不存在");
         }
 
         // 待测试的测试用例
@@ -83,7 +84,7 @@ public class TestTaskService {
                 .filter(action -> action.getState() == Action.RELEASE_STATE).collect(Collectors.toList());
 
         if (CollectionUtils.isEmpty(testcases)) {
-            return Response.fail("测试集内没有已发布的测试用例");
+            throw new ServerException("测试集内没有已发布的测试用例");
         }
 
         testcaseIds = testcases.stream().map(Action::getId).collect(Collectors.toList());
@@ -91,7 +92,7 @@ public class TestTaskService {
         for (Action testcase : testcases) {
             List<Integer> depends = testcase.getDepends();
             if (!CollectionUtils.isEmpty(depends) && !testcaseIds.containsAll(depends)) {
-                return Response.fail("测试用例: " + testcase.getName() + ", 依赖的用例不在当前提测的所有用例中");
+                throw new ServerException("测试用例: " + testcase.getName() + ", 依赖的用例不在当前提测的所有用例中");
             }
         }
 
@@ -99,7 +100,7 @@ public class TestTaskService {
         List<Integer> beforeAndAfterActionIds = Stream.of(testPlan.getBeforeClass(), testPlan.getBeforeMethod(), testPlan.getAfterClass(), testPlan.getAfterMethod())
                 .filter(Objects::nonNull).distinct().collect(Collectors.toList());
         Map<Integer, Action> beforeAndAfterActionMap = actionService.getActionsByIds(beforeAndAfterActionIds).stream()
-                .collect(Collectors.toMap(Action::getId, a -> a));
+                .collect(Collectors.toMap(Action::getId, Function.identity()));
 
         // 待处理的所有action
         List<Action> actions = new ArrayList<>(testcases);
@@ -162,13 +163,8 @@ public class TestTaskService {
             deviceTestTask.setTestcases(cases);
             deviceTestTask.setStatus(DeviceTestTask.UNSTART_STATUS);
 
-            int insertRow = deviceTestTaskService.add(deviceTestTask);
-            if (insertRow != 1) {
-                throw new BusinessException(deviceId + "保存测试任务失败");
-            }
+            deviceTestTaskService.add(deviceTestTask);
         });
-
-        return Response.success("提交测试成功");
     }
 
     /**
@@ -183,7 +179,7 @@ public class TestTaskService {
         Map<String, List<Action>> result = new HashMap<>(); // deviceId : List<Action>
 
         if (runMode == TestPlan.RUN_MODE_COMPATIBLE) { // 兼容模式：所有device都运行同一份用例
-            result = deviceIds.stream().collect(Collectors.toMap(deviceId -> deviceId, v -> testcases));
+            result = deviceIds.stream().collect(Collectors.toMap(Function.identity(), v -> testcases));
         } else if (runMode == TestPlan.RUN_MODE_EFFICIENCY) { // 高效模式：平均分配用例给device
             int i = 0; // 分配到第几个device
             for (Action testcase : testcases) {
@@ -215,25 +211,19 @@ public class TestTaskService {
         if (insertRow == 1) {
             return testTask;
         } else {
-            throw new BusinessException("保存TestTask失败");
+            throw new ServerException("保存TestTask失败");
         }
     }
 
-    public Response list(TestTask testTask, PageRequest pageRequest) {
-        boolean needPaging = pageRequest.needPaging();
-        if (needPaging) {
-            PageHelper.startPage(pageRequest.getPageNum(), pageRequest.getPageSize());
+    public PagedData<TestTaskVo> list(TestTask query, String orderBy, PageRequest pageRequest) {
+        Page page = PageHelper.startPage(pageRequest.getPageNum(), pageRequest.getPageSize());
+
+        if (StringUtils.isEmpty(orderBy)) {
+            orderBy = "commit_time desc";
         }
 
-        List<TestTask> testTasks = selectByTestTask(testTask);
-        List<TestTaskVo> testTaskVos = convertTestTasksToTestTaskVos(testTasks);
-
-        if (needPaging) {
-            long total = Page.getTotal(testTasks);
-            return Response.success(Page.build(testTaskVos, total));
-        } else {
-            return Response.success(testTaskVos);
-        }
+        List<TestTaskVo> testTaskVos = getTestTaskVos(query, orderBy);
+        return new PagedData<>(testTaskVos, page.getTotal());
     }
 
     private List<TestTaskVo> convertTestTasksToTestTaskVos(List<TestTask> testTasks) {
@@ -248,7 +238,7 @@ public class TestTaskService {
                 .collect(Collectors.toList());
         Map<Integer, User> userMap = userService.getUserMapByIds(creatorUids);
 
-        return testTasks.stream().map(testTask -> {
+        List<TestTaskVo> testTaskVos = testTasks.stream().map(testTask -> {
             TestTaskVo testTaskVo = new TestTaskVo();
             BeanUtils.copyProperties(testTask, testTaskVo);
 
@@ -261,54 +251,71 @@ public class TestTaskService {
 
             return testTaskVo;
         }).collect(Collectors.toList());
+
+        return testTaskVos;
     }
 
-    private List<TestTask> selectByTestTask(TestTask testTask) {
+    public List<TestTaskVo> getTestTaskVos(TestTask query, String orderBy) {
+        List<TestTask> testTasks = getTestTasks(query, orderBy);
+        return convertTestTasksToTestTaskVos(testTasks);
+    }
+
+    public List<TestTask> getTestTasks(TestTask query) {
+        return getTestTasks(query, null);
+    }
+
+    public List<TestTask> getTestTasks(TestTask query, String orderBy) {
         TestTaskExample example = new TestTaskExample();
         TestTaskExample.Criteria criteria = example.createCriteria();
 
-        if (testTask != null) {
-            if (testTask.getId() != null) {
-                criteria.andIdEqualTo(testTask.getId());
+        if (query != null) {
+            if (query.getId() != null) {
+                criteria.andIdEqualTo(query.getId());
             }
-            if (testTask.getProjectId() != null) {
-                criteria.andProjectIdEqualTo(testTask.getProjectId());
+            if (query.getProjectId() != null) {
+                criteria.andProjectIdEqualTo(query.getProjectId());
             }
-            if (testTask.getTestPlanId() != null) {
-                criteria.andTestPlanIdEqualTo(testTask.getTestPlanId());
+            if (query.getTestPlanId() != null) {
+                criteria.andTestPlanIdEqualTo(query.getTestPlanId());
             }
-            if (testTask.getStatus() != null) {
-                criteria.andStatusEqualTo(testTask.getStatus());
+            if (query.getStatus() != null) {
+                criteria.andStatusEqualTo(query.getStatus());
             }
         }
-        example.setOrderByClause("commit_time desc");
+
+        if (!StringUtils.isEmpty(orderBy)) {
+            example.setOrderByClause(orderBy);
+        }
 
         return testTaskMapper.selectByExampleWithBLOBs(example);
     }
 
     public List<TestTask> getUnFinishedTestTasks() {
-        TestTask testTask = new TestTask();
-        testTask.setStatus(TestTask.UNFINISHED_STATUS);
-        return selectByTestTask(testTask);
+        TestTask query = new TestTask();
+        query.setStatus(TestTask.UNFINISHED_STATUS);
+        return getTestTasks(query);
     }
 
-    public int update(TestTask testTask) {
-        return testTaskMapper.updateByPrimaryKeySelective(testTask);
+    public void update(TestTask testTask) {
+        int updateCount = testTaskMapper.updateByPrimaryKeySelective(testTask);
+        if (updateCount != 1) {
+            throw new ServerException("更新失败");
+        }
     }
 
-    public Response getTestTaskSummary(Integer testTaskId) {
+    public TestTaskSummary getTestTaskSummary(Integer testTaskId) {
         if (testTaskId == null) {
-            return Response.fail("testTaskId不能为空");
+            throw new ServerException("testTaskId不能为空");
         }
 
         TestTask testTask = testTaskMapper.selectByPrimaryKey(testTaskId);
         if (testTask == null) {
-            return Response.fail("测试任务不存在");
+            throw new ServerException("测试任务不存在");
         }
 
         Project project = projectService.getProjectById(testTask.getProjectId());
         if (project == null) {
-            return Response.fail("项目不存在");
+            throw new ServerException("项目不存在");
         }
 
         TestTaskSummary summary = new TestTaskSummary();
@@ -331,29 +338,23 @@ public class TestTaskService {
         summary.setPassPercent(passPercent);
 
         if (testTask.getTestPlan() != null) {
-            Integer environmentId = testTask.getTestPlan().getEnvironmentId();
-            if (environmentId == EnvironmentValue.DEFAULT_ENVIRONMENT_ID) {
-                summary.setEnvironmentName("默认");
-            } else {
-                Environment environment = environmentService.getEnvironmentById(environmentId);
-                if (environment != null) {
-                    summary.setEnvironmentName(environment.getName());
-                }
-            }
+            Integer envId = testTask.getTestPlan().getEnvironmentId();
+            String envName = environmentService.getEnvironmentNameById(envId);
+            summary.setEnvironmentName(envName);
         }
 
-        return Response.success(summary);
+        return summary;
     }
 
     @Transactional
-    public Response delete(Integer testTaskId) {
+    public void delete(Integer testTaskId) {
         if (testTaskId == null) {
-            return Response.fail("testTaskId不能为空");
+            throw new ServerException("testTaskId不能为空");
         }
 
         TestTask testTask = testTaskMapper.selectByPrimaryKey(testTaskId);
         if (testTask == null) {
-            return Response.fail("testTask不存在");
+            throw new ServerException("testTask不存在");
         }
 
         List<DeviceTestTask> deviceTestTasks = deviceTestTaskService.getDeviceTestTasksByTestTaskId(testTaskId);
@@ -366,23 +367,17 @@ public class TestTaskService {
                 // 有device还在运行，不让删除testTask
                 String deviceIdsInRunning = deviceTestTasksInRunning.stream()
                         .map(DeviceTestTask::getDeviceId).collect(Collectors.joining("、"));
-                return Response.fail(deviceIdsInRunning + "，正在运行，无法删除");
+                throw new ServerException(deviceIdsInRunning + "，正在运行，无法删除");
             } else {
                 // 批量删除deviceTestTask
                 List<Integer> deviceTestTaskIds = deviceTestTasks.stream().map(DeviceTestTask::getId).collect(Collectors.toList());
-                int deleteRow = deviceTestTaskService.deleteBatch(deviceTestTaskIds);
-                if (deleteRow != deviceTestTasks.size()) {
-                    throw new BusinessException(String.format("删除deviceTestTask失败，deviceTestTasks: %d, deleteRow: %d", deviceTestTasks.size(), deleteRow));
-                }
+                deviceTestTaskService.deleteBatch(deviceTestTaskIds);
             }
         }
 
-        // 删除testTask
-        int deleteTestTaskRow = testTaskMapper.deleteByPrimaryKey(testTaskId);
-        if (deleteTestTaskRow == 1) {
-            return Response.success("删除成功");
-        } else {
-            throw new BusinessException("删除失败，请稍后重试");
+        int deleteCount = testTaskMapper.deleteByPrimaryKey(testTaskId);
+        if (deleteCount != 1) {
+            throw new ServerException("删除失败，请稍后重试");
         }
     }
 }

@@ -4,6 +4,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.daxiang.mbg.po.GlobalVar;
 import com.daxiang.mbg.po.Page;
 import com.daxiang.model.dto.Testcase;
+import com.daxiang.validator.group.UpdateGroup;
+
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -19,6 +22,7 @@ public class DeviceTestTask implements Serializable {
     /** 完成 */
     public static final int FINISHED_STATUS = 2;
 
+    @NotNull(message = "id不能为空", groups = {UpdateGroup.class})
     private Integer id;
 
     /**

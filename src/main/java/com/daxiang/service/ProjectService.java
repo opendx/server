@@ -1,14 +1,15 @@
 package com.daxiang.service;
 
+import com.daxiang.exception.ServerException;
 import com.daxiang.mbg.mapper.ProjectMapper;
 import com.daxiang.mbg.po.User;
 import com.daxiang.model.PageRequest;
-import com.daxiang.model.Response;
 import com.daxiang.mbg.po.ProjectExample;
 import com.daxiang.security.SecurityUtil;
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.Page;
 import com.daxiang.mbg.po.Project;
-import com.daxiang.model.Page;
+import com.daxiang.model.PagedData;
 import com.daxiang.model.vo.ProjectVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,53 +32,51 @@ public class ProjectService {
     @Autowired
     private UserService userService;
 
-    public Response add(Project project) {
+    public void add(Project project) {
         project.setCreateTime(new Date());
         project.setCreatorUid(SecurityUtil.getCurrentUserId());
 
-        int insertRow;
         try {
-            insertRow = projectMapper.insertSelective(project);
+            int insertCount = projectMapper.insertSelective(project);
+            if (insertCount != 1) {
+                throw new ServerException("添加失败，请稍后重试");
+            }
         } catch (DuplicateKeyException e) {
-            return Response.fail("命名冲突");
+            throw new ServerException(project.getName() + "已存在");
         }
-        return insertRow == 1 ? Response.success("添加Project成功") : Response.fail("添加Project失败，请稍后重试");
     }
 
-    public Response delete(Integer projectId) {
+    public void delete(Integer projectId) {
         if (projectId == null) {
-            return Response.fail("项目id不能为空");
+            throw new ServerException("projectId不能为空");
         }
 
-        int deleteRow = projectMapper.deleteByPrimaryKey(projectId);
-        return deleteRow == 1 ? Response.success("删除Project成功") : Response.fail("删除Project失败，请稍后重试");
+        int deleteCount = projectMapper.deleteByPrimaryKey(projectId);
+        if (deleteCount != 1) {
+            throw new ServerException("删除失败，请稍后重试");
+        }
     }
 
-    public Response update(Project project) {
-        int updateRow;
+    public void update(Project project) {
         try {
-            updateRow = projectMapper.updateByPrimaryKeySelective(project);
+            int updateCount = projectMapper.updateByPrimaryKeySelective(project);
+            if (updateCount != 1) {
+                throw new ServerException("更新失败，请稍后重试");
+            }
         } catch (DuplicateKeyException e) {
-            return Response.fail("命名冲突");
+            throw new ServerException(project.getName() + "已存在");
         }
-        return updateRow == 1 ? Response.success("更新Project成功") : Response.fail("修改Project失败,请稍后重试");
     }
 
-    public Response list(Project project, PageRequest pageRequest) {
-        boolean needPaging = pageRequest.needPaging();
-        if (needPaging) {
-            PageHelper.startPage(pageRequest.getPageNum(), pageRequest.getPageSize());
+    public PagedData<ProjectVo> list(Project query, String orderBy, PageRequest pageRequest) {
+        Page page = PageHelper.startPage(pageRequest.getPageNum(), pageRequest.getPageSize());
+
+        if (StringUtils.isEmpty(orderBy)) {
+            orderBy = "create_time desc";
         }
 
-        List<Project> projects = selectByProject(project);
-        List<ProjectVo> projectVos = convertProjectsToProjectVos(projects);
-
-        if (needPaging) {
-            long total = Page.getTotal(projects);
-            return Response.success(Page.build(projectVos, total));
-        } else {
-            return Response.success(projectVos);
-        }
+        List<ProjectVo> projectVos = getProjectVos(query, orderBy);
+        return new PagedData<>(projectVos, page.getTotal());
     }
 
     private List<ProjectVo> convertProjectsToProjectVos(List<Project> projects) {
@@ -92,7 +91,7 @@ public class ProjectService {
                 .collect(Collectors.toList());
         Map<Integer, User> userMap = userService.getUserMapByIds(creatorUids);
 
-        return projects.stream().map(project -> {
+        List<ProjectVo> projectVos = projects.stream().map(project -> {
             ProjectVo projectVo = new ProjectVo();
             BeanUtils.copyProperties(project, projectVo);
 
@@ -105,24 +104,34 @@ public class ProjectService {
 
             return projectVo;
         }).collect(Collectors.toList());
+
+        return projectVos;
     }
 
-    private List<Project> selectByProject(Project project) {
+    public List<ProjectVo> getProjectVos(Project query, String orderBy) {
+        List<Project> projects = getProjects(query, orderBy);
+        return convertProjectsToProjectVos(projects);
+    }
+
+    public List<Project> getProjects(Project query, String orderBy) {
         ProjectExample example = new ProjectExample();
         ProjectExample.Criteria criteria = example.createCriteria();
 
-        if (project != null) {
-            if (project.getId() != null) {
-                criteria.andIdEqualTo(project.getId());
+        if (query != null) {
+            if (query.getId() != null) {
+                criteria.andIdEqualTo(query.getId());
             }
-            if (!StringUtils.isEmpty(project.getName())) {
-                criteria.andNameEqualTo(project.getName());
+            if (!StringUtils.isEmpty(query.getName())) {
+                criteria.andNameEqualTo(query.getName());
             }
-            if (project.getPlatform() != null) {
-                criteria.andPlatformEqualTo(project.getPlatform());
+            if (query.getPlatform() != null) {
+                criteria.andPlatformEqualTo(query.getPlatform());
             }
         }
-        example.setOrderByClause("create_time desc");
+
+        if (!StringUtils.isEmpty(orderBy)) {
+            example.setOrderByClause(orderBy);
+        }
 
         return projectMapper.selectByExampleWithBLOBs(example);
     }

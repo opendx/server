@@ -1,14 +1,15 @@
 package com.daxiang.service;
 
 import com.daxiang.agent.AgentClient;
+import com.daxiang.exception.ServerException;
 import com.daxiang.mbg.mapper.MobileMapper;
 import com.daxiang.mbg.po.Mobile;
 import com.daxiang.mbg.po.MobileExample;
 import com.daxiang.model.PageRequest;
-import com.daxiang.model.Response;
 import com.daxiang.model.vo.MobileVo;
 import com.github.pagehelper.PageHelper;
-import com.daxiang.model.Page;
+import com.github.pagehelper.Page;
+import com.daxiang.model.PagedData;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -31,89 +33,90 @@ public class MobileService {
     @Autowired
     private AgentClient agentClient;
 
-    public Response save(Mobile mobile) {
+    public void save(Mobile mobile) {
         Mobile dbMobile = mobileMapper.selectByPrimaryKey(mobile.getId());
-        int saveRow;
+
+        int saveCount;
         if (dbMobile == null) {
             // 首次接入的mobile
-            saveRow = mobileMapper.insertSelective(mobile);
+            saveCount = mobileMapper.insertSelective(mobile);
         } else {
             // 更新Mobile
-            saveRow = mobileMapper.updateByPrimaryKeySelective(mobile);
+            saveCount = mobileMapper.updateByPrimaryKeySelective(mobile);
         }
-        return saveRow == 1 ? Response.success("保存成功") : Response.fail("保存失败，请稍后重试");
+
+        if (saveCount != 1) {
+            throw new ServerException("保存失败，请稍后重试");
+        }
     }
 
-    public Response list(Mobile mobile, PageRequest pageRequest) {
-        boolean needPaging = pageRequest.needPaging();
-        if (needPaging) {
-            PageHelper.startPage(pageRequest.getPageNum(), pageRequest.getPageSize());
+    public PagedData<MobileVo> list(Mobile query, String orderBy, PageRequest pageRequest) {
+        Page page = PageHelper.startPage(pageRequest.getPageNum(), pageRequest.getPageSize());
+
+        if (StringUtils.isEmpty(orderBy)) {
+            orderBy = "status desc,create_time desc";
         }
 
-        List<Mobile> mobiles = selectByMobile(mobile);
-        List<MobileVo> mobileVos = mobiles.stream().map(d -> {
+        List<MobileVo> mobileVos = getMobileVos(query, orderBy);
+        return new PagedData<>(mobileVos, page.getTotal());
+    }
+
+    public List<MobileVo> getMobileVos(Mobile query, String orderBy) {
+        List<Mobile> mobiles = getMobiles(query, orderBy);
+        List<MobileVo> mobileVos = mobiles.stream().map(mobile -> {
             MobileVo mobileVo = new MobileVo();
-            BeanUtils.copyProperties(d, mobileVo);
+            BeanUtils.copyProperties(mobile, mobileVo);
             return mobileVo;
         }).collect(Collectors.toList());
-
-        if (needPaging) {
-            long total = Page.getTotal(mobiles);
-            return Response.success(Page.build(mobileVos, total));
-        } else {
-            return Response.success(mobileVos);
-        }
+        return mobileVos;
     }
 
-    private List<Mobile> selectByMobile(Mobile mobile) {
+    public List<Mobile> getMobiles(Mobile query, String orderBy) {
         MobileExample example = new MobileExample();
         MobileExample.Criteria criteria = example.createCriteria();
 
-        if (mobile != null) {
-            if (!StringUtils.isEmpty(mobile.getId())) {
-                criteria.andIdEqualTo(mobile.getId());
+        if (query != null) {
+            if (!StringUtils.isEmpty(query.getId())) {
+                criteria.andIdEqualTo(query.getId());
             }
-            if (!StringUtils.isEmpty(mobile.getName())) {
-                criteria.andNameLike("%" + mobile.getName() + "%");
+            if (!StringUtils.isEmpty(query.getName())) {
+                criteria.andNameLike("%" + query.getName() + "%");
             }
-            if (mobile.getEmulator() != null) {
-                criteria.andEmulatorEqualTo(mobile.getEmulator());
+            if (query.getEmulator() != null) {
+                criteria.andEmulatorEqualTo(query.getEmulator());
             }
-            if (!StringUtils.isEmpty(mobile.getSystemVersion())) {
-                criteria.andSystemVersionEqualTo(mobile.getSystemVersion());
+            if (!StringUtils.isEmpty(query.getSystemVersion())) {
+                criteria.andSystemVersionEqualTo(query.getSystemVersion());
             }
-            if (!StringUtils.isEmpty(mobile.getAgentIp())) {
-                criteria.andAgentIpEqualTo(mobile.getAgentIp());
+            if (!StringUtils.isEmpty(query.getAgentIp())) {
+                criteria.andAgentIpEqualTo(query.getAgentIp());
             }
-            if (mobile.getAgentPort() != null) {
-                criteria.andAgentPortEqualTo(mobile.getAgentPort());
+            if (query.getAgentPort() != null) {
+                criteria.andAgentPortEqualTo(query.getAgentPort());
             }
-            if (mobile.getPlatform() != null) {
-                criteria.andPlatformEqualTo(mobile.getPlatform());
+            if (query.getPlatform() != null) {
+                criteria.andPlatformEqualTo(query.getPlatform());
             }
-            if (mobile.getStatus() != null) {
-                criteria.andStatusEqualTo(mobile.getStatus());
+            if (query.getStatus() != null) {
+                criteria.andStatusEqualTo(query.getStatus());
             }
         }
-        example.setOrderByClause("status desc,create_time desc");
+
+        if (!StringUtils.isEmpty(orderBy)) {
+            example.setOrderByClause(orderBy);
+        }
 
         return mobileMapper.selectByExample(example);
     }
 
-    /**
-     * 前端点击"立即使用"
-     *
-     * @param mobileId
-     * @return
-     */
-    public Response start(String mobileId) {
+    public Mobile start(String mobileId) {
         if (StringUtils.isEmpty(mobileId)) {
-            return Response.fail("mobileId不能为空");
+            throw new ServerException("mobileId不能为空");
         }
 
         Mobile dbMobile = mobileMapper.selectByPrimaryKey(mobileId);
         if (dbMobile == null) {
-            return Response.fail("mobile不存在");
+            throw new ServerException("mobile不存在");
         }
 
         // 有时server被强制关闭，导致agent下mobile的状态无法同步到server
@@ -131,19 +134,19 @@ public class MobileService {
                 dbMobile.setStatus(Mobile.OFFLINE_STATUS);
                 mobileMapper.updateByPrimaryKeySelective(dbMobile);
             }
-            return Response.fail("mobile不在线");
+            throw new ServerException("mobile不在线");
         } else {
             if (agentMobile.getStatus() == Mobile.IDLE_STATUS) {
-                return Response.success(agentMobile);
+                return agentMobile;
             } else {
                 // 同步最新状态
                 mobileMapper.updateByPrimaryKeySelective(agentMobile);
-                return Response.fail("mobile未闲置");
+                throw new ServerException("mobile未闲置");
             }
         }
     }
 
-    public Response getOnlineMobiles(Integer platform) {
+    public List<Mobile> getOnlineMobiles(Integer platform) {
         MobileExample example = new MobileExample();
         MobileExample.Criteria criteria = example.createCriteria();
 
@@ -151,7 +154,7 @@ public class MobileService {
         if (platform != null) {
             criteria.andPlatformEqualTo(platform);
         }
-        return Response.success(mobileMapper.selectByExample(example));
+        return mobileMapper.selectByExample(example);
     }
 
     public List<Mobile> getOnlineMobilesByAgentIps(List<String> agentIps) {
@@ -177,7 +180,7 @@ public class MobileService {
         mobileMapper.updateByExampleSelective(mobile, example);
     }
 
-    private List<Mobile> getMobilesByIds(Set<String> mobileIds) {
+    public List<Mobile> getMobilesByIds(Set<String> mobileIds) {
         if (CollectionUtils.isEmpty(mobileIds)) {
             return new ArrayList<>();
         }
@@ -190,6 +193,6 @@ public class MobileService {
 
     public Map<String, Mobile> getMobileMapByIds(Set<String> mobileIds) {
         List<Mobile> mobiles = getMobilesByIds(mobileIds);
-        return mobiles.stream().collect(Collectors.toMap(Mobile::getId, m -> m, (k1, k2) -> k1));
+        return mobiles.stream().collect(Collectors.toMap(Mobile::getId, Function.identity(), (k1, k2) -> k1));
     }
 }

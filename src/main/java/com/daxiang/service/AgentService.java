@@ -1,9 +1,9 @@
 package com.daxiang.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.daxiang.exception.ServerException;
 import com.daxiang.mbg.po.Browser;
 import com.daxiang.mbg.po.Mobile;
-import com.daxiang.model.Response;
 import com.daxiang.model.vo.AgentVo;
 import de.codecentric.boot.admin.server.domain.entities.Instance;
 import de.codecentric.boot.admin.server.domain.values.Endpoint;
@@ -37,7 +37,7 @@ public class AgentService {
     @Autowired
     private RestTemplate restTemplate;
 
-    public Response getOnlineAgents() {
+    public List<AgentVo> getOnlineAgents() {
         List<AgentVo> agentVos = getOnlineAgentsWithoutDevices();
         List<String> agentIps = agentVos.stream().map(AgentVo::getIp).collect(Collectors.toList());
 
@@ -53,7 +53,7 @@ public class AgentService {
             agentVo.setBrowsers(browserMap.get(ip));
         });
 
-        return Response.success(agentVos);
+        return agentVos;
     }
 
     public List<AgentVo> getOnlineAgentsWithoutDevices() {
@@ -68,7 +68,7 @@ public class AgentService {
         try {
             uri = new URI(agent.getRegistration().getServiceUrl());
         } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
+            throw new ServerException(e);
         }
 
         AgentVo agentVo = new AgentVo();

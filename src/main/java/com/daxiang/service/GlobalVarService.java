@@ -1,16 +1,17 @@
 package com.daxiang.service;
 
 import com.daxiang.dao.GlobalVarDao;
+import com.daxiang.exception.ServerException;
 import com.daxiang.mbg.po.GlobalVarExample;
 import com.daxiang.mbg.po.User;
+import com.daxiang.model.PagedData;
 import com.daxiang.security.SecurityUtil;
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.Page;
 import com.daxiang.mbg.mapper.GlobalVarMapper;
 import com.daxiang.mbg.po.GlobalVar;
 import com.daxiang.model.PageRequest;
-import com.daxiang.model.Response;
 import com.daxiang.model.vo.GlobalVarVo;
-import com.daxiang.model.Page;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -36,20 +37,21 @@ public class GlobalVarService {
     @Autowired
     private EnvironmentService environmentService;
 
-    public Response add(GlobalVar globalVar) {
+    public void add(GlobalVar globalVar) {
         globalVar.setCreateTime(new Date());
         globalVar.setCreatorUid(SecurityUtil.getCurrentUserId());
 
-        int insertRow;
         try {
-            insertRow = globalVarMapper.insertSelective(globalVar);
+            int insertCount = globalVarMapper.insertSelective(globalVar);
+            if (insertCount != 1) {
+                throw new ServerException("添加失败，请稍后重试");
+            }
         } catch (DuplicateKeyException e) {
-            return Response.fail("命名冲突");
+            throw new ServerException(globalVar.getName() + "已存在");
         }
-        return insertRow == 1 ? Response.success("添加GlobalVar成功") : Response.fail("添加GlobalVar失败，请稍后重试");
     }
 
-    public Response addBatch(List<GlobalVar> globalVars) {
+    public void addBatch(List<GlobalVar> globalVars) {
         Integer currentUserId = SecurityUtil.getCurrentUserId();
         Date now = new Date();
 
@@ -58,53 +60,49 @@ public class GlobalVarService {
             globalVar.setCreatorUid(currentUserId);
         });
 
-        int insertRow;
         try {
-            insertRow = globalVarDao.insertBatch(globalVars);
+            int insertCount = globalVarDao.insertBatch(globalVars);
+            if (insertCount != globalVars.size()) {
+                throw new ServerException("添加失败，请稍后重试");
+            }
         } catch (DuplicateKeyException e) {
-            return Response.fail("命名冲突");
+            throw new ServerException("命名冲突");
         }
-        return insertRow == globalVars.size() ? Response.success("添加成功") : Response.fail("添加失败，请稍后重试");
     }
 
-    public Response delete(Integer globalVarId) {
+    public void delete(Integer globalVarId) {
         if (globalVarId == null) {
-            return Response.fail("globalVarId不能为空");
+            throw new ServerException("globalVarId不能为空");
         }
 
         // todo 检查全局变量是否被action使用
-        int deleteRow = globalVarMapper.deleteByPrimaryKey(globalVarId);
-        return deleteRow == 1 ? Response.success("删除成功") : Response.fail("删除失败,请稍后重试");
+        int deleteCount = globalVarMapper.deleteByPrimaryKey(globalVarId);
+        if (deleteCount != 1) {
+            throw new ServerException("删除失败，请稍后重试");
+        }
     }
 
-    public Response update(GlobalVar globalVar) {
+    public void update(GlobalVar globalVar) {
         // todo 检查全局变量是否被action使用
-
-        int updateRow;
         try {
-            updateRow = globalVarMapper.updateByPrimaryKeyWithBLOBs(globalVar);
+            int updateCount = globalVarMapper.updateByPrimaryKeyWithBLOBs(globalVar);
+            if (updateCount != 1) {
+                throw new ServerException("更新失败，请稍后重试");
+            }
         } catch (DuplicateKeyException e) {
-            return Response.fail("命名冲突");
+            throw new ServerException(globalVar.getName() + "已存在");
         }
-
-        return updateRow == 1 ? Response.success("更新GlobalVar成功") : Response.fail("更新GlobalVar失败,请稍后重试");
     }
 
-    public Response list(GlobalVar globalVar, PageRequest pageRequest) {
-        boolean needPaging = pageRequest.needPaging();
-        if (needPaging) {
-            PageHelper.startPage(pageRequest.getPageNum(), pageRequest.getPageSize());
+    public PagedData<GlobalVarVo> list(GlobalVar query, String orderBy, PageRequest pageRequest) {
+        Page page = PageHelper.startPage(pageRequest.getPageNum(), pageRequest.getPageSize());
+
+        if (StringUtils.isEmpty(orderBy)) {
+            orderBy = "create_time desc";
         }
 
-        List<GlobalVar> globalVars = selectByGlobalVar(globalVar);
-        List<GlobalVarVo> globalVarVos = convertGlobalVarsToGlobalVarVos(globalVars);
-
-        if (needPaging) {
-            long total = Page.getTotal(globalVars);
-            return Response.success(Page.build(globalVarVos, total));
-        } else {
-            return Response.success(globalVarVos);
-        }
+        List<GlobalVarVo> globalVarVos = getGlobalVarVos(query, orderBy);
+        return new PagedData<>(globalVarVos, page.getTotal());
     }
 
     private List<GlobalVarVo> convertGlobalVarsToGlobalVarVos(List<GlobalVar> globalVars) {
@@ -119,7 +117,7 @@ public class GlobalVarService {
                 .collect(Collectors.toList());
         Map<Integer, User> userMap = userService.getUserMapByIds(creatorUids);
 
-        return globalVars.stream().map(globalVar -> {
+        List<GlobalVarVo> globalVarVos = globalVars.stream().map(globalVar -> {
             GlobalVarVo globalVarVo = new GlobalVarVo();
             BeanUtils.copyProperties(globalVar, globalVarVo);
 
@@ -132,37 +130,51 @@ public class GlobalVarService {
 
             return globalVarVo;
         }).collect(Collectors.toList());
+
+        return globalVarVos;
     }
 
-    private List<GlobalVar> selectByGlobalVar(GlobalVar globalVar) {
+    public List<GlobalVarVo> getGlobalVarVos(GlobalVar query, String orderBy) {
+        List<GlobalVar> globalVars = getGlobalVars(query, orderBy);
+        return convertGlobalVarsToGlobalVarVos(globalVars);
+    }
+
+    public List<GlobalVar> getGlobalVars(GlobalVar query) {
+        return getGlobalVars(query, null);
+    }
+
+    public List<GlobalVar> getGlobalVars(GlobalVar query, String orderBy) {
         GlobalVarExample example = new GlobalVarExample();
         GlobalVarExample.Criteria criteria = example.createCriteria();
 
-        if (globalVar != null) {
-            if (globalVar.getId() != null) {
-                criteria.andIdEqualTo(globalVar.getId());
+        if (query != null) {
+            if (query.getId() != null) {
+                criteria.andIdEqualTo(query.getId());
             }
-            if (globalVar.getType() != null) {
-                criteria.andTypeEqualTo(globalVar.getType());
+            if (query.getType() != null) {
+                criteria.andTypeEqualTo(query.getType());
             }
-            if (globalVar.getProjectId() != null) {
-                criteria.andProjectIdEqualTo(globalVar.getProjectId());
+            if (query.getProjectId() != null) {
+                criteria.andProjectIdEqualTo(query.getProjectId());
             }
-            if (globalVar.getCategoryId() != null) {
-                criteria.andCategoryIdEqualTo(globalVar.getCategoryId());
+            if (query.getCategoryId() != null) {
+                criteria.andCategoryIdEqualTo(query.getCategoryId());
             }
-            if (!StringUtils.isEmpty(globalVar.getName())) {
-                criteria.andNameEqualTo(globalVar.getName());
+            if (!StringUtils.isEmpty(query.getName())) {
+                criteria.andNameEqualTo(query.getName());
             }
         }
-        example.setOrderByClause("create_time desc");
+
+        if (!StringUtils.isEmpty(orderBy)) {
+            example.setOrderByClause(orderBy);
+        }
 
         return globalVarMapper.selectByExampleWithBLOBs(example);
     }
 
     public List<GlobalVar> getGlobalVarsByEnvironmentId(Integer envId) {
         if (envId == null) {
-            return new ArrayList<>();
+            throw new ServerException("envId不能为空");
         }
 
         return globalVarDao.selectByEnvironmentId(envId);
@@ -170,12 +182,12 @@ public class GlobalVarService {
 
     public List<GlobalVar> getGlobalVarsByProjectIdAndEnv(Integer projectId, Integer env) {
         if (projectId == null || env == null) {
-            return new ArrayList<>();
+            throw new ServerException("projectId or env不能为空");
         }
 
         GlobalVar query = new GlobalVar();
         query.setProjectId(projectId);
-        List<GlobalVar> globalVars = selectByGlobalVar(query);
+        List<GlobalVar> globalVars = getGlobalVars(query);
 
         globalVars.forEach(globalVar -> {
             String value = environmentService.getValueInEnvironmentValues(globalVar.getEnvironmentValues(), env);

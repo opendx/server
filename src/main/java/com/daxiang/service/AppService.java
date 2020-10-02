@@ -1,6 +1,7 @@
 package com.daxiang.service;
 
 import com.daxiang.agent.AgentClient;
+import com.daxiang.exception.ServerException;
 import com.daxiang.mbg.mapper.AppMapper;
 import com.daxiang.mbg.po.App;
 import com.daxiang.mbg.po.AppExample;
@@ -10,6 +11,7 @@ import com.daxiang.model.vo.AgentVo;
 import com.daxiang.model.vo.AppVo;
 import com.daxiang.security.SecurityUtil;
 import com.daxiang.utils.HttpServletUtil;
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -40,44 +42,46 @@ public class AppService {
     @Autowired
     private UserService userService;
 
-    public Response upload(App app, MultipartFile file) {
-        Response<UploadFile> response = uploadService.uploadFile(file, FileType.APP);
-        if (!response.isSuccess()) {
-            return response;
-        }
+    public void upload(App app, MultipartFile file) {
+        UploadFile uploadFile = uploadService.upload(file, FileType.APP);
 
-        app.setFilePath(response.getData().getFilePath());
+        app.setFilePath(uploadFile.getFilePath());
         app.setUploadTime(new Date());
         app.setUploadorUid(SecurityUtil.getCurrentUserId());
 
-        int insertRow = appMapper.insertSelective(app);
-        return insertRow == 1 ? Response.success("上传成功") : Response.fail("上传失败");
+        int insertCount = appMapper.insertSelective(app);
+        if (insertCount != 1) {
+            throw new ServerException("上传失败");
+        }
     }
 
-    public Response delete(Integer appId) {
+    public void delete(Integer appId) {
         if (appId == null) {
-            return Response.fail("appId不能为空");
+            throw new ServerException("appId不能为空");
         }
 
-        int delRow = appMapper.deleteByPrimaryKey(appId);
-        return delRow == 1 ? Response.success("删除成功") : Response.fail("删除失败，请稍后再试");
+        int deleteCount = appMapper.deleteByPrimaryKey(appId);
+        if (deleteCount != 1) {
+            throw new ServerException("删除失败，请稍后再试");
+        }
     }
 
-    public Response list(App app, PageRequest pageRequest) {
-        boolean needPaging = pageRequest.needPaging();
-        if (needPaging) {
-            PageHelper.startPage(pageRequest.getPageNum(), pageRequest.getPageSize());
+    public void update(App app) {
+        int updateCount = appMapper.updateByPrimaryKey(app);
+        if (updateCount != 1) {
+            throw new ServerException("更新失败，请稍后重试");
+        }
+    }
+
+    public PagedData<AppVo> list(App query, String orderBy, PageRequest pageRequest) {
+        Page page = PageHelper.startPage(pageRequest.getPageNum(), pageRequest.getPageSize());
+
+        if (StringUtils.isEmpty(orderBy)) {
+            orderBy = "upload_time desc";
         }
 
-        List<App> apps = selectByApp(app);
-        List<AppVo> appVos = convertAppsToAppVos(apps);
-
-        if (needPaging) {
-            long total = Page.getTotal(apps);
-            return Response.success(Page.build(appVos, total));
-        } else {
-            return Response.success(appVos);
-        }
+        List<AppVo> appVos = getAppVos(query, orderBy);
+        return new PagedData<>(appVos, page.getTotal());
     }
 
     private List<AppVo> convertAppsToAppVos(List<App> apps) {
@@ -92,7 +96,7 @@ public class AppService {
                 .collect(Collectors.toList());
         Map<Integer, User> userMap = userService.getUserMapByIds(uploadorUids);
 
-        return apps.stream().map(app -> {
+        List<AppVo> appVos = apps.stream().map(app -> {
             AppVo appVo = new AppVo();
             BeanUtils.copyProperties(app, appVo);
 
@@ -105,64 +109,74 @@ public class AppService {
 
             return appVo;
         }).collect(Collectors.toList());
+
+        return appVos;
     }
 
-    private List<App> selectByApp(App app) {
+    public List<AppVo> getAppVos(App query, String orderBy) {
+        List<App> apps = getApps(query, orderBy);
+        return convertAppsToAppVos(apps);
+    }
+
+    public List<App> getApps(App query, String orderBy) {
         AppExample example = new AppExample();
         AppExample.Criteria criteria = example.createCriteria();
 
-        if (app != null) {
-            if (app.getId() != null) {
-                criteria.andIdEqualTo(app.getId());
+        if (query != null) {
+            if (query.getId() != null) {
+                criteria.andIdEqualTo(query.getId());
             }
-            if (app.getPlatform() != null) {
-                criteria.andPlatformEqualTo(app.getPlatform());
+            if (query.getPlatform() != null) {
+                criteria.andPlatformEqualTo(query.getPlatform());
             }
-            if (app.getProjectId() != null) {
-                criteria.andProjectIdEqualTo(app.getProjectId());
+            if (query.getProjectId() != null) {
+                criteria.andProjectIdEqualTo(query.getProjectId());
             }
         }
-        example.setOrderByClause("upload_time desc");
+
+        if (!StringUtils.isEmpty(orderBy)) {
+            example.setOrderByClause(orderBy);
+        }
 
         return appMapper.selectByExample(example);
     }
 
-    public Response aaptDumpBadging(Integer appId) {
+    public void aaptDumpBadging(Integer appId) {
         if (appId == null) {
-            return Response.fail("appId不能为空");
+            throw new ServerException("appId不能为空");
         }
 
         App app = appMapper.selectByPrimaryKey(appId);
         if (app == null) {
-            return Response.fail("app不存在");
+            throw new ServerException("app不存在");
         }
         if (app.getPlatform() != Platform.ANDROID) {
-            return Response.fail("只有Android平台才能执行aapt dump");
+            throw new ServerException("只有Android平台才能执行aapt dump");
         }
 
         List<AgentVo> onlineAgents = agentService.getOnlineAgentsWithoutDevices();
         if (CollectionUtils.isEmpty(onlineAgents)) {
-            return Response.fail("暂无在线的agent，无法执行aapt dump");
+            throw new ServerException("暂无在线的agent，无法执行aapt dump");
         }
 
         Optional<AgentVo> agentVo = onlineAgents.stream().filter(AgentVo::getIsConfigAapt).findAny();
         if (!agentVo.isPresent()) {
-            return Response.fail("暂无配置了aapt的agent，无法执行aapt dump");
+            throw new ServerException("暂无配置了aapt的agent，无法执行aapt dump");
         }
 
         AgentVo agent = agentVo.get();
         Response agentResponse = agentClient.aaptDumpBadging(agent.getIp(), agent.getPort(),
                 HttpServletUtil.getStaticResourceUrl(app.getFilePath()));
         if (!agentResponse.isSuccess()) {
-            return agentResponse;
+            throw new ServerException(agentResponse.getMsg());
         }
 
         String dumpInfo = (String) agentResponse.getData();
         if (StringUtils.isEmpty(dumpInfo)) {
-            return Response.fail("aapt dump信息为空");
+            throw new ServerException("aapt dump信息为空");
         }
 
-        log.info("app: {} => {}", app.getName(), dumpInfo);
+        log.info("app: {}, dumpInfo: {}", app.getName(), dumpInfo);
 
         String version = org.apache.commons.lang3.StringUtils.substringBetween(dumpInfo, "versionName='", "'");
         String packageName = org.apache.commons.lang3.StringUtils.substringBetween(dumpInfo, "package: name='", "'");
@@ -172,12 +186,10 @@ public class AppService {
         app.setPackageName(packageName);
         app.setLaunchActivity(launchActivity);
 
-        int updateRow = appMapper.updateByPrimaryKeySelective(app);
-        return updateRow == 1 ? Response.success("获取成功") : Response.fail("获取失败，请稍后重试");
+        int updateCount = appMapper.updateByPrimaryKeySelective(app);
+        if (updateCount != 1) {
+            throw new ServerException("更新失败，请稍后重试");
+        }
     }
 
-    public Response update(App app) {
-        int updateRow = appMapper.updateByPrimaryKey(app);
-        return updateRow == 1 ? Response.success("更新成功") : Response.fail("更新失败，请稍后重试");
-    }
 }

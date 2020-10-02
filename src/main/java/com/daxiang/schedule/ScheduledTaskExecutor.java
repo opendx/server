@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Comparator;
@@ -32,7 +33,8 @@ public class ScheduledTaskExecutor {
     /**
      * 统计已完成的测试任务
      */
-    @Scheduled(fixedRate = 15000)
+    @Transactional
+    @Scheduled(fixedRate = 10000)
     public void statisticsFinishedTestTask() {
         // 未完成的测试任务
         List<TestTask> testTasks = testTaskService.getUnFinishedTestTasks();

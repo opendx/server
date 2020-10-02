@@ -1,15 +1,15 @@
 package com.daxiang.service;
 
-import com.daxiang.exception.BusinessException;
+import com.daxiang.exception.ServerException;
 import com.daxiang.mbg.mapper.EnvironmentMapper;
 import com.daxiang.mbg.po.*;
-import com.daxiang.model.Page;
+import com.daxiang.model.PagedData;
 import com.daxiang.model.PageRequest;
-import com.daxiang.model.Response;
 import com.daxiang.model.environment.EnvironmentValue;
 import com.daxiang.model.vo.EnvironmentVo;
 import com.daxiang.security.SecurityUtil;
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.Page;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -37,55 +37,49 @@ public class EnvironmentService {
     @Autowired
     private UserService userService;
 
-    public Response add(Environment environment) {
+    public void add(Environment environment) {
         environment.setCreateTime(new Date());
         environment.setCreatorUid(SecurityUtil.getCurrentUserId());
 
-        int insertRow;
         try {
-            insertRow = environmentMapper.insertSelective(environment);
+            int insertCount = environmentMapper.insertSelective(environment);
+            if (insertCount != 1) {
+                throw new ServerException("添加失败，请稍后重试");
+            }
         } catch (DuplicateKeyException e) {
-            return Response.fail("命名冲突");
+            throw new ServerException(environment.getName() + "已存在");
         }
-        return insertRow == 1 ? Response.success("添加成功") : Response.fail("添加失败，请稍后重试");
     }
 
-    public Response delete(Integer environmentId) {
-        if (environmentId == null) {
-            return Response.fail("环境id不能为空");
-        }
-
+    public void delete(Integer environmentId) {
         check(environmentId);
 
-        int deleteRow = environmentMapper.deleteByPrimaryKey(environmentId);
-        return deleteRow == 1 ? Response.success("删除成功") : Response.fail("删除失败，请稍后重试");
+        int deleteCount = environmentMapper.deleteByPrimaryKey(environmentId);
+        if (deleteCount != 1) {
+            throw new ServerException("删除失败，请稍后重试");
+        }
     }
 
-    public Response update(Environment environment) {
-        int updateRow;
+    public void update(Environment environment) {
         try {
-            updateRow = environmentMapper.updateByPrimaryKeySelective(environment);
+            int updateCount = environmentMapper.updateByPrimaryKeySelective(environment);
+            if (updateCount != 1) {
+                throw new ServerException("更新失败，请稍后重试");
+            }
         } catch (DuplicateKeyException e) {
-            return Response.fail("命名冲突");
+            throw new ServerException(environment.getName() + "已存在");
         }
-        return updateRow == 1 ? Response.success("更新成功") : Response.fail("修改失败,请稍后重试");
     }
 
-    public Response list(Environment environment, PageRequest pageRequest) {
-        boolean needPaging = pageRequest.needPaging();
-        if (needPaging) {
-            PageHelper.startPage(pageRequest.getPageNum(), pageRequest.getPageSize());
+    public PagedData<EnvironmentVo> list(Environment query, String orderBy, PageRequest pageRequest) {
+        Page page = PageHelper.startPage(pageRequest.getPageNum(), pageRequest.getPageSize());
+
+        if (StringUtils.isEmpty(orderBy)) {
+            orderBy = "create_time desc";
         }
 
-        List<Environment> environments = selectByEnvironment(environment);
-        List<EnvironmentVo> environmentVos = convertEnvironmentsToEnvironmentVos(environments);
-
-        if (needPaging) {
-            long total = Page.getTotal(environments);
-            return Response.success(Page.build(environmentVos, total));
-        } else {
-            return Response.success(environmentVos);
-        }
+        List<EnvironmentVo> environmentVos = getEnvironmentVos(query, orderBy);
+        return new PagedData<>(environmentVos, page.getTotal());
     }
 
     private List<EnvironmentVo> convertEnvironmentsToEnvironmentVos(List<Environment> environments) {
@@ -100,7 +94,7 @@ public class EnvironmentService {
                 .collect(Collectors.toList());
         Map<Integer, User> userMap = userService.getUserMapByIds(creatorUids);
 
-        return environments.stream().map(env -> {
+        List<EnvironmentVo> environmentVos = environments.stream().map(env -> {
             EnvironmentVo environmentVo = new EnvironmentVo();
             BeanUtils.copyProperties(env, environmentVo);
 
@@ -113,24 +107,34 @@ public class EnvironmentService {
 
             return environmentVo;
         }).collect(Collectors.toList());
+
+        return environmentVos;
     }
 
-    private List<Environment> selectByEnvironment(Environment environment) {
+    public List<EnvironmentVo> getEnvironmentVos(Environment query, String orderBy) {
+        List<Environment> environments = getEnvironments(query, orderBy);
+        return convertEnvironmentsToEnvironmentVos(environments);
+    }
+
+    public List<Environment> getEnvironments(Environment query, String orderBy) {
         EnvironmentExample example = new EnvironmentExample();
         EnvironmentExample.Criteria criteria = example.createCriteria();
 
-        if (environment != null) {
-            if (environment.getId() != null) {
-                criteria.andIdEqualTo(environment.getId());
+        if (query != null) {
+            if (query.getId() != null) {
+                criteria.andIdEqualTo(query.getId());
             }
-            if (!StringUtils.isEmpty(environment.getName())) {
-                criteria.andNameEqualTo(environment.getName());
+            if (!StringUtils.isEmpty(query.getName())) {
+                criteria.andNameEqualTo(query.getName());
             }
-            if (environment.getProjectId() != null) {
-                criteria.andProjectIdEqualTo(environment.getProjectId());
+            if (query.getProjectId() != null) {
+                criteria.andProjectIdEqualTo(query.getProjectId());
             }
         }
-        example.setOrderByClause("create_time desc");
+
+        if (!StringUtils.isEmpty(orderBy)) {
+            example.setOrderByClause(orderBy);
+        }
 
         return environmentMapper.selectByExample(example);
     }
@@ -145,26 +149,22 @@ public class EnvironmentService {
         List<Action> actions = actionService.getActionsByLocalVarsEnvironmentId(envId);
         if (!CollectionUtils.isEmpty(actions)) {
             String actionNames = actions.stream().map(Action::getName).collect(Collectors.joining("、"));
-            throw new BusinessException("actions: " + actionNames + ", 正在使用此环境");
+            throw new ServerException("actions: " + actionNames + ", 正在使用此环境");
         }
 
         // 检查env是否被globalVar使用
         List<GlobalVar> globalVars = globalVarService.getGlobalVarsByEnvironmentId(envId);
         if (!CollectionUtils.isEmpty(globalVars)) {
             String globalVarNames = globalVars.stream().map(GlobalVar::getName).collect(Collectors.joining("、"));
-            throw new BusinessException("globalVars: " + globalVarNames + ", 正在使用此环境");
+            throw new ServerException("globalVars: " + globalVarNames + ", 正在使用此环境");
         }
 
         // 检查env是否被testplan使用
         List<TestPlan> testPlans = testPlanService.getTestPlansByEnvironmentId(envId);
         if (!CollectionUtils.isEmpty(testPlans)) {
             String testPlanNames = testPlans.stream().map(TestPlan::getName).collect(Collectors.joining("、"));
-            throw new BusinessException("testPlans: " + testPlanNames + ", 正在使用此环境");
+            throw new ServerException("testPlans: " + testPlanNames + ", 正在使用此环境");
         }
-    }
-
-    public Environment getEnvironmentById(Integer id) {
-        return environmentMapper.selectByPrimaryKey(id);
     }
 
     /**
@@ -183,5 +183,18 @@ public class EnvironmentService {
         }
 
         return defaultValue;
+    }
+
+    public String getEnvironmentNameById(Integer envId) {
+        if (envId == EnvironmentValue.DEFAULT_ENVIRONMENT_ID) {
+            return "默认";
+        }
+
+        Environment environment = environmentMapper.selectByPrimaryKey(envId);
+        if (environment != null) {
+            return environment.getName();
+        }
+
+        return "";
     }
 }

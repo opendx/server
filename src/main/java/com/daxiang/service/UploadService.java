@@ -1,14 +1,13 @@
 package com.daxiang.service;
 
+import com.daxiang.exception.ServerException;
 import com.daxiang.model.FileType;
-import com.daxiang.model.Response;
 import com.daxiang.model.UploadFile;
 import com.daxiang.utils.HttpServletUtil;
 import com.daxiang.utils.UUIDUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -24,9 +23,9 @@ public class UploadService {
     @Value("${static-location}/")
     private String staticLocation;
 
-    public Response<UploadFile> uploadFile(MultipartFile file, Integer fileType) {
+    public UploadFile upload(MultipartFile file, Integer fileType) {
         if (file == null || fileType == null) {
-            return Response.fail("file || fileType不能为空");
+            throw new ServerException("file or fileType不能为空");
         }
 
         String uploadFilePath;
@@ -47,13 +46,9 @@ public class UploadService {
                 uploadFilePath = UploadFile.OTHER_FILE_PATH;
         }
 
-        String destFileName = UUIDUtil.getUUID();
         String originalFilename = file.getOriginalFilename();
-        if (originalFilename.contains(".")) {
-            destFileName = destFileName + "." + StringUtils.unqualify(originalFilename);
-        }
-
-        String destFilePath = uploadFilePath + "/" + destFileName;
+        String destFilename = UUIDUtil.getUUIDFilename(originalFilename);
+        String destFilePath = uploadFilePath + "/" + destFilename;
 
         try {
             String destFileAbsolutePath = new File(staticLocation + destFilePath).getAbsolutePath(); // 不用绝对路径transferTo会报错
@@ -61,13 +56,13 @@ public class UploadService {
             file.transferTo(new File(destFileAbsolutePath));
         } catch (IOException e) {
             log.error("transfer err", e);
-            return Response.fail(e.getMessage());
+            throw new ServerException(e.getMessage());
         }
 
         UploadFile uploadFile = new UploadFile();
         uploadFile.setFilePath(destFilePath);
         uploadFile.setDownloadUrl(HttpServletUtil.getStaticResourceUrl(destFilePath));
 
-        return Response.success("上传成功", uploadFile);
+        return uploadFile;
     }
 }

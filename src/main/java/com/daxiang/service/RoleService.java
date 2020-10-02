@@ -1,9 +1,11 @@
 package com.daxiang.service;
 
 import com.daxiang.mbg.mapper.RoleMapper;
-import com.daxiang.model.Response;
+import com.daxiang.mbg.po.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * Created by jiangyitao.
@@ -14,9 +16,8 @@ public class RoleService {
     @Autowired
     private RoleMapper roleMapper;
 
-    public Response list() {
-        // select all
-        return Response.success(roleMapper.selectByExample(null));
+    public List<Role> list() {
+        return roleMapper.selectByExample(null);
     }
 
 }
