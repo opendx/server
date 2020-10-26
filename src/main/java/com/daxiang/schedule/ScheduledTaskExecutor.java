@@ -66,11 +66,8 @@ public class ScheduledTaskExecutor {
                         testTask.setStatus(TestTask.FINISHED_STATUS);
 
                         // 所有用例结束时间最晚的作为完成时间
-                        Date finishTime = testcases.stream()
-                                .map(Testcase::getEndTime)
-                                .sorted(Comparator.reverseOrder())
-                                .findFirst().get();
-                        testTask.setFinishTime(finishTime);
+                        Date maxEndTime = testcases.stream().map(Testcase::getEndTime).max(Comparator.naturalOrder()).get();
+                        testTask.setFinishTime(maxEndTime);
 
                         int passCount = result.getOrDefault(Testcase.PASS_STATUS, 0L).intValue();
                         testTask.setPassCaseCount(passCount);
