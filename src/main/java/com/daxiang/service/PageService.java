@@ -8,21 +8,25 @@ import com.daxiang.security.SecurityUtil;
 import com.github.pagehelper.PageHelper;
 import com.daxiang.mbg.mapper.PageMapper;
 import com.daxiang.model.PageRequest;
-import com.daxiang.model.Response;
 import com.daxiang.model.vo.PageVo;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
 /**
  * Created by jiangyitao.
  */
+@Slf4j
 @Service
 public class PageService {
 
@@ -34,10 +38,20 @@ public class PageService {
     private ActionService actionService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private FileService fileService;
 
+    @Transactional
     public void add(Page page) {
         page.setCreateTime(new Date());
         page.setCreatorUid(SecurityUtil.getCurrentUserId());
+
+        String originalImgPath = page.getImgPath();
+        String destImgPath = null;
+        if (!StringUtils.isEmpty(originalImgPath)) {
+            destImgPath = FileService.IMG_DIR + "/" + FilenameUtils.getName(originalImgPath);
+            page.setImgPath(destImgPath);
+        }
 
         try {
             int insertCount = pageMapper.insertSelective(page);
@@ -47,9 +61,24 @@ public class PageService {
         } catch (DuplicateKeyException e) {
             throw new ServerException(page.getName() + "已存在");
         }
+
+        // 数据库添加成功，图片移动到IMG目录
+        if (!StringUtils.isEmpty(destImgPath)) {
+            try {
+                fileService.moveFile(originalImgPath, destImgPath);
+            } catch (IOException e) {
+                log.error("move {} -> {} err", originalImgPath, destImgPath, e);
+                throw new ServerException(e.getMessage());
+            }
+        }
     }
 
-    public void delete(Integer pageId) {
+    public void deleteAndClearRelatedRes(Integer pageId) {
+        Page page = pageMapper.selectByPrimaryKey(pageId);
+        if (page == null) {
+            throw new ServerException("page不存在");
+        }
+
         // 检查Page名下是否有action
         List<Action> actions = actionService.getActionsByPageId(pageId);
         if (!CollectionUtils.isEmpty(actions)) {
@@ -61,13 +90,15 @@ public class PageService {
         if (deleteCount != 1) {
             throw new ServerException("删除失败，请稍后重试");
         }
+
+        fileService.deleteQuietly(page.getImgPath());
     }
 
     public void update(Page page) {
         try {
             int updateCount = pageMapper.updateByPrimaryKeyWithBLOBs(page);
             if (updateCount != 1) {
-                throw new ServerException("删除失败，请稍后重试");
+                throw new ServerException("更新失败，请稍后重试");
             }
         } catch (DuplicateKeyException e) {
             throw new ServerException(page.getName() + "已存在");

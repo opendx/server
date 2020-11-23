@@ -32,8 +32,6 @@ import java.util.stream.Collectors;
 public class AppService {
 
     @Autowired
-    private UploadService uploadService;
-    @Autowired
     private AppMapper appMapper;
     @Autowired
     private AgentService agentService;
@@ -41,9 +39,11 @@ public class AppService {
     private AgentClient agentClient;
     @Autowired
     private UserService userService;
+    @Autowired
+    private FileService fileService;
 
     public void upload(App app, MultipartFile file) {
-        UploadFile uploadFile = uploadService.upload(file, FileType.APP);
+        UploadFile uploadFile = fileService.upload(file, FileType.APP);
 
         app.setFilePath(uploadFile.getFilePath());
         app.setUploadTime(new Date());
@@ -55,15 +55,22 @@ public class AppService {
         }
     }
 
-    public void delete(Integer appId) {
+    public void deleteAndClearRelatedRes(Integer appId) {
         if (appId == null) {
             throw new ServerException("appId不能为空");
+        }
+
+        App app = appMapper.selectByPrimaryKey(appId);
+        if (app == null) {
+            throw new ServerException("app不存在");
         }
 
         int deleteCount = appMapper.deleteByPrimaryKey(appId);
         if (deleteCount != 1) {
             throw new ServerException("删除失败，请稍后再试");
         }
+
+        fileService.deleteQuietly(app.getFilePath());
     }
 
     public void update(App app) {

@@ -1,5 +1,6 @@
 package com.daxiang.utils;
 
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
@@ -16,6 +17,8 @@ public class UUIDUtil {
 
     public static String getUUIDFilename(String filename) {
         Assert.hasText(filename, "filename不能为空");
-        return filename.contains(".") ? getUUID() + "." + StringUtils.unqualify(filename) : getUUID();
+        String fileExtension = FilenameUtils.getExtension(filename);
+        String uuid = getUUID();
+        return StringUtils.isEmpty(fileExtension) ? uuid : uuid + "." + fileExtension;
     }
 }

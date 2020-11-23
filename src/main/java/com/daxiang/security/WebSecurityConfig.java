@@ -2,7 +2,7 @@ package com.daxiang.security;
 
 import com.alibaba.fastjson.JSON;
 import com.daxiang.model.Response;
-import com.daxiang.model.UploadFile;
+import com.daxiang.service.FileService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -64,7 +64,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) {
-        web.ignoring().antMatchers("/" + UploadFile.UPLOAD_FILE_PATH + "/**",
+        web.ignoring().antMatchers("/" + FileService.UPLOAD_DIR + "/**",
                 "/" + frontend + "/**");
     }
 

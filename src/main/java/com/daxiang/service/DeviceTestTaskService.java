@@ -27,6 +27,8 @@ public class DeviceTestTaskService {
 
     @Autowired
     private DeviceTestTaskMapper deviceTestTaskMapper;
+    @Autowired
+    private FileService fileService;
 
     public void update(DeviceTestTask deviceTestTask) {
         int updateCount = deviceTestTaskMapper.updateByPrimaryKeySelective(deviceTestTask);
@@ -185,7 +187,7 @@ public class DeviceTestTaskService {
         }
     }
 
-    public void delete(Integer deviceTestTaskId) {
+    public void deleteAndClearRelatedRes(Integer deviceTestTaskId) {
         if (deviceTestTaskId == null) {
             throw new ServerException("deviceTestTaskId不能为空");
         }
@@ -202,6 +204,18 @@ public class DeviceTestTaskService {
         int deleteCount = deviceTestTaskMapper.deleteByPrimaryKey(deviceTestTaskId);
         if (deleteCount != 1) {
             throw new ServerException("删除失败，请稍后重试");
+        }
+
+        clearRelatedRes(deviceTestTask);
+    }
+
+    public void clearRelatedRes(DeviceTestTask deviceTestTask) {
+        List<Testcase> testcases = deviceTestTask.getTestcases();
+        if (!CollectionUtils.isEmpty(testcases)) {
+            testcases.forEach(testcase -> {
+                fileService.deleteQuietly(testcase.getFailImgPath());
+                fileService.deleteQuietly(testcase.getVideoPath());
+            });
         }
     }
 

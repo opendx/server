@@ -36,6 +36,8 @@ public class DriverService {
     private DriverDao driverDao;
     @Autowired
     private UserService userService;
+    @Autowired
+    private FileService fileService;
 
     public void add(Driver driver) {
         driver.setCreateTime(new Date());
@@ -51,14 +53,24 @@ public class DriverService {
         }
     }
 
-    public void delete(Integer driverId) {
+    public void deleteAndClearRelatedRes(Integer driverId) {
         if (driverId == null) {
             throw new ServerException("driverId不能为空");
+        }
+
+        Driver driver = driverMapper.selectByPrimaryKey(driverId);
+        if (driver == null) {
+            throw new ServerException("driver不存在");
         }
 
         int deleteCount = driverMapper.deleteByPrimaryKey(driverId);
         if (deleteCount != 1) {
             throw new ServerException("删除失败，请稍后重试");
+        }
+
+        List<DriverFile> driverFiles = driver.getFiles();
+        if (!CollectionUtils.isEmpty(driverFiles)) {
+            driverFiles.forEach(driverFile -> fileService.deleteQuietly(driverFile.getFilePath()));
         }
     }
 

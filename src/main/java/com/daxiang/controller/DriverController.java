@@ -33,7 +33,7 @@ public class DriverController {
 
     @DeleteMapping("/{driverId}")
     public Response delete(@PathVariable Integer driverId) {
-        driverService.delete(driverId);
+        driverService.deleteAndClearRelatedRes(driverId);
         return Response.success("删除成功");
     }
 

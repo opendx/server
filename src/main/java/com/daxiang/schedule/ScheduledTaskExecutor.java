@@ -1,6 +1,7 @@
 package com.daxiang.schedule;
 
 import com.daxiang.model.dto.Testcase;
+import com.daxiang.service.FileService;
 import com.daxiang.service.TestTaskService;
 import com.daxiang.mbg.po.DeviceTestTask;
 import com.daxiang.mbg.po.TestTask;
@@ -29,6 +30,8 @@ public class ScheduledTaskExecutor {
     private TestTaskService testTaskService;
     @Autowired
     private DeviceTestTaskService deviceTestTaskService;
+    @Autowired
+    private FileService fileService;
 
     /**
      * 统计已完成的测试任务
@@ -82,5 +85,17 @@ public class ScheduledTaskExecutor {
                         log.info("测试结果统计完成, testTaskId: {}", testTaskId);
                     }
                 });
+    }
+
+
+    /**
+     * 每天0点，清理3天前的临时文件
+     */
+    @Scheduled(cron = "0 0 0 * * ?")
+    public void clearTmpFiles() {
+        int beforeDays = 3;
+        log.info("开始清除{}天前的临时文件", beforeDays);
+        fileService.clearTmpFilesBefore(beforeDays);
+        log.info("清理临时文件完成");
     }
 }

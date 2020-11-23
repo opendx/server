@@ -32,6 +32,8 @@ public class MobileService {
     private MobileMapper mobileMapper;
     @Autowired
     private AgentClient agentClient;
+    @Autowired
+    private FileService fileService;
 
     public void save(Mobile mobile) {
         Mobile dbMobile = mobileMapper.selectByPrimaryKey(mobile.getId());
@@ -48,6 +50,24 @@ public class MobileService {
         if (saveCount != 1) {
             throw new ServerException("保存失败，请稍后重试");
         }
+    }
+
+    public void deleteAndClearRelatedRes(String mobileId) {
+        if (mobileId == null) {
+            throw new ServerException("mobileId不能为空");
+        }
+
+        Mobile mobile = mobileMapper.selectByPrimaryKey(mobileId);
+        if (mobile == null) {
+            throw new ServerException("mobile不存在");
+        }
+
+        int deleteCount = mobileMapper.deleteByPrimaryKey(mobileId);
+        if (deleteCount != 1) {
+            throw new ServerException("删除失败，请稍后重试");
+        }
+
+        fileService.deleteQuietly(mobile.getImgPath());
     }
 
     public PagedData<MobileVo> list(Mobile query, String orderBy, PageRequest pageRequest) {

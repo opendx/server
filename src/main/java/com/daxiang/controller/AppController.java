@@ -33,7 +33,7 @@ public class AppController {
 
     @DeleteMapping("/{appId}")
     public Response delete(@PathVariable Integer appId) {
-        appService.delete(appId);
+        appService.deleteAndClearRelatedRes(appId);
         return Response.success("删除成功");
     }
 

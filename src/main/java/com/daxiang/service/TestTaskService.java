@@ -347,7 +347,7 @@ public class TestTaskService {
     }
 
     @Transactional
-    public void delete(Integer testTaskId) {
+    public void deleteAndClearRelatedRes(Integer testTaskId) {
         if (testTaskId == null) {
             throw new ServerException("testTaskId不能为空");
         }
@@ -378,6 +378,10 @@ public class TestTaskService {
         int deleteCount = testTaskMapper.deleteByPrimaryKey(testTaskId);
         if (deleteCount != 1) {
             throw new ServerException("删除失败，请稍后重试");
+        }
+
+        if (!CollectionUtils.isEmpty(deviceTestTasks)) {
+            deviceTestTasks.forEach(deviceTestTask -> deviceTestTaskService.clearRelatedRes(deviceTestTask));
         }
     }
 }

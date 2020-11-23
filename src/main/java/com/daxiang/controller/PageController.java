@@ -29,7 +29,7 @@ public class PageController {
     @PostMapping("/add")
     public Response add(@Valid @RequestBody Page page) {
         pageService.add(page);
-        return Response.success("添加成功");
+        return Response.success("添加成功", page);
     }
 
     @GetMapping("/{pageId}")
@@ -40,7 +40,7 @@ public class PageController {
 
     @DeleteMapping("/{pageId}")
     public Response delete(@PathVariable Integer pageId) {
-        pageService.delete(pageId);
+        pageService.deleteAndClearRelatedRes(pageId);
         return Response.success("删除成功");
     }
 
