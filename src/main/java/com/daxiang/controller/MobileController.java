@@ -7,6 +7,7 @@ import com.daxiang.model.Response;
 import com.daxiang.model.vo.MobileVo;
 import com.daxiang.service.MobileService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -26,6 +27,13 @@ public class MobileController {
     public Response save(@RequestBody @Valid Mobile mobile) {
         mobileService.save(mobile);
         return Response.success("保存成功");
+    }
+
+    @PreAuthorize("hasAuthority('admin')")
+    @DeleteMapping("/{mobileId}")
+    public Response delete(@PathVariable String mobileId) {
+        mobileService.deleteAndClearRelatedRes(mobileId);
+        return Response.success("删除成功");
     }
 
     @PostMapping("/list")

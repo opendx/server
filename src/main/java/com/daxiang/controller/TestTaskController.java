@@ -49,7 +49,7 @@ public class TestTaskController {
 
     @DeleteMapping("/{testTaskId}")
     public Response delete(@PathVariable Integer testTaskId) {
-        testTaskService.delete(testTaskId);
+        testTaskService.deleteAndClearRelatedRes(testTaskId);
         return Response.success("删除成功");
     }
 }

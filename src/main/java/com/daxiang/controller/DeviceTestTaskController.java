@@ -54,7 +54,7 @@ public class DeviceTestTaskController {
 
     @DeleteMapping("/{deviceTestTaskId}")
     public Response delete(@PathVariable Integer deviceTestTaskId) {
-        deviceTestTaskService.delete(deviceTestTaskId);
+        deviceTestTaskService.deleteAndClearRelatedRes(deviceTestTaskId);
         return Response.success("删除成功");
     }
 
