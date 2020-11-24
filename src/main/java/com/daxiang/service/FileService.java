@@ -137,20 +137,21 @@ public class FileService {
     }
 
     public void clearTmpFilesBefore(int beforeDays) {
+        File[] files = new File(staticLocation + TMP_DIR).listFiles();
+        if (files == null) {
+            return;
+        }
+
         long currentTimeMillis = System.currentTimeMillis();
         long beforeMs = TimeUnit.DAYS.toMillis(beforeDays);
 
-        File tmpDir = new File(staticLocation + TMP_DIR);
-        File[] files = tmpDir.listFiles();
-        if (files != null) {
-            for (File file : files) {
-                if (currentTimeMillis - file.lastModified() >= beforeMs) {
-                    boolean isDeleted = file.delete();
-                    if (isDeleted) {
-                        log.info("delete {} success", file.getAbsolutePath());
-                    } else {
-                        log.warn("delete {} fail", file.getAbsolutePath());
-                    }
+        for (File file : files) {
+            if (currentTimeMillis - file.lastModified() >= beforeMs) {
+                boolean isDeleted = file.delete();
+                if (isDeleted) {
+                    log.info("delete {} success", file.getAbsolutePath());
+                } else {
+                    log.warn("delete {} fail", file.getAbsolutePath());
                 }
             }
         }
