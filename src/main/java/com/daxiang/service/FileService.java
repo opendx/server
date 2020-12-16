@@ -7,6 +7,7 @@ import com.daxiang.utils.HttpServletUtil;
 import com.daxiang.utils.UUIDUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -136,10 +137,12 @@ public class FileService {
         FileUtils.moveFile(src, dest);
     }
 
-    public void clearTmpFilesBefore(int beforeDays) {
+    public int clearTmpFilesBefore(int beforeDays) {
+        int deletedTmpFilesCount = 0;
+
         File[] files = new File(staticLocation + TMP_DIR).listFiles();
-        if (files == null) {
-            return;
+        if (ArrayUtils.isEmpty(files)) {
+            return deletedTmpFilesCount;
         }
 
         long currentTimeMillis = System.currentTimeMillis();
@@ -149,11 +152,14 @@ public class FileService {
             if (currentTimeMillis - file.lastModified() >= beforeMs) {
                 boolean isDeleted = file.delete();
                 if (isDeleted) {
+                    deletedTmpFilesCount++;
                     log.info("delete {} success", file.getAbsolutePath());
                 } else {
                     log.warn("delete {} fail", file.getAbsolutePath());
                 }
             }
         }
+
+        return deletedTmpFilesCount;
     }
 }

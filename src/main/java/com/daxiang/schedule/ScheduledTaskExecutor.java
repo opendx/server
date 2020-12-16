@@ -95,7 +95,7 @@ public class ScheduledTaskExecutor {
     public void clearTmpFiles() {
         int beforeDays = 3;
         log.info("开始清除{}天前的临时文件", beforeDays);
-        fileService.clearTmpFilesBefore(beforeDays);
-        log.info("清理临时文件完成");
+        int deletedTmpFilesCount = fileService.clearTmpFilesBefore(beforeDays);
+        log.info("清理临时文件完成，共清理{}个文件", deletedTmpFilesCount);
     }
 }
