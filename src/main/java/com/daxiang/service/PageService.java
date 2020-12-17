@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -66,6 +67,9 @@ public class PageService {
         if (!StringUtils.isEmpty(destImgPath)) {
             try {
                 fileService.moveFile(originalImgPath, destImgPath);
+            } catch (FileNotFoundException e) {
+                log.info("file not found: {}", originalImgPath);
+                throw new ServerException("图片不存在，该图片可能已保存至其他Page");
             } catch (IOException e) {
                 log.error("move {} -> {} err", originalImgPath, destImgPath, e);
                 throw new ServerException(e.getMessage());
