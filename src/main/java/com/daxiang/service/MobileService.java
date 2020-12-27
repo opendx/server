@@ -93,9 +93,10 @@ public class MobileService {
 
     public List<Mobile> getMobiles(Mobile query, String orderBy) {
         MobileExample example = new MobileExample();
-        MobileExample.Criteria criteria = example.createCriteria();
 
         if (query != null) {
+            MobileExample.Criteria criteria = example.createCriteria();
+
             if (!StringUtils.isEmpty(query.getId())) {
                 criteria.andIdEqualTo(query.getId());
             }

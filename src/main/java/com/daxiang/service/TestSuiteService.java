@@ -121,9 +121,10 @@ public class TestSuiteService {
 
     public List<TestSuite> getTestSuites(TestSuite query, String orderBy) {
         TestSuiteExample example = new TestSuiteExample();
-        TestSuiteExample.Criteria criteria = example.createCriteria();
 
         if (query != null) {
+            TestSuiteExample.Criteria criteria = example.createCriteria();
+
             if (query.getId() != null) {
                 criteria.andIdEqualTo(query.getId());
             }

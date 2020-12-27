@@ -127,9 +127,10 @@ public class AppService {
 
     public List<App> getApps(App query, String orderBy) {
         AppExample example = new AppExample();
-        AppExample.Criteria criteria = example.createCriteria();
 
         if (query != null) {
+            AppExample.Criteria criteria = example.createCriteria();
+
             if (query.getId() != null) {
                 criteria.andIdEqualTo(query.getId());
             }

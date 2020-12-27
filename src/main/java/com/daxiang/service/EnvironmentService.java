@@ -118,9 +118,10 @@ public class EnvironmentService {
 
     public List<Environment> getEnvironments(Environment query, String orderBy) {
         EnvironmentExample example = new EnvironmentExample();
-        EnvironmentExample.Criteria criteria = example.createCriteria();
 
         if (query != null) {
+            EnvironmentExample.Criteria criteria = example.createCriteria();
+
             if (query.getId() != null) {
                 criteria.andIdEqualTo(query.getId());
             }

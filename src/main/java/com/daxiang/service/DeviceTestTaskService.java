@@ -50,9 +50,10 @@ public class DeviceTestTaskService {
 
     public List<DeviceTestTask> getDeviceTestTasks(DeviceTestTask query, String orderBy) {
         DeviceTestTaskExample example = new DeviceTestTaskExample();
-        DeviceTestTaskExample.Criteria criteria = example.createCriteria();
 
         if (query != null) {
+            DeviceTestTaskExample.Criteria criteria = example.createCriteria();
+
             if (query.getId() != null) {
                 criteria.andIdEqualTo(query.getId());
             }

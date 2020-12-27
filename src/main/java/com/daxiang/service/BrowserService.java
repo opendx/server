@@ -61,9 +61,10 @@ public class BrowserService {
 
     public List<Browser> getBrowsers(Browser query, String orderBy) {
         BrowserExample example = new BrowserExample();
-        BrowserExample.Criteria criteria = example.createCriteria();
 
         if (query != null) {
+            BrowserExample.Criteria criteria = example.createCriteria();
+
             if (!StringUtils.isEmpty(query.getId())) {
                 criteria.andIdEqualTo(query.getId());
             }

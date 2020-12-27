@@ -184,9 +184,10 @@ public class ActionService {
 
     public List<Action> getActions(Action query, String orderBy) {
         ActionExample example = new ActionExample();
-        ActionExample.Criteria criteria = example.createCriteria();
 
         if (query != null) {
+            ActionExample.Criteria criteria = example.createCriteria();
+
             if (query.getId() != null) {
                 criteria.andIdEqualTo(query.getId());
             }

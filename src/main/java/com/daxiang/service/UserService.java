@@ -186,9 +186,10 @@ public class UserService {
 
     public List<User> getUsers(User query, String orderBy) {
         UserExample example = new UserExample();
-        UserExample.Criteria criteria = example.createCriteria();
 
         if (query != null) {
+            UserExample.Criteria criteria = example.createCriteria();
+
             if (query.getId() != null) {
                 criteria.andIdEqualTo(query.getId());
             }

@@ -174,9 +174,10 @@ public class PageService {
 
     public List<Page> getPagesWithoutWindowHierarchy(Page query, String orderBy) {
         PageExample example = new PageExample();
-        PageExample.Criteria criteria = example.createCriteria();
 
         if (query != null) {
+            PageExample.Criteria criteria = example.createCriteria();
+
             if (query.getId() != null) {
                 criteria.andIdEqualTo(query.getId());
             }

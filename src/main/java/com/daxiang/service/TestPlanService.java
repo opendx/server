@@ -161,9 +161,10 @@ public class TestPlanService {
 
     public List<TestPlan> getTestPlans(TestPlan query, String orderBy) {
         TestPlanExample example = new TestPlanExample();
-        TestPlanExample.Criteria criteria = example.createCriteria();
 
         if (query != null) {
+            TestPlanExample.Criteria criteria = example.createCriteria();
+
             if (query.getId() != null) {
                 criteria.andIdEqualTo(query.getId());
             }

@@ -115,9 +115,10 @@ public class ProjectService {
 
     public List<Project> getProjects(Project query, String orderBy) {
         ProjectExample example = new ProjectExample();
-        ProjectExample.Criteria criteria = example.createCriteria();
 
         if (query != null) {
+            ProjectExample.Criteria criteria = example.createCriteria();
+
             if (query.getId() != null) {
                 criteria.andIdEqualTo(query.getId());
             }

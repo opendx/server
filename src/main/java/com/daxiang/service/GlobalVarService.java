@@ -145,9 +145,10 @@ public class GlobalVarService {
 
     public List<GlobalVar> getGlobalVars(GlobalVar query, String orderBy) {
         GlobalVarExample example = new GlobalVarExample();
-        GlobalVarExample.Criteria criteria = example.createCriteria();
 
         if (query != null) {
+            GlobalVarExample.Criteria criteria = example.createCriteria();
+
             if (query.getId() != null) {
                 criteria.andIdEqualTo(query.getId());
             }

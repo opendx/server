@@ -179,9 +179,10 @@ public class CategoryService {
 
     public List<Category> getCategories(Category query, String orderBy) {
         CategoryExample example = new CategoryExample();
-        CategoryExample.Criteria criteria = example.createCriteria();
 
         if (query != null) {
+            CategoryExample.Criteria criteria = example.createCriteria();
+
             if (query.getId() != null) {
                 criteria.andIdEqualTo(query.getId());
             }

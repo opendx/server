@@ -132,9 +132,10 @@ public class DriverService {
 
     public List<Driver> getDrivers(Driver query, String orderBy) {
         DriverExample example = new DriverExample();
-        DriverExample.Criteria criteria = example.createCriteria();
 
         if (query != null) {
+            DriverExample.Criteria criteria = example.createCriteria();
+
             if (query.getId() != null) {
                 criteria.andIdEqualTo(query.getId());
             }

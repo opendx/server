@@ -111,18 +111,15 @@ public class TestTaskService {
         // 保存测试任务
         TestTask testTask = saveTestTask(testPlan, commitorUid);
 
-        // 同一项目下的全局变量
         List<GlobalVar> globalVars = globalVarService.getGlobalVarsByProjectIdAndEnv(testTask.getProjectId(), testPlan.getEnvironmentId());
-        // 该项目下的Pages
         List<com.daxiang.mbg.po.Page> pages = pageService.getPagesWithoutWindowHierarchyByProjectId(testTask.getProjectId());
-
         Project project = projectService.getProjectById(testTask.getProjectId());
 
         // 根据不同用例分发策略，给device分配用例
-        Map<String, List<Action>> deviceTestcases = allocateTestcaseToDevice(testPlan.getDeviceIds(), testcases, testPlan.getRunMode());
+        Map<String, List<Action>> deviceTestcasesMap = allocateTestcaseToDevice(testPlan.getDeviceIds(), testcases, testPlan.getRunMode());
 
         Map<String, JSONObject> deviceMap = new HashMap<>();
-        Set<String> deviceIds = deviceTestcases.keySet();
+        Set<String> deviceIds = deviceTestcasesMap.keySet();
         if (project.getPlatform() == Project.PC_WEB_PLATFORM) { // browser
             Map<String, Browser> browserMap = browserService.getBrowserMapByBrowserIds(deviceIds);
             browserMap.forEach((browserId, browser) -> deviceMap.put(browserId, (JSONObject) JSONObject.toJSON(browser)));
@@ -132,7 +129,7 @@ public class TestTaskService {
         }
 
         // todo 批量保存
-        deviceTestcases.forEach((deviceId, actionList) -> {
+        deviceTestcasesMap.forEach((deviceId, actionList) -> {
             DeviceTestTask deviceTestTask = new DeviceTestTask();
             deviceTestTask.setProjectId(testTask.getProjectId());
             deviceTestTask.setPlatform(project.getPlatform());
@@ -208,11 +205,11 @@ public class TestTaskService {
         testTask.setCommitTime(new Date());
 
         int insertRow = testTaskMapper.insertSelective(testTask);
-        if (insertRow == 1) {
-            return testTask;
-        } else {
+        if (insertRow != 1) {
             throw new ServerException("保存TestTask失败");
         }
+
+        return testTask;
     }
 
     public PagedData<TestTaskVo> list(TestTask query, String orderBy, PageRequest pageRequest) {
@@ -266,9 +263,10 @@ public class TestTaskService {
 
     public List<TestTask> getTestTasks(TestTask query, String orderBy) {
         TestTaskExample example = new TestTaskExample();
-        TestTaskExample.Criteria criteria = example.createCriteria();
 
         if (query != null) {
+            TestTaskExample.Criteria criteria = example.createCriteria();
+
             if (query.getId() != null) {
                 criteria.andIdEqualTo(query.getId());
             }
