@@ -18,7 +18,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -168,12 +167,10 @@ public class UserService {
 
     public String login(User user) {
         try {
-            authenticationManager
-                    .authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
-        } catch (DisabledException e) {
-            throw new ServerException("账户已禁用");
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
         } catch (AuthenticationException e) {
-            throw new ServerException("用户名或密码错误");
+            throw new ServerException(e.getMessage());
         }
 
         return JwtTokenUtil.createToken(user.getUsername());

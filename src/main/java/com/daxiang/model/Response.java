@@ -3,6 +3,7 @@ package com.daxiang.model;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import org.springframework.util.StringUtils;
 
 /**
  * Created by jiangyitao.
@@ -59,8 +60,8 @@ public class Response<T> {
         return createResponse(ERROR, msg, null);
     }
 
-    public static Response unauthorized() {
-        return createResponse(UNAUTHORIZED, "认证失败", null);
+    public static Response unauthorized(String msg) {
+        return createResponse(UNAUTHORIZED, StringUtils.isEmpty(msg) ? "认证失败" : msg, null);
     }
 
     public static Response accessDenied() {

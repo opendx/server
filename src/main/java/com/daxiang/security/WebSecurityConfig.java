@@ -1,8 +1,7 @@
 package com.daxiang.security;
 
-import com.alibaba.fastjson.JSON;
-import com.daxiang.model.Response;
 import com.daxiang.service.FileService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,15 +13,12 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashSet;
 
 /**
  * Created by jiangyitao.
@@ -34,32 +30,45 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Value("${frontend}")
     private String frontend;
+    @Autowired
+    private JwtTokenFilter jwtTokenFilter;
+    @Autowired
+    private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    @Autowired
+    private JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable().cors();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
+        HttpMethod permitHttpMethod = HttpMethod.OPTIONS;
+        String[] permitAntPatterns = new String[]{"/", "/user/login",
+                // 以下为agent调用的接口
+                "/springboot-admin/**",
+                "/action/resetBasicAction",
+                "/upload/file",
+                "/project/list",
+                "/mobile/list",
+                "/mobile/save",
+                "/browser/save",
+                "/driver/downloadUrl",
+                "/deviceTestTask/**"
+        };
+
         http.authorizeRequests()
-                .antMatchers(HttpMethod.OPTIONS).permitAll()
-                .antMatchers("/").permitAll()
-                .antMatchers("/user/login").permitAll()
-                // 以下为agent调用的接口，放行
-                .antMatchers("/springboot-admin/**").permitAll()
-                .antMatchers("/action/resetBasicAction").permitAll()
-                .antMatchers("/upload/file").permitAll()
-                .antMatchers("/project/list").permitAll()
-                .antMatchers("/mobile/list").permitAll()
-                .antMatchers("/mobile/save").permitAll()
-                .antMatchers("/browser/save").permitAll()
-                .antMatchers("/driver/downloadUrl").permitAll()
-                .antMatchers("/deviceTestTask/**").permitAll();
+                .antMatchers(permitHttpMethod).permitAll()
+                .antMatchers(permitAntPatterns).permitAll()
+                .anyRequest().authenticated();
 
-        http.authorizeRequests().anyRequest().authenticated();
+        http.exceptionHandling()
+                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                .accessDeniedHandler(jwtAccessDeniedHandler);
 
-        http.exceptionHandling().authenticationEntryPoint(new JwtAuthenticationEntryPoint());
+        jwtTokenFilter.setShouldNotFilterHttpMethod(permitHttpMethod);
+        jwtTokenFilter.setShouldNotFilterAntPatterns(new HashSet<>(Arrays.asList(permitAntPatterns)));
 
-        http.addFilterBefore(jwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
     @Override
@@ -68,25 +77,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 "/" + frontend + "/**");
     }
 
-    static class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
-
-        @Override
-        public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) throws IOException {
-            response.setCharacterEncoding("UTF-8");
-            response.setContentType("application/json");
-            response.getWriter().println(JSON.toJSONString(Response.unauthorized()));
-            response.getWriter().flush();
-        }
-    }
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(12);
-    }
-
-    @Bean
-    public JwtTokenFilter jwtTokenFilter() {
-        return new JwtTokenFilter();
     }
 
     @Override

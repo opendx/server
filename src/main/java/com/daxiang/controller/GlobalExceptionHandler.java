@@ -39,8 +39,10 @@ public class GlobalExceptionHandler {
      */
     @ResponseBody
     @ExceptionHandler(AccessDeniedException.class)
-    public Response handleAccessDeniedException() {
-        return Response.accessDenied();
+    public void handleAccessDeniedException(AccessDeniedException e) {
+        // handleException会优先拦截到AccessDeniedException，导致WebSecurityConfig accessDeniedHandler无法执行
+        // 在这里拦截AccessDeniedException再抛出
+        throw e;
     }
 
     /**
@@ -51,7 +53,7 @@ public class GlobalExceptionHandler {
      */
     @ResponseBody
     @ExceptionHandler(ServerException.class)
-    public Response handleBusinessException(ServerException e) {
+    public Response handleServerException(ServerException e) {
         return Response.fail(e.getMessage());
     }
 
