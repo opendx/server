@@ -9,7 +9,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -43,11 +42,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         HttpMethod permitHttpMethod = HttpMethod.OPTIONS;
-        String[] permitAntPatterns = new String[]{"/", "/user/login",
+        String[] permitAntPatterns = new String[]{
+                "/",
+                "/user/login",
+                "/" + FileService.UPLOAD_DIR + "/**",
+                "/" + frontend + "/**",
                 // 以下为agent调用的接口
                 "/springboot-admin/**",
                 "/action/resetBasicAction",
-                "/upload/file",
+                "/upload/file/*",
                 "/project/list",
                 "/mobile/list",
                 "/mobile/save",
@@ -69,12 +72,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         jwtTokenFilter.setShouldNotFilterAntPatterns(new HashSet<>(Arrays.asList(permitAntPatterns)));
 
         http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
-    }
-
-    @Override
-    public void configure(WebSecurity web) {
-        web.ignoring().antMatchers("/" + FileService.UPLOAD_DIR + "/**",
-                "/" + frontend + "/**");
     }
 
     @Bean
