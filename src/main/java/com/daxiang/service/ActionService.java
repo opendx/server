@@ -236,58 +236,70 @@ public class ActionService {
         Map<Integer, Category> categoryMap = categoryService.categoriesToMap(categories);
 
         // actionType : node
-        Map<Integer, ActionTreeNode> rMap = new HashMap<>();
+        Map<Integer, ActionTreeNode> actionTypeNodeMap = new HashMap<>();
         // categoryId : node
-        Map<Integer, ActionTreeNode> cMap = new HashMap<>();
+        Map<Integer, ActionTreeNode> categoryIdNodeMap = new HashMap<>();
 
         for (Action action : actions) {
             // 创建根节点加入到tree，如果没创建过
             Integer actionType = action.getType();
-            ActionTreeNode root = rMap.get(actionType);
+            ActionTreeNode root = actionTypeNodeMap.get(actionType);
             if (root == null) {
                 root = new ActionTreeNode();
                 root.setName(ACTION_TYPE_MAP.get(actionType));
                 root.setChildren(new ArrayList<>());
-                rMap.put(actionType, root);
+
                 tree.add(root);
+                actionTypeNodeMap.put(actionType, root);
             }
 
+            ActionTreeNode actionNode = ActionTreeNode.create(action);
             Integer actionCid = action.getCategoryId();
             if (actionCid == null) {
                 // 无分类的action，放入相应根节点
-                root.getChildren().add(ActionTreeNode.create(action));
+                root.getChildren().add(actionNode);
             } else {
                 // action对应的分类节点
-                ActionTreeNode cNode = cMap.get(actionCid);
+                ActionTreeNode cNode = categoryIdNodeMap.get(actionCid);
                 if (cNode != null) {
                     // action放入相应的分类
-                    cNode.getChildren().add(ActionTreeNode.create(action));
+                    cNode.getChildren().add(actionNode);
                 } else {
-                    cNode = new ActionTreeNode();
                     Category category = categoryMap.get(actionCid);
-                    cNode.setName(category.getName());
-                    List<ActionTreeNode> children = new ArrayList<>();
-                    // action放入相应分类
-                    children.add(ActionTreeNode.create(action));
-                    cNode.setChildren(children);
-                    cMap.put(actionCid, cNode);
 
-                    Integer pid = category.getParentId();
-                    while (pid != null && pid > 0) {
-                        Category parent = categoryMap.get(pid);
-                        ActionTreeNode cpNode = cMap.get(pid);
-                        if (cpNode == null) {
-                            cpNode = new ActionTreeNode();
-                            cpNode.setName(parent.getName());
-                            cpNode.setChildren(new ArrayList<>());
-                            cMap.put(pid, cpNode);
+                    cNode = new ActionTreeNode();
+                    cNode.setName(category.getName());
+                    cNode.setChildren(new ArrayList<>());
+                    // action放入相应分类
+                    cNode.getChildren().add(actionNode);
+                    categoryIdNodeMap.put(actionCid, cNode);
+
+                    boolean cNodeIsRootChildren = true;
+
+                    Integer pCid = category.getParentId();
+                    while (pCid != null && pCid > 0) {
+                        ActionTreeNode pCNode = categoryIdNodeMap.get(pCid);
+                        if (pCNode != null) {
+                            pCNode.getChildren().add(cNode);
+                            cNodeIsRootChildren = false;
+                            break;
                         }
-                        cpNode.getChildren().add(cNode);
-                        cNode = cpNode;
-                        pid = parent.getParentId();
+
+                        Category pCategory = categoryMap.get(pCid);
+
+                        pCNode = new ActionTreeNode();
+                        pCNode.setName(pCategory.getName());
+                        pCNode.setChildren(new ArrayList<>());
+                        pCNode.getChildren().add(cNode);
+                        categoryIdNodeMap.put(pCid, pCNode);
+
+                        cNode = pCNode;
+                        pCid = pCategory.getParentId();
                     }
 
-                    root.getChildren().add(cNode);
+                    if (cNodeIsRootChildren) {
+                        root.getChildren().add(cNode);
+                    }
                 }
             }
         }
