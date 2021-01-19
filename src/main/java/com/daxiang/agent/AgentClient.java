@@ -47,6 +47,16 @@ public class AgentClient {
                 mobileId).getBody();
     }
 
+    public Response<Mobile> deleteMobile(String agentIp, int agentPort, String mobileId) {
+        String url = getUrl(agentIp, agentPort, "/mobile/{mobileId}");
+        return restTemplate.exchange(url,
+                HttpMethod.DELETE,
+                null,
+                new ParameterizedTypeReference<Response<Mobile>>() {
+                },
+                mobileId).getBody();
+    }
+
     public Response<Browser> getBrowser(String agentIp, int agentPort, String browserId) {
         String url = getUrl(agentIp, agentPort, "/browser/{browserId}");
         return restTemplate.exchange(url,

@@ -67,6 +67,12 @@ public class MobileService {
             throw new ServerException("删除失败，请稍后重试");
         }
 
+        try {
+            agentClient.deleteMobile(mobile.getAgentIp(), mobile.getAgentPort(), mobileId);
+        } catch (Exception ignore) {
+
+        }
+
         fileService.deleteQuietly(mobile.getImgPath());
     }
 
