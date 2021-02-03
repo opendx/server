@@ -31,6 +31,7 @@ public class FileService {
     public static final String VIDEO_DIR = UPLOAD_DIR + "/video";
     public static final String APP_DIR = UPLOAD_DIR + "/app";
     public static final String DRIVER_DIR = UPLOAD_DIR + "/driver";
+    public static final String LOG_DIR = UPLOAD_DIR + "/log";
     public static final String OTHER_FILE_DIR = UPLOAD_DIR + "/other";
 
     @Value("${static-location}/")
@@ -79,6 +80,12 @@ public class FileService {
             uploadDriverDir.mkdirs();
         }
 
+        File uploadLogDir = new File(staticLocation + LOG_DIR);
+        if (!uploadDriverDir.exists()) {
+            log.info("创建log目录 -> {}", uploadLogDir.getAbsolutePath());
+            uploadLogDir.mkdirs();
+        }
+
         File uploadOtherFileDir = new File(staticLocation + OTHER_FILE_DIR);
         if (!uploadOtherFileDir.exists()) {
             log.info("创建other file目录 -> {}", uploadOtherFileDir.getAbsolutePath());
@@ -107,6 +114,9 @@ public class FileService {
                 break;
             case FileType.DRIVER:
                 uploadFileDir = DRIVER_DIR;
+                break;
+            case FileType.LOG:
+                uploadFileDir = LOG_DIR;
                 break;
             default:
                 uploadFileDir = OTHER_FILE_DIR;

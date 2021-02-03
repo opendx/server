@@ -150,6 +150,9 @@ public class DeviceTestTaskService {
         if (!StringUtils.isEmpty(sourceTestcase.getVideoPath())) {
             targetTestcase.setVideoPath(sourceTestcase.getVideoPath());
         }
+        if (!StringUtils.isEmpty(sourceTestcase.getLogPath())) {
+            targetTestcase.setLogPath(sourceTestcase.getLogPath());
+        }
     }
 
     public void add(DeviceTestTask deviceTestTask) {
@@ -216,6 +219,7 @@ public class DeviceTestTaskService {
             testcases.forEach(testcase -> {
                 fileService.deleteQuietly(testcase.getFailImgPath());
                 fileService.deleteQuietly(testcase.getVideoPath());
+                fileService.deleteQuietly(testcase.getLogPath());
             });
         }
     }

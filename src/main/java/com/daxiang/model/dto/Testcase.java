@@ -43,6 +43,10 @@ public class Testcase extends Action {
     @JSONField(serialize = false) // 不会序列化的表中
     private String videoUrl;
 
+    private String logPath;
+    @JSONField(serialize = false) // 不会序列化的表中
+    private String logUrl;
+
     private Integer status;
 
     public String getFailImgUrl() {
@@ -54,6 +58,12 @@ public class Testcase extends Action {
     public String getVideoUrl() {
         if (!StringUtils.isEmpty(videoPath))
             return HttpServletUtil.getStaticResourceUrl(videoPath);
+        return null;
+    }
+
+    public String getLogUrl() {
+        if (!StringUtils.isEmpty(logPath))
+            return HttpServletUtil.getStaticResourceUrl(logPath);
         return null;
     }
 }

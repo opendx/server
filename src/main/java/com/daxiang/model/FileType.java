@@ -9,4 +9,5 @@ public interface FileType {
     int VIDEO = 2;
     int APP = 3;
     int DRIVER = 4;
+    int LOG = 5;
 }
