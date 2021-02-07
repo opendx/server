@@ -32,7 +32,7 @@ public class ActionProcessor {
     public void process(List<Action> actions, Integer env) {
         this.env = env;
         actions.forEach(action -> {
-            handleActionLocalVarsValue(action);
+            handleActionLocalVarsValue(action.getLocalVars());
             cachedActions.put(action.getId(), action);
         });
         recursivelyProcess(actions);
@@ -41,18 +41,9 @@ public class ActionProcessor {
     private void recursivelyProcess(List<Action> actions) {
         for (Action action : actions) {
             // steps
-            List<Step> steps = action.getSteps();
-            if (!CollectionUtils.isEmpty(steps)) {
-                steps = steps.stream()
-                        .filter(step -> step.getStatus() == Step.ENABLE_STATUS) // 过滤掉未开启的步骤
-                        .collect(Collectors.toList());
-                action.setSteps(steps);
-                for (Step step : steps) {
-                    Action stepAction = getActionById(step.getActionId());
-                    step.setAction(stepAction);
-                    recursivelyProcess(Arrays.asList(stepAction));
-                }
-            }
+            action.setSetUp(processSteps(action.getSetUp()));
+            action.setSteps(processSteps(action.getSteps()));
+            action.setTearDown(processSteps(action.getTearDown()));
 
             // actionImports
             List<Integer> actionImports = action.getActionImports();
@@ -66,23 +57,41 @@ public class ActionProcessor {
         }
     }
 
+    private List<Step> processSteps(List<Step> steps) {
+        if (CollectionUtils.isEmpty(steps)) {
+            return steps;
+        }
+
+        List<Step> newSteps = steps.stream()
+                .filter(step -> step.getStatus() == Step.ENABLE_STATUS) // 过滤掉未开启的步骤
+                .collect(Collectors.toList());
+        for (Step step : newSteps) {
+            Action stepAction = getActionById(step.getActionId());
+            step.setAction(stepAction);
+            recursivelyProcess(Arrays.asList(stepAction));
+        }
+
+        return newSteps;
+    }
+
     private Action getActionById(Integer actionId) {
         Action action = cachedActions.get(actionId);
         if (action == null) {
             action = actionService.getActionById(actionId);
-            handleActionLocalVarsValue(action);
+            handleActionLocalVarsValue(action.getLocalVars());
             cachedActions.put(actionId, action);
         }
         return action;
     }
 
-    private void handleActionLocalVarsValue(Action action) {
-        List<LocalVar> localVars = action.getLocalVars();
-        if (!CollectionUtils.isEmpty(localVars)) {
-            localVars.forEach(localVar -> {
-                String value = environmentService.getValueInEnvironmentValues(localVar.getEnvironmentValues(), env);
-                localVar.setValue(value);
-            });
+    private void handleActionLocalVarsValue(List<LocalVar> localVars) {
+        if (CollectionUtils.isEmpty(localVars)) {
+            return;
         }
+
+        localVars.forEach(localVar -> {
+            String value = environmentService.getValueInEnvironmentValues(localVar.getEnvironmentValues(), env);
+            localVar.setValue(value);
+        });
     }
 }

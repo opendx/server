@@ -104,9 +104,7 @@ public class ActionService {
     }
 
     public void update(Action action) {
-        checkStepsNotContainsSelf(action);
-        checkActionImportsNotContainsSelf(action);
-        checkDepensNotContainsSelf(action);
+        checkNotContainsSelf(action);
 
         // action状态变为草稿或禁用
         if (action.getState() != Action.RELEASE_STATE) {
@@ -309,10 +307,20 @@ public class ActionService {
 
     public Response debug(ActionDebugRequest actionDebugRequest) {
         Action action = actionDebugRequest.getAction();
-        boolean anyEnabledStep = action.getSteps().stream()
-                .anyMatch(step -> step.getStatus() == Step.ENABLE_STATUS);
+
+        boolean anyEnabledStep = action.getSteps() != null &&
+                action.getSteps().stream().anyMatch(step -> step.getStatus() == Step.ENABLE_STATUS);
+
         if (!anyEnabledStep) {
-            return Response.fail("至少选择一个启用的步骤");
+            boolean anyEnabledSetUpStep = action.getSetUp() != null &&
+                    action.getSetUp().stream().anyMatch(step -> step.getStatus() == Step.ENABLE_STATUS);
+            if (!anyEnabledSetUpStep) {
+                boolean anyEnabledTearDownStep = action.getTearDown() != null &&
+                        action.getTearDown().stream().anyMatch(step -> step.getStatus() == Step.ENABLE_STATUS);
+                if (!anyEnabledTearDownStep) {
+                    return Response.fail("至少选择一个启用的步骤");
+                }
+            }
         }
 
         action.setId(0);
@@ -356,40 +364,39 @@ public class ActionService {
         return actionMapper.selectByExampleWithBLOBs(example);
     }
 
-    /**
-     * 依赖用例不包含自身
-     *
-     * @param action
-     */
-    private void checkDepensNotContainsSelf(Action action) {
-        List<Integer> depends = action.getDepends();
-        if (!CollectionUtils.isEmpty(depends) && depends.contains(action.getId())) {
-            throw new ServerException("依赖用例不能包含自身");
+    private void checkNotContainsSelf(Action action) {
+        List<Step> setUp = action.getSetUp();
+        if (!CollectionUtils.isEmpty(setUp)) {
+            List<Integer> setUpActionIds = setUp.stream()
+                    .map(Step::getActionId).collect(Collectors.toList());
+            if (setUpActionIds.contains(action.getId())) {
+                throw new ServerException("setUp不能包含自身");
+            }
         }
-    }
 
-    /**
-     * 检查步骤不包含自身，防止出现死循环
-     *
-     * @param action
-     */
-    private void checkStepsNotContainsSelf(Action action) {
         List<Integer> stepActionIds = action.getSteps().stream()
                 .map(Step::getActionId).collect(Collectors.toList());
         if (stepActionIds.contains(action.getId())) {
             throw new ServerException("步骤不能包含自身");
         }
-    }
 
-    /**
-     * 导入Action不能包含自身
-     *
-     * @param action
-     */
-    private void checkActionImportsNotContainsSelf(Action action) {
+        List<Step> tearDown = action.getTearDown();
+        if (!CollectionUtils.isEmpty(tearDown)) {
+            List<Integer> tearDownActionIds = tearDown.stream()
+                    .map(Step::getActionId).collect(Collectors.toList());
+            if (tearDownActionIds.contains(action.getId())) {
+                throw new ServerException("tearDown不能包含自身");
+            }
+        }
+
         List<Integer> actionImports = action.getActionImports();
         if (!CollectionUtils.isEmpty(actionImports) && actionImports.contains(action.getId())) {
             throw new ServerException("导入Action不能包含自身");
+        }
+
+        List<Integer> depends = action.getDepends();
+        if (!CollectionUtils.isEmpty(depends) && depends.contains(action.getId())) {
+            throw new ServerException("依赖用例不能包含自身");
         }
     }
 
@@ -403,8 +410,8 @@ public class ActionService {
             throw new ServerException("actionId不能为空");
         }
 
-        // 检查action是否被steps或depends或actionImports使用
-        List<Action> actions = actionDao.selectByActionIdInStepsOrDependsOrActionImports(actionId);
+        // 检查action是否被其他action使用
+        List<Action> actions = actionDao.selectOtherActionsInUse(actionId);
         if (!CollectionUtils.isEmpty(actions)) {
             String actionNames = actions.stream().map(Action::getName).collect(Collectors.joining("、"));
             throw new ServerException("actions: " + actionNames + ", 正在使用此action");

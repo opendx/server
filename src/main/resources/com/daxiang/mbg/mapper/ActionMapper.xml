@@ -21,7 +21,9 @@
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.daxiang.mbg.po.Action">
     <result column="params" jdbcType="LONGVARCHAR" property="params" typeHandler="com.daxiang.typehandler.ParamListTypeHandler" />
     <result column="local_vars" jdbcType="LONGVARCHAR" property="localVars" typeHandler="com.daxiang.typehandler.LocalVarListTypeHandler" />
+    <result column="set_up" jdbcType="LONGVARCHAR" property="setUp" typeHandler="com.daxiang.typehandler.StepListTypeHandler" />
     <result column="steps" jdbcType="LONGVARCHAR" property="steps" typeHandler="com.daxiang.typehandler.StepListTypeHandler" />
+    <result column="tear_down" jdbcType="LONGVARCHAR" property="tearDown" typeHandler="com.daxiang.typehandler.StepListTypeHandler" />
     <result column="java_imports" jdbcType="LONGVARCHAR" property="javaImports" typeHandler="com.daxiang.typehandler.StringListTypeHandler" />
     <result column="action_imports" jdbcType="LONGVARCHAR" property="actionImports" typeHandler="com.daxiang.typehandler.IntegerListTypeHandler" />
     <result column="platforms" jdbcType="LONGVARCHAR" property="platforms" typeHandler="com.daxiang.typehandler.IntegerListTypeHandler" />
@@ -90,7 +92,8 @@
     create_time, updator_uid, update_time, page_id, category_id, project_id, state
   </sql>
   <sql id="Blob_Column_List">
-    params, local_vars, steps, java_imports, action_imports, platforms, depends
+    params, local_vars, set_up, steps, tear_down, java_imports, action_imports, platforms, 
+    depends
   </sql>
   <select id="selectByExampleWithBLOBs" parameterType="com.daxiang.mbg.po.ActionExample" resultMap="ResultMapWithBLOBs">
     select
@@ -150,7 +153,9 @@
       update_time, page_id, category_id, 
       project_id, state, params, 
       local_vars, 
+      set_up, 
       steps, 
+      tear_down, 
       java_imports, 
       action_imports, 
       platforms, 
@@ -162,7 +167,9 @@
       #{updateTime,jdbcType=TIMESTAMP}, #{pageId,jdbcType=INTEGER}, #{categoryId,jdbcType=INTEGER}, 
       #{projectId,jdbcType=INTEGER}, #{state,jdbcType=TINYINT}, #{params,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.ParamListTypeHandler}, 
       #{localVars,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.LocalVarListTypeHandler}, 
+      #{setUp,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.StepListTypeHandler}, 
       #{steps,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.StepListTypeHandler}, 
+      #{tearDown,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.StepListTypeHandler}, 
       #{javaImports,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.StringListTypeHandler}, 
       #{actionImports,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.IntegerListTypeHandler}, 
       #{platforms,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.IntegerListTypeHandler}, 
@@ -223,8 +230,14 @@
       <if test="localVars != null">
         local_vars,
       </if>
+      <if test="setUp != null">
+        set_up,
+      </if>
       <if test="steps != null">
         steps,
+      </if>
+      <if test="tearDown != null">
+        tear_down,
       </if>
       <if test="javaImports != null">
         java_imports,
@@ -288,8 +301,14 @@
       <if test="localVars != null">
         #{localVars,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.LocalVarListTypeHandler},
       </if>
+      <if test="setUp != null">
+        #{setUp,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.StepListTypeHandler},
+      </if>
       <if test="steps != null">
         #{steps,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.StepListTypeHandler},
+      </if>
+      <if test="tearDown != null">
+        #{tearDown,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.StepListTypeHandler},
       </if>
       <if test="javaImports != null">
         #{javaImports,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.StringListTypeHandler},
@@ -365,8 +384,14 @@
       <if test="record.localVars != null">
         local_vars = #{record.localVars,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.LocalVarListTypeHandler},
       </if>
+      <if test="record.setUp != null">
+        set_up = #{record.setUp,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.StepListTypeHandler},
+      </if>
       <if test="record.steps != null">
         steps = #{record.steps,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.StepListTypeHandler},
+      </if>
+      <if test="record.tearDown != null">
+        tear_down = #{record.tearDown,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.StepListTypeHandler},
       </if>
       <if test="record.javaImports != null">
         java_imports = #{record.javaImports,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.StringListTypeHandler},
@@ -404,7 +429,9 @@
       state = #{record.state,jdbcType=TINYINT},
       params = #{record.params,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.ParamListTypeHandler},
       local_vars = #{record.localVars,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.LocalVarListTypeHandler},
+      set_up = #{record.setUp,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.StepListTypeHandler},
       steps = #{record.steps,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.StepListTypeHandler},
+      tear_down = #{record.tearDown,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.StepListTypeHandler},
       java_imports = #{record.javaImports,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.StringListTypeHandler},
       action_imports = #{record.actionImports,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.IntegerListTypeHandler},
       platforms = #{record.platforms,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.IntegerListTypeHandler},
@@ -485,8 +512,14 @@
       <if test="localVars != null">
         local_vars = #{localVars,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.LocalVarListTypeHandler},
       </if>
+      <if test="setUp != null">
+        set_up = #{setUp,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.StepListTypeHandler},
+      </if>
       <if test="steps != null">
         steps = #{steps,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.StepListTypeHandler},
+      </if>
+      <if test="tearDown != null">
+        tear_down = #{tearDown,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.StepListTypeHandler},
       </if>
       <if test="javaImports != null">
         java_imports = #{javaImports,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.StringListTypeHandler},
@@ -521,7 +554,9 @@
       state = #{state,jdbcType=TINYINT},
       params = #{params,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.ParamListTypeHandler},
       local_vars = #{localVars,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.LocalVarListTypeHandler},
+      set_up = #{setUp,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.StepListTypeHandler},
       steps = #{steps,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.StepListTypeHandler},
+      tear_down = #{tearDown,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.StepListTypeHandler},
       java_imports = #{javaImports,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.StringListTypeHandler},
       action_imports = #{actionImports,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.IntegerListTypeHandler},
       platforms = #{platforms,jdbcType=LONGVARCHAR,typeHandler=com.daxiang.typehandler.IntegerListTypeHandler},

@@ -100,20 +100,32 @@ public class DeviceTestTaskService {
 
         deviceTestTask.getTestcases().stream()
                 .filter(testcase -> testcase.getId().equals(sourceTestcase.getId()))
-                .forEach(testcase -> {
+                .findFirst()
+                .ifPresent(testcase -> {
                     // 更新testcase运行结果
                     copyTestcaseProperties(sourceTestcase, testcase);
-                    List<Step> sourceSteps = sourceTestcase.getSteps();
-                    if (!CollectionUtils.isEmpty(sourceSteps)) {
-                        // 每次agent只会传1个要更新的步骤
-                        Step sourceStep = sourceSteps.get(0);
-                        testcase.getSteps().stream()
-                                .filter(step -> step.getNumber().equals(sourceStep.getNumber()))
-                                .forEach(step -> {
-                                    // 更新step运行结果
-                                    copyStepProperties(sourceStep, step);
-                                });
+
+                    List<Step> steps;
+                    Step sourceStep;
+
+                    if (!CollectionUtils.isEmpty(sourceTestcase.getSteps())) {
+                        sourceStep = sourceTestcase.getSteps().get(0);
+                        steps = testcase.getSteps();
+                    } else if (!CollectionUtils.isEmpty(sourceTestcase.getSetUp())) {
+                        sourceStep = sourceTestcase.getSetUp().get(0);
+                        steps = testcase.getSetUp();
+                    } else {
+                        sourceStep = sourceTestcase.getTearDown().get(0);
+                        steps = testcase.getTearDown();
                     }
+
+                    steps.stream()
+                            .filter(step -> step.getNumber().equals(sourceStep.getNumber()))
+                            .findFirst()
+                            .ifPresent(step -> {
+                                // 更新step运行结果
+                                copyStepProperties(sourceStep, step);
+                            });
                 });
 
         int updateCount = deviceTestTaskMapper.updateByPrimaryKeySelective(deviceTestTask);

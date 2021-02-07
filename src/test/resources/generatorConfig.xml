@@ -19,7 +19,7 @@
             <property name="addRemarkComments" value="true"/>
         </commentGenerator>
 
-        <jdbcConnection driverClass="com.mysql.jdbc.Driver"
+        <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
                         connectionURL="jdbc:mysql://localhost:3306/daxiang"
                         userId="root"
                         password="rootroot">
@@ -33,22 +33,24 @@
         <sqlMapGenerator targetPackage="com.daxiang.mbg.mapper" targetProject="/Users/jiangyitao/IdeaProjects/opendx/server/src/main/resources"/>
         <javaClientGenerator type="XMLMAPPER" targetPackage="com.daxiang.mbg.mapper" targetProject="/Users/jiangyitao/IdeaProjects/opendx/server/src/main/java"/>
 
-        <!--<table tableName="action">-->
-            <!--<generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
-            <!--<columnOverride column="steps" typeHandler="com.daxiang.typehandler.StepListTypeHandler" javaType="java.util.List&lt;com.daxiang.model.action.Step&gt;" jdbcType="LONGVARCHAR"/>-->
-            <!--<columnOverride column="params" typeHandler="com.daxiang.typehandler.ParamListTypeHandler" javaType="java.util.List&lt;com.daxiang.model.action.Param&gt;" jdbcType="LONGVARCHAR"/>-->
-            <!--<columnOverride column="local_vars" typeHandler="com.daxiang.typehandler.LocalVarListTypeHandler" javaType="java.util.List&lt;com.daxiang.model.action.LocalVar&gt;" jdbcType="LONGVARCHAR"/>-->
-            <!--<columnOverride column="java_imports" typeHandler="com.daxiang.typehandler.StringListTypeHandler" javaType="java.util.List&lt;String&gt;" jdbcType="LONGVARCHAR"/>-->
-            <!--<columnOverride column="action_imports" typeHandler="com.daxiang.typehandler.IntegerListTypeHandler" javaType="java.util.List&lt;Integer&gt;" jdbcType="LONGVARCHAR"/>-->
-            <!--<columnOverride column="platforms" typeHandler="com.daxiang.typehandler.IntegerListTypeHandler" javaType="java.util.List&lt;Integer&gt;" jdbcType="LONGVARCHAR"/>-->
-            <!--<columnOverride column="depends" typeHandler="com.daxiang.typehandler.IntegerListTypeHandler" javaType="java.util.List&lt;Integer&gt;" jdbcType="LONGVARCHAR"/>-->
-        <!--</table>-->
+        <table tableName="action">
+            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
+            <columnOverride column="set_up" typeHandler="com.daxiang.typehandler.StepListTypeHandler" javaType="java.util.List&lt;com.daxiang.model.action.Step&gt;" jdbcType="LONGVARCHAR"/>
+            <columnOverride column="steps" typeHandler="com.daxiang.typehandler.StepListTypeHandler" javaType="java.util.List&lt;com.daxiang.model.action.Step&gt;" jdbcType="LONGVARCHAR"/>
+            <columnOverride column="tear_down" typeHandler="com.daxiang.typehandler.StepListTypeHandler" javaType="java.util.List&lt;com.daxiang.model.action.Step&gt;" jdbcType="LONGVARCHAR"/>
+            <columnOverride column="params" typeHandler="com.daxiang.typehandler.ParamListTypeHandler" javaType="java.util.List&lt;com.daxiang.model.action.Param&gt;" jdbcType="LONGVARCHAR"/>
+            <columnOverride column="local_vars" typeHandler="com.daxiang.typehandler.LocalVarListTypeHandler" javaType="java.util.List&lt;com.daxiang.model.action.LocalVar&gt;" jdbcType="LONGVARCHAR"/>
+            <columnOverride column="java_imports" typeHandler="com.daxiang.typehandler.StringListTypeHandler" javaType="java.util.List&lt;String&gt;" jdbcType="LONGVARCHAR"/>
+            <columnOverride column="action_imports" typeHandler="com.daxiang.typehandler.IntegerListTypeHandler" javaType="java.util.List&lt;Integer&gt;" jdbcType="LONGVARCHAR"/>
+            <columnOverride column="platforms" typeHandler="com.daxiang.typehandler.IntegerListTypeHandler" javaType="java.util.List&lt;Integer&gt;" jdbcType="LONGVARCHAR"/>
+            <columnOverride column="depends" typeHandler="com.daxiang.typehandler.IntegerListTypeHandler" javaType="java.util.List&lt;Integer&gt;" jdbcType="LONGVARCHAR"/>
+        </table>
         <!--<table tableName="app">-->
             <!--<generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
         <!--</table>-->
-        <table tableName="category">
-            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
-        </table>
+        <!--<table tableName="category">-->
+            <!--<generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
+        <!--</table>-->
         <!--<table tableName="mobile">-->
         <!--</table>-->
         <!--<table tableName="browser">-->

@@ -165,13 +165,29 @@ public class Action implements Serializable {
     private java.util.List<com.daxiang.model.action.LocalVar> localVars;
 
     /**
+     * 前置步骤
+     *
+     * @mbg.generated
+     */
+    @Valid
+    private java.util.List<com.daxiang.model.action.Step> setUp;
+
+    /**
      * 步骤
      *
      * @mbg.generated
      */
     @Valid
-    @NotEmpty(message = "步骤不能为空")
+    @NotEmpty(message = "步骤不能为空", groups = {SaveActionGroup.class})
     private java.util.List<com.daxiang.model.action.Step> steps;
+
+    /**
+     * 后置步骤
+     *
+     * @mbg.generated
+     */
+    @Valid
+    private java.util.List<com.daxiang.model.action.Step> tearDown;
 
     /**
      * java imports
@@ -351,12 +367,28 @@ public class Action implements Serializable {
         this.localVars = localVars;
     }
 
+    public java.util.List<com.daxiang.model.action.Step> getSetUp() {
+        return setUp;
+    }
+
+    public void setSetUp(java.util.List<com.daxiang.model.action.Step> setUp) {
+        this.setUp = setUp;
+    }
+
     public java.util.List<com.daxiang.model.action.Step> getSteps() {
         return steps;
     }
 
     public void setSteps(java.util.List<com.daxiang.model.action.Step> steps) {
         this.steps = steps;
+    }
+
+    public java.util.List<com.daxiang.model.action.Step> getTearDown() {
+        return tearDown;
+    }
+
+    public void setTearDown(java.util.List<com.daxiang.model.action.Step> tearDown) {
+        this.tearDown = tearDown;
     }
 
     public java.util.List<String> getJavaImports() {
@@ -414,7 +446,9 @@ public class Action implements Serializable {
         sb.append(", state=").append(state);
         sb.append(", params=").append(params);
         sb.append(", localVars=").append(localVars);
+        sb.append(", setUp=").append(setUp);
         sb.append(", steps=").append(steps);
+        sb.append(", tearDown=").append(tearDown);
         sb.append(", javaImports=").append(javaImports);
         sb.append(", actionImports=").append(actionImports);
         sb.append(", platforms=").append(platforms);
