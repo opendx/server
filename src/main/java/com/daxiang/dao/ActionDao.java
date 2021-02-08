@@ -9,7 +9,7 @@ import java.util.List;
  * Created by jiangyitao.
  */
 public interface ActionDao {
-    List<Action> selectByActionIdInStepsOrDependsOrActionImports(@Param("actionId") Integer actionId);
+    List<Action> selectOtherActionsInUse(@Param("actionId") Integer actionId);
 
     List<Action> selectByLocalVarsEnvironmentId(@Param("envId") Integer envId);
 
