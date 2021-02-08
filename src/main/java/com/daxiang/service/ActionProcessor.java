@@ -62,16 +62,16 @@ public class ActionProcessor {
             return steps;
         }
 
-        List<Step> newSteps = steps.stream()
+        List<Step> enabledSteps = steps.stream()
                 .filter(step -> step.getStatus() == Step.ENABLE_STATUS) // 过滤掉未开启的步骤
                 .collect(Collectors.toList());
-        for (Step step : newSteps) {
+        for (Step step : enabledSteps) {
             Action stepAction = getActionById(step.getActionId());
             step.setAction(stepAction);
             recursivelyProcess(Arrays.asList(stepAction));
         }
 
-        return newSteps;
+        return enabledSteps;
     }
 
     private Action getActionById(Integer actionId) {
