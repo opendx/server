@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.daxiang.dao.AgentExtJarDao">
+    <resultMap id="BaseResultMap" type="com.daxiang.mbg.po.AgentExtJar" extends="com.daxiang.mbg.mapper.AgentExtJarMapper.BaseResultMap"/>
+
+    <select id="selectLastUploadTimeList" resultMap="BaseResultMap">
+        SELECT * FROM agent_ext_jar WHERE ( NAME, upload_time ) IN ( SELECT NAME, max( upload_time ) FROM agent_ext_jar GROUP BY NAME );
+    </select>
+</mapper>

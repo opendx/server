@@ -105,33 +105,29 @@ public class DeviceTestTaskService {
                     // 更新testcase运行结果
                     copyTestcaseProperties(sourceTestcase, testcase);
 
-                    List<Step> steps;
-                    Step sourceStep;
-
                     if (!CollectionUtils.isEmpty(sourceTestcase.getSteps())) {
-                        sourceStep = sourceTestcase.getSteps().get(0);
-                        steps = testcase.getSteps();
+                        updateSteps(testcase.getSteps(), sourceTestcase.getSteps().get(0));
                     } else if (!CollectionUtils.isEmpty(sourceTestcase.getSetUp())) {
-                        sourceStep = sourceTestcase.getSetUp().get(0);
-                        steps = testcase.getSetUp();
-                    } else {
-                        sourceStep = sourceTestcase.getTearDown().get(0);
-                        steps = testcase.getTearDown();
+                        updateSteps(testcase.getSetUp(), sourceTestcase.getSetUp().get(0));
+                    } else if (!CollectionUtils.isEmpty(sourceTestcase.getTearDown())) {
+                        updateSteps(testcase.getTearDown(), sourceTestcase.getTearDown().get(0));
                     }
-
-                    steps.stream()
-                            .filter(step -> step.getNumber().equals(sourceStep.getNumber()))
-                            .findFirst()
-                            .ifPresent(step -> {
-                                // 更新step运行结果
-                                copyStepProperties(sourceStep, step);
-                            });
                 });
 
         int updateCount = deviceTestTaskMapper.updateByPrimaryKeySelective(deviceTestTask);
         if (updateCount != 1) {
             throw new ServerException("更新失败，请稍后重试");
         }
+    }
+
+    private void updateSteps(List<Step> steps, Step sourceStep) {
+        steps.stream()
+                .filter(step -> step.getNumber().equals(sourceStep.getNumber()))
+                .findFirst()
+                .ifPresent(step -> {
+                    // 更新step运行结果
+                    copyStepProperties(sourceStep, step);
+                });
     }
 
     private void copyStepProperties(Step sourceStep, Step targetStep) {
