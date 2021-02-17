@@ -1,6 +1,5 @@
 package com.daxiang.security;
 
-import com.daxiang.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -45,7 +44,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         String[] permitAntPatterns = new String[]{
                 "/",
                 "/user/login",
-                "/" + FileService.UPLOAD_DIR + "/**",
+                "/upload/**",
                 "/" + frontend + "/**",
                 // 以下为agent调用的接口
                 "/springboot-admin/**",
@@ -53,6 +52,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 "/upload/file/*",
                 "/project/list",
                 "/mobile/list",
+                "/agentExtJar/lastUploadTimeList",
                 "/mobile/save",
                 "/browser/save",
                 "/driver/downloadUrl",

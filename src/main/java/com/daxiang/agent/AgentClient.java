@@ -67,6 +67,11 @@ public class AgentClient {
                 browserId).getBody();
     }
 
+    public Response loadJar(String agentIp, int agentPort, String jarUrl) {
+        String url = getUrl(agentIp, agentPort, "/agentExtJar/load");
+        return restTemplate.postForObject(url, jarUrl, Response.class);
+    }
+
     private String getUrl(String agentIp, int agentPort, String requestURI) {
         return String.format("http://%s:%d%s", agentIp, agentPort, requestURI);
     }

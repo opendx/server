@@ -4,6 +4,7 @@ import com.daxiang.dao.PageDao;
 import com.daxiang.exception.ServerException;
 import com.daxiang.mbg.po.*;
 import com.daxiang.model.PagedData;
+import com.daxiang.model.enums.UploadDir;
 import com.daxiang.security.SecurityUtil;
 import com.github.pagehelper.PageHelper;
 import com.daxiang.mbg.mapper.PageMapper;
@@ -50,7 +51,7 @@ public class PageService {
         String originalImgPath = page.getImgPath();
         String destImgPath = null;
         if (!StringUtils.isEmpty(originalImgPath)) {
-            destImgPath = FileService.IMG_DIR + "/" + FilenameUtils.getName(originalImgPath);
+            destImgPath = UploadDir.IMG.path + "/" + FilenameUtils.getName(originalImgPath);
             page.setImgPath(destImgPath);
         }
 

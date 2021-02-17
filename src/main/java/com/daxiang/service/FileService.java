@@ -1,8 +1,8 @@
 package com.daxiang.service;
 
 import com.daxiang.exception.ServerException;
-import com.daxiang.model.FileType;
 import com.daxiang.model.UploadFile;
+import com.daxiang.model.enums.UploadDir;
 import com.daxiang.utils.HttpServletUtil;
 import com.daxiang.utils.UUIDUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -24,16 +24,6 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class FileService {
 
-    public static final String UPLOAD_DIR = "upload";
-
-    public static final String TMP_DIR = UPLOAD_DIR + "/tmp";
-    public static final String IMG_DIR = UPLOAD_DIR + "/img";
-    public static final String VIDEO_DIR = UPLOAD_DIR + "/video";
-    public static final String APP_DIR = UPLOAD_DIR + "/app";
-    public static final String DRIVER_DIR = UPLOAD_DIR + "/driver";
-    public static final String LOG_DIR = UPLOAD_DIR + "/log";
-    public static final String OTHER_FILE_DIR = UPLOAD_DIR + "/other";
-
     @Value("${static-location}/")
     private String staticLocation;
 
@@ -46,94 +36,79 @@ public class FileService {
         boolean deleted = FileUtils.deleteQuietly(file);
         if (deleted) {
             log.info("delete {} success", file.getAbsolutePath());
+        } else {
+            log.warn("delete {} fail, the file is maybe not exists", file.getAbsolutePath());
         }
     }
 
     public void mkUploadDirIfNotExists() {
-        File uploadTmpDir = new File(staticLocation + TMP_DIR);
+        File uploadTmpDir = new File(staticLocation + UploadDir.TMP.path);
         if (!uploadTmpDir.exists()) {
             log.info("创建tmp目录 -> {}", uploadTmpDir.getAbsolutePath());
             uploadTmpDir.mkdirs();
         }
 
-        File uploadImgDir = new File(staticLocation + IMG_DIR);
+        File uploadImgDir = new File(staticLocation + UploadDir.IMG.path);
         if (!uploadImgDir.exists()) {
             log.info("创建img目录 -> {}", uploadImgDir.getAbsolutePath());
             uploadImgDir.mkdirs();
         }
 
-        File uploadVideoDir = new File(staticLocation + VIDEO_DIR);
+        File uploadVideoDir = new File(staticLocation + UploadDir.VIDEO.path);
         if (!uploadVideoDir.exists()) {
             log.info("创建video目录 -> {}", uploadVideoDir.getAbsolutePath());
             uploadVideoDir.mkdirs();
         }
 
-        File uploadAppDir = new File(staticLocation + APP_DIR);
+        File uploadAppDir = new File(staticLocation + UploadDir.APP.path);
         if (!uploadAppDir.exists()) {
             log.info("创建app目录 -> {}", uploadAppDir.getAbsolutePath());
             uploadAppDir.mkdirs();
         }
 
-        File uploadDriverDir = new File(staticLocation + DRIVER_DIR);
+        File uploadDriverDir = new File(staticLocation + UploadDir.DRIVER.path);
         if (!uploadDriverDir.exists()) {
             log.info("创建driver目录 -> {}", uploadDriverDir.getAbsolutePath());
             uploadDriverDir.mkdirs();
         }
 
-        File uploadLogDir = new File(staticLocation + LOG_DIR);
+        File uploadLogDir = new File(staticLocation + UploadDir.LOG.path);
         if (!uploadDriverDir.exists()) {
             log.info("创建log目录 -> {}", uploadLogDir.getAbsolutePath());
             uploadLogDir.mkdirs();
         }
 
-        File uploadOtherFileDir = new File(staticLocation + OTHER_FILE_DIR);
-        if (!uploadOtherFileDir.exists()) {
-            log.info("创建other file目录 -> {}", uploadOtherFileDir.getAbsolutePath());
-            uploadOtherFileDir.mkdirs();
+        File uploadAgentExtJarDir = new File(staticLocation + UploadDir.AGENT_EXT_JAR.path);
+        if (!uploadAgentExtJarDir.exists()) {
+            log.info("创建agent ext jar目录 -> {}", uploadAgentExtJarDir.getAbsolutePath());
+            uploadAgentExtJarDir.mkdirs();
         }
     }
 
     public UploadFile upload(MultipartFile file, Integer fileType) {
+        return upload(file, fileType, true);
+    }
+
+    public UploadFile upload(MultipartFile file, Integer fileType, boolean renameFile) {
         if (file == null || fileType == null) {
             throw new ServerException("file or fileType不能为空");
         }
 
-        String uploadFileDir;
-        switch (fileType) {
-            case FileType.TMP:
-                uploadFileDir = TMP_DIR;
-                break;
-            case FileType.IMG:
-                uploadFileDir = IMG_DIR;
-                break;
-            case FileType.VIDEO:
-                uploadFileDir = VIDEO_DIR;
-                break;
-            case FileType.APP:
-                uploadFileDir = APP_DIR;
-                break;
-            case FileType.DRIVER:
-                uploadFileDir = DRIVER_DIR;
-                break;
-            case FileType.LOG:
-                uploadFileDir = LOG_DIR;
-                break;
-            default:
-                uploadFileDir = OTHER_FILE_DIR;
-        }
-
         String originalFilename = file.getOriginalFilename();
-        String destFilePath = uploadFileDir + "/" + UUIDUtil.getUUIDFilename(originalFilename);
+        String destFilePath = renameFile ? UploadDir.getPath(fileType) + "/" + UUIDUtil.getUUIDFilename(originalFilename)
+                : UploadDir.getPath(fileType) + "/" + originalFilename;
+        File destFile = new File(staticLocation + destFilePath);
 
         try {
             log.info("upload fileType: {}, {} -> {}", fileType, originalFilename, destFilePath);
-            FileUtils.copyInputStreamToFile(file.getInputStream(), new File(staticLocation + destFilePath));
+            FileUtils.copyInputStreamToFile(file.getInputStream(), destFile);
         } catch (IOException e) {
             log.error("write {} to {} err", originalFilename, destFilePath, e);
             throw new ServerException(e.getMessage());
         }
 
         UploadFile uploadFile = new UploadFile();
+        uploadFile.setFile(destFile);
         uploadFile.setFilePath(destFilePath);
         uploadFile.setDownloadUrl(HttpServletUtil.getStaticResourceUrl(destFilePath));
 
@@ -150,7 +125,7 @@ public class FileService {
     public int clearTmpFilesBefore(int beforeDays) {
         int deletedTmpFilesCount = 0;
 
-        File[] files = new File(staticLocation + TMP_DIR).listFiles();
+        File[] files = new File(staticLocation + UploadDir.TMP.path).listFiles();
         if (ArrayUtils.isEmpty(files)) {
             return deletedTmpFilesCount;
         }
@@ -171,5 +146,9 @@ public class FileService {
         }
 
         return deletedTmpFilesCount;
+    }
+
+    public boolean exist(int fileType, String filename) {
+        return new File(staticLocation + UploadDir.getPath(fileType), filename).exists();
     }
 }
