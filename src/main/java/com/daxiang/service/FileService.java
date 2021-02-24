@@ -85,22 +85,22 @@ public class FileService {
         }
     }
 
-    public UploadFile upload(MultipartFile file, Integer fileType) {
-        return upload(file, fileType, true);
+    public UploadFile upload(MultipartFile file, UploadDir uploadDir) {
+        return upload(file, uploadDir, true);
     }
 
-    public UploadFile upload(MultipartFile file, Integer fileType, boolean renameFile) {
-        if (file == null || fileType == null) {
-            throw new ServerException("file or fileType不能为空");
+    public UploadFile upload(MultipartFile file, UploadDir uploadDir, boolean renameFile) {
+        if (file == null || uploadDir == null) {
+            throw new ServerException("file or uploadDir不能为空");
         }
 
         String originalFilename = file.getOriginalFilename();
-        String destFilePath = renameFile ? UploadDir.getPath(fileType) + "/" + UUIDUtil.getUUIDFilename(originalFilename)
-                : UploadDir.getPath(fileType) + "/" + originalFilename;
+        String destFilePath = renameFile ? uploadDir.path + "/" + UUIDUtil.getUUIDFilename(originalFilename)
+                : uploadDir.path + "/" + originalFilename;
         File destFile = new File(staticLocation + destFilePath);
 
         try {
-            log.info("upload fileType: {}, {} -> {}", fileType, originalFilename, destFilePath);
+            log.info("upload {} -> {}", originalFilename, destFilePath);
             FileUtils.copyInputStreamToFile(file.getInputStream(), destFile);
         } catch (IOException e) {
             log.error("write {} to {} err", originalFilename, destFilePath, e);
@@ -148,7 +148,7 @@ public class FileService {
         return deletedTmpFilesCount;
     }
 
-    public boolean exist(int fileType, String filename) {
-        return new File(staticLocation + UploadDir.getPath(fileType), filename).exists();
+    public boolean exist(UploadDir uploadDir, String filename) {
+        return new File(staticLocation + uploadDir.path, filename).exists();
     }
 }

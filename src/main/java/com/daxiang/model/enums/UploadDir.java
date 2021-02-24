@@ -1,5 +1,7 @@
 package com.daxiang.model.enums;
 
+import java.util.stream.Stream;
+
 /**
  * Created by jiangyitao.
  */
@@ -21,12 +23,11 @@ public enum UploadDir {
         this.path = path;
     }
 
-    public static String getPath(int fileType) {
-        for (UploadDir d : UploadDir.values()) {
-            if (d.fileType == fileType) {
-                return d.path;
-            }
-        }
-        throw new IllegalArgumentException("unknow fileType=" + fileType);
+    public static UploadDir get(int fileType) {
+        return Stream.of(UploadDir.values())
+                .filter(uploadDir -> uploadDir.fileType == fileType)
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("unknow fileType=" + fileType));
     }
+
 }

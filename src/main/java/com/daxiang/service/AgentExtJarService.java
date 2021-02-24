@@ -77,7 +77,7 @@ public class AgentExtJarService {
             throw new ServerException(filename + "格式错误，正确格式示例: commons-io-2.6.jar");
         }
 
-        if (fileService.exist(UploadDir.AGENT_EXT_JAR.fileType, filename)) {
+        if (fileService.exist(UploadDir.AGENT_EXT_JAR, filename)) {
             throw new ServerException(filename + "已存在");
         }
 
@@ -87,7 +87,7 @@ public class AgentExtJarService {
         agentExtJar.setUploadorUid(SecurityUtil.getCurrentUserId());
         agentExtJar.setUploadTime(new Date());
 
-        UploadFile uploadFile = fileService.upload(file, UploadDir.AGENT_EXT_JAR.fileType, false);
+        UploadFile uploadFile = fileService.upload(file, UploadDir.AGENT_EXT_JAR);
 
         agentExtJar.setFilePath(uploadFile.getFilePath());
         agentExtJar.setFileSize(uploadFile.getFile().length());

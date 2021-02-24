@@ -44,7 +44,7 @@ public class AppService {
     private FileService fileService;
 
     public void upload(App app, MultipartFile file) {
-        UploadFile uploadFile = fileService.upload(file, UploadDir.APP.fileType);
+        UploadFile uploadFile = fileService.upload(file, UploadDir.APP);
 
         app.setFilePath(uploadFile.getFilePath());
         app.setUploadTime(new Date());
