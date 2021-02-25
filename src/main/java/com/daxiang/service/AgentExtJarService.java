@@ -87,7 +87,7 @@ public class AgentExtJarService {
         agentExtJar.setUploadorUid(SecurityUtil.getCurrentUserId());
         agentExtJar.setUploadTime(new Date());
 
-        UploadFile uploadFile = fileService.upload(file, UploadDir.AGENT_EXT_JAR);
+        UploadFile uploadFile = fileService.upload(file, UploadDir.AGENT_EXT_JAR, false);
 
         agentExtJar.setFilePath(uploadFile.getFilePath());
         agentExtJar.setFileSize(uploadFile.getFile().length());
